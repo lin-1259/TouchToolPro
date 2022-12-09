@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<top.bogey.touch_tool.ui.card.HelperCard xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:title="@string/task_type_manual">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <top.bogey.touch_tool.ui.custom.SelectAppWidget
+            android:id="@+id/selectAppWidget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="16dp"/>
+
+        <top.bogey.touch_tool.ui.custom.OutWdiget
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:mode="normal" />
+
+    </LinearLayout>
+
+</top.bogey.touch_tool.ui.card.HelperCard>
+
+

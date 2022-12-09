@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/home">
+    <fragment
+        android:id="@+id/home"
+        android:name="top.bogey.touch_tool.ui.home.HomeView"
+        android:label="@string/home"
+        tools:layout="@layout/view_home" />
+    <fragment
+        android:id="@+id/task"
+        android:name="top.bogey.touch_tool.ui.task.TaskView"
+        android:label="@string/tasks"
+        tools:layout="@layout/view_task" >
+        <action
+            android:id="@+id/action_task_to_taskInfo"
+            app:destination="@id/taskInfo" />
+    </fragment>
+    <fragment
+        android:id="@+id/setting"
+        android:name="top.bogey.touch_tool.ui.setting.SettingView"
+        android:label="@string/setting"
+        tools:layout="@layout/view_setting" />
+    <fragment
+        android:id="@+id/taskInfo"
+        android:name="top.bogey.touch_tool.ui.task_info.TaskInfoView"
+        tools:layout="@layout/view_task_info" >
+        <argument
+            android:name="taskId"
+            app:argType="string" />
+    </fragment>
+</navigation>

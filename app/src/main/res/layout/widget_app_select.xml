@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/include_apps"
+            android:textSize="11sp" />
+
+        <LinearLayout
+            android:id="@+id/includeAppsIconBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/selectAppButton"
+            style="@style/Theme.TouchTool.IconButton.Outlined"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center_vertical"
+            app:icon="@drawable/icon_action_task" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/excludeAppsBox"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:visibility="gone">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/exclude_apps"
+            android:textSize="11sp" />
+
+        <LinearLayout
+            android:id="@+id/excludeAppsIconBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginHorizontal="4dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" />
+
+    </LinearLayout>
+
+</LinearLayout>

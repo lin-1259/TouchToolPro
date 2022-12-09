@@ -1,0 +1,159 @@
+package top.bogey.touch_tool.utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.PowerManager;
+import android.provider.Settings;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.lang.reflect.Method;
+import java.util.Calendar;
+import java.util.List;
+
+import top.bogey.touch_tool.R;
+
+public class AppUtils {
+    public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, int method);
+
+    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor);
+
+    public static void showDialog(Context context, int msg, ResultCallback callback) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.dialog_title)
+                .setMessage(msg)
+                .setPositiveButton(R.string.enter, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (callback != null) callback.onResult(true);
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (callback != null) callback.onResult(false);
+                })
+                .show();
+    }
+
+    public static void gotoAppDetailSetting(Context context) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static void gotoApp(Context context, String pkgName) {
+        try {
+            PackageManager manager = context.getPackageManager();
+            Intent intent = manager.getLaunchIntentForPackage(pkgName);
+            if (intent != null) context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static boolean isIgnoredBattery(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
+    }
+
+    public static void gotoBatterySetting(Context context) {
+        try {
+            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setData(Uri.parse("package:" + context.getPackageName()));
+            context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static boolean checkFloatPermission(Context context) {
+        try {
+            Method canDrawOverlays = Settings.class.getDeclaredMethod("canDrawOverlays", Context.class);
+            return Boolean.TRUE.equals(canDrawOverlays.invoke(null, context));
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    public static void wakeScreen(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, context.getString(R.string.common_package_name));
+        wakeLock.acquire(100);
+        wakeLock.release();
+    }
+
+    public static <T extends Parcelable> T copy(T input) {
+        if (input == null) return null;
+        Parcel parcel = null;
+        try {
+            parcel = Parcel.obtain();
+            parcel.writeParcelable(input, 0);
+            parcel.setDataPosition(0);
+            return parcel.readParcelable(input.getClass().getClassLoader());
+        } finally {
+            if (parcel != null) parcel.recycle();
+        }
+    }
+
+    public static String formatDateLocalDate(Context context, long dateTime) {
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTimeInMillis(dateTime);
+
+        Calendar currCalendar = Calendar.getInstance();
+        currCalendar.setTimeInMillis(System.currentTimeMillis());
+
+        StringBuilder builder = new StringBuilder();
+        if (timeCalendar.get(Calendar.YEAR) != currCalendar.get(Calendar.YEAR))
+            builder.append(context.getString(R.string.year, timeCalendar.get(Calendar.YEAR)));
+        builder.append(context.getString(R.string.month, timeCalendar.get(Calendar.MONTH) + 1));
+        builder.append(context.getString(R.string.day, timeCalendar.get(Calendar.DAY_OF_MONTH)));
+        return builder.toString();
+    }
+
+    public static String formatDateLocalTime(Context context, long dateTime) {
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTimeInMillis(dateTime);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(context.getString(R.string.hour, timeCalendar.get(Calendar.HOUR_OF_DAY)));
+        if (timeCalendar.get(Calendar.MINUTE) != 0)
+            builder.append(context.getString(R.string.minute, timeCalendar.get(Calendar.MINUTE)));
+        return builder.toString();
+    }
+
+    public static String formatDateLocalMillisecond(Context context, long dateTime) {
+        Calendar timeCalendar = Calendar.getInstance();
+        timeCalendar.setTimeInMillis(dateTime);
+
+        return context.getString(R.string.hour, timeCalendar.get(Calendar.HOUR_OF_DAY)) +
+                context.getString(R.string.minute, timeCalendar.get(Calendar.MINUTE)) +
+                context.getString(R.string.second, timeCalendar.get(Calendar.SECOND)) +
+                context.getString(R.string.millisecond, timeCalendar.get(Calendar.MILLISECOND));
+    }
+
+    public static String formatDateLocalDuration(Context context, long dateTime) {
+        int hours = (int) (dateTime / 1000 / 60 / 60);
+        int minute = (int) (dateTime / 1000 / 60 % 60);
+
+        StringBuilder builder = new StringBuilder();
+        if (hours != 0) builder.append(context.getString(R.string.hours, hours));
+        if (minute != 0) builder.append(context.getString(R.string.minutes, minute));
+        return builder.toString();
+    }
+
+    public static long mergeDateTime(long date, long time) {
+        Calendar baseCalendar = Calendar.getInstance();
+        baseCalendar.setTimeInMillis(time);
+        Calendar dateCalendar = Calendar.getInstance();
+        dateCalendar.setTimeInMillis(date);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(dateCalendar.get(Calendar.YEAR), dateCalendar.get(Calendar.MONTH), dateCalendar.get(Calendar.DATE), baseCalendar.get(Calendar.HOUR_OF_DAY), baseCalendar.get(Calendar.MINUTE), 0);
+        return calendar.getTimeInMillis();
+    }
+}
