@@ -10,6 +10,7 @@
     android:focusable="true"
     app:checkedIconGravity="TOP_END"
     app:checkedIconMargin="8dp"
+    app:checkedIconSize="24dp"
     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Large">
 
     <LinearLayout
@@ -57,9 +58,8 @@
         android:layout_height="24dp"
         android:layout_gravity="start|top"
         android:layout_margin="8dp"
-        android:gravity="center"
+        android:textScaleX="1"
         android:textSize="11sp"
-        app:icon="@drawable/icon_more"
-        app:iconGravity="textStart" />
+        app:icon="@drawable/icon_more" />
 
 </com.google.android.material.card.MaterialCardView>

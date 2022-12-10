@@ -50,7 +50,7 @@ public class HelperCard extends MaterialCardView {
                 postDelayed(() -> {
                     binding.removeButton.setChecked(false);
                     needDelete = false;
-                }, 500);
+                }, 1500);
             }
         });
 

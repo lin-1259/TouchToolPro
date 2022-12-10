@@ -3,7 +3,9 @@ package top.bogey.touch_tool.ui.custom;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import top.bogey.touch_tool.data.TaskHelper;
 import top.bogey.touch_tool.databinding.WidgetAppSelectBinding;
 import top.bogey.touch_tool.databinding.WidgetAppSelectItemBinding;
 import top.bogey.touch_tool.ui.app.AppView;
+import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class SelectAppWidget extends BindingView<WidgetAppSelectBinding> {
     private Map<CharSequence, List<CharSequence>> packages;
@@ -56,9 +59,9 @@ public class SelectAppWidget extends BindingView<WidgetAppSelectBinding> {
             Drawable drawable = getContext().getApplicationInfo().loadIcon(manager);
             WidgetAppSelectItemBinding itemBinding = WidgetAppSelectItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
             itemBinding.icon.setImageDrawable(drawable);
+            ((View) itemBinding.numberText.getParent()).setVisibility(GONE);
 
             if (packageNames.size() == 1) return;
-            packageNames.remove(commonPackage);
             appIconBox = binding.excludeAppsIconBox;
             binding.excludeAppsBox.setVisibility(VISIBLE);
         }
@@ -66,10 +69,12 @@ public class SelectAppWidget extends BindingView<WidgetAppSelectBinding> {
 
         int index = 0;
         for (CharSequence packageName : packageNames) {
+            if (TextUtils.equals(packageName, commonPackage)) continue;
             WidgetAppSelectItemBinding itemBinding = WidgetAppSelectItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
-            if (index == 4) {
+            if (index == 4 && packageNames.size() > (includeCommon ? 6 : 5)) {
                 itemBinding.icon.setImageResource(R.drawable.icon_more);
                 ((View) itemBinding.numberText.getParent()).setVisibility(GONE);
+                itemBinding.icon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimary, 0)));
                 break;
 
             } else {
@@ -78,6 +83,7 @@ public class SelectAppWidget extends BindingView<WidgetAppSelectBinding> {
                 PackageInfo packageInfo = TaskHelper.getInstance().getPackage(packageName);
                 itemBinding.icon.setImageDrawable(packageInfo.applicationInfo.loadIcon(manager));
                 itemBinding.numberText.setText(String.valueOf(list.size()));
+                ((View) itemBinding.numberText.getParent()).setVisibility(list.size() == 0 ? GONE : VISIBLE);
             }
             index++;
         }

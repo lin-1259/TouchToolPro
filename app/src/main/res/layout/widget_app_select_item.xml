@@ -6,16 +6,17 @@
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/icon"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:background="?attr/colorSurface"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
     <com.google.android.material.card.MaterialCardView
         style="?attr/materialCardViewFilledStyle"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_gravity="top|end">
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_gravity="top|end"
+        app:cardBackgroundColor="?attr/colorSurface">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/numberText"

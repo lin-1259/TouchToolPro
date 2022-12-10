@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingHorizontal="16dp"
+        android:paddingHorizontal="8dp"
         android:paddingVertical="8dp">
 
         <com.google.android.material.button.MaterialButton
@@ -31,7 +31,7 @@
             style="@style/Theme.TouchTool.IconButton"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             app:icon="@drawable/icon_copy" />
 
         <com.google.android.material.button.MaterialButton

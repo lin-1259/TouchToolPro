@@ -151,6 +151,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                                 }
                             }
                             selectedActivitys.put(info.packageName, result);
+                            notifyItemChanged(getAdapterPosition());
                             callback.onResult(true);
                         })
                         .setNegativeButton(R.string.cancel, null)

@@ -40,5 +40,8 @@ public class BaseCard<T extends ViewBinding, A extends BaseAction> extends Bindi
             if (action.isEnable() == result) return;
             action.setEnable(result);
         });
+        if (action != null) {
+            helperCard.setEnable(action.isEnable());
+        }
     }
 }
