@@ -25,7 +25,7 @@ public class TaskHelper {
     private CharSequence packageName;
     private CharSequence activityName;
     private CharSequence notificationText;
-    private int baterryPercent;
+    private int batteryPercent;
     private int batteryState;
 
     public static TaskHelper getInstance() {
@@ -39,7 +39,9 @@ public class TaskHelper {
         PackageManager manager = context.getPackageManager();
         List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         for (PackageInfo packageInfo : packages) {
-            appMap.put(packageInfo.packageName, packageInfo);
+            if (packageInfo.activities != null && packageInfo.activities.length > 0){
+                appMap.put(packageInfo.packageName, packageInfo);
+            }
         }
     }
 
@@ -60,19 +62,17 @@ public class TaskHelper {
     public List<PackageInfo> findPackageList(Context context, boolean system, CharSequence find, boolean common) {
         List<PackageInfo> packages = new ArrayList<>();
 
-        if (common) {
+        if (common && (find == null || find.length() == 0)) {
             PackageInfo info = new PackageInfo();
             info.packageName = context.getString(R.string.common_package_name);
             packages.add(info);
         }
 
-        if (find == null || find.length() == 0) {
-            packages.addAll(appMap.values());
-            return packages;
-        }
-
         PackageManager manager = context.getPackageManager();
-        Pattern pattern = Pattern.compile(find.toString().toLowerCase());
+        Pattern pattern = null;
+        if (!(find == null || find.length() == 0)) {
+            pattern = Pattern.compile(find.toString().toLowerCase());
+        }
 
         for (PackageInfo value : appMap.values()) {
             if (value.packageName.equals(context.getPackageName())) continue;
@@ -80,7 +80,7 @@ public class TaskHelper {
                 CharSequence title = value.applicationInfo.loadLabel(manager);
                 // 包名和应用名一致的基本上都是无效应用，跳过
                 if (value.packageName.equalsIgnoreCase(title.toString())) continue;
-                if (pattern.matcher(title).find() || pattern.matcher(value.packageName).find()) {
+                if (pattern == null || pattern.matcher(title).find() || pattern.matcher(value.packageName).find()) {
                     packages.add(value);
                 }
             }
@@ -126,12 +126,12 @@ public class TaskHelper {
         this.notificationText = notificationText;
     }
 
-    public int getBaterryPercent() {
-        return baterryPercent;
+    public int getBatteryPercent() {
+        return batteryPercent;
     }
 
-    public void setBaterryPercent(int baterryPercent) {
-        this.baterryPercent = baterryPercent;
+    public void setBatteryPercent(int batteryPercent) {
+        this.batteryPercent = batteryPercent;
     }
 
     public int getBatteryState() {

@@ -10,16 +10,19 @@
         android:layout_height="wrap_content">
 
         <top.bogey.touch_tool.ui.custom.InWdiget
+            android:id="@+id/inWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             app:mode="normal" />
 
         <top.bogey.touch_tool.ui.custom.TimeInputWidget
+            android:id="@+id/timeInputWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <top.bogey.touch_tool.ui.custom.OutWdiget
+            android:id="@+id/outWidget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"

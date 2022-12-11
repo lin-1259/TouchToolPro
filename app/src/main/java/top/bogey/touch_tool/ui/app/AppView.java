@@ -22,7 +22,9 @@ import top.bogey.touch_tool.utils.TextChangedListener;
 
 public class AppView extends BottomSheetDialogFragment {
     public final static int SINGLE_MODE = 0;
-    public final static int MULTI_MODE = 1;
+    public final static int SINGLE_WITH_ACTIVITY_MODE = 1;
+    public final static int MULTI_MODE = 2;
+    public final static int MULTI_WITH_ACTIVITY_MODE = 3;
 
     private final Map<CharSequence, List<CharSequence>> packages;
     private final int mode;
@@ -32,7 +34,6 @@ public class AppView extends BottomSheetDialogFragment {
     private boolean showSystem = false;
 
     public AppView(Map<CharSequence, List<CharSequence>> packages, int mode, ResultCallback callback) {
-        assert (mode == SINGLE_MODE || mode == MULTI_MODE);
         this.packages = packages;
         this.mode = mode;
         this.callback = callback;
@@ -42,28 +43,30 @@ public class AppView extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewAppBinding binding = ViewAppBinding.inflate(inflater, container, false);
+        boolean single = mode == SINGLE_MODE || mode == SINGLE_WITH_ACTIVITY_MODE;
         AppRecyclerViewAdapter adapter = new AppRecyclerViewAdapter(packages, result -> {
-            if (mode == SINGLE_MODE) {
+            if (single) {
                 if (callback != null) {
                     callback.onResult(result);
                     callback = null;
                     dismiss();
                 }
             }
-        });
+        }, single);
         binding.appIconBox.setAdapter(adapter);
-        adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode == MULTI_MODE));
+        adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode != SINGLE_MODE && mode != SINGLE_WITH_ACTIVITY_MODE));
+        adapter.setShowMore(mode == SINGLE_WITH_ACTIVITY_MODE || mode == MULTI_WITH_ACTIVITY_MODE);
 
         binding.exchangeButton.setOnClickListener(v -> {
             showSystem = !showSystem;
-            adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode == MULTI_MODE));
+            adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode != SINGLE_MODE && mode != SINGLE_WITH_ACTIVITY_MODE));
         });
 
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 searchText = s;
-                adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode == MULTI_MODE));
+                adapter.refreshApps(TaskHelper.getInstance().findPackageList(requireContext(), showSystem, searchText, mode != SINGLE_MODE && mode != SINGLE_WITH_ACTIVITY_MODE));
             }
         });
 

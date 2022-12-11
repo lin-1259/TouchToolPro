@@ -14,7 +14,7 @@ public class BatteryReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
-            TaskHelper.getInstance().setBaterryPercent(level * 100 / scale);
+            TaskHelper.getInstance().setBatteryPercent(level * 100 / scale);
             int state = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
             TaskHelper.getInstance().setBatteryState(state);
         }

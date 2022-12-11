@@ -13,7 +13,7 @@ public class BatteryStart extends StartAction{
 
     @Override
     public boolean checkState(TaskHelper taskHelper) {
-        int baterryPercent = taskHelper.getBaterryPercent();
+        int baterryPercent = taskHelper.getBatteryPercent();
         return baterryPercent >= low && baterryPercent <= high;
     }
 

@@ -12,19 +12,26 @@
         android:paddingHorizontal="8dp"
         android:paddingVertical="8dp">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/title"
+        <FrameLayout
             android:layout_width="0dp"
             android:layout_height="24dp"
-            android:layout_weight="1"
-            android:backgroundTint="@color/fill_button_background_check"
-            android:checkable="true"
-            android:gravity="start|center_vertical"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:paddingHorizontal="8dp"
-            android:paddingVertical="0dp"
-            android:textColor="@color/button_container_check" />
+            android:layout_weight="1">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/fill_button_background_check"
+                android:checkable="true"
+                android:gravity="start|center_vertical"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:minWidth="24dp"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="0dp"
+                android:textColor="@color/button_container_check" />
+
+        </FrameLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/copyButton"

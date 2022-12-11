@@ -9,20 +9,21 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:background="?attr/colorSurface"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small" />
 
     <com.google.android.material.card.MaterialCardView
         style="?attr/materialCardViewFilledStyle"
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_gravity="top|end"
-        app:cardBackgroundColor="?attr/colorSurface">
+        app:cardBackgroundColor="?attr/colorTertiary">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/numberText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textColor="?attr/colorOnTertiary"
             android:textSize="9sp" />
 
     </com.google.android.material.card.MaterialCardView>

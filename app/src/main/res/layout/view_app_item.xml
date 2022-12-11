@@ -53,13 +53,16 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/selectAppButton"
-        style="@style/Theme.TouchTool.IconButton.Filled"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
+        style="@style/Theme.TouchTool.IconButton.Outlined"
+        app:strokeWidth="2dp"
+        app:strokeColor="?attr/colorPrimary"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_gravity="start|top"
-        android:layout_margin="8dp"
+        android:layout_margin="10dp"
         android:textScaleX="1"
         android:textSize="11sp"
-        app:icon="@drawable/icon_more" />
+        app:icon="@drawable/icon_more"
+        app:iconSize="16dp"/>
 
 </com.google.android.material.card.MaterialCardView>

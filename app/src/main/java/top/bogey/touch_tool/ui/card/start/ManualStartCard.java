@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
-import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.databinding.CardManualStartBinding;
 import top.bogey.touch_tool.ui.app.AppView;
 import top.bogey.touch_tool.ui.card.BaseCard;

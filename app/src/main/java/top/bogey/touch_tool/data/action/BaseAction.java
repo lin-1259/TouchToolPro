@@ -40,6 +40,13 @@ public class BaseAction {
         return true;
     }
 
+    protected void sleep(long time) {
+        try {
+            Thread.sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public boolean isEnable() {
         return enable;
