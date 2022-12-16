@@ -1,5 +1,4 @@
 <resources>
-
     <!-- 通用 -->
     <string name="app_name">点击助手Pro</string>
 
@@ -68,13 +67,31 @@
     <string name="pop_on_background_tips_2">如果设置中无此权限，请忽略此条信息！</string>
 
     <!-- 任务 -->
-    <string name="task_type_closed">禁用</string>
+    <!-- 任务 - 开始 -->
+    <string name="task_restart_tips">任务重入：</string>
+
     <string name="task_type_manual">手动执行</string>
-    <string name="task_type_it_is_time">定时执行</string>
-    <string name="task_type_new_notification">收到通知时执行</string>
-    <string name="task_type_app_changed">应用切换时执行</string>
-    <string name="task_type_view_changed">窗口变更时执行</string>
-    <string name="task_type_content_changed">内容变更时执行</string>
+
+    <string name="task_type_time">定时执行</string>
+    <string name="time_condition_start_date">日期：</string>
+    <string name="time_condition_start_time">时间：</string>
+    <string name="time_condition_periodic">间隔：</string>
+    <string name="time_condition_periodic_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
+
+    <string name="task_type_notification">新通知时执行</string>
+    <string name="notification_condition_tips">匹配文本：</string>
+
+    <string name="task_type_app">进界面时执行</string>
+    <string name="task_type_battery">电量范围内执行</string>
+    <string name="battery_contidion_low">最低：</string>
+    <string name="battery_contidion_high">最高：</string>
+
+    <string name="task_type_battery_state">电池状态变更执行</string>
+    <string name="battery_state_contidion_tips">状态</string>
+
+    <string name="task_type_custom">自定义执行</string>
+    <string name="custom_condition_tips">标题</string>
+
 
     <string name="sort">排序</string>
     <string name="sort_by_create_time_asc">创建时间正序</string>
@@ -98,12 +115,7 @@
     <string name="common_name">通用</string>
     <string name="common_package_name" translatable="false">configs.common</string>
 
-    <string name="time_condition_start_time">于%1$s开始执行</string>
-    <string name="time_condition_periodic">，间隔%1$s</string>
-    <string name="time_condition_periodic_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
-    <string name="notification_condition_tips">通知内包含的文本</string>
-    <string name="notification_condition_des">通知内包含文本 %1$s 时执行</string>
 
     <string name="normal_task">普通任务</string>
     <string name="across_app_task">跨应用任务</string>
@@ -201,7 +213,9 @@
     <string name="check_save_actions">未配置任何有效动作</string>
     <string name="check_save_times">无效的次数</string>
 
+    <!-- 选择应用 -->
     <string name="search_apps">搜索应用</string>
+    <string name="select_activity">选择活动</string>
 
     <!-- 设置 -->
     <string name="setting_tile_quick_record">录制-点击助手</string>

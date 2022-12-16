@@ -11,7 +11,7 @@ import android.view.accessibility.AccessibilityEvent;
 import java.util.Collections;
 import java.util.List;
 
-import top.bogey.touch_tool.data.TaskHelper;
+import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.utils.ResultCallback;
 
@@ -22,7 +22,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                TaskHelper.getInstance().enterActivity(event.getPackageName(), event.getClassName());
+                WorldState.getInstance().enterActivity(event.getPackageName(), event.getClassName());
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
                 if (!Notification.class.getName().contentEquals(event.getClassName())) return;
                 List<CharSequence> eventText = event.getText();
@@ -32,7 +32,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     builder.append(charSequence);
                     builder.append(" ");
                 }
-                TaskHelper.getInstance().setNotificationText(builder.toString().trim());
+                WorldState.getInstance().setNotificationText(builder.toString().trim());
             }
         }
     }

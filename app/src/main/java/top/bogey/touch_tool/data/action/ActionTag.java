@@ -17,7 +17,6 @@ public final class ActionTag {
 
     // 状态点
     public final static String GROUP_STATE = "STATE";
-    public final static String STATE_TIME = "STATE_TIME";                   // 处于某个时间段内
     public final static String STATE_APP = "STATE_APP";                     // 处于某个应用内或应用某个界面内
     public final static String STATE_BATTERY = "STATE_BATTERY";             // 电量处于某个区间内
     public final static String STATE_BATTERY_STATE = "STATE_BATTERY_STATE"; // 电池处于某个状态
@@ -47,8 +46,7 @@ public final class ActionTag {
 
     // 逻辑点
     public final static String GROUP_LOGIC = "LOGIC";
-    public final static String LOGIC_CONDITION_ALL = "LOGIC_CONDITION_ALL"; // 达成所有条件
-    public final static String LOGIC_CONDITION_ONE = "LOGIC_CONDITION_ONE"; // 只要有一个条件达成
+    public final static String LOGIC_CONDITION = "LOGIC_CONDITION";         // 达成所有条件
     public final static String LOGIC_LOOP_TIMES = "LOGIC_LOOP_TIMES";       // 次数循环
     public final static String LOGIC_LOOP_STATE = "LOGIC_LOOP_STATE";       // 根据状态循环
 }

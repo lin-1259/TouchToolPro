@@ -7,4 +7,17 @@
         <item>小时</item>
         <item>日</item>
     </string-array>
+
+    <string-array name="restart_type">
+        <item>重新执行</item>
+        <item>放弃重入</item>
+        <item>执行新的</item>
+    </string-array>
+
+    <string-array name="charging_state">
+        <item>充电中</item>
+        <item>放电中</item>
+        <item>未充电</item>
+        <item>充满了</item>
+    </string-array>
 </resources>

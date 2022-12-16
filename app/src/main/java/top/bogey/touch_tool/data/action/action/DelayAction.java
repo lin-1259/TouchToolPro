@@ -1,36 +1,29 @@
 package top.bogey.touch_tool.data.action.action;
 
+import android.content.Context;
+
 import java.util.concurrent.TimeUnit;
 
-import top.bogey.touch_tool.data.TaskHelper;
+import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionTag;
-import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.TimeArea;
+import top.bogey.touch_tool.data.action.pin.Pin;
+import top.bogey.touch_tool.data.action.pin.PinType;
 
-public class DelayAction extends BaseAction {
-    private final TimeArea delay = new TimeArea(0, TimeUnit.MILLISECONDS);
+public class DelayAction extends NormalAction {
+    private final Pin<TimeArea> delayPin;
 
     public DelayAction() {
-        super(new String[]{ActionTag.ACTION_DELAY});
+        super(ActionTag.ACTION_DELAY);
+        delayPin = addPin(new Pin<>(PinType.TIME_AREA, new TimeArea(300, TimeUnit.MILLISECONDS)));
+        titleId = R.string.action_type_delay;
     }
 
     @Override
-    public boolean doAction(TaskHelper taskHelper) {
-        sleep(delay.getRandomTime());
-        return true;
-    }
-
-    @Override
-    public boolean checkState(TaskHelper taskHelper) {
-        return super.checkState(taskHelper);
-    }
-
-    @Override
-    public boolean isValid() {
-        return delay.getMin() + delay.getMax() > 0;
-    }
-
-    public TimeArea getDelay() {
-        return delay;
+    public boolean doAction(WorldState worldState, Task task) {
+        TimeArea timeArea = delayPin.getValue();
+        return sleep(timeArea.getRandomTime());
     }
 }

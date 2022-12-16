@@ -13,7 +13,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import top.bogey.touch_tool.data.TaskHelper;
+import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -93,6 +93,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        TaskHelper.getInstance().resetAppMap(this);
+        WorldState.getInstance().resetAppMap(this);
     }
 }

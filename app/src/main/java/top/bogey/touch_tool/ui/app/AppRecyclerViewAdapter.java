@@ -161,7 +161,9 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                     choices[i] = activityInfo.name;
                 }
                 List<CharSequence> charSequences = selectedActivities.get(info.packageName);
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context).setNegativeButton(R.string.cancel, null);
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                        .setTitle(R.string.select_activity)
+                        .setNegativeButton(R.string.cancel, null);
                 if (single) {
 
                     int index = 0;

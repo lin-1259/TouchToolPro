@@ -17,8 +17,8 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool.R;
 
 // 黑板类，记录着当前系统的一些属性
-public class TaskHelper {
-    private static TaskHelper helper;
+public class WorldState {
+    private static WorldState helper;
 
     private final Map<CharSequence, PackageInfo> appMap = new LinkedHashMap<>();
 
@@ -28,8 +28,8 @@ public class TaskHelper {
     private int batteryPercent;
     private int batteryState;
 
-    public static TaskHelper getInstance() {
-        if (helper == null) helper = new TaskHelper();
+    public static WorldState getInstance() {
+        if (helper == null) helper = new WorldState();
         return helper;
     }
 
@@ -90,14 +90,13 @@ public class TaskHelper {
 
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
-            setPackageName(packageName.toString());
-            setActivityName(className.toString());
+            setPackageName(packageName);
+            setActivityName(className);
         }
     }
 
-    public String getPackageName() {
-        if (packageName == null) return null;
-        return packageName.toString();
+    public CharSequence getPackageName() {
+        return packageName;
     }
 
     public void setPackageName(CharSequence packageName) {
@@ -106,9 +105,8 @@ public class TaskHelper {
         this.packageName = packageName;
     }
 
-    public String getActivityName() {
-        if (activityName == null) return null;
-        return activityName.toString();
+    public CharSequence getActivityName() {
+        return activityName;
     }
 
     public void setActivityName(CharSequence activityName) {
@@ -117,9 +115,9 @@ public class TaskHelper {
         this.activityName = activityName;
     }
 
-    public String getNotificationText() {
+    public CharSequence getNotificationText() {
         if (notificationText == null) return null;
-        return notificationText.toString();
+        return notificationText;
     }
 
     public void setNotificationText(CharSequence notificationText) {

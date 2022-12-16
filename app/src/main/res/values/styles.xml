@@ -1,5 +1,4 @@
 <resources>
-
     <style name="Theme.TouchTool.IconButton" parent="Widget.Material3.Button.TextButton">
         <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
@@ -37,14 +36,8 @@
         <item name="cornerSizeBottomLeft">0%</item>
     </style>
 
-    <style name="Theme.TouchTool.ShapeAppearance.TopCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
-        <item name="cornerSizeBottomLeft">0%</item>
-        <item name="cornerSizeBottomRight">0%</item>
-    </style>
-
-    <style name="Theme.TouchTool.ShapeAppearance.BottomCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
-        <item name="cornerSizeTopLeft">0%</item>
-        <item name="cornerSizeTopRight">0%</item>
+    <style name="Theme.TouchTool.TextAppearance.Hint" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:textSize">9sp</item>
     </style>
 
 
