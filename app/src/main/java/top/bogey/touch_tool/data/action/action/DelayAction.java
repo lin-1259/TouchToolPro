@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
-
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;

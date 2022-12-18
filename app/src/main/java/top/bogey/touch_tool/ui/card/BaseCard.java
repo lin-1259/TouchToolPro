@@ -2,18 +2,24 @@ package top.bogey.touch_tool.ui.card;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
+import top.bogey.touch_tool.ui.card.pin.BasePin;
 import top.bogey.touch_tool.ui.card.pin.InPin;
 import top.bogey.touch_tool.ui.card.pin.OutPin;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -23,6 +29,8 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     private final CardBaseBinding binding;
     private final Task task;
     private final A action;
+
+    private List<BasePin<?>> pins = new ArrayList<>();
 
     private boolean needDelete = false;
 
@@ -67,14 +75,40 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
 
         for (Pin<?> pin : action.getPins()) {
             if (pin.getDirection() == PinDirection.IN) {
-                binding.inBox.addView(new InPin(context, action, pin));
+                InPin inPin = new InPin(context, action, pin);
+                binding.inBox.addView(inPin);
+                pins.add(inPin);
             } else if (pin.getDirection() == PinDirection.OUT) {
-                binding.outBox.addView(new OutPin(context, action, pin));
+                OutPin outPin = new OutPin(context, action, pin);
+                binding.outBox.addView(outPin);
+                pins.add(outPin);
             }
         }
     }
 
     public A getAction() {
         return action;
+    }
+
+    public BasePin<?> getPinById(String id) {
+        if (id == null || id.isEmpty()) return null;
+        for (BasePin<?> pin : pins) {
+            if (id.equals(pin.getPin().getId())) {
+                return pin;
+            }
+        }
+        return null;
+    }
+
+    public BasePin<?> getPinByPosition(float rawX, float rawY) {
+        for (BasePin<?> pin : pins) {
+            int[] location = new int[2];
+            View pinBox = pin.getPinBox();
+            pinBox.getLocationOnScreen(location);
+            if (new Rect(location[0], location[1], location[0] + pinBox.getWidth(), location[1] + pinBox.getHeight()).contains((int) rawX, (int) rawY)) {
+                return pin;
+            }
+        }
+        return null;
     }
 }

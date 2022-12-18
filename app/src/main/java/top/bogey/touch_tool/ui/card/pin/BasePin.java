@@ -2,6 +2,7 @@ package top.bogey.touch_tool.ui.card.pin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -19,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.TimeArea;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinArrayHelper;
+import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
 import top.bogey.touch_tool.data.action.pin.PinSelectAppHelper;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetCheckBox;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInputInteger;
@@ -32,6 +33,7 @@ import top.bogey.touch_tool.ui.custom.BindingView;
 
 @SuppressLint("ViewConstructor")
 public class BasePin<T extends ViewBinding> extends BindingView<T> {
+    protected final FrameLayout pinSlotBox;
     protected final MaterialCardView pinSlot;
     protected final FrameLayout pinBox;
     protected final MaterialTextView titleText;
@@ -46,7 +48,8 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
         this.pin = pin;
 
         try {
-            pinSlot = (MaterialCardView) tClass.getField("pin").get(binding);
+            pinSlotBox = (FrameLayout) tClass.getField("pinSlotBox").get(binding);
+            pinSlot = (MaterialCardView) tClass.getField("pinSlot").get(binding);
             pinBox = (FrameLayout) tClass.getField("pinBox").get(binding);
             titleText = (MaterialTextView) tClass.getField("title").get(binding);
             removeButton = (MaterialButton) tClass.getField("removeButton").get(binding);
@@ -67,7 +70,7 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
                 pinBox.addView(new PinWidgetSelectApp(context, (PinSelectAppHelper) pin.getValue()));
                 break;
             case ARRAY:
-                pinBox.addView(new PinWidgetSpinner(context, (PinArrayHelper) pin.getValue()));
+                pinBox.addView(new PinWidgetSpinner(context, (PinSpinnerHelper) pin.getValue()));
                 break;
             case BOOLEAN:
                 pinBox.addView(new PinWidgetCheckBox(context, (AtomicBoolean) pin.getValue()));
@@ -84,5 +87,17 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
                 pinBox.addView(new PinWidgetTime(context, (AtomicLong) pin.getValue(), pin.getType()));
                 break;
         }
+    }
+
+    public Pin<?> getPin() {
+        return pin;
+    }
+
+    public int[] getSlotLocationOnScreen() {
+        throw new RuntimeException("未覆盖此方法");
+    }
+
+    public View getPinBox() {
+        return pinSlotBox;
     }
 }

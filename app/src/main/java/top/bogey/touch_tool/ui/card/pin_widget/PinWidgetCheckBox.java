@@ -2,19 +2,13 @@ package top.bogey.touch_tool.ui.card.pin_widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.PinArrayHelper;
 import top.bogey.touch_tool.databinding.PinWidgetCheckboxBinding;
-import top.bogey.touch_tool.databinding.PinWidgetSpinnerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 public class PinWidgetCheckBox extends BindingView<PinWidgetCheckboxBinding> {

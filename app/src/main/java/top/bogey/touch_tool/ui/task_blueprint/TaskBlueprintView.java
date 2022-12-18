@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.ui.task;
+package top.bogey.touch_tool.ui.task_blueprint;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,11 +11,10 @@ import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.action.DelayAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
-public class TaskView extends Fragment {
+public class TaskBlueprintView extends Fragment {
 
     @Nullable
     @Override
@@ -25,23 +24,9 @@ public class TaskView extends Fragment {
         Task task = new Task();
         AppStartAction startAction = new AppStartAction();
         task.addAction(startAction);
-        startAction.x = 1;
-        startAction.y = 7;
 
         DelayAction delayAction = new DelayAction();
         task.addAction(delayAction);
-        delayAction.x = 2;
-        delayAction.y = 5;
-
-        DelayAction delayAction2 = new DelayAction();
-        task.addAction(delayAction2);
-        delayAction2.x = 3;
-        delayAction2.y = 5;
-
-        Pin<?> pin = startAction.getPins().get(0);
-        pin.getLinks().put(delayAction.getId(), delayAction.getPins().get(0).getId());
-        pin = delayAction.getPins().get(0);
-        pin.getLinks().put(startAction.getId(), startAction.getPins().get(0).getId());
 
         binding.cardLayout.setTask(task);
 

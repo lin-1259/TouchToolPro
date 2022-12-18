@@ -10,6 +10,7 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
+import top.bogey.touch_tool.data.action.pin.PinSlotType;
 import top.bogey.touch_tool.data.action.pin.PinType;
 
 public class BaseAction {
@@ -32,8 +33,8 @@ public class BaseAction {
         id = UUID.randomUUID().toString();
         this.tag = tag;
 
-        inPin = new Pin<>(PinType.EXCUTE, null);
-        outPin = new Pin<>(PinType.EXCUTE, PinDirection.OUT, null);
+        inPin = new Pin<>(PinType.EXECUTE, PinSlotType.MULTI, PinDirection.IN);
+        outPin = new Pin<>(PinType.EXECUTE, PinSlotType.SINGLE, PinDirection.OUT);
     }
 
     public boolean doAction(WorldState worldState, Task task) {
@@ -65,7 +66,15 @@ public class BaseAction {
             if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的插槽");
         }
         pins.add(pin);
+        pin.setActionId(id);
         return pin;
+    }
+
+    public Pin<?> getPinById(String id) {
+        for (Pin<?> pin : pins) {
+            if (pin.getId().equals(id)) return pin;
+        }
+        return null;
     }
 
     public String getId() {

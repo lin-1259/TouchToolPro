@@ -7,16 +7,16 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinArrayHelper;
+import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
 import top.bogey.touch_tool.data.action.pin.PinType;
 
 public class StartAction extends BaseAction {
-    protected final Pin<PinArrayHelper> restartPin;
+    protected final Pin<PinSpinnerHelper> restartPin;
 
     public StartAction(String tag) {
         super(tag);
         addPin(outPin);
-        restartPin = new Pin<>(PinType.ARRAY, R.string.task_restart_tips, new PinArrayHelper(R.array.restart_type));
+        restartPin = new Pin<>(PinType.ARRAY, R.string.task_restart_tips, new PinSpinnerHelper(R.array.restart_type));
     }
 
     @Override

@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
 import android.os.BatteryManager;
 
 import top.bogey.touch_tool.R;
@@ -8,16 +7,16 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionTag;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinArrayHelper;
+import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
 import top.bogey.touch_tool.data.action.pin.PinType;
 
 public class BatteryStateStartAction extends StartAction {
-    private final Pin<PinArrayHelper> statePin;
+    private final Pin<PinSpinnerHelper> statePin;
     private transient int currState;
 
     public BatteryStateStartAction() {
         super(ActionTag.START_BATTERY_STATE);
-        statePin = addPin(new Pin<>(PinType.ARRAY, R.string.battery_state_contidion_tips, new PinArrayHelper(R.array.charging_state)));
+        statePin = addPin(new Pin<>(PinType.ARRAY, R.string.battery_state_contidion_tips, new PinSpinnerHelper(R.array.charging_state)));
         addPin(restartPin);
         titleId = R.string.task_type_battery_state;
     }
@@ -25,7 +24,7 @@ public class BatteryStateStartAction extends StartAction {
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
         int batteryState = worldState.getBatteryState();
-        PinArrayHelper value = statePin.getValue();
+        PinSpinnerHelper value = statePin.getValue();
 
         if (convertToChargingState(value.getIndex()) != batteryState) return false;
 

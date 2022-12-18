@@ -21,4 +21,13 @@ public class OutPin extends BasePin<PinOutBinding> {
         params.gravity = Gravity.END;
         binding.getRoot().setLayoutParams(params);
     }
+
+    @Override
+    public int[] getSlotLocationOnScreen() {
+        int[] location = new int[2];
+        pinSlot.getLocationOnScreen(location);
+        location[0] += (pinSlot.getWidth() / 2);
+        location[1] += (pinSlot.getHeight() / 2);
+        return location;
+    }
 }

@@ -30,13 +30,21 @@
         android:textSize="11sp"
         android:visibility="visible" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/pin"
-        style="?attr/materialCardViewFilledStyle"
+    <FrameLayout
+        android:id="@+id/pinSlotBox"
         android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginEnd="-4dp"
-        app:cardBackgroundColor="?attr/colorOutline"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small" />
+        android:layout_height="32dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/pinSlot"
+            style="?attr/materialCardViewFilledStyle"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="-4dp"
+            app:cardBackgroundColor="?attr/colorOutline"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small" />
+
+    </FrameLayout>
 
 </LinearLayout>

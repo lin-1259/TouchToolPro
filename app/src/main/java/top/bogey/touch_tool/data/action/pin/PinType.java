@@ -5,7 +5,7 @@ import android.content.Context;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public enum PinType {
-    EXCUTE,
+    EXECUTE,
     BOOLEAN,
     INTEGER,
     STRING,
@@ -20,7 +20,7 @@ public enum PinType {
         switch (this) {
             case BOOLEAN:
                 return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0);
-            case EXCUTE:
+            case EXECUTE:
                 return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimary, 0);
         }
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0);

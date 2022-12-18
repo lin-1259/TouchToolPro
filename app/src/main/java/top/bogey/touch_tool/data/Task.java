@@ -29,6 +29,10 @@ public class Task {
         return null;
     }
 
+    public void addAction(BaseAction action) {
+        actions.add(action);
+    }
+
     public Set<BaseAction> getActions() {
         return actions;
     }

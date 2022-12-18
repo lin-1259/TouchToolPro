@@ -2,16 +2,16 @@ package top.bogey.touch_tool.data.action.pin;
 
 import android.content.Context;
 
-public class PinArrayHelper {
+public class PinSpinnerHelper {
     private int array;
     private String[] arrays;
     private int index;
 
-    public PinArrayHelper(int array) {
+    public PinSpinnerHelper(int array) {
         this.array = array;
     }
 
-    public PinArrayHelper(String[] arrays) {
+    public PinSpinnerHelper(String[] arrays) {
         this.arrays = arrays;
     }
 
