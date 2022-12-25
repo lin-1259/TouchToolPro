@@ -22,6 +22,7 @@ import top.bogey.touch_tool.databinding.CardBaseBinding;
 import top.bogey.touch_tool.ui.card.pin.BasePin;
 import top.bogey.touch_tool.ui.card.pin.InPin;
 import top.bogey.touch_tool.ui.card.pin.OutPin;
+import top.bogey.touch_tool.ui.task_blueprint.CardLayoutView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
@@ -30,7 +31,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     private final Task task;
     private final A action;
 
-    private List<BasePin<?>> pins = new ArrayList<>();
+    private final List<BasePin<?>> basePins = new ArrayList<>();
 
     private boolean needDelete = false;
 
@@ -44,12 +45,23 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         setStrokeWidth(0);
         setCardBackgroundColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0));
         ViewGroup.LayoutParams params = getLayoutParams();
-        if (params == null) params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        if (params == null)
+            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         setLayoutParams(params);
 
         binding = CardBaseBinding.inflate(LayoutInflater.from(context), this, true);
         binding.copyButton.setOnClickListener(v -> {
-
+            String cls = action.getCls();
+            try {
+                Class<?> aClass = Class.forName(cls);
+                A o = (A) aClass.newInstance();
+                o.x = action.x + 1;
+                o.y = action.y + 1;
+                CardLayoutView parent = (CardLayoutView) getParent();
+                parent.addAction(o);
+            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         binding.removeButton.setOnClickListener(v -> {
@@ -77,11 +89,11 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             if (pin.getDirection() == PinDirection.IN) {
                 InPin inPin = new InPin(context, action, pin);
                 binding.inBox.addView(inPin);
-                pins.add(inPin);
+                basePins.add(inPin);
             } else if (pin.getDirection() == PinDirection.OUT) {
                 OutPin outPin = new OutPin(context, action, pin);
                 binding.outBox.addView(outPin);
-                pins.add(outPin);
+                basePins.add(outPin);
             }
         }
     }
@@ -92,7 +104,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
 
     public BasePin<?> getPinById(String id) {
         if (id == null || id.isEmpty()) return null;
-        for (BasePin<?> pin : pins) {
+        for (BasePin<?> pin : basePins) {
             if (id.equals(pin.getPin().getId())) {
                 return pin;
             }
@@ -101,7 +113,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     }
 
     public BasePin<?> getPinByPosition(float rawX, float rawY) {
-        for (BasePin<?> pin : pins) {
+        for (BasePin<?> pin : basePins) {
             int[] location = new int[2];
             View pinBox = pin.getPinBox();
             pinBox.getLocationOnScreen(location);

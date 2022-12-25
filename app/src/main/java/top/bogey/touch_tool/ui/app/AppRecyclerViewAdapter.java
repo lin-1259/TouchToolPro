@@ -29,17 +29,17 @@ import top.bogey.touch_tool.databinding.ViewAppItemBinding;
 import top.bogey.touch_tool.utils.ResultCallback;
 
 public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerViewAdapter.ViewHolder> {
-    private final Map<CharSequence, List<CharSequence>> selectedActivities;
+    private final Map<CharSequence, ArrayList<CharSequence>> selectedActivities;
     private final ResultCallback callback;
 
-    private final List<PackageInfo> apps = new ArrayList<>();
+    private final ArrayList<PackageInfo> apps = new ArrayList<>();
 
     private final Map<CharSequence, Drawable> icons = new HashMap<>();
     private final boolean single;
 
     private boolean showMore = true;
 
-    public AppRecyclerViewAdapter(Map<CharSequence, List<CharSequence>> selectedActivities, ResultCallback callback, boolean single) {
+    public AppRecyclerViewAdapter(Map<CharSequence, ArrayList<CharSequence>> selectedActivities, ResultCallback callback, boolean single) {
         this.selectedActivities = selectedActivities;
         this.callback = callback;
         this.single = single;
@@ -183,7 +183,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                                         int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                                         if (checkedItemPosition != AdapterView.INVALID_POSITION) {
                                             selectedActivities.clear();
-                                            selectedActivities.put(info.packageName, Collections.singletonList(choices[checkedItemPosition]));
+                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(choices[checkedItemPosition])));
                                             notifyItemChanged(getAdapterPosition());
                                             callback.onResult(true);
                                         }
@@ -199,7 +199,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                     builder.setMultiChoiceItems(choices, choicesInitial, null)
                             .setPositiveButton(R.string.enter, (dialog, which) -> {
                                 SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                                List<CharSequence> result = new ArrayList<>();
+                                ArrayList<CharSequence> result = new ArrayList<>();
                                 for (int i = 0; i < choices.length; i++) {
                                     if (checkedItemPositions.get(i)) {
                                         result.add(choices[i]);

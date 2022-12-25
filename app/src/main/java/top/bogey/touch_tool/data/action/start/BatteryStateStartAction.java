@@ -1,31 +1,40 @@
 package top.bogey.touch_tool.data.action.start;
 
 import android.os.BatteryManager;
+import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionTag;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
-import top.bogey.touch_tool.data.action.pin.PinType;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.action.pin.PinSubType;
 
 public class BatteryStateStartAction extends StartAction {
-    private final Pin<PinSpinnerHelper> statePin;
+    private final Pin<? extends PinObject> statePin;
     private transient int currState;
 
     public BatteryStateStartAction() {
-        super(ActionTag.START_BATTERY_STATE);
-        statePin = addPin(new Pin<>(PinType.ARRAY, R.string.battery_state_contidion_tips, new PinSpinnerHelper(R.array.charging_state)));
+        super();
+        statePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), R.string.battery_state_contidion_tips));
         addPin(restartPin);
+        titleId = R.string.task_type_battery_state;
+    }
+
+    public BatteryStateStartAction(Parcel in) {
+        super(in);
+        statePin = addPin(pinsTmp.remove(0));
+        restartPin = addPin(pinsTmp.remove(0));
         titleId = R.string.task_type_battery_state;
     }
 
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
         int batteryState = worldState.getBatteryState();
-        PinSpinnerHelper value = statePin.getValue();
 
+        PinSpinner value = (PinSpinner) statePin.getValue();
         if (convertToChargingState(value.getIndex()) != batteryState) return false;
 
         // 当前已经是了，不再执行

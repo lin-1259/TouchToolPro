@@ -14,14 +14,6 @@ public class Task {
         id = UUID.randomUUID().toString();
     }
 
-    public boolean matchActionTag(String tag) {
-        for (BaseAction action : actions) {
-            boolean result = action.matchActionTag(tag);
-            if (result) return true;
-        }
-        return false;
-    }
-
     public BaseAction getActionById(String id) {
         for (BaseAction action : actions) {
             if (action.getId().equals(id)) return action;

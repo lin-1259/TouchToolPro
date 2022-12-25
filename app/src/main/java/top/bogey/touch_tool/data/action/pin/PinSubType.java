@@ -5,18 +5,21 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-public enum PinSlotType implements Parcelable {
-    SINGLE, MULTI;
+public enum PinSubType implements Parcelable {
+    NORMAL,
+    DATE,
+    TIME,
+    PERIODIC;
 
-    public static final Creator<PinSlotType> CREATOR = new Creator<PinSlotType>() {
+    public static final Creator<PinSubType> CREATOR = new Creator<PinSubType>() {
         @Override
-        public PinSlotType createFromParcel(Parcel in) {
-            return PinSlotType.valueOf(in.readString());
+        public PinSubType createFromParcel(Parcel in) {
+            return PinSubType.valueOf(in.readString());
         }
 
         @Override
-        public PinSlotType[] newArray(int size) {
-            return new PinSlotType[size];
+        public PinSubType[] newArray(int size) {
+            return new PinSubType[size];
         }
     };
 

@@ -1,30 +1,41 @@
-package top.bogey.touch_tool.data.action;
+package top.bogey.touch_tool.data.action.pin.object;
+
+import android.os.Parcel;
+
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimeArea {
+public class PinTimeArea extends PinObject {
     private int min;
     private int max;
     private TimeUnit unit;
 
-    public TimeArea(int time, TimeUnit unit) {
+    public PinTimeArea(int time, TimeUnit unit) {
         this(time, time, unit);
     }
 
-    public TimeArea(int min, int max, TimeUnit unit) {
+    public PinTimeArea(int min, int max, TimeUnit unit) {
+        super();
         this.min = min;
         this.max = max;
         this.unit = unit;
+    }
+
+    public PinTimeArea(Parcel in) {
+        min = in.readInt();
+        max = in.readInt();
+        unit = TimeUnit.values()[in.readByte()];
+    }
+
+    public void setTime(int time, TimeUnit unit) {
+        setTime(time, time, unit);
     }
 
     public void setTime(int min, int max, TimeUnit unit) {
         this.min = min;
         this.max = max;
         this.unit = unit;
-    }
-
-    public void setTime(int time, TimeUnit unit) {
-        setTime(time, time, unit);
     }
 
     public long getRandomTime() {
@@ -53,5 +64,13 @@ public class TimeArea {
 
     public void setUnit(TimeUnit unit) {
         this.unit = unit;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        super.writeToParcel(dest, flags);
+        dest.writeInt(min);
+        dest.writeInt(max);
+        dest.writeByte((byte) unit.ordinal());
     }
 }

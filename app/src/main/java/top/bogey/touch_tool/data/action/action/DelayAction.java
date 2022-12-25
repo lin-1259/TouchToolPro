@@ -1,27 +1,34 @@
 package top.bogey.touch_tool.data.action.action;
 
+import android.os.Parcel;
+
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.ActionTag;
-import top.bogey.touch_tool.data.action.TimeArea;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinType;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
 
 public class DelayAction extends NormalAction {
-    private final Pin<TimeArea> delayPin;
+    private final Pin<? extends PinObject> delayPin;
 
     public DelayAction() {
-        super(ActionTag.ACTION_DELAY);
-        delayPin = addPin(new Pin<>(PinType.TIME_AREA, new TimeArea(300, TimeUnit.MILLISECONDS)));
+        super();
+        delayPin = addPin(new Pin<>(new PinTimeArea(300, TimeUnit.MILLISECONDS)));
+        titleId = R.string.action_type_delay;
+    }
+
+    public DelayAction(Parcel in) {
+        super(in);
+        delayPin = addPin(pinsTmp.remove(0));
         titleId = R.string.action_type_delay;
     }
 
     @Override
     public boolean doAction(WorldState worldState, Task task) {
-        TimeArea timeArea = delayPin.getValue();
-        return sleep(timeArea.getRandomTime());
+        PinTimeArea pinTimeArea = (PinTimeArea) delayPin.getValue();
+        return sleep(pinTimeArea.getRandomTime());
     }
 }

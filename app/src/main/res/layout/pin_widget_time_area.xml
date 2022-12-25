@@ -6,7 +6,7 @@
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="32dp">
+        android:layout_height="24dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -14,7 +14,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/minLayout"
-                android:layout_width="48dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:hint="@string/time_min"
@@ -24,19 +24,19 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/minEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
+                    android:layout_height="20dp"
                     android:layout_marginEnd="-0.5dp"
                     android:gravity="start|center_vertical"
                     android:inputType="number"
                     android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:textSize="11sp" />
+                    android:paddingVertical="0dp"
+                    android:textSize="9sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/maxLayout"
-                android:layout_width="48dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
                 android:hint="@string/time_max"
@@ -46,13 +46,13 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/maxEdit"
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="-0.5dp"
                     android:gravity="end|center_vertical"
                     android:inputType="number"
                     android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:textSize="11sp" />
+                    android:paddingVertical="0dp"
+                    android:textSize="9sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,8 +74,8 @@
 
     <Spinner
         android:id="@+id/timeUnit"
-        android:layout_width="48dp"
-        android:layout_height="24dp"
+        android:layout_width="40dp"
+        android:layout_height="20dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
         android:background="@drawable/shape_spinner"

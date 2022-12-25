@@ -12,22 +12,22 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.TimeArea;
+import top.bogey.touch_tool.data.action.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.action.pin.object.PinInteger;
+import top.bogey.touch_tool.data.action.pin.object.PinLong;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.action.pin.object.PinString;
+import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
-import top.bogey.touch_tool.data.action.pin.PinSelectAppHelper;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetCheckBox;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInputInteger;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInputText;
+import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSelectApp;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTime;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLong;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTimeArea;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
@@ -40,9 +40,9 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
     protected final MaterialButton removeButton;
 
     protected final BaseAction action;
-    protected final Pin<?> pin;
+    protected final Pin<? extends PinObject> pin;
 
-    public BasePin(@NonNull Context context, Class<T> tClass, BaseAction action, Pin<?> pin) {
+    public BasePin(@NonNull Context context, Class<T> tClass, BaseAction action, Pin<? extends PinObject> pin) {
         super(context, null, tClass);
         this.action = action;
         this.pin = pin;
@@ -59,33 +59,26 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
             throw new RuntimeException(e);
         }
         if (pin == null) return;
-        pinSlot.setCardBackgroundColor(pin.getType().getPinColor(context));
+        pinSlot.setCardBackgroundColor(pin.getValue().getPinColor(context));
+
         if (pin.getTitle() != 0) titleText.setText(pin.getTitle());
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
-        switch (pin.getType()) {
-            case TIME_AREA:
-                pinBox.addView(new PinWidgetTimeArea(context, (TimeArea) pin.getValue()));
-                break;
-            case APP:
-                pinBox.addView(new PinWidgetSelectApp(context, (PinSelectAppHelper) pin.getValue()));
-                break;
-            case ARRAY:
-                pinBox.addView(new PinWidgetSpinner(context, (PinSpinnerHelper) pin.getValue()));
-                break;
-            case BOOLEAN:
-                pinBox.addView(new PinWidgetCheckBox(context, (AtomicBoolean) pin.getValue()));
-                break;
-            case INTEGER:
-                pinBox.addView(new PinWidgetInputInteger(context, (AtomicInteger) pin.getValue()));
-                break;
-            case STRING:
-                pinBox.addView(new PinWidgetInputText(context, (AtomicReference<CharSequence>) pin.getValue()));
-                break;
-            case DATE:
-            case TIME:
-            case PERIODIC:
-                pinBox.addView(new PinWidgetTime(context, (AtomicLong) pin.getValue(), pin.getType()));
-                break;
+
+        Class<? extends PinObject> aClass = pin.getValue().getClass();
+        if (PinTimeArea.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetTimeArea(context, (PinTimeArea) pin.getValue()));
+        } else if (PinSelectApp.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetSelectApp(context, (PinSelectApp) pin.getValue()));
+        } else if (PinSpinner.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetSpinner(context, (PinSpinner) pin.getValue()));
+        } else if (PinBoolean.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetBoolean(context, (PinBoolean) pin.getValue()));
+        } else if (PinInteger.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetInteger(context, (PinInteger) pin.getValue()));
+        } else if (PinString.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
+        } else if (PinLong.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetLong(context, (PinLong) pin.getValue(), pin.getSubType()));
         }
     }
 

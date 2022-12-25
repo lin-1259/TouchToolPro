@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -73,6 +72,14 @@ public class CardLayoutView extends FrameLayout {
         }
     }
 
+    public void addAction(BaseAction action) {
+        task.addAction(action);
+        BaseCard<? extends BaseAction> card = new BaseCard<>(getContext(), task, action);
+        setCardPosition(card);
+        addView(card);
+        cardMap.put(action.getId(), card);
+    }
+
     private void setCardsPosition() {
         for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
             setCardPosition(baseCard);
@@ -98,7 +105,7 @@ public class CardLayoutView extends FrameLayout {
                     if (basePin == null) continue;
                     // 只画输出的线
                     if (basePin.getPin().getDirection() == PinDirection.OUT) {
-                        linePaint.setColor(pin.getType().getPinColor(getContext()));
+                        linePaint.setColor(pin.getValue().getPinColor(getContext()));
                         canvas.drawPath(calculateLinePath(basePin, card.getPinById(pin.getId())), linePaint);
                     }
                 }
@@ -110,7 +117,7 @@ public class CardLayoutView extends FrameLayout {
                 if (card == null) continue;
                 BasePin<?> basePin = card.getPinById(entry.getValue());
                 if (basePin == null) continue;
-                linePaint.setColor(basePin.getPin().getType().getPinColor(getContext()));
+                linePaint.setColor(basePin.getPin().getValue().getPinColor(getContext()));
                 canvas.drawPath(calculateLinePath(basePin), linePaint);
             }
         }
@@ -214,7 +221,7 @@ public class CardLayoutView extends FrameLayout {
                                 BaseAction action = task.getActionById(entry.getKey());
                                 if (action == null) continue;
                                 Pin<?> pin = action.getPinById(entry.getValue());
-                                if (basePin.getPin().getType() != pin.getType()) {
+                                if (basePin.getPin().getSubType() != pin.getSubType()) {
                                     flag = false;
                                     break;
                                 }
@@ -230,8 +237,8 @@ public class CardLayoutView extends FrameLayout {
                                     Pin<?> pin = action.getPinById(entry.getValue());
                                     // 同一个动作不能连自己
                                     if (!pin.getActionId().equals(basePin.getPin().getActionId())) {
-                                        basePin.getPin().addLink(task, pin);
                                         pin.addLink(task, basePin.getPin());
+                                        basePin.getPin().addLink(task, pin);
                                     }
                                 }
                                 break;
@@ -280,10 +287,6 @@ public class CardLayoutView extends FrameLayout {
                 dragY = y;
                 setCardsPosition();
             }
-        } else if (actionMasked == MotionEvent.ACTION_POINTER_DOWN) {
-
-        } else if (actionMasked == MotionEvent.ACTION_POINTER_UP) {
-            dragState = DRAG_NONE;
         }
         postInvalidate();
         return true;

@@ -20,7 +20,7 @@ import java.util.Set;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.PinSelectAppHelper;
+import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
 import top.bogey.touch_tool.databinding.PinWidgetSelectAppBinding;
 import top.bogey.touch_tool.databinding.PinWidgetSelectAppItemBinding;
 import top.bogey.touch_tool.ui.app.AppView;
@@ -28,17 +28,17 @@ import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinWidgetSelectApp extends BindingView<PinWidgetSelectAppBinding> {
-    private final PinSelectAppHelper helper;
+    private final PinSelectApp helper;
 
-    public PinWidgetSelectApp(@NonNull Context context, PinSelectAppHelper helper) {
+    public PinWidgetSelectApp(@NonNull Context context, PinSelectApp helper) {
         this(context, null, helper);
     }
 
     public PinWidgetSelectApp(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new PinSelectAppHelper(PinSelectAppHelper.SINGLE_MODE));
+        this(context, attrs, new PinSelectApp(AppView.SINGLE_MODE));
     }
 
-    public PinWidgetSelectApp(@NonNull Context context, @Nullable AttributeSet attrs, PinSelectAppHelper helper) {
+    public PinWidgetSelectApp(@NonNull Context context, @Nullable AttributeSet attrs, PinSelectApp helper) {
         super(context, attrs, PinWidgetSelectAppBinding.class);
         if (helper == null) throw new RuntimeException("不是有效的引用");
         this.helper = helper;

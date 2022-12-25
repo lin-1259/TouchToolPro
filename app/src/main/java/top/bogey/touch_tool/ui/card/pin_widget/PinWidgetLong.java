@@ -14,33 +14,33 @@ import com.google.android.material.timepicker.TimeFormat;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
 
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.PinType;
+import top.bogey.touch_tool.data.action.pin.PinSubType;
+import top.bogey.touch_tool.data.action.pin.object.PinLong;
 import top.bogey.touch_tool.databinding.PinWidgetTimeBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class PinWidgetTime extends BindingView<PinWidgetTimeBinding> {
-    private final AtomicLong atomicLong;
+public class PinWidgetLong extends BindingView<PinWidgetTimeBinding> {
+    private final PinLong atomicLong;
 
-    public PinWidgetTime(@NonNull Context context, AtomicLong atomicLong, PinType pinType) {
-        this(context, null, atomicLong, pinType);
+    public PinWidgetLong(@NonNull Context context, PinLong atomicLong, PinSubType pinSubType) {
+        this(context, null, atomicLong, pinSubType);
     }
 
-    public PinWidgetTime(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new AtomicLong(System.currentTimeMillis()), PinType.DATE);
+    public PinWidgetLong(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, new PinLong(System.currentTimeMillis()), PinSubType.DATE);
     }
 
-    public PinWidgetTime(@NonNull Context context, @Nullable AttributeSet attrs, AtomicLong atomicLong, PinType pinType) {
+    public PinWidgetLong(@NonNull Context context, @Nullable AttributeSet attrs, PinLong atomicLong, PinSubType pinSubType) {
         super(context, attrs, PinWidgetTimeBinding.class);
         if (atomicLong == null) throw new RuntimeException("不是有效的引用");
         this.atomicLong = atomicLong;
 
-        if (pinType == PinType.DATE) {
-            binding.title.setText(AppUtils.formatDateLocalDate(context, atomicLong.get()));
+        if (pinSubType == PinSubType.DATE) {
+            binding.title.setText(AppUtils.formatDateLocalDate(context, atomicLong.getValue()));
             binding.pickButton.setIconResource(R.drawable.icon_date);
             binding.pickButton.setOnClickListener(v -> {
                 CalendarConstraints calendarConstraints = new CalendarConstraints.Builder()
@@ -49,7 +49,7 @@ public class PinWidgetTime extends BindingView<PinWidgetTimeBinding> {
 
                 MaterialDatePicker<Long> picker = MaterialDatePicker.Builder
                         .datePicker()
-                        .setSelection(atomicLong.get())
+                        .setSelection(atomicLong.getValue())
                         .setInputMode(MaterialDatePicker.INPUT_MODE_CALENDAR)
                         .setCalendarConstraints(calendarConstraints)
                         .build();
@@ -57,16 +57,16 @@ public class PinWidgetTime extends BindingView<PinWidgetTimeBinding> {
                 picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);
 
                 picker.addOnPositiveButtonClickListener(selection -> {
-                    atomicLong.set(selection);
-                    binding.title.setText(AppUtils.formatDateLocalDate(context, atomicLong.get()));
+                    atomicLong.setValue(selection);
+                    binding.title.setText(AppUtils.formatDateLocalDate(context, atomicLong.getValue()));
                 });
             });
-        } else if (pinType == PinType.TIME) {
-            binding.title.setText(AppUtils.formatDateLocalTime(context, atomicLong.get()));
+        } else if (pinSubType == PinSubType.TIME) {
+            binding.title.setText(AppUtils.formatDateLocalTime(context, atomicLong.getValue()));
             binding.pickButton.setIconResource(R.drawable.icon_time);
             binding.pickButton.setOnClickListener(v -> {
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(atomicLong.get());
+                calendar.setTimeInMillis(atomicLong.getValue());
 
                 MaterialTimePicker picker = new MaterialTimePicker.Builder()
                         .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
@@ -81,31 +81,31 @@ public class PinWidgetTime extends BindingView<PinWidgetTimeBinding> {
                     calendar.set(Calendar.HOUR_OF_DAY, picker.getHour());
                     calendar.set(Calendar.MINUTE, picker.getMinute());
                     calendar.set(Calendar.SECOND, 0);
-                    atomicLong.set(calendar.getTimeInMillis());
-                    binding.title.setText(AppUtils.formatDateLocalTime(context, atomicLong.get()));
+                    atomicLong.setValue(calendar.getTimeInMillis());
+                    binding.title.setText(AppUtils.formatDateLocalTime(context, atomicLong.getValue()));
                 });
             });
         } else {
-            binding.title.setText(AppUtils.formatDateLocalDuration(context, atomicLong.get()));
+            binding.title.setText(AppUtils.formatDateLocalDuration(context, atomicLong.getValue()));
             binding.pickButton.setIconResource(R.drawable.icon_action_delay);
             binding.pickButton.setOnClickListener(v -> {
                 MaterialTimePicker picker = new MaterialTimePicker.Builder()
                         .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
                         .setTimeFormat(TimeFormat.CLOCK_24H)
-                        .setHour((int) TimeUnit.MILLISECONDS.toHours(atomicLong.get()))
-                        .setMinute((int) TimeUnit.MILLISECONDS.toMinutes(atomicLong.get()))
+                        .setHour((int) TimeUnit.MILLISECONDS.toHours(atomicLong.getValue()))
+                        .setMinute((int) TimeUnit.MILLISECONDS.toMinutes(atomicLong.getValue()))
                         .setTitleText(R.string.time_condition_periodic_tips)
                         .build();
 
                 picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);
 
                 picker.addOnPositiveButtonClickListener(view -> {
-                    atomicLong.set(TimeUnit.HOURS.toMillis(picker.getHour()) + TimeUnit.MINUTES.toMillis(picker.getMinute()));
+                    atomicLong.setValue(TimeUnit.HOURS.toMillis(picker.getHour()) + TimeUnit.MINUTES.toMillis(picker.getMinute()));
                     if (picker.getHour() == 0 && picker.getMinute() == 0)
-                        atomicLong.set(TimeUnit.HOURS.toMillis(24));
+                        atomicLong.setValue(TimeUnit.HOURS.toMillis(24));
                     long millis = TimeUnit.MINUTES.toMillis(15);
-                    if (atomicLong.get() < millis) atomicLong.set(0);
-                    binding.title.setText(AppUtils.formatDateLocalDuration(context, atomicLong.get()));
+                    if (atomicLong.getValue() < millis) atomicLong.setValue(0);
+                    binding.title.setText(AppUtils.formatDateLocalDuration(context, atomicLong.getValue()));
                 });
             });
         }

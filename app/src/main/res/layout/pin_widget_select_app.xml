@@ -7,14 +7,14 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="24dp"
         android:gravity="center_vertical">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/include_apps"
-            android:textSize="11sp" />
+            android:textSize="9sp" />
 
         <LinearLayout
             android:id="@+id/includeAppsIconBox"
@@ -27,8 +27,9 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/selectAppButton"
             style="@style/Theme.TouchTool.IconButton.Filled"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:iconSize="16dp"
             app:icon="@drawable/icon_action_task" />
 
     </LinearLayout>
@@ -36,7 +37,7 @@
     <LinearLayout
         android:id="@+id/excludeAppsBox"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="24dp"
         android:gravity="center_vertical"
         android:visibility="gone">
 
@@ -44,7 +45,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/exclude_apps"
-            android:textSize="11sp" />
+            android:textSize="9sp" />
 
         <LinearLayout
             android:id="@+id/excludeAppsIconBox"

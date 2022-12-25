@@ -1,38 +1,45 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.ActionTag;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinType;
+import top.bogey.touch_tool.data.action.pin.PinSubType;
+import top.bogey.touch_tool.data.action.pin.object.PinInteger;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
 
 public class BatteryStartAction extends StartAction {
-    private final Pin<AtomicInteger> lowPin;
-    private final Pin<AtomicInteger> highPin;
-    private transient boolean inRnage = false;
+    private final Pin<? extends PinObject> lowPin;
+    private final Pin<? extends PinObject> highPin;
+    private transient boolean inRange = false;
 
     public BatteryStartAction() {
-        super(ActionTag.START_BATTERY);
-        lowPin = addPin(new Pin<>(PinType.INTEGER, R.string.battery_contidion_low, new AtomicInteger(1)));
-        highPin = addPin(new Pin<>(PinType.INTEGER, R.string.battery_contidion_high, new AtomicInteger(100)));
+        super();
+        lowPin = addPin(new Pin<>(new PinInteger(1), R.string.battery_contidion_low));
+        highPin = addPin(new Pin<>(new PinInteger(100), R.string.battery_contidion_high));
         addPin(restartPin);
+        titleId = R.string.task_type_battery;
+    }
+
+    public BatteryStartAction(Parcel in) {
+        super(in);
+        lowPin = addPin(pinsTmp.remove(0));
+        highPin = addPin(pinsTmp.remove(0));
+        restartPin = addPin(pinsTmp.remove(0));
         titleId = R.string.task_type_battery;
     }
 
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
         int batteryPercent = worldState.getBatteryPercent();
-        int low = lowPin.getValue().get();
-        int high = highPin.getValue().get();
+        int low = ((PinInteger) lowPin.getValue()).getValue();
+        int high = ((PinInteger) highPin.getValue()).getValue();
         boolean result = batteryPercent >= low && batteryPercent <= high;
         // 已经执行过了，电量未出范围不再重复执行
-        if (result && inRnage) return false;
-        inRnage = result;
-        return inRnage;
+        if (result && inRange) return false;
+        inRange = result;
+        return inRange;
     }
 }

@@ -1,7 +1,8 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
+import android.os.Parcel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
@@ -11,18 +12,29 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionTag;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSelectAppHelper;
-import top.bogey.touch_tool.data.action.pin.PinType;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.action.pin.PinSubType;
+import top.bogey.touch_tool.data.action.pin.object.PinString;
+import top.bogey.touch_tool.ui.app.AppView;
 
 public class NotificationStartAction extends StartAction {
-    private final Pin<PinSelectAppHelper> appPin;
-    private final Pin<AtomicReference<CharSequence>> textPin;
+    private final Pin<? extends PinObject> appPin;
+    private final Pin<? extends PinObject> textPin;
 
     public NotificationStartAction() {
-        super(ActionTag.START_NOTIFICATION);
-        appPin = addPin(new Pin<>(PinType.APP, new PinSelectAppHelper(PinSelectAppHelper.MULTI_MODE)));
-        textPin = addPin(new Pin<>(PinType.STRING, R.string.notification_condition_tips, new AtomicReference<>()));
+        super();
+        appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_MODE)));
+        textPin = addPin(new Pin<>(new PinString(), R.string.notification_condition_tips));
         addPin(restartPin);
+        titleId = R.string.task_type_notification;
+    }
+
+    public NotificationStartAction(Parcel in) {
+        super(in);
+        appPin = addPin(pinsTmp.remove(0));
+        textPin = addPin(pinsTmp.remove(0));
+        restartPin = addPin(pinsTmp.remove(0));
         titleId = R.string.task_type_notification;
     }
 
@@ -32,13 +44,13 @@ public class NotificationStartAction extends StartAction {
         CharSequence packageName = worldState.getPackageName();
         if (packageName == null) return false;
 
-        PinSelectAppHelper helper = appPin.getValue();
-        Map<CharSequence, List<CharSequence>> packages = helper.getPackages();
-        List<CharSequence> activityClasses = packages.get(packageName);
+        PinSelectApp helper = (PinSelectApp) appPin.getValue();
+        Map<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
+        ArrayList<CharSequence> activityClasses = packages.get(packageName);
         if (activityClasses == null) return false;
 
-        AtomicReference<CharSequence> value = textPin.getValue();
-        CharSequence text = value.get();
+        PinString value = (PinString) textPin.getValue();
+        CharSequence text = value.getValue();
         if (text == null || text.length() == 0) return false;
 
         CharSequence notificationText = worldState.getNotificationText();

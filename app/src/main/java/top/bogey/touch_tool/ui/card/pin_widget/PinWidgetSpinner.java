@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.PinSpinnerHelper;
+import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
 import top.bogey.touch_tool.databinding.PinWidgetSpinnerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
-    private final PinSpinnerHelper helper;
+    private final PinSpinner helper;
 
-    public PinWidgetSpinner(@NonNull Context context, PinSpinnerHelper helper) {
+    public PinWidgetSpinner(@NonNull Context context, PinSpinner helper) {
         this(context, null, helper);
     }
 
     public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new PinSpinnerHelper(new String[0]));
+        this(context, attrs, new PinSpinner(0));
     }
 
-    public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs, PinSpinnerHelper helper) {
+    public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs, PinSpinner helper) {
         super(context, attrs, PinWidgetSpinnerBinding.class);
         if (helper == null) throw new RuntimeException("不是有效的引用");
         this.helper = helper;

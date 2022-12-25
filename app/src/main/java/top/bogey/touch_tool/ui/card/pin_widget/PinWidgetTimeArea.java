@@ -13,28 +13,28 @@ import androidx.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.TimeArea;
+import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
 import top.bogey.touch_tool.databinding.PinWidgetTimeAreaBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.TextChangedListener;
 
 public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
-    private final TimeArea timeArea;
+    private final PinTimeArea pinTimeArea;
 
-    public PinWidgetTimeArea(@NonNull Context context, TimeArea timeArea) {
-        this(context, null, timeArea);
+    public PinWidgetTimeArea(@NonNull Context context, PinTimeArea pinTimeArea) {
+        this(context, null, pinTimeArea);
     }
 
     public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new TimeArea(300, TimeUnit.MILLISECONDS));
+        this(context, attrs, new PinTimeArea(300, TimeUnit.MILLISECONDS));
     }
 
-    public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs, TimeArea timeArea) {
+    public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs, PinTimeArea pinTimeArea) {
         super(context, attrs, PinWidgetTimeAreaBinding.class);
-        if (timeArea == null) throw new RuntimeException("不是有效的引用");
-        this.timeArea = timeArea;
+        if (pinTimeArea == null) throw new RuntimeException("不是有效的引用");
+        this.pinTimeArea = pinTimeArea;
 
-        binding.timeUnit.setSelection(unitToIndex(timeArea.getUnit()));
+        binding.timeUnit.setSelection(unitToIndex(pinTimeArea.getUnit()));
 
         binding.lockButton.addOnCheckedChangeListener((button, isChecked) -> {
             button.setIconResource(isChecked ? R.drawable.icon_lock : R.drawable.icon_unlock);
@@ -42,7 +42,7 @@ public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
             binding.maxLayout.setEnabled(!isChecked);
             binding.maxEdit.setText(binding.minEdit.getText());
         });
-        binding.lockButton.setChecked(timeArea.getMin() == timeArea.getMax());
+        binding.lockButton.setChecked(pinTimeArea.getMin() == pinTimeArea.getMax());
 
         binding.minEdit.addTextChangedListener(new TextChangedListener() {
             @Override
@@ -61,8 +61,8 @@ public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
                 setTimeAreaValue();
             }
         });
-        binding.minEdit.setText(String.valueOf(timeArea.getMin()));
-        binding.maxEdit.setText(String.valueOf(timeArea.getMax()));
+        binding.minEdit.setText(String.valueOf(pinTimeArea.getMin()));
+        binding.maxEdit.setText(String.valueOf(pinTimeArea.getMax()));
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         adapter.addAll(getResources().getStringArray(R.array.time_unit));
@@ -70,7 +70,7 @@ public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
         binding.timeUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                timeArea.setUnit(indexToUnit(position));
+                pinTimeArea.setUnit(indexToUnit(position));
                 setTimeAreaValue();
             }
 
@@ -79,7 +79,7 @@ public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
 
             }
         });
-        binding.timeUnit.setSelection(unitToIndex(timeArea.getUnit()));
+        binding.timeUnit.setSelection(unitToIndex(pinTimeArea.getUnit()));
     }
 
     private void setTimeAreaValue() {
@@ -88,12 +88,12 @@ public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
         int min = 0, max = 0;
         if (minEdit != null && minEdit.length() > 0)
             min = Integer.parseInt(String.valueOf(minEdit));
-        timeArea.setMin(min);
+        pinTimeArea.setMin(min);
         if (maxEdit != null && maxEdit.length() > 0)
             max = Integer.parseInt(String.valueOf(maxEdit));
-        timeArea.setMax(max);
+        pinTimeArea.setMax(max);
         TimeUnit unit = indexToUnit(binding.timeUnit.getSelectedItemPosition());
-        timeArea.setUnit(unit);
+        pinTimeArea.setUnit(unit);
     }
 
     private int unitToIndex(TimeUnit unit) {
