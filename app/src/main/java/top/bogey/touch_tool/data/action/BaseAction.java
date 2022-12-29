@@ -9,10 +9,10 @@ import androidx.annotation.NonNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.pin.Pin;
@@ -29,14 +29,14 @@ public class BaseAction implements Parcelable {
 
     private boolean enable = true;
 
-    private final List<Pin<? extends PinObject>> pins = new ArrayList<>();
+    private final ArrayList<Pin<? extends PinObject>> pins = new ArrayList<>();
 
     public int x;
     public int y;
 
     protected transient Pin<? extends PinObject> inPin;
     protected transient Pin<? extends PinObject> outPin;
-    protected transient List<Pin<? extends PinObject>> pinsTmp = new ArrayList<>();
+    protected transient ArrayList<Pin<? extends PinObject>> pinsTmp = new ArrayList<>();
 
     public BaseAction() {
         id = UUID.randomUUID().toString();
@@ -78,18 +78,18 @@ public class BaseAction implements Parcelable {
     public boolean doAction(WorldState worldState, TaskRunnable runnable) {
         if (Thread.currentThread().isInterrupted()) return false;
 
-        runnable.addProgress();
-
         for (Map.Entry<String, String> entry : outPin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getKey());
-            if (action == null) return false;
+            if (action == null) continue;
+            runnable.addProgress();
             return action.doAction(worldState, runnable);
         }
         return true;
     }
 
-    public boolean checkReady(WorldState worldState, TaskRunnable runnable) {
-        return true;
+    // 获取针脚值之前先计算下针脚
+    protected void calculatePinValue(WorldState worldState, Task task) {
+
     }
 
     protected boolean sleep(long time) {
@@ -119,6 +119,31 @@ public class BaseAction implements Parcelable {
         return null;
     }
 
+    // 获取针脚的值
+    protected PinObject getPinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+        // 先看看自己是不是输出针脚，输出针脚直接返回针脚值
+        if (pin.getDirection() == PinDirection.OUT) {
+            calculatePinValue(worldState, task);
+            return pin.getValue();
+        }
+
+        // 再看看针脚有没有连接，有连接就是连接的值
+        if (pin.getLinks().size() > 0) {
+            for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
+                BaseAction action = task.getActionById(entry.getKey());
+                if (action == null) continue;
+                Pin<? extends PinObject> pinById = action.getPinById(id);
+                if (pinById == null) continue;
+                return action.getPinValue(worldState, task, pinById);
+            }
+            throw new RuntimeException("针脚没有默认值");
+        } else {
+            // 否则，就是自己的默认值
+            calculatePinValue(worldState, task);
+            return pin.getValue();
+        }
+    }
+
     public String getId() {
         return id;
     }
@@ -146,7 +171,7 @@ public class BaseAction implements Parcelable {
         this.enable = enable;
     }
 
-    public List<Pin<? extends PinObject>> getPins() {
+    public ArrayList<Pin<? extends PinObject>> getPins() {
         return pins;
     }
 

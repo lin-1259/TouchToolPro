@@ -12,7 +12,9 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.data.Task;
@@ -23,6 +25,7 @@ import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.setting.SettingSave;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.TaskQueue;
+import top.bogey.touch_tool.utils.TaskRunningCallback;
 import top.bogey.touch_tool.utils.TaskThreadPoolExecutor;
 
 public class MainAccessibilityService extends AccessibilityService {
@@ -34,12 +37,14 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final HashSet<TaskRunnable> runnables = new HashSet<>();
+    private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 WorldState.getInstance().enterActivity(event.getPackageName(), event.getClassName());
+                if (getPackageName().contentEquals(event.getPackageName())) stopAllTask();
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
                 if (!Notification.class.getName().contentEquals(event.getClassName())) return;
                 List<CharSequence> eventText = event.getText();
@@ -104,23 +109,93 @@ public class MainAccessibilityService extends AccessibilityService {
         SettingSave.getInstance().setServiceEnabled(enabled);
     }
 
+    public void addCallback(TaskRunningCallback callback) {
+        callbacks.add(callback);
+        runnables.forEach(runnable -> runnable.addCallback(callback));
+    }
 
-
+    public void removeCallback(TaskRunningCallback callback) {
+        callbacks.remove(callback);
+        runnables.forEach(runnable -> runnable.removeCallback(callback));
+    }
 
     public TaskRunnable runTask(Task task, StartAction startAction) {
         if (task == null || startAction == null) return null;
         if (!isServiceEnabled()) return null;
 
+        if (!stopTaskIfNeed(task, startAction)) return null;
+
         TaskRunnable runnable = new TaskRunnable(task, startAction);
-        taskService.submit(runnable);
-        runnables.add(runnable);
+        runnable.addCallback(new TaskRunningCallback() {
+            @Override
+            public void onStart(TaskRunnable runnable) {
+                synchronized (runnables) {
+                    runnables.add(runnable);
+                }
+            }
+
+            @Override
+            public void onEnd(TaskRunnable runnable, boolean succeed) {
+                synchronized (runnables) {
+                    runnables.remove(runnable);
+                }
+            }
+
+            @Override
+            public void onProgress(TaskRunnable runnable, int progress) {
+
+            }
+        });
+
+        callbacks.stream().filter(Objects::nonNull).forEach(runnable::addCallback);
+
+        Future<?> future = taskService.submit(runnable);
+        runnable.setFuture(future);
         return runnable;
     }
 
     public void stopTask(TaskRunnable runnable) {
-
+        if (runnables.contains(runnable)) runnable.stop();
     }
 
+    public void stopAllTask() {
+        synchronized (runnables) {
+            for (TaskRunnable taskRunnable : runnables) {
+                taskRunnable.stop();
+            }
+            runnables.clear();
+        }
+    }
+
+    public boolean stopTaskIfNeed(Task task, StartAction startAction) {
+        if (task == null || startAction == null) return false;
+        synchronized (runnables) {
+            switch (startAction.getRestartType()) {
+                // 需要重新运行
+                case RESTART:
+                    for (TaskRunnable runnable : runnables) {
+                        if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
+                            stopTask(runnable);
+                        }
+                    }
+                    return true;
+                // 如果没有运行，则运行；如果正在运行，取消本次运行
+                case CANCEL:
+                    boolean flag = true;
+                    for (TaskRunnable runnable : runnables) {
+                        if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                    return flag;
+                // 每次都运行新的
+                case START_NEW:
+                    return true;
+            }
+        }
+        return false;
+    }
 
     public void runGesture(Path path, int time, ResultCallback callback) {
         if (path == null) {

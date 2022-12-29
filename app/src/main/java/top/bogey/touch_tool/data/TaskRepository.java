@@ -3,9 +3,12 @@ package top.bogey.touch_tool.data;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.utils.TaskChangedCallback;
 
 public class TaskRepository {
     private static TaskRepository repository;
@@ -13,6 +16,7 @@ public class TaskRepository {
     private final static MMKV taskMMKV = MMKV.mmkvWithID(TASK_DB, MMKV.SINGLE_PROCESS_MODE, TASK_DB);
 
     private final LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
+    private final HashSet<TaskChangedCallback> callbacks = new HashSet<>();
 
     public static TaskRepository getInstance() {
         if (repository == null) {
@@ -50,8 +54,28 @@ public class TaskRepository {
         return taskArrayList;
     }
 
+    public void addCallback(TaskChangedCallback callback) {
+        callbacks.add(callback);
+    }
+
+    public void removeCallback(TaskChangedCallback callback) {
+        callbacks.remove(callback);
+    }
+
     public void saveTask(Task task) {
         taskMMKV.encode(task.getId(), task);
-        tasks.put(task.getId(), task);
+        Task lastTask = tasks.put(task.getId(), task);
+        if (lastTask == null) {
+            callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onCreated(task));
+        } else {
+            callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onChanged(task));
+        }
     }
+
+    public void removeTask(String id) {
+        taskMMKV.remove(id);
+        Task removedTask = tasks.remove(id);
+        if (removedTask != null) callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onRemoved(removedTask));
+    }
+
 }

@@ -20,11 +20,10 @@ public class TimeStartAction extends StartAction {
     public TimeStartAction() {
         super();
         long timeMillis = System.currentTimeMillis();
-        datePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.time_condition_start_date, PinSubType.DATE));
-        timePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.time_condition_start_time, PinSubType.TIME));
-        periodicPin = addPin(new Pin<>(new PinLong(0), R.string.time_condition_periodic, PinSubType.PERIODIC));
-        addPin(restartPin);
-        titleId = R.string.task_type_time;
+        datePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.action_time_start_subtitle_date, PinSubType.DATE));
+        timePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.action_time_start_subtitle_time, PinSubType.TIME));
+        periodicPin = addPin(new Pin<>(new PinLong(0), R.string.action_time_start_subtitle_periodic, PinSubType.PERIODIC));
+        titleId = R.string.action_time_start_title;
     }
 
     public TimeStartAction(Parcel in) {
@@ -32,12 +31,11 @@ public class TimeStartAction extends StartAction {
         datePin = addPin(pinsTmp.remove(0));
         timePin = addPin(pinsTmp.remove(0));
         periodicPin = addPin(pinsTmp.remove(0));
-        restartPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.task_type_time;
+        titleId = R.string.action_time_start_title;
     }
 
     @Override
-    public boolean checkReady(WorldState worldState, TaskRunnable runnable) {
+    public boolean checkReady(WorldState worldState, Task task) {
         long date = ((PinLong) datePin.getValue()).getValue();
         long time = ((PinLong) timePin.getValue()).getValue();
         long periodic = ((PinLong) periodicPin.getValue()).getValue();
@@ -46,5 +44,10 @@ public class TimeStartAction extends StartAction {
         } else {
             return AppUtils.mergeDateTime(date, time) > System.currentTimeMillis();
         }
+    }
+
+    @Override
+    public RestartType getRestartType() {
+        return RestartType.RESTART;
     }
 }

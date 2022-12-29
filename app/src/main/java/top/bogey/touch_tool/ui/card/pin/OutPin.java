@@ -21,6 +21,8 @@ public class OutPin extends BasePin<PinOutBinding> {
         if (params == null) params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.gravity = Gravity.END;
         binding.getRoot().setLayoutParams(params);
+
+        binding.pinBox.setVisibility(GONE);
     }
 
     @Override

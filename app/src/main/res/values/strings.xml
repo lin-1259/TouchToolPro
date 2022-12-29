@@ -68,15 +68,34 @@
 
     <!-- 任务 -->
     <!-- 任务 - 开始 -->
-    <string name="task_restart_tips">任务重入：</string>
+    <string name="action_start_subtitle_restart">任务重入：</string>
+
+    <string name="action_normal_start_title">任务开始</string>
+    <string name="action_normal_start_subtitle_condition">开始条件：</string>
+
+    <string name="action_custom_start_title">自定义开始</string>
+    <string name="action_custom_start_subtitle_title">标题：</string>
+
+    <string name="action_manual_start_title">手动开始</string>
+
+    <string name="action_time_start_title">定时开始</string>
+    <string name="action_time_start_subtitle_date">日期：</string>
+    <string name="action_time_start_subtitle_time">时间：</string>
+    <string name="action_time_start_subtitle_periodic">间隔：</string>
+    <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
+
+    <string name="action_app_state_title">在应用或界面内</string>
+
+    <string name="action_battery_state_title">在电量范围内</string>
+    <string name="action_battery_state_subtitle_low">最低：</string>
+    <string name="action_battery_state_subtitle_high">最高：</string>
+
+    <string name="action_battery_charging_state_title">电池状态变更执行</string>
+    <string name="action_battery_charging_state_subtitle_state">状态</string>
+
 
     <string name="task_type_manual">手动执行</string>
 
-    <string name="task_type_time">定时执行</string>
-    <string name="time_condition_start_date">日期：</string>
-    <string name="time_condition_start_time">时间：</string>
-    <string name="time_condition_periodic">间隔：</string>
-    <string name="time_condition_periodic_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
     <string name="task_type_notification">新通知时执行</string>
     <string name="notification_condition_tips">匹配文本：</string>
@@ -86,11 +105,7 @@
     <string name="battery_contidion_low">最低：</string>
     <string name="battery_contidion_high">最高：</string>
 
-    <string name="task_type_battery_state">电池状态变更执行</string>
-    <string name="battery_state_contidion_tips">状态</string>
 
-    <string name="task_type_custom">自定义执行</string>
-    <string name="custom_condition_tips">标题</string>
 
 
     <string name="sort">排序</string>

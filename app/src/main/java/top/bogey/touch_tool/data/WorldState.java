@@ -17,10 +17,7 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.start.AppStartAction;
-import top.bogey.touch_tool.data.action.start.BatteryStartAction;
-import top.bogey.touch_tool.data.action.start.BatteryStateStartAction;
-import top.bogey.touch_tool.data.action.start.NotificationStartAction;
+import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
@@ -46,7 +43,7 @@ public class WorldState {
         PackageManager manager = context.getPackageManager();
         List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         for (PackageInfo packageInfo : packages) {
-            if (packageInfo.activities != null && packageInfo.activities.length > 0){
+            if (packageInfo.activities != null && packageInfo.activities.length > 0) {
                 appMap.put(packageInfo.packageName, packageInfo);
             }
         }
@@ -66,8 +63,8 @@ public class WorldState {
         return appMap.get(pkgName);
     }
 
-    public List<PackageInfo> findPackageList(Context context, boolean system, CharSequence find, boolean common) {
-        List<PackageInfo> packages = new ArrayList<>();
+    public ArrayList<PackageInfo> findPackageList(Context context, boolean system, CharSequence find, boolean common) {
+        ArrayList<PackageInfo> packages = new ArrayList<>();
 
         if (common && (find == null || find.length() == 0)) {
             PackageInfo info = new PackageInfo();
@@ -98,18 +95,18 @@ public class WorldState {
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
             if (setPackageName(packageName) || setActivityName(className)) {
-                checkAutoStartAction(AppStartAction.class);
+                checkAutoStartAction();
             }
         }
     }
 
-    private void checkAutoStartAction(Class<? extends StartAction> startActionClass) {
+    private void checkAutoStartAction() {
         MainAccessibilityService service = MainApplication.getService();
         if (service == null || !service.isServiceEnabled()) return;
 
-        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(startActionClass);
+        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
-            StartAction startAction = task.getStartAction(startActionClass);
+            StartAction startAction = task.getStartAction(NormalStartAction.class);
             if (startAction.checkReady(this, task)) service.runTask(task, startAction);
         }
     }
@@ -143,7 +140,7 @@ public class WorldState {
 
     public void setNotificationText(CharSequence notificationText) {
         this.notificationText = notificationText;
-        checkAutoStartAction(NotificationStartAction.class);
+        checkAutoStartAction();
     }
 
     public int getBatteryPercent() {
@@ -152,7 +149,6 @@ public class WorldState {
 
     public void setBatteryPercent(int batteryPercent) {
         this.batteryPercent = batteryPercent;
-        checkAutoStartAction(BatteryStartAction.class);
     }
 
     public int getBatteryState() {
@@ -161,6 +157,6 @@ public class WorldState {
 
     public void setBatteryState(int batteryState) {
         this.batteryState = batteryState;
-        checkAutoStartAction(BatteryStateStartAction.class);
+        checkAutoStartAction();
     }
 }

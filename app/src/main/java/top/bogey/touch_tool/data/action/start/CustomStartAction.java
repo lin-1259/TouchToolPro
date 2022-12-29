@@ -7,11 +7,11 @@ import top.bogey.touch_tool.R;
 public class CustomStartAction extends StartAction {
     public CustomStartAction() {
         super();
-        titleId = R.string.task_type_custom;
+        titleId = R.string.action_custom_start_title;
     }
 
     public CustomStartAction(Parcel in) {
         super(in);
-        titleId = R.string.task_type_custom;
+        titleId = R.string.action_custom_start_title;
     }
 }

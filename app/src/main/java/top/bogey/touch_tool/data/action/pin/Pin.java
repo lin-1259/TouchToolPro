@@ -41,6 +41,10 @@ public class Pin<T extends PinObject> implements Parcelable {
         this(value, 0, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
+    public Pin(T value, PinDirection direction) {
+        this(value, 0, direction, PinSlotType.MULTI, PinSubType.NORMAL, false);
+    }
+
     public Pin(T value, int title, PinSubType subType) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, subType, false);
     }
