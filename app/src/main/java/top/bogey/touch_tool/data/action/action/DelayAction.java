@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.object.PinObject;
@@ -27,8 +28,10 @@ public class DelayAction extends NormalAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, Task task) {
+    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
         PinTimeArea pinTimeArea = (PinTimeArea) delayPin.getValue();
-        return sleep(pinTimeArea.getRandomTime());
+        boolean sleep = sleep(pinTimeArea.getRandomTime());
+        if (sleep) return super.doAction(worldState, runnable);
+        return false;
     }
 }

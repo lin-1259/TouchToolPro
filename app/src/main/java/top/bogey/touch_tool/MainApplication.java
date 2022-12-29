@@ -8,6 +8,7 @@ import com.tencent.mmkv.MMKV;
 
 public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
     private static MainActivity activity;
+    private static MainAccessibilityService service;
 
     @Override
     public void onCreate() {
@@ -22,6 +23,14 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
     public static void setActivity(MainActivity activity) {
         MainApplication.activity = activity;
+    }
+
+    public static MainAccessibilityService getService() {
+        return service;
+    }
+
+    public static void setService(MainAccessibilityService service) {
+        MainApplication.service = service;
     }
 
     @Override

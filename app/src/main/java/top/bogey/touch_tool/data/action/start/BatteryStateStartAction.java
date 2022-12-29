@@ -5,6 +5,7 @@ import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionTag;
 import top.bogey.touch_tool.data.action.pin.Pin;
@@ -31,7 +32,7 @@ public class BatteryStateStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(WorldState worldState, Task task) {
+    public boolean checkReady(WorldState worldState, TaskRunnable runnable) {
         int batteryState = worldState.getBatteryState();
 
         PinSpinner value = (PinSpinner) statePin.getValue();

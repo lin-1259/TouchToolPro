@@ -19,6 +19,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
@@ -296,5 +297,11 @@ public class CardLayoutView extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         getLocationOnScreen(location);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        TaskRepository.getInstance().saveTask(task);
     }
 }

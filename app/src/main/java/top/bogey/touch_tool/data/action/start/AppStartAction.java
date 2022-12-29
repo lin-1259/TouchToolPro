@@ -6,10 +6,9 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSubType;
 import top.bogey.touch_tool.data.action.pin.object.PinObject;
 import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
@@ -32,7 +31,7 @@ public class AppStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(WorldState worldState, Task task) {
+    public boolean checkReady(WorldState worldState, TaskRunnable runnable) {
         CharSequence packageName = worldState.getPackageName();
         if (packageName == null) return false;
 

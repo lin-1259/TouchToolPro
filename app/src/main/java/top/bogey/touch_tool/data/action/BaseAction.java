@@ -10,9 +10,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
@@ -74,11 +75,20 @@ public class BaseAction implements Parcelable {
         }
     };
 
-    public boolean doAction(WorldState worldState, Task task) {
+    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
+        if (Thread.currentThread().isInterrupted()) return false;
+
+        runnable.addProgress();
+
+        for (Map.Entry<String, String> entry : outPin.getLinks().entrySet()) {
+            BaseAction action = runnable.getTask().getActionById(entry.getKey());
+            if (action == null) return false;
+            return action.doAction(worldState, runnable);
+        }
         return true;
     }
 
-    public boolean checkReady(WorldState worldState, Task task) {
+    public boolean checkReady(WorldState worldState, TaskRunnable runnable) {
         return true;
     }
 

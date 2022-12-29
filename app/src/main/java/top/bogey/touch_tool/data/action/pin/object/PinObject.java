@@ -27,6 +27,7 @@ public abstract class PinObject implements Parcelable {
         public PinObject createFromParcel(Parcel in) {
             String cls = in.readString();
             Package aPackage = getClass().getPackage();
+            if (aPackage == null) return null;
             try {
                 Class<?> aClass = Class.forName(aPackage.getName() + "." + cls);
                 Constructor<?> constructor = aClass.getConstructor(Parcel.class);

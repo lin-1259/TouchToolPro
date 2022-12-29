@@ -14,7 +14,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.start.AppStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryStateStartAction;
+import top.bogey.touch_tool.data.action.start.NotificationStartAction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -90,8 +97,20 @@ public class WorldState {
 
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
-            setPackageName(packageName);
-            setActivityName(className);
+            if (setPackageName(packageName) || setActivityName(className)) {
+                checkAutoStartAction(AppStartAction.class);
+            }
+        }
+    }
+
+    private void checkAutoStartAction(Class<? extends StartAction> startActionClass) {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service == null || !service.isServiceEnabled()) return;
+
+        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(startActionClass);
+        for (Task task : tasks) {
+            StartAction startAction = task.getStartAction(startActionClass);
+            if (startAction.checkReady(this, task)) service.runTask(task, startAction);
         }
     }
 
@@ -99,20 +118,22 @@ public class WorldState {
         return packageName;
     }
 
-    public void setPackageName(CharSequence packageName) {
-        if (packageName == null) return;
-        if (TextUtils.equals(packageName, this.packageName)) return;
+    public boolean setPackageName(CharSequence packageName) {
+        if (packageName == null) return false;
+        if (TextUtils.equals(packageName, this.packageName)) return false;
         this.packageName = packageName;
+        return true;
     }
 
     public CharSequence getActivityName() {
         return activityName;
     }
 
-    public void setActivityName(CharSequence activityName) {
-        if (activityName == null) return;
-        if (TextUtils.equals(activityName, this.activityName)) return;
+    public boolean setActivityName(CharSequence activityName) {
+        if (activityName == null) return false;
+        if (TextUtils.equals(activityName, this.activityName)) return false;
         this.activityName = activityName;
+        return true;
     }
 
     public CharSequence getNotificationText() {
@@ -122,6 +143,7 @@ public class WorldState {
 
     public void setNotificationText(CharSequence notificationText) {
         this.notificationText = notificationText;
+        checkAutoStartAction(NotificationStartAction.class);
     }
 
     public int getBatteryPercent() {
@@ -130,6 +152,7 @@ public class WorldState {
 
     public void setBatteryPercent(int batteryPercent) {
         this.batteryPercent = batteryPercent;
+        checkAutoStartAction(BatteryStartAction.class);
     }
 
     public int getBatteryState() {
@@ -138,5 +161,6 @@ public class WorldState {
 
     public void setBatteryState(int batteryState) {
         this.batteryState = batteryState;
+        checkAutoStartAction(BatteryStateStartAction.class);
     }
 }
