@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.action.DelayAction;
+import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
@@ -22,7 +23,7 @@ public class TaskBlueprintView extends Fragment {
         ViewTaskBlueprintBinding binding = ViewTaskBlueprintBinding.inflate(inflater, container, false);
 
         Task task = new Task();
-        NormalStartAction startAction = new NormalStartAction();
+        BatteryStartAction startAction = new BatteryStartAction();
         task.addAction(startAction);
 
         DelayAction delayAction = new DelayAction();

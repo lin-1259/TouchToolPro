@@ -66,18 +66,6 @@ public class Pin<T extends PinObject> implements Parcelable {
         this.removeAble = removeAble;
     }
 
-    public Pin(PinSubType subType, PinSlotType slotType, int title, PinDirection direction, T value, boolean removeAble) {
-        this.id = UUID.randomUUID().toString();
-        this.title = title;
-        this.value = value;
-
-        this.direction = direction;
-        this.slotType = slotType;
-        this.subType = subType;
-
-        this.removeAble = removeAble;
-    }
-
     protected Pin(Parcel in) {
         id = in.readString();
         title = in.readInt();

@@ -22,6 +22,7 @@ import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.action.pin.object.PinValueArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
@@ -29,6 +30,7 @@ import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSelectApp;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLong;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTimeArea;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 @SuppressLint("ViewConstructor")
@@ -79,6 +81,8 @@ public class BasePin<T extends ViewBinding> extends BindingView<T> {
             pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
         } else if (PinLong.class.equals(aClass)) {
             pinBox.addView(new PinWidgetLong(context, (PinLong) pin.getValue(), pin.getSubType()));
+        } else if (PinValueArea.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));
         }
     }
 

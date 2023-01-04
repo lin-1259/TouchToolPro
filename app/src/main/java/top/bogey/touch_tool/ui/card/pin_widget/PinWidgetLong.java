@@ -94,7 +94,7 @@ public class PinWidgetLong extends BindingView<PinWidgetTimeBinding> {
                         .setTimeFormat(TimeFormat.CLOCK_24H)
                         .setHour((int) TimeUnit.MILLISECONDS.toHours(atomicLong.getValue()))
                         .setMinute((int) TimeUnit.MILLISECONDS.toMinutes(atomicLong.getValue()))
-                        .setTitleText(R.string.time_condition_periodic_tips)
+                        .setTitleText(R.string.action_time_start_tips)
                         .build();
 
                 picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);

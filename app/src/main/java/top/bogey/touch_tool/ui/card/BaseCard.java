@@ -68,7 +68,8 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             if (needDelete) {
                 binding.removeButton.setChecked(false);
                 needDelete = false;
-
+                CardLayoutView parent = (CardLayoutView) getParent();
+                parent.removeAction(action);
             } else {
                 binding.removeButton.setChecked(true);
                 needDelete = true;
@@ -79,10 +80,6 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             }
         });
 
-        binding.title.addOnCheckedChangeListener((button, isChecked) -> {
-
-        });
-        binding.title.setChecked(action.isEnable());
         binding.title.setText(action.getTitle(context));
 
         for (Pin<?> pin : action.getPins()) {

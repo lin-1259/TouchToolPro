@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        NavController controller = Navigation.findNavController(this, R.id.con_view);
+        NavController controller = Navigation.findNavController(this, R.id.conView);
         NavigationUI.setupWithNavController(binding.menuView, controller);
         AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home, R.id.task, R.id.setting).build();
         NavigationUI.setupActionBarWithNavController(this, controller, configuration);
@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        NavController controller = Navigation.findNavController(this, R.id.con_view);
+        NavController controller = Navigation.findNavController(this, R.id.conView);
         return controller.navigateUp() || super.onSupportNavigateUp();
     }
 

@@ -55,7 +55,7 @@ public class CardLayoutView extends FrameLayout {
         gridSize = DisplayUtils.dp2px(context, 16);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        linePaint.setStrokeWidth(10);
+        linePaint.setStrokeWidth(5);
         linePaint.setStrokeCap(Paint.Cap.ROUND);
         linePaint.setStrokeJoin(Paint.Join.ROUND);
         linePaint.setStyle(Paint.Style.STROKE);
@@ -79,6 +79,12 @@ public class CardLayoutView extends FrameLayout {
         setCardPosition(card);
         addView(card);
         cardMap.put(action.getId(), card);
+    }
+
+    public void removeAction(BaseAction action) {
+        task.removeAction(action);
+        BaseCard<? extends BaseAction> card = cardMap.remove(action.getId());
+        if (card != null) removeView(card);
     }
 
     private void setCardsPosition() {
@@ -222,7 +228,7 @@ public class CardLayoutView extends FrameLayout {
                                 BaseAction action = task.getActionById(entry.getKey());
                                 if (action == null) continue;
                                 Pin<?> pin = action.getPinById(entry.getValue());
-                                if (basePin.getPin().getSubType() != pin.getSubType()) {
+                                if (!basePin.getPin().getValue().getClass().equals(pin.getValue().getClass())) {
                                     flag = false;
                                     break;
                                 }

@@ -19,14 +19,14 @@ public class BatteryStateStartAction extends StartAction {
 
     public BatteryStateStartAction() {
         super();
-        statePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), R.string.battery_state_contidion_tips));
-        titleId = R.string.task_type_battery_state;
+        statePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), R.string.action_battery_charging_state_subtitle_state));
+        titleId = R.string.action_battery_charging_state_title;
     }
 
     public BatteryStateStartAction(Parcel in) {
         super(in);
         statePin = addPin(pinsTmp.remove(0));
-        titleId = R.string.task_type_battery_state;
+        titleId = R.string.action_battery_charging_state_title;
     }
 
     @Override

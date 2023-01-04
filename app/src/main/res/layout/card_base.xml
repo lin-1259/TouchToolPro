@@ -17,19 +17,14 @@
             android:layout_height="20dp"
             android:layout_weight="1">
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:backgroundTint="@color/fill_button_background_check"
-                android:checkable="true"
                 android:gravity="start|center_vertical"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
                 android:minWidth="20dp"
                 android:paddingHorizontal="4dp"
                 android:paddingVertical="0dp"
-                android:textColor="@color/button_container_check"
                 android:textSize="11sp" />
 
         </FrameLayout>

@@ -13,6 +13,7 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.action.DelayAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -23,7 +24,7 @@ public class TaskView extends Fragment {
         ViewTaskBlueprintBinding binding = ViewTaskBlueprintBinding.inflate(inflater, container, false);
 
         Task task = new Task();
-        AppStartAction startAction = new AppStartAction();
+        BatteryStartAction startAction = new BatteryStartAction();
         task.addAction(startAction);
         startAction.x = 1;
         startAction.y = 7;

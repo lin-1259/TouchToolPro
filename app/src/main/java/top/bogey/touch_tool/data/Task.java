@@ -64,6 +64,15 @@ public class Task implements Parcelable {
         actions.add(action);
     }
 
+    public void removeAction(BaseAction action) {
+        for (BaseAction baseAction : actions) {
+            if (baseAction.getId().equals(action.getId())) {
+                actions.remove(baseAction);
+                break;
+            }
+        }
+    }
+
     public String getId() {
         return id;
     }

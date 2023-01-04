@@ -26,17 +26,15 @@ public class NotificationStartAction extends StartAction {
     public NotificationStartAction() {
         super();
         appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_MODE)));
-        textPin = addPin(new Pin<>(new PinString(), R.string.notification_condition_tips));
-        addPin(restartPin);
-        titleId = R.string.task_type_notification;
+        textPin = addPin(new Pin<>(new PinString(), R.string.action_notification_start_subtitle_text));
+        titleId = R.string.action_notification_start_title;
     }
 
     public NotificationStartAction(Parcel in) {
         super(in);
         appPin = addPin(pinsTmp.remove(0));
         textPin = addPin(pinsTmp.remove(0));
-        restartPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.task_type_notification;
+        titleId = R.string.action_notification_start_title;
     }
 
     @Override
