@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
 
-public class PinBoolean extends PinObject{
+public class PinBoolean extends PinObject {
     private boolean value;
 
     public PinBoolean() {

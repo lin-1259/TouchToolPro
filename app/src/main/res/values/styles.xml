@@ -1,4 +1,7 @@
 <resources>
+    <color name="IntegerPinColor">#43A047</color>
+    <color name="StringPinColor">#9C27B0</color>
+
     <style name="Theme.TouchTool.IconButton" parent="Widget.Material3.Button.TextButton">
         <item name="iconPadding">0dp</item>
         <item name="iconGravity">textStart</item>
@@ -36,9 +39,16 @@
         <item name="cornerSizeBottomLeft">0%</item>
     </style>
 
+    <style name="Theme.TouchTool.ShapeAppearance.Pin" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerSizeTopLeft">0%</item>
+        <item name="cornerSizeBottomLeft">0%</item>
+        <item name="cornerSizeTopRight">50%</item>
+        <item name="cornerSizeBottomRight">50%</item>
+        <item name="cornerFamily">cut</item>
+    </style>
+
     <style name="Theme.TouchTool.TextAppearance.Hint" parent="TextAppearance.Material3.LabelSmall">
         <item name="android:textSize">5sp</item>
     </style>
-
 
 </resources>

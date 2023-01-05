@@ -19,9 +19,9 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
-import top.bogey.touch_tool.ui.card.pin.BasePin;
-import top.bogey.touch_tool.ui.card.pin.InPin;
-import top.bogey.touch_tool.ui.card.pin.OutPin;
+import top.bogey.touch_tool.ui.card.pin.PinBaseView;
+import top.bogey.touch_tool.ui.card.pin.PinInView;
+import top.bogey.touch_tool.ui.card.pin.PinOutView;
 import top.bogey.touch_tool.ui.task_blueprint.CardLayoutView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -31,7 +31,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     private final Task task;
     private final A action;
 
-    private final List<BasePin<?>> basePins = new ArrayList<>();
+    private final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
     private boolean needDelete = false;
 
@@ -84,13 +84,13 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
 
         for (Pin<?> pin : action.getPins()) {
             if (pin.getDirection() == PinDirection.IN) {
-                InPin inPin = new InPin(context, action, pin);
-                binding.inBox.addView(inPin);
-                basePins.add(inPin);
+                PinInView pinInView = new PinInView(context, action, pin);
+                binding.inBox.addView(pinInView);
+                pinBaseViews.add(pinInView);
             } else if (pin.getDirection() == PinDirection.OUT) {
-                OutPin outPin = new OutPin(context, action, pin);
-                binding.outBox.addView(outPin);
-                basePins.add(outPin);
+                PinOutView pinOutView = new PinOutView(context, action, pin);
+                binding.outBox.addView(pinOutView);
+                pinBaseViews.add(pinOutView);
             }
         }
     }
@@ -99,23 +99,23 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         return action;
     }
 
-    public BasePin<?> getPinById(String id) {
+    public PinBaseView<?> getPinById(String id) {
         if (id == null || id.isEmpty()) return null;
-        for (BasePin<?> pin : basePins) {
-            if (id.equals(pin.getPin().getId())) {
-                return pin;
+        for (PinBaseView<?> pinBaseView : pinBaseViews) {
+            if (id.equals(pinBaseView.getPin().getId())) {
+                return pinBaseView;
             }
         }
         return null;
     }
 
-    public BasePin<?> getPinByPosition(float rawX, float rawY) {
-        for (BasePin<?> pin : basePins) {
+    public PinBaseView<?> getPinByPosition(float rawX, float rawY) {
+        for (PinBaseView<?> pinBaseView : pinBaseViews) {
             int[] location = new int[2];
-            View pinBox = pin.getPinBox();
+            View pinBox = pinBaseView.getPinBox();
             pinBox.getLocationOnScreen(location);
             if (new Rect(location[0], location[1], location[0] + pinBox.getWidth(), location[1] + pinBox.getHeight()).contains((int) rawX, (int) rawY)) {
-                return pin;
+                return pinBaseView;
             }
         }
         return null;

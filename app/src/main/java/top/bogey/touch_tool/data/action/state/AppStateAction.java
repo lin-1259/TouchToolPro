@@ -3,7 +3,7 @@ package top.bogey.touch_tool.data.action.state;
 import android.os.Parcel;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
@@ -36,7 +36,7 @@ public class AppStateAction extends StateAction {
         CharSequence packageName = worldState.getPackageName();
         if (packageName != null) {
             PinSelectApp helper = (PinSelectApp) appPin.getValue();
-            Map<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
+            LinkedHashMap<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
             ArrayList<CharSequence> activityClasses = packages.get(packageName);
             if (activityClasses != null) {
                 value.setValue(activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName()));

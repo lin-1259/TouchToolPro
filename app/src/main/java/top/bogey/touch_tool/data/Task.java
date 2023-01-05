@@ -5,8 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -14,7 +14,7 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 
 public class Task implements Parcelable {
     private final String id;
-    private final Set<BaseAction> actions = new HashSet<>();
+    private final HashSet<BaseAction> actions = new HashSet<>();
 
     private final long createTime;
     private String tag;
@@ -29,7 +29,13 @@ public class Task implements Parcelable {
 
     protected Task(Parcel in) {
         id = in.readString();
+        ArrayList<BaseAction> actionArrayList = new ArrayList<>();
+        in.readTypedList(actionArrayList, BaseAction.CREATOR);
+        actions.addAll(actionArrayList);
         createTime = in.readLong();
+        tag = in.readString();
+        title = in.readString();
+        des = in.readString();
     }
 
     public static final Creator<Task> CREATOR = new Creator<Task>() {
@@ -77,7 +83,7 @@ public class Task implements Parcelable {
         return id;
     }
 
-    public Set<BaseAction> getActions() {
+    public HashSet<BaseAction> getActions() {
         return actions;
     }
 
@@ -117,5 +123,10 @@ public class Task implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeTypedList(new ArrayList<>(actions));
+        dest.writeLong(createTime);
+        dest.writeString(tag);
+        dest.writeString(title);
+        dest.writeString(des);
     }
 }

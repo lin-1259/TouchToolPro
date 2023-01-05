@@ -1,8 +1,11 @@
 package top.bogey.touch_tool.data.action.pin.object;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import androidx.annotation.NonNull;
+
+import top.bogey.touch_tool.R;
 
 public class PinString extends PinObject {
     private String value;
@@ -18,6 +21,11 @@ public class PinString extends PinObject {
 
     public PinString(Parcel in) {
         value = in.readString();
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getResources().getColor(R.color.StringPinColor, null);
     }
 
     public String getValue() {

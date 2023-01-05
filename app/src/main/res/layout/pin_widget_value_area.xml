@@ -16,6 +16,7 @@
             android:stepSize="1"
             app:haloRadius="12dp"
             app:thumbRadius="8dp"
+            app:trackHeight="3dp"
             app:trackColorInactive="?attr/colorSurface"
             app:tickVisible="false" />
 

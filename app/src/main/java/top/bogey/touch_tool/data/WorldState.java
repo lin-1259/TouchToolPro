@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -24,7 +23,7 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 public class WorldState {
     private static WorldState helper;
 
-    private final Map<CharSequence, PackageInfo> appMap = new LinkedHashMap<>();
+    private final LinkedHashMap<CharSequence, PackageInfo> appMap = new LinkedHashMap<>();
 
     private CharSequence packageName;
     private CharSequence activityName;

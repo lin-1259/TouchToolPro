@@ -14,8 +14,8 @@ import top.bogey.touch_tool.data.action.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.PinOutBinding;
 
 @SuppressLint("ViewConstructor")
-public class OutPin extends BasePin<PinOutBinding> {
-    public OutPin(@NonNull Context context, BaseAction action, Pin<? extends PinObject> pin) {
+public class PinOutView extends PinBaseView<PinOutBinding> {
+    public PinOutView(@NonNull Context context, BaseAction action, Pin<? extends PinObject> pin) {
         super(context, PinOutBinding.class, action, pin);
         FrameLayout.LayoutParams params = (LayoutParams) binding.getRoot().getLayoutParams();
         if (params == null) params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

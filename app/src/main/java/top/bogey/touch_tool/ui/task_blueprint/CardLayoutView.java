@@ -23,8 +23,10 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.pin.PinDirection;
+import top.bogey.touch_tool.data.action.pin.PinSlotType;
+import top.bogey.touch_tool.data.action.pin.object.PinObject;
 import top.bogey.touch_tool.ui.card.BaseCard;
-import top.bogey.touch_tool.ui.card.pin.BasePin;
+import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class CardLayoutView extends FrameLayout {
@@ -41,7 +43,7 @@ public class CardLayoutView extends FrameLayout {
     private Task task;
 
     private int dragState = DRAG_NONE;
-    private final Map<String, String> links = new HashMap<>();
+    private final Map<String, String> dragLinks = new HashMap<>();
     private BaseCard<? extends BaseAction> dragCard = null;
     private float dragX = 0;
     private float dragY = 0;
@@ -52,7 +54,7 @@ public class CardLayoutView extends FrameLayout {
 
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        gridSize = DisplayUtils.dp2px(context, 16);
+        gridSize = DisplayUtils.dp2px(context, 8);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setStrokeWidth(5);
@@ -84,7 +86,12 @@ public class CardLayoutView extends FrameLayout {
     public void removeAction(BaseAction action) {
         task.removeAction(action);
         BaseCard<? extends BaseAction> card = cardMap.remove(action.getId());
-        if (card != null) removeView(card);
+        if (card == null) return;
+        for (Pin<? extends PinObject> pin : action.getPins()) {
+            linksRemovePin(pin.getLinks(), card.getPinById(pin.getId()));
+        }
+
+        removeView(card);
     }
 
     private void setCardsPosition() {
@@ -108,24 +115,24 @@ public class CardLayoutView extends FrameLayout {
                 for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
                     BaseCard<? extends BaseAction> baseCard = cardMap.get(entry.getKey());
                     if (baseCard == null) continue;
-                    BasePin<?> basePin = baseCard.getPinById(entry.getValue());
-                    if (basePin == null) continue;
+                    PinBaseView<?> pinBaseView = baseCard.getPinById(entry.getValue());
+                    if (pinBaseView == null) continue;
                     // 只画输出的线
-                    if (basePin.getPin().getDirection() == PinDirection.OUT) {
+                    if (pinBaseView.getPin().getDirection() == PinDirection.OUT) {
                         linePaint.setColor(pin.getValue().getPinColor(getContext()));
-                        canvas.drawPath(calculateLinePath(basePin, card.getPinById(pin.getId())), linePaint);
+                        canvas.drawPath(calculateLinePath(pinBaseView, card.getPinById(pin.getId())), linePaint);
                     }
                 }
             }
         }
         if (dragState == DRAG_PIN) {
-            for (Map.Entry<String, String> entry : links.entrySet()) {
+            for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
                 BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
                 if (card == null) continue;
-                BasePin<?> basePin = card.getPinById(entry.getValue());
-                if (basePin == null) continue;
-                linePaint.setColor(basePin.getPin().getValue().getPinColor(getContext()));
-                canvas.drawPath(calculateLinePath(basePin), linePaint);
+                PinBaseView<?> pinBaseView = card.getPinById(entry.getValue());
+                if (pinBaseView == null) continue;
+                linePaint.setColor(pinBaseView.getPin().getValue().getPinColor(getContext()));
+                canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
             }
         }
 
@@ -133,31 +140,42 @@ public class CardLayoutView extends FrameLayout {
         super.dispatchDraw(canvas);
     }
 
-    private Path calculateLinePath(BasePin<?> outPin, BasePin<?> inPin) {
+    private Path calculateLinePath(PinBaseView<?> outPin, PinBaseView<?> inPin) {
         Path path = new Path();
         if (outPin == null || inPin == null) return path;
         int[] outLocation = outPin.getSlotLocationOnScreen();
-        path.moveTo(outLocation[0], outLocation[1]);
         int[] inLocation = inPin.getSlotLocationOnScreen();
-        path.cubicTo(outLocation[0] + gridSize * 5, outLocation[1], inLocation[0] - gridSize * 5, inLocation[1], inLocation[0], inLocation[1]);
+
+        int offset = inLocation[0] - outLocation[0];
+        offset = offset > gridSize * 4 ? offset : gridSize * 8;
+        int x1 = outLocation[0] + offset;
+        int x2 = inLocation[0] - offset;
+        path.moveTo(outLocation[0], outLocation[1]);
+        path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
         path.offset(-location[0] - getX(), -location[1] - getY());
         return path;
     }
 
-    private Path calculateLinePath(BasePin<?> basePin) {
+    private Path calculateLinePath(PinBaseView<?> pinBaseView) {
         Path path = new Path();
-        if (basePin == null) return path;
-        int[] outLocation = basePin.getSlotLocationOnScreen();
-        outLocation[0] -= location[0];
-        outLocation[1] -= location[1];
-        if (dragDirection == PinDirection.IN) {
-            path.moveTo(outLocation[0], outLocation[1]);
-            path.cubicTo(outLocation[0] + gridSize * 5, outLocation[1], dragX - gridSize * 5, dragY, dragX, dragY);
+        if (pinBaseView == null) return path;
+        int[] pinLocation = pinBaseView.getSlotLocationOnScreen();
+
+        int[] outLocation, inLocation;
+        if (dragDirection == PinDirection.OUT) {
+            inLocation = pinLocation;
+            outLocation = new int[] {(int) dragX, (int) dragY};
         } else {
-            path.moveTo(dragX, dragY);
-            path.cubicTo(dragX + gridSize * 5, dragY, outLocation[0] - gridSize * 5, outLocation[1], outLocation[0], outLocation[1]);
+            inLocation = new int[] {(int) dragX, (int) dragY};
+            outLocation = pinLocation;
         }
-        path.offset(-getX(), -getY());
+        int offset = inLocation[0] - outLocation[0];
+        offset = offset > gridSize * 4 ? offset : gridSize * 8;
+        int x1 = outLocation[0] + offset;
+        int x2 = inLocation[0] - offset;
+        path.moveTo(outLocation[0], outLocation[1]);
+        path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
+        path.offset(-location[0] - getX(), -location[1] - getY());
         return path;
     }
 
@@ -166,11 +184,9 @@ public class CardLayoutView extends FrameLayout {
     public boolean onTouchEvent(MotionEvent event) {
         float rawX = event.getRawX();
         float rawY = event.getRawY();
-        float x = event.getX();
-        float y = event.getY();
         int actionMasked = event.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
-            links.clear();
+            dragLinks.clear();
             ArrayList<BaseCard<? extends BaseAction>> baseCards = new ArrayList<>(cardMap.values());
             for (int i = baseCards.size() - 1; i >= 0; i--) {
                 BaseCard<? extends BaseAction> card = baseCards.get(i);
@@ -179,125 +195,139 @@ public class CardLayoutView extends FrameLayout {
                 if (new Rect(location[0], location[1], location[0] + card.getWidth(), location[1] + card.getHeight()).contains((int) rawX, (int) rawY)) {
                     dragState = DRAG_CARD;
                     dragCard = card;
-                    BasePin<?> basePin = card.getPinByPosition(rawX, rawY);
-                    if (basePin != null) {
+                    PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
+                    if (pinBaseView != null) {
                         dragState = DRAG_PIN;
-                        Pin<?> pinData = basePin.getPin();
-                        Map<String, String> map = pinData.getLinks();
-                        if (map.size() == 0 || pinData.getDirection() == PinDirection.OUT) {
-                            // 数量为0 或者 是出点 且 可以出多条线，从这个点出线
-                            links.put(pinData.getActionId(), pinData.getId());
+                        Pin<?> pin = pinBaseView.getPin();
+                        Map<String, String> links = pin.getLinks();
+                        // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
+                        if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection() == PinDirection.OUT)) {
+                            dragLinks.put(pin.getActionId(), pin.getId());
                             // 目标方向与自身相反
-                            dragDirection = pinData.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
+                            dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
                         } else {
                             // 否则就是挪线
-                            links.putAll(map);
-                            dragDirection = pinData.getDirection();
-                            // 挪线需要先把之前的连接断开
-                            for (Map.Entry<String, String> entry : map.entrySet()) {
-                                BaseAction action = task.getActionById(entry.getKey());
-                                if (action == null) continue;
-                                Pin<?> pin = action.getPinById(entry.getValue());
-                                if (pin == null) continue;
-                                pin.removeLink(pinData);
-                            }
-                            map.clear();
+                            dragLinks.putAll(links);
+                            dragDirection = pin.getDirection();
+                            linksRemovePin(links, pinBaseView);
+                            links.clear();
+                            pinBaseView.refreshPinUI();
                         }
                     }
-                    dragX = x;
-                    dragY = y;
+                    dragX = rawX;
+                    dragY = rawY;
                     break;
                 }
             }
             if (dragState == DRAG_NONE) {
                 dragState = DRAG_SELF;
-                dragX = x;
-                dragY = y;
+                dragX = rawX;
+                dragY = rawY;
             }
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             if (dragState == DRAG_PIN) {
-                for (BaseCard<? extends BaseAction> card : cardMap.values()) {
+                for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
                     int[] location = new int[2];
-                    card.getLocationOnScreen(location);
-                    if (new Rect(location[0], location[1], location[0] + card.getWidth(), location[1] + card.getHeight()).contains((int) rawX, (int) rawY)) {
-                        BasePin<?> basePin = card.getPinByPosition(rawX, rawY);
-                        if (basePin != null) {
-                            boolean flag = true;
-                            // 先判断一下所有插槽的类型是否匹配
-                            for (Map.Entry<String, String> entry : links.entrySet()) {
-                                BaseAction action = task.getActionById(entry.getKey());
-                                if (action == null) continue;
-                                Pin<?> pin = action.getPinById(entry.getValue());
-                                if (!basePin.getPin().getValue().getClass().equals(pin.getValue().getClass())) {
-                                    flag = false;
-                                    break;
-                                }
-                                if (basePin.getPin().getDirection() == pin.getDirection()) {
-                                    flag = false;
-                                    break;
-                                }
-                            }
-                            if (flag) {
-                                for (Map.Entry<String, String> entry : links.entrySet()) {
-                                    BaseAction action = task.getActionById(entry.getKey());
-                                    if (action == null) continue;
-                                    Pin<?> pin = action.getPinById(entry.getValue());
-                                    // 同一个动作不能连自己
-                                    if (!pin.getActionId().equals(basePin.getPin().getActionId())) {
-                                        pin.addLink(task, basePin.getPin());
-                                        basePin.getPin().addLink(task, pin);
-                                    }
-                                }
-                                break;
-                            }
-                        }
+                    baseCard.getLocationOnScreen(location);
+                    if (new Rect(location[0], location[1], location[0] + baseCard.getWidth(), location[1] + baseCard.getHeight()).contains((int) rawX, (int) rawY)) {
+
+                        PinBaseView<?> pinBaseView = baseCard.getPinByPosition(rawX, rawY);
+                        if (pinBaseView == null) continue;
+                        if (pinAddLinks(pinBaseView, dragLinks)) break;
                     }
                 }
             }
+            dragLinks.clear();
+            dragCard = null;
             dragState = DRAG_NONE;
         } else if (actionMasked == MotionEvent.ACTION_MOVE) {
             if (dragState == DRAG_CARD) {
                 BaseAction action = dragCard.getAction();
-                int dx = (int) ((x - dragX) / gridSize);
+                int dx = (int) ((rawX - dragX) / gridSize);
                 if (dx != 0) {
                     action.x += dx;
-                    dragX = x;
+                    dragX = rawX;
                 }
-                int dy = (int) ((y - dragY) / gridSize);
+                int dy = (int) ((rawY - dragY) / gridSize);
                 if (dy != 0) {
                     action.y += dy;
-                    dragY = y;
+                    dragY = rawY;
                 }
                 setCardPosition(dragCard);
             } else if (dragState == DRAG_PIN) {
-                dragX = x;
-                dragY = y;
+                dragX = rawX;
+                dragY = rawY;
                 int width = getWidth();
                 int height = getHeight();
-                int offset = gridSize / 4;
-                int areaSize = gridSize * 2;
-                if (x < areaSize) {
+                int offset = gridSize;
+                int areaSize = gridSize * 4;
+                if (rawX - location[0] < areaSize) {
                     offsetX += offset;
-                } else if (x > width - areaSize) {
+                } else if (rawX - location[0] > width - areaSize) {
                     offsetX -= offset;
                 }
-                if (y < areaSize) {
+                if (rawY - location[1] < areaSize) {
                     offsetY += offset;
-                } else if (y > height - areaSize) {
+                } else if (rawY - location[1] > height - areaSize) {
                     offsetY -= offset;
                 }
                 setCardsPosition();
             } else if (dragState == DRAG_SELF) {
-                offsetX += (x - dragX);
-                offsetY += (y - dragY);
-                dragX = x;
-                dragY = y;
+                offsetX += (rawX - dragX);
+                offsetY += (rawY - dragY);
+                dragX = rawX;
+                dragY = rawY;
                 setCardsPosition();
             }
         }
         postInvalidate();
         return true;
     }
+
+    private boolean pinAddLinks(PinBaseView<?> pinBaseView, Map<String, String> links) {
+        Pin<?> pin = pinBaseView.getPin();
+        boolean flag = true;
+        // 先判断一下插槽是否匹配
+        for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
+            BaseAction action = task.getActionById(entry.getKey());
+            if (action == null) continue;
+            Pin<?> linkPin = action.getPinById(entry.getValue());
+            if (!pin.getValue().getClass().equals(linkPin.getValue().getClass())) {
+                flag = false;
+                break;
+            }
+            if (pin.getDirection() == linkPin.getDirection()) {
+                flag = false;
+                break;
+            }
+        }
+
+        if (flag) {
+            for (Map.Entry<String, String> entry : links.entrySet()) {
+                BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
+                if (card == null) continue;
+                PinBaseView<?> cardPin = card.getPinById(entry.getValue());
+                if (cardPin == null) continue;
+                // 不能自己首尾相连
+                if (pin.getActionId().equals(cardPin.getPin().getActionId())) continue;
+
+                linksRemovePin(cardPin.addLink(pin), cardPin);
+                linksRemovePin(pinBaseView.addLink(cardPin.getPin()), pinBaseView);
+            }
+        }
+        return flag;
+    }
+
+    private void linksRemovePin(Map<String, String> links, PinBaseView<?> pinBaseView) {
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
+            if (card == null) continue;
+            PinBaseView<?> cardPin = card.getPinById(entry.getValue());
+            if (cardPin == null) continue;
+            cardPin.removeLink(pinBaseView.getPin());
+        }
+    }
+
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

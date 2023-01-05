@@ -68,38 +68,42 @@
 
     <!-- 任务 -->
     <!-- 任务 - 开始 -->
-    <string name="action_start_subtitle_restart">任务重入：</string>
+    <string name="action_start_subtitle_restart">任务重入</string>
 
     <string name="action_normal_start_title">任务开始</string>
-    <string name="action_normal_start_subtitle_condition">开始条件：</string>
+    <string name="action_normal_start_subtitle_condition">开始条件</string>
 
     <string name="action_custom_start_title">自定义开始</string>
-    <string name="action_custom_start_subtitle_title">标题：</string>
+    <string name="action_custom_start_subtitle_title">标题</string>
 
     <string name="action_manual_start_title">手动开始</string>
 
     <string name="action_time_start_title">定时开始</string>
-    <string name="action_time_start_subtitle_date">日期：</string>
-    <string name="action_time_start_subtitle_time">时间：</string>
-    <string name="action_time_start_subtitle_periodic">间隔：</string>
+    <string name="action_time_start_subtitle_date">日期</string>
+    <string name="action_time_start_subtitle_time">时间</string>
+    <string name="action_time_start_subtitle_periodic">间隔</string>
     <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
     <string name="action_battery_start_title">电量范围内开始</string>
-    <string name="action_battery_start_subtitle_battery">电量：</string>
+    <string name="action_battery_start_subtitle_battery">范围</string>
 
-    <string name="action_battery_charging_state_title">电池状态变更开始</string>
-    <string name="action_battery_charging_state_subtitle_state">状态：</string>
+    <string name="action_battery_charging_start_title">电池状态变更开始</string>
+    <string name="action_battery_charging_start_subtitle_state">状态</string>
 
     <string name="action_notification_start_title">新通知时开始</string>
-    <string name="action_notification_start_subtitle_text">匹配文本：</string>
+    <string name="action_notification_start_subtitle_text">匹配文本</string>
 
 
     <!-- 任务 - 状态 -->
+    <string name="action_state_subtitle_state">状态</string>
+
     <string name="action_app_state_title">在应用或界面内</string>
 
     <string name="action_battery_state_title">在电量范围内</string>
-    <string name="action_battery_state_subtitle_low">最低：</string>
-    <string name="action_battery_state_subtitle_high">最高：</string>
+    <string name="action_battery_state_subtitle_battery">范围</string>
+
+    <string name="action_battery_charging_state_title">电池充电状态</string>
+    <string name="action_battery_charging_state_subtitle_state">状态</string>
 
 
 

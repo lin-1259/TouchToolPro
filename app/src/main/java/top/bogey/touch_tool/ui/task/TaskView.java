@@ -14,6 +14,8 @@ import top.bogey.touch_tool.data.action.action.DelayAction;
 import top.bogey.touch_tool.data.action.pin.Pin;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryStartAction;
+import top.bogey.touch_tool.data.action.start.NormalStartAction;
+import top.bogey.touch_tool.data.action.state.BatteryStateAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -24,12 +26,12 @@ public class TaskView extends Fragment {
         ViewTaskBlueprintBinding binding = ViewTaskBlueprintBinding.inflate(inflater, container, false);
 
         Task task = new Task();
-        BatteryStartAction startAction = new BatteryStartAction();
+        NormalStartAction startAction = new NormalStartAction();
         task.addAction(startAction);
         startAction.x = 1;
         startAction.y = 7;
 
-        DelayAction delayAction = new DelayAction();
+        BatteryStateAction delayAction = new BatteryStateAction();
         task.addAction(delayAction);
         delayAction.x = 2;
         delayAction.y = 5;

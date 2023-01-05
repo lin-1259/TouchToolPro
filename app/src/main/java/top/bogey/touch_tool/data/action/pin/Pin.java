@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.pin.object.PinObject;
 
 public class Pin<T extends PinObject> implements Parcelable {
@@ -25,7 +23,7 @@ public class Pin<T extends PinObject> implements Parcelable {
     private final PinSubType subType;
 
     private final boolean removeAble;
-    private final Map<String, String> links = new HashMap<>();
+    private final HashMap<String, String> links = new HashMap<>();
 
     private transient String actionId;
 
@@ -41,8 +39,8 @@ public class Pin<T extends PinObject> implements Parcelable {
         this(value, 0, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, PinDirection direction) {
-        this(value, 0, direction, PinSlotType.MULTI, PinSubType.NORMAL, false);
+    public Pin(T value, int title, PinDirection direction) {
+        this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
     public Pin(T value, int title, PinSubType subType) {
@@ -51,6 +49,10 @@ public class Pin<T extends PinObject> implements Parcelable {
 
     public Pin(T value, PinDirection direction, PinSlotType slotType) {
         this(value, 0, direction, slotType, PinSubType.NORMAL, false);
+    }
+
+    public Pin(T value, int title, PinDirection direction, PinSlotType slotType) {
+        this(value, title, direction, slotType, PinSubType.NORMAL, false);
     }
 
     public Pin(T value, int title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
@@ -95,19 +97,15 @@ public class Pin<T extends PinObject> implements Parcelable {
     };
 
 
-    public void addLink(Task task, Pin<? extends PinObject> pin) {
+    public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
+        HashMap<String, String> removedLinks = new HashMap<>();
         // 单插槽，需要先移除之前的连接
         if (slotType == PinSlotType.SINGLE) {
-            for (Map.Entry<String, String> entry : links.entrySet()) {
-                BaseAction action = task.getActionById(entry.getKey());
-                if (action == null) continue;
-                Pin<? extends PinObject> oldPin = action.getPinById(entry.getValue());
-                if (oldPin == null) continue;
-                oldPin.removeLink(this);
-            }
+            removedLinks.putAll(links);
             links.clear();
         }
         links.put(pin.getActionId(), pin.getId());
+        return removedLinks;
     }
 
     public void removeLink(Pin<? extends PinObject> pin) {
@@ -143,7 +141,7 @@ public class Pin<T extends PinObject> implements Parcelable {
         return removeAble;
     }
 
-    public Map<String, String> getLinks() {
+    public HashMap<String, String> getLinks() {
         return links;
     }
 
