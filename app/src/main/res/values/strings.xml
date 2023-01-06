@@ -77,6 +77,7 @@
     <string name="action_custom_start_subtitle_title">标题</string>
 
     <string name="action_manual_start_title">手动开始</string>
+    <string name="action_app_start_title">进应用或界面开始</string>
 
     <string name="action_time_start_title">定时开始</string>
     <string name="action_time_start_subtitle_date">日期</string>
@@ -95,7 +96,8 @@
 
 
     <!-- 任务 - 状态 -->
-    <string name="action_state_subtitle_state">状态</string>
+    <string name="action_state_subtitle_state">结果</string>
+    <string name="action_state_subtitle_postion">位置</string>
 
     <string name="action_app_state_title">在应用或界面内</string>
 
@@ -105,15 +107,28 @@
     <string name="action_battery_charging_state_title">电池充电状态</string>
     <string name="action_battery_charging_state_subtitle_state">状态</string>
 
+    <string name="action_screen_state_title">屏幕状态</string>
+    <string name="action_screen_state_subtitle_state">状态</string>
+
+    <string name="action_text_state_title">存在文本</string>
+    <string name="action_text_state_subtitle_text">文本</string>
+
+    <string name="action_widget_state_title">存在控件</string>
+    <string name="action_widget_state_subtitle_id">ID</string>
+    <string name="action_widget_state_subtitle_level">层级</string>
+
+    <!-- 任务 - 动作 -->
+    <string name="action_delay_action_title">延迟</string>
+
+    <string name="action_toast_action_title">提示</string>
+    <string name="action_toast_action_subtitle_tips">文本</string>
 
 
-    <string name="task_type_manual">手动执行</string>
+    <!-- 任务 - 转换 -->
+    <string name="action_convert_subtitle_object">对象</string>
+    <string name="action_convert_subtitle_string">文本</string>
 
-
-
-    <string name="task_type_app">进界面时执行</string>
-
-
+    <string name="action_object_string_convert_subtitle_object">转换为文本</string>
 
 
 

@@ -11,28 +11,33 @@ import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.Map;
 
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinDirection;
-import top.bogey.touch_tool.data.action.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.action.pin.object.PinInteger;
-import top.bogey.touch_tool.data.action.pin.object.PinLong;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
-import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
-import top.bogey.touch_tool.data.action.pin.object.PinString;
-import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
-import top.bogey.touch_tool.data.action.pin.object.PinValueArea;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
+import top.bogey.touch_tool.data.pin.object.PinInteger;
+import top.bogey.touch_tool.data.pin.object.PinLong;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.pin.object.PinString;
+import top.bogey.touch_tool.data.pin.object.PinTimeArea;
+import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLong;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLongPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSelectApp;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetStringPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTimeArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
 import top.bogey.touch_tool.ui.custom.BindingView;
@@ -66,14 +71,14 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
             throw new RuntimeException(e);
         }
         if (pin == null) return;
-        pinSlot.setCardBackgroundColor(pin.getValue().getPinColor(context));
+        pinSlot.setCardBackgroundColor(pin.getPinColor(context));
         pinSlot.setStrokeWidth(DisplayUtils.dp2px(context, 1.1f));
-        pinSlot.setStrokeColor(pin.getValue().getPinColor(context));
+        pinSlot.setStrokeColor(pin.getPinColor(context));
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
 
-        Class<? extends PinObject> aClass = pin.getValue().getClass();
+        Class<? extends PinObject> aClass = pin.getPinClass();
         if (PinTimeArea.class.equals(aClass)) {
             pinBox.addView(new PinWidgetTimeArea(context, (PinTimeArea) pin.getValue()));
         } else if (PinSelectApp.class.equals(aClass)) {
@@ -85,9 +90,13 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         } else if (PinInteger.class.equals(aClass)) {
             pinBox.addView(new PinWidgetInteger(context, (PinInteger) pin.getValue()));
         } else if (PinString.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
+            if (pin.getSubType() == PinSubType.NORMAL) {
+                pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
+            } else {
+                pinBox.addView(new PinWidgetStringPicker(context, (PinString) pin.getValue(), pin.getSubType()));
+            }
         } else if (PinLong.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetLong(context, (PinLong) pin.getValue(), pin.getSubType()));
+            pinBox.addView(new PinWidgetLongPicker(context, (PinLong) pin.getValue(), pin.getSubType()));
         } else if (PinValueArea.class.equals(aClass)) {
             pinBox.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));
         }
@@ -115,7 +124,23 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         if (pin.getTitle() != 0)
             titleText.setText(String.format(hidePinBox ? " %s " : " %s: ", getContext().getString(pin.getTitle())));
 
-        pinSlot.setCardBackgroundColor(linked ? pin.getValue().getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
+        pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
+
+        if (pin.getPinClass().equals(PinExecute.class)) {
+            pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
+                    .setTopLeftCorner(CornerFamily.CUT, 0)
+                    .setTopRightCorner(CornerFamily.CUT, DisplayUtils.dp2px(getContext(), 6))
+                    .setBottomLeftCorner(CornerFamily.CUT, 0)
+                    .setBottomRightCorner(CornerFamily.CUT, DisplayUtils.dp2px(getContext(), 6))
+                    .build());
+        } else {
+            pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
+                    .setTopLeftCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
+                    .setTopRightCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
+                    .setBottomRightCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
+                    .build());
+        }
     }
 
     public int[] getSlotLocationOnScreen() {

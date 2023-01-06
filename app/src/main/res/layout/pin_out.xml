@@ -40,9 +40,7 @@
             android:id="@+id/pinSlot"
             style="?attr/materialCardViewFilledStyle"
             android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginEnd="-0.5dp"
-            app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.Pin" />
+            android:layout_height="12dp" />
 
     </LinearLayout>
 

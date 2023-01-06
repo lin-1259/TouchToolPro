@@ -20,7 +20,7 @@ import java.util.Set;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.databinding.PinWidgetSelectAppBinding;
 import top.bogey.touch_tool.databinding.PinWidgetSelectAppItemBinding;
 import top.bogey.touch_tool.ui.app.AppView;

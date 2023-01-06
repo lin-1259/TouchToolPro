@@ -16,8 +16,8 @@ import java.util.List;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;

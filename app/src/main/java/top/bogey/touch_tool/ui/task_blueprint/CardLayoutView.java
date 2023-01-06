@@ -21,10 +21,10 @@ import java.util.Map;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinDirection;
-import top.bogey.touch_tool.data.action.pin.PinSlotType;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.PinSlotType;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -119,7 +119,7 @@ public class CardLayoutView extends FrameLayout {
                     if (pinBaseView == null) continue;
                     // 只画输出的线
                     if (pinBaseView.getPin().getDirection() == PinDirection.OUT) {
-                        linePaint.setColor(pin.getValue().getPinColor(getContext()));
+                        linePaint.setColor(pin.getPinColor(getContext()));
                         canvas.drawPath(calculateLinePath(pinBaseView, card.getPinById(pin.getId())), linePaint);
                     }
                 }
@@ -131,7 +131,7 @@ public class CardLayoutView extends FrameLayout {
                 if (card == null) continue;
                 PinBaseView<?> pinBaseView = card.getPinById(entry.getValue());
                 if (pinBaseView == null) continue;
-                linePaint.setColor(pinBaseView.getPin().getValue().getPinColor(getContext()));
+                linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
                 canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
             }
         }
@@ -292,10 +292,11 @@ public class CardLayoutView extends FrameLayout {
             BaseAction action = task.getActionById(entry.getKey());
             if (action == null) continue;
             Pin<?> linkPin = action.getPinById(entry.getValue());
-            if (!pin.getValue().getClass().equals(linkPin.getValue().getClass())) {
+            if (!pin.getPinClass().isAssignableFrom(linkPin.getPinClass())) {
                 flag = false;
                 break;
             }
+
             if (pin.getDirection() == linkPin.getDirection()) {
                 flag = false;
                 break;

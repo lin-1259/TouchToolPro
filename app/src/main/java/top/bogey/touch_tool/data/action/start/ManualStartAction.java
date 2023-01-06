@@ -3,12 +3,9 @@ package top.bogey.touch_tool.data.action.start;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class ManualStartAction extends StartAction {
     private final Pin<? extends PinObject> restartPin;

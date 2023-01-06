@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.pin.object;
+package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
 
-public abstract class PinObject implements Parcelable {
+public class PinObject implements Parcelable {
     private final String cls;
 
     public PinObject() {
@@ -47,6 +47,12 @@ public abstract class PinObject implements Parcelable {
 
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorOutlineVariant, 0);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "";
     }
 
     @Override

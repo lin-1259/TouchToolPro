@@ -9,8 +9,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.PinOutBinding;
 
 @SuppressLint("ViewConstructor")

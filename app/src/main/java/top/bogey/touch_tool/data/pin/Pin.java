@@ -1,5 +1,6 @@
-package top.bogey.touch_tool.data.action.pin;
+package top.bogey.touch_tool.data.pin;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class Pin<T extends PinObject> implements Parcelable {
     private final String id;
@@ -110,6 +111,16 @@ public class Pin<T extends PinObject> implements Parcelable {
 
     public void removeLink(Pin<? extends PinObject> pin) {
         links.remove(pin.getActionId());
+    }
+
+    public int getPinColor(Context context) {
+        if (value == null) throw new RuntimeException("插槽的值为空");
+        return value.getPinColor(context);
+    }
+
+    public Class<? extends PinObject> getPinClass() {
+        if (value == null) throw new RuntimeException("插槽的值为空");
+        return value.getClass();
     }
 
     public String getId() {

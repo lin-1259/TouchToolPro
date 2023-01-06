@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.utils;
 
+import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.state.ScreenStateAction;
 
 public class AppUtils {
     public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, int method);
@@ -79,6 +81,21 @@ public class AppUtils {
         } catch (Exception ignored) {
         }
         return false;
+    }
+
+    public static ScreenStateAction.ScreenState getScreenState(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        boolean screenOn = powerManager.isInteractive();
+        if (screenOn) {
+            KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+            boolean locked = keyguardManager.isKeyguardLocked();
+            if (locked) {
+                return ScreenStateAction.ScreenState.SCREEN_LOCKED;
+            } else {
+                return ScreenStateAction.ScreenState.SCREEN_UNLOCKED;
+            }
+        }
+        return ScreenStateAction.ScreenState.SCREEN_OFF;
     }
 
     public static void wakeScreen(Context context) {

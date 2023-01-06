@@ -8,7 +8,7 @@ import android.view.inputmethod.EditorInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import top.bogey.touch_tool.data.action.pin.object.PinString;
+import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.PinWidgetInputBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.TextChangedListener;

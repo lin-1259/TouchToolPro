@@ -7,9 +7,9 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class StartAction extends BaseAction {
     protected final Pin<? extends PinObject> restartPin;

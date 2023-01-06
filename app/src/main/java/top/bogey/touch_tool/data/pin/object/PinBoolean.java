@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.pin.object;
+package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -34,6 +34,12 @@ public class PinBoolean extends PinObject {
     @Override
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     @Override

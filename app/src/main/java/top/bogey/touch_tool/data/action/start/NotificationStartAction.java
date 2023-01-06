@@ -3,20 +3,16 @@ package top.bogey.touch_tool.data.action.start;
 import android.os.Parcel;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.ActionTag;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
-import top.bogey.touch_tool.data.action.pin.PinSubType;
-import top.bogey.touch_tool.data.action.pin.object.PinString;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class NotificationStartAction extends StartAction {
@@ -43,12 +39,12 @@ public class NotificationStartAction extends StartAction {
         CharSequence packageName = worldState.getPackageName();
         if (packageName == null) return false;
 
-        PinSelectApp helper = (PinSelectApp) appPin.getValue();
+        PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);
         Map<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
         ArrayList<CharSequence> activityClasses = packages.get(packageName);
         if (activityClasses == null) return false;
 
-        PinString value = (PinString) textPin.getValue();
+        PinString value = (PinString) getPinValue(worldState, task, textPin);
         CharSequence text = value.getValue();
         if (text == null || text.length() == 0) return false;
 

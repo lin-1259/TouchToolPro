@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import top.bogey.touch_tool.data.action.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.databinding.PinWidgetCheckboxBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 

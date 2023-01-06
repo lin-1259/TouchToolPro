@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.databinding.PinWidgetSpinnerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 

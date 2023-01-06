@@ -4,12 +4,11 @@ import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSubType;
-import top.bogey.touch_tool.data.action.pin.object.PinLong;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinLong;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class TimeStartAction extends StartAction {
@@ -36,9 +35,9 @@ public class TimeStartAction extends StartAction {
 
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
-        long date = ((PinLong) datePin.getValue()).getValue();
-        long time = ((PinLong) timePin.getValue()).getValue();
-        long periodic = ((PinLong) periodicPin.getValue()).getValue();
+        long date = ((PinLong) getPinValue(worldState, task, datePin)).getValue();
+        long time = ((PinLong) getPinValue(worldState, task, timePin)).getValue();
+        long periodic = ((PinLong) getPinValue(worldState, task, periodicPin)).getValue();
         if (periodic > 0) {
             return true;
         } else {

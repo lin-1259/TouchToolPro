@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.pin.object;
+package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -7,38 +7,38 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.R;
 
-public class PinString extends PinObject {
-    private String value;
+public class PinInteger extends PinObject {
+    private int value;
 
-    public PinString() {
+    public PinInteger() {
         super();
     }
 
-    public PinString(String value) {
+    public PinInteger(int value) {
         super();
         this.value = value;
     }
 
-    public PinString(Parcel in) {
-        value = in.readString();
+    public PinInteger(Parcel in) {
+        value = in.readInt();
     }
 
     @Override
     public int getPinColor(Context context) {
-        return context.getResources().getColor(R.color.StringPinColor, null);
+        return context.getResources().getColor(R.color.IntegerPinColor, null);
     }
 
-    public String getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(String value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeString(value);
+        dest.writeInt(value);
     }
 }

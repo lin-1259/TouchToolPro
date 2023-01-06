@@ -16,8 +16,7 @@
             android:id="@+id/pinSlot"
             style="?attr/materialCardViewFilledStyle"
             android:layout_width="12dp"
-            android:layout_height="12dp"
-            app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.Pin" />
+            android:layout_height="12dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"

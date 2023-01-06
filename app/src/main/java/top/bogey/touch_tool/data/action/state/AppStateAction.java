@@ -8,10 +8,10 @@ import java.util.LinkedHashMap;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinSelectApp;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStateAction extends StateAction {
@@ -31,11 +31,11 @@ public class AppStateAction extends StateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task) {
-        PinBoolean value = (PinBoolean) statePin.getValue();
+        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
 
         CharSequence packageName = worldState.getPackageName();
         if (packageName != null) {
-            PinSelectApp helper = (PinSelectApp) appPin.getValue();
+            PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);
             LinkedHashMap<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
             ArrayList<CharSequence> activityClasses = packages.get(packageName);
             if (activityClasses != null) {

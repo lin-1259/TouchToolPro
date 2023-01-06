@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.pin;
+package top.bogey.touch_tool.data.pin;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -9,7 +9,9 @@ public enum PinSubType implements Parcelable {
     NORMAL,
     DATE,
     TIME,
-    PERIODIC;
+    PERIODIC,
+    ID,
+    LEVEL;
 
     public static final Creator<PinSubType> CREATOR = new Creator<PinSubType>() {
         @Override

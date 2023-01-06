@@ -17,25 +17,25 @@ import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.PinSubType;
-import top.bogey.touch_tool.data.action.pin.object.PinLong;
-import top.bogey.touch_tool.databinding.PinWidgetTimeBinding;
+import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinLong;
+import top.bogey.touch_tool.databinding.PinWidgetPickerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class PinWidgetLong extends BindingView<PinWidgetTimeBinding> {
+public class PinWidgetLongPicker extends BindingView<PinWidgetPickerBinding> {
     private final PinLong atomicLong;
 
-    public PinWidgetLong(@NonNull Context context, PinLong atomicLong, PinSubType pinSubType) {
+    public PinWidgetLongPicker(@NonNull Context context, PinLong atomicLong, PinSubType pinSubType) {
         this(context, null, atomicLong, pinSubType);
     }
 
-    public PinWidgetLong(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PinWidgetLongPicker(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, new PinLong(System.currentTimeMillis()), PinSubType.DATE);
     }
 
-    public PinWidgetLong(@NonNull Context context, @Nullable AttributeSet attrs, PinLong atomicLong, PinSubType pinSubType) {
-        super(context, attrs, PinWidgetTimeBinding.class);
+    public PinWidgetLongPicker(@NonNull Context context, @Nullable AttributeSet attrs, PinLong atomicLong, PinSubType pinSubType) {
+        super(context, attrs, PinWidgetPickerBinding.class);
         if (atomicLong == null) throw new RuntimeException("不是有效的引用");
         this.atomicLong = atomicLong;
 
@@ -85,7 +85,7 @@ public class PinWidgetLong extends BindingView<PinWidgetTimeBinding> {
                     binding.title.setText(AppUtils.formatDateLocalTime(context, atomicLong.getValue()));
                 });
             });
-        } else {
+        } else if (pinSubType == PinSubType.PERIODIC) {
             binding.title.setText(AppUtils.formatDateLocalDuration(context, atomicLong.getValue()));
             binding.pickButton.setIconResource(R.drawable.icon_action_delay);
             binding.pickButton.setOnClickListener(v -> {

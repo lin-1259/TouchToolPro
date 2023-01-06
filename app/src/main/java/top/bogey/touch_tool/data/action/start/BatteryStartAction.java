@@ -4,13 +4,11 @@ import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.pin.PinSubType;
-import top.bogey.touch_tool.data.action.pin.object.PinInteger;
-import top.bogey.touch_tool.data.action.pin.object.PinObject;
-import top.bogey.touch_tool.data.action.pin.object.PinValueArea;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class BatteryStartAction extends StartAction {
     private final Pin<? extends PinObject> areaPin;
@@ -31,8 +29,9 @@ public class BatteryStartAction extends StartAction {
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
         int batteryPercent = worldState.getBatteryPercent();
-        int low = ((PinValueArea) areaPin.getValue()).getCurrMin();
-        int high = ((PinValueArea) areaPin.getValue()).getCurrMax();
+        PinValueArea valueArea = (PinValueArea) getPinValue(worldState, task, areaPin);
+        int low = valueArea.getCurrMin();
+        int high = valueArea.getCurrMax();
         boolean result = batteryPercent >= low && batteryPercent <= high;
         // 已经执行过了，电量未出范围不再重复执行
         if (result && inRange) return false;

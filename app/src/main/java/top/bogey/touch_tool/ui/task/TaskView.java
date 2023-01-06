@@ -10,12 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.action.action.DelayAction;
-import top.bogey.touch_tool.data.action.pin.Pin;
-import top.bogey.touch_tool.data.action.start.AppStartAction;
-import top.bogey.touch_tool.data.action.start.BatteryStartAction;
+import top.bogey.touch_tool.data.action.convert.ObjectConvertToString;
+import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
-import top.bogey.touch_tool.data.action.state.BatteryStateAction;
+import top.bogey.touch_tool.data.action.state.TextStateAction;
+import top.bogey.touch_tool.data.action.state.WidgetStateAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -31,20 +30,15 @@ public class TaskView extends Fragment {
         startAction.x = 1;
         startAction.y = 7;
 
-        BatteryStateAction delayAction = new BatteryStateAction();
+        TextStateAction delayAction = new TextStateAction();
         task.addAction(delayAction);
         delayAction.x = 2;
         delayAction.y = 5;
 
-        DelayAction delayAction2 = new DelayAction();
+        ObjectConvertToString delayAction2 = new ObjectConvertToString();
         task.addAction(delayAction2);
         delayAction2.x = 3;
         delayAction2.y = 5;
-
-        Pin<?> pin = startAction.getPins().get(0);
-        pin.getLinks().put(delayAction.getId(), delayAction.getPins().get(0).getId());
-        pin = delayAction.getPins().get(0);
-        pin.getLinks().put(startAction.getId(), startAction.getPins().get(0).getId());
 
         binding.cardLayout.setTask(task);
 

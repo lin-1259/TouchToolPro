@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.pin.object.PinTimeArea;
+import top.bogey.touch_tool.data.pin.object.PinTimeArea;
 import top.bogey.touch_tool.databinding.PinWidgetTimeAreaBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.TextChangedListener;

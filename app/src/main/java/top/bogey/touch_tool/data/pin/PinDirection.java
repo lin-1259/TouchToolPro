@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.pin;
+package top.bogey.touch_tool.data.pin;
 
 import android.os.Parcel;
 import android.os.Parcelable;
