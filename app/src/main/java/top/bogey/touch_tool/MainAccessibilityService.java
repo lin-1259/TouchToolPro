@@ -197,6 +197,12 @@ public class MainAccessibilityService extends AccessibilityService {
         return false;
     }
 
+    public void runGesture(int x, int y, int time, ResultCallback callback) {
+        Path path = new Path();
+        path.moveTo(x, y);
+        runGesture(path, time, callback);
+    }
+
     public void runGesture(Path path, int time, ResultCallback callback) {
         if (path == null) {
             if (callback != null) callback.onResult(false);

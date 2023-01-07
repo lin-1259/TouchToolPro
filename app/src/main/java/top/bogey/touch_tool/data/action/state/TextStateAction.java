@@ -14,6 +14,7 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
@@ -26,7 +27,7 @@ public class TextStateAction extends StateAction {
     public TextStateAction() {
         super();
         textPin = addPin(new Pin<>(new PinString(), R.string.action_text_state_subtitle_text));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT, PinSlotType.MULTI));
         titleId = R.string.action_text_state_title;
     }
 

@@ -61,13 +61,14 @@ public class SettingSave {
         return settingMMKV.decodeInt(ACTION_TOUCH_OFFSET, 10);
     }
 
-    public Point getOffsetPosition(int x, int y) {
-        int offset = getActionTouchOffset();
-        return new Point((int) (Math.random() * offset * 2 + x - offset), (int) (Math.random() * offset * 2 + y - offset));
-    }
-
     public void setActionTouchOffset(int offset) {
         settingMMKV.encode(ACTION_TOUCH_OFFSET, offset);
+    }
+
+    public int getTouchOffset(boolean offset, int value) {
+        if (!offset) return value;
+        int touchOffset = getActionTouchOffset();
+        return (int) (Math.random() * touchOffset * 2 + value - touchOffset);
     }
 
     public int getActionRecordDelay() {

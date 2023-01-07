@@ -74,9 +74,9 @@ public class Pin<T extends PinObject> implements Parcelable {
         title = in.readInt();
         value = in.readParcelable(PinObject.class.getClassLoader());
 
-        direction = in.readParcelable(PinDirection.class.getClassLoader());
-        slotType = in.readParcelable(PinSlotType.class.getClassLoader());
-        subType = in.readParcelable(PinSubType.class.getClassLoader());
+        direction = PinDirection.valueOf(in.readString());
+        slotType = PinSlotType.valueOf(in.readString());
+        subType = PinSubType.valueOf(in.readString());
 
         removeAble = in.readByte() == 1;
         Bundle bundle = in.readBundle(getClass().getClassLoader());
@@ -175,9 +175,9 @@ public class Pin<T extends PinObject> implements Parcelable {
         dest.writeInt(title);
         dest.writeParcelable(value, flags);
 
-        dest.writeParcelable(direction, flags);
-        dest.writeParcelable(slotType, flags);
-        dest.writeParcelable(subType, flags);
+        dest.writeString(direction.name());
+        dest.writeString(slotType.name());
+        dest.writeString(subType.name());
 
         dest.writeByte((byte) (removeAble ? 1 : 0));
         Bundle bundle = new Bundle();

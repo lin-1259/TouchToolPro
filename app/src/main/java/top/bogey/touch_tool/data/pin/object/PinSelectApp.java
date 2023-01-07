@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-public class PinSelectApp extends PinObject {
+public class PinSelectApp extends PinValue {
 
     private final LinkedHashMap<CharSequence, ArrayList<CharSequence>> packages = new LinkedHashMap<>();
     private final int mode;

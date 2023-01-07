@@ -20,7 +20,6 @@ public class PinInView extends PinBaseView<PinInBinding> {
     public int[] getSlotLocationOnScreen() {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
-        location[0] += (pinSlot.getWidth() / 2);
         location[1] += (pinSlot.getHeight() / 2);
         return location;
     }

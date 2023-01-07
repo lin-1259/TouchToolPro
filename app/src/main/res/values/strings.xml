@@ -110,25 +110,36 @@
     <string name="action_screen_state_title">屏幕状态</string>
     <string name="action_screen_state_subtitle_state">状态</string>
 
-    <string name="action_text_state_title">存在文本</string>
+    <string name="action_text_state_title">界面内存在文本</string>
     <string name="action_text_state_subtitle_text">文本</string>
 
-    <string name="action_widget_state_title">存在控件</string>
+    <string name="action_widget_state_title">界面内存在控件</string>
     <string name="action_widget_state_subtitle_id">ID</string>
     <string name="action_widget_state_subtitle_level">层级</string>
 
     <!-- 任务 - 动作 -->
     <string name="action_delay_action_title">延迟</string>
 
-    <string name="action_toast_action_title">提示</string>
-    <string name="action_toast_action_subtitle_tips">文本</string>
+    <string name="action_log_action_title">输出日志</string>
+    <string name="action_log_action_subtitle_tips">文本</string>
+    <string name="action_log_action_subtitle_toast">提示</string>
+
+    <string name="action_touch_pos_action_title">点击位置</string>
+    <string name="action_touch_pos_action_subtitle_position">位置</string>
+    <string name="action_touch_pos_action_subtitle_time">时长</string>
+    <string name="action_touch_pos_action_subtitle_offset">随机偏移</string>
+
+    <string name="action_touch_path_action_title">执行手势</string>
+    <string name="action_touch_path_action_subtitle_path">手势</string>
+    <string name="action_touch_path_action_subtitle_time">时长</string>
+    <string name="action_touch_path_action_subtitle_offset">随机偏移</string>
 
 
     <!-- 任务 - 转换 -->
     <string name="action_convert_subtitle_object">对象</string>
     <string name="action_convert_subtitle_string">文本</string>
 
-    <string name="action_object_string_convert_subtitle_object">转换为文本</string>
+    <string name="action_value_convert_string_subtitle_object">转换为文本</string>
 
 
 

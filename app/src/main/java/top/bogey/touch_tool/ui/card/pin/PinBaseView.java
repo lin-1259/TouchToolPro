@@ -126,19 +126,20 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
 
         pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
 
+        int cornerSize = DisplayUtils.dp2px(getContext(), 6);
         if (pin.getPinClass().equals(PinExecute.class)) {
             pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
                     .setTopLeftCorner(CornerFamily.CUT, 0)
-                    .setTopRightCorner(CornerFamily.CUT, DisplayUtils.dp2px(getContext(), 6))
+                    .setTopRightCorner(CornerFamily.CUT, cornerSize)
                     .setBottomLeftCorner(CornerFamily.CUT, 0)
-                    .setBottomRightCorner(CornerFamily.CUT, DisplayUtils.dp2px(getContext(), 6))
+                    .setBottomRightCorner(CornerFamily.CUT, cornerSize)
                     .build());
         } else {
             pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
-                    .setTopLeftCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
-                    .setTopRightCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
-                    .setBottomLeftCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
-                    .setBottomRightCorner(CornerFamily.ROUNDED, DisplayUtils.dp2px(getContext(), 6))
+                    .setTopLeftCorner(CornerFamily.ROUNDED, cornerSize)
+                    .setTopRightCorner(CornerFamily.ROUNDED, cornerSize)
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, cornerSize)
+                    .setBottomRightCorner(CornerFamily.ROUNDED, cornerSize)
                     .build());
         }
     }

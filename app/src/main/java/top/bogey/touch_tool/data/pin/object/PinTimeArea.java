@@ -6,7 +6,7 @@ import androidx.annotation.NonNull;
 
 import java.util.concurrent.TimeUnit;
 
-public class PinTimeArea extends PinObject {
+public class PinTimeArea extends PinValue {
     private int min;
     private int max;
     private TimeUnit unit;
@@ -38,8 +38,8 @@ public class PinTimeArea extends PinObject {
         this.unit = unit;
     }
 
-    public long getRandomTime() {
-        return unit.toMillis(Math.round(Math.random() * Math.abs(max - min) + getMin()));
+    public int getRandomTime() {
+        return (int) unit.toMillis(Math.round(Math.random() * Math.abs(max - min) + getMin()));
     }
 
     public int getMin() {

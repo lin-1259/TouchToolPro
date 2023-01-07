@@ -13,6 +13,7 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinObject;
@@ -28,7 +29,7 @@ public class WidgetStateAction extends StateAction {
         super();
         idPin = addPin(new Pin<>(new PinString(), R.string.action_widget_state_subtitle_id, PinSubType.ID));
         levelPin = addPin(new Pin<>(new PinString(), R.string.action_widget_state_subtitle_level, PinSubType.LEVEL));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT, PinSlotType.MULTI));
         titleId = R.string.action_widget_state_title;
     }
 
@@ -62,7 +63,12 @@ public class WidgetStateAction extends StateAction {
         if (!(level == null || level.isEmpty())) {
             String[] levels = level.split(",");
             for (String lv : levels) {
-                root = searchNode(root, Integer.parseInt(lv));
+                int l = 0;
+                try {
+                    l = Integer.parseInt(lv);
+                } catch (NumberFormatException ignored) {
+                }
+                root = searchNode(root, l);
                 if (root == null) break;
             }
 

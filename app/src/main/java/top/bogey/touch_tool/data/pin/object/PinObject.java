@@ -49,12 +49,6 @@ public class PinObject implements Parcelable {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorOutlineVariant, 0);
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return "";
-    }
-
     @Override
     public int describeContents() {
         return 0;

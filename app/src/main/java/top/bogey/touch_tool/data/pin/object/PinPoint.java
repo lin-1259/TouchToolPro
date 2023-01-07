@@ -5,7 +5,9 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-public class PinPoint extends PinObject {
+import top.bogey.touch_tool.ui.setting.SettingSave;
+
+public class PinPoint extends PinValue {
     private int x;
     private int y;
 
@@ -22,6 +24,14 @@ public class PinPoint extends PinObject {
     public PinPoint(Parcel in) {
         x = in.readInt();
         y = in.readInt();
+    }
+
+    public int getX(boolean offset) {
+        return SettingSave.getInstance().getTouchOffset(offset, x);
+    }
+
+    public int getY(boolean offset) {
+        return SettingSave.getInstance().getTouchOffset(offset, y);
     }
 
     public int getX() {

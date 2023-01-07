@@ -29,7 +29,7 @@ public class PinOutView extends PinBaseView<PinOutBinding> {
     public int[] getSlotLocationOnScreen() {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
-        location[0] += (pinSlot.getWidth() / 2);
+        location[0] += pinSlot.getWidth();
         location[1] += (pinSlot.getHeight() / 2);
         return location;
     }

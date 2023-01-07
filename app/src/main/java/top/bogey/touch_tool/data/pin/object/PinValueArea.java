@@ -1,10 +1,11 @@
 package top.bogey.touch_tool.data.pin.object;
 
+import android.annotation.SuppressLint;
 import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-public class PinValueArea extends PinObject{
+public class PinValueArea extends PinValue{
     private final int valueFrom;
     private final int valueTo;
     private final int step;
@@ -55,6 +56,13 @@ public class PinValueArea extends PinObject{
 
     public void setCurrMax(int currMax) {
         this.currMax = currMax;
+    }
+
+    @SuppressLint("DefaultLocale")
+    @NonNull
+    @Override
+    public String toString() {
+        return String.format("(%d - %d)", valueFrom, valueTo);
     }
 
     @Override

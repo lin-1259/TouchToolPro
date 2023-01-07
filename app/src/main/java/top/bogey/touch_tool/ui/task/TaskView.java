@@ -10,11 +10,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.action.convert.ObjectConvertToString;
-import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.action.convert.ValueConvertToString;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.state.TextStateAction;
-import top.bogey.touch_tool.data.action.state.WidgetStateAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -35,7 +33,7 @@ public class TaskView extends Fragment {
         delayAction.x = 2;
         delayAction.y = 5;
 
-        ObjectConvertToString delayAction2 = new ObjectConvertToString();
+        ValueConvertToString delayAction2 = new ValueConvertToString();
         task.addAction(delayAction2);
         delayAction2.x = 3;
         delayAction2.y = 5;

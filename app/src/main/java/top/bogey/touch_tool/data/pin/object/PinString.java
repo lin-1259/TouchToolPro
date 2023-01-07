@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.R;
 
-public class PinString extends PinObject {
+public class PinString extends PinValue {
     private String value;
 
     public PinString() {

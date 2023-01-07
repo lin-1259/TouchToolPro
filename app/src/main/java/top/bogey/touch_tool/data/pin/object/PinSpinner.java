@@ -5,7 +5,7 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-public class PinSpinner extends PinObject {
+public class PinSpinner extends PinValue {
     private final int array;
     private int index;
 

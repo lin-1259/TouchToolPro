@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.R;
 
-public class PinInteger extends PinObject {
+public class PinInteger extends PinValue {
     private int value;
 
     public PinInteger() {
@@ -34,6 +34,12 @@ public class PinInteger extends PinObject {
 
     public void setValue(int value) {
         this.value = value;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(value);
     }
 
     @Override
