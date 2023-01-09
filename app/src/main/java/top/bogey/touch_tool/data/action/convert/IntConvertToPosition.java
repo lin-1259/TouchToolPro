@@ -10,9 +10,9 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
+import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.data.pin.object.PinString;
-import top.bogey.touch_tool.data.pin.object.PinValue;
+import top.bogey.touch_tool.data.pin.object.PinPoint;
 
 public class IntConvertToPosition extends BaseAction {
     protected final Pin<? extends PinObject> xPin;
@@ -21,27 +21,29 @@ public class IntConvertToPosition extends BaseAction {
 
     public IntConvertToPosition() {
         super();
-        xPin = addPin(new Pin<>(new PinValue(), R.string.action_convert_subtitle_object));
-        posPin = addPin(new Pin<>(new PinString(), R.string.action_convert_subtitle_string, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_value_convert_string_subtitle_object;
+        xPin = addPin(new Pin<>(new PinInteger(), R.string.action_int_convert_position_subtitle_x));
+        yPin = addPin(new Pin<>(new PinInteger(), R.string.action_int_convert_position_subtitle_y));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_int_convert_position_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
+        titleId = R.string.action_int_convert_position_title;
     }
 
     public IntConvertToPosition(Parcel in) {
         super(in);
         xPin = addPin(pinsTmp.remove(0));
+        yPin = addPin(pinsTmp.remove(0));
         posPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_value_convert_string_subtitle_object;
+        titleId = R.string.action_int_convert_position_title;
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
-        return false;
-    }
+    public void doAction(WorldState worldState, TaskRunnable runnable) {}
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task) {
-        PinValue value = (PinValue) getPinValue(worldState, task, xPin);
-        PinString string = (PinString) getPinValue(worldState, task, posPin);
-        string.setValue(value.toString());
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+        PinInteger x = (PinInteger) getPinValue(worldState, task, xPin);
+        PinInteger y = (PinInteger) getPinValue(worldState, task, yPin);
+        PinPoint pos = (PinPoint) getPinValue(worldState, task, posPin);
+        pos.setX(x.getValue());
+        pos.setY(y.getValue());
     }
 }

@@ -9,11 +9,12 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.PinInBinding;
+import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
 public class PinInView extends PinBaseView<PinInBinding> {
-    public PinInView(@NonNull Context context, BaseAction action, Pin<? extends PinObject> pin) {
-        super(context, PinInBinding.class, action, pin);
+    public PinInView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
+        super(context, PinInBinding.class, card, pin);
     }
 
     @Override

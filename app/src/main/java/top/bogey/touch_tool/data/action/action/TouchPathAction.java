@@ -37,7 +37,7 @@ public class TouchPathAction extends NormalAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
         PinPath pinPath = (PinPath) getPinValue(worldState, runnable.getTask(), pathPin);
         PinTimeArea timeArea = (PinTimeArea) getPinValue(worldState, runnable.getTask(), timePin);
         PinBoolean offset = (PinBoolean) getPinValue(worldState, runnable.getTask(), offsetPin);
@@ -46,7 +46,7 @@ public class TouchPathAction extends NormalAction {
         int randomTime = timeArea.getRandomTime();
         service.runGesture(pinPath.getRealPaths(service, offset.getValue()), randomTime, null);
         boolean sleep = sleep(randomTime);
-        if (sleep) return super.doAction(worldState, runnable);
-        return false;
+        if (!sleep) return;
+        super.doAction(worldState, runnable);
     }
 }

@@ -9,10 +9,10 @@ import androidx.annotation.Nullable;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinString;
-import top.bogey.touch_tool.databinding.PinWidgetPickerBinding;
+import top.bogey.touch_tool.databinding.PinWidgetStringPickerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
-public class PinWidgetStringPicker extends BindingView<PinWidgetPickerBinding> {
+public class PinWidgetStringPicker extends BindingView<PinWidgetStringPickerBinding> {
     private final PinString pinString;
 
     public PinWidgetStringPicker(@NonNull Context context, PinString pinString, PinSubType pinSubType) {
@@ -24,7 +24,7 @@ public class PinWidgetStringPicker extends BindingView<PinWidgetPickerBinding> {
     }
 
     public PinWidgetStringPicker(@NonNull Context context, @Nullable AttributeSet attrs, PinString pinString, PinSubType pinSubType) {
-        super(context, attrs, PinWidgetPickerBinding.class);
+        super(context, attrs, PinWidgetStringPickerBinding.class);
         if (pinString == null) throw new RuntimeException("不是有效的引用");
         this.pinString = pinString;
 

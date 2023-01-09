@@ -26,7 +26,5 @@ public class StateAction extends BaseAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
-        return false;
-    }
+    public void doAction(WorldState worldState, TaskRunnable runnable) {}
 }

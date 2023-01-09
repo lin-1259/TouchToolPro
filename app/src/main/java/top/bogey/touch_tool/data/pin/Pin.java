@@ -12,9 +12,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.AppUtils;
 
 public class Pin<T extends PinObject> implements Parcelable {
-    private final String id;
+    private String id;
     private final int title;
 
     private final T value;
@@ -23,7 +24,7 @@ public class Pin<T extends PinObject> implements Parcelable {
     private final PinSlotType slotType;
     private final PinSubType subType;
 
-    private final boolean removeAble;
+    private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
 
     private transient String actionId;
@@ -85,6 +86,13 @@ public class Pin<T extends PinObject> implements Parcelable {
         }
     }
 
+    public Pin<T> copy(boolean removeAble) {
+        Pin<T> copy = AppUtils.copy(this);
+        copy.id = UUID.randomUUID().toString();
+        copy.removeAble = removeAble;
+        return copy;
+    }
+
     public static final Creator<Pin<? extends PinObject>> CREATOR = new Creator<Pin<? extends PinObject>>() {
         @Override
         public Pin<? extends PinObject> createFromParcel(Parcel in) {
@@ -105,12 +113,12 @@ public class Pin<T extends PinObject> implements Parcelable {
             removedLinks.putAll(links);
             links.clear();
         }
-        links.put(pin.getActionId(), pin.getId());
+        links.put(pin.getId(), pin.getActionId());
         return removedLinks;
     }
 
     public void removeLink(Pin<? extends PinObject> pin) {
-        links.remove(pin.getActionId());
+        links.remove(pin.getId());
     }
 
     public int getPinColor(Context context) {
@@ -125,6 +133,10 @@ public class Pin<T extends PinObject> implements Parcelable {
 
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public int getTitle() {

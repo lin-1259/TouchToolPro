@@ -37,16 +37,16 @@ public class TouchPosAction extends NormalAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
         PinPoint pos = (PinPoint) getPinValue(worldState, runnable.getTask(), posPin);
         PinTimeArea timeArea = (PinTimeArea) getPinValue(worldState, runnable.getTask(), timePin);
         PinBoolean offset = (PinBoolean) getPinValue(worldState, runnable.getTask(), offsetPin);
 
         MainAccessibilityService service = MainApplication.getService();
         int randomTime = timeArea.getRandomTime();
-        service.runGesture(pos.getX(), pos.getY(), randomTime, null);
+        service.runGesture(pos.getX(offset.getValue()), pos.getY(offset.getValue()), randomTime, null);
         boolean sleep = sleep(randomTime);
-        if (sleep) return super.doAction(worldState, runnable);
-        return false;
+        if (!sleep) return;
+        super.doAction(worldState, runnable);
     }
 }

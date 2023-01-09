@@ -27,9 +27,9 @@ public class StartAction extends BaseAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
-        if (!checkReady(worldState, runnable.getTask())) return false;
-        return super.doAction(worldState, runnable);
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
+        if (!checkReady(worldState, runnable.getTask())) return;
+        super.doAction(worldState, runnable);
     }
 
     public boolean checkReady(WorldState worldState, Task task) {

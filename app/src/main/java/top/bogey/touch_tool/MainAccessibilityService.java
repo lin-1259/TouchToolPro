@@ -2,9 +2,14 @@ package top.bogey.touch_tool;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.app.Activity;
 import android.app.Notification;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Path;
+import android.os.IBinder;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.lifecycle.MutableLiveData;
@@ -34,6 +39,12 @@ public class MainAccessibilityService extends AccessibilityService {
     // 服务
     private boolean serviceConnected = false;
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
+
+    // 截屏
+    public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
+    public MainCaptureService.CaptureServiceBinder binder = null;
+    private ServiceConnection connection = null;
+    private ResultCallback captureResultCallback;
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final HashSet<TaskRunnable> runnables = new HashSet<>();
@@ -109,6 +120,7 @@ public class MainAccessibilityService extends AccessibilityService {
         SettingSave.getInstance().setServiceEnabled(enabled);
     }
 
+
     public void addCallback(TaskRunningCallback callback) {
         callbacks.add(callback);
         runnables.forEach(runnable -> runnable.addCallback(callback));
@@ -135,7 +147,7 @@ public class MainAccessibilityService extends AccessibilityService {
             }
 
             @Override
-            public void onEnd(TaskRunnable runnable, boolean succeed) {
+            public void onEnd(TaskRunnable runnable) {
                 synchronized (runnables) {
                     runnables.remove(runnable);
                 }
@@ -196,6 +208,69 @@ public class MainAccessibilityService extends AccessibilityService {
         }
         return false;
     }
+
+
+    public void startCaptureService(boolean moveBack, ResultCallback callback) {
+        if (binder == null) {
+            MainActivity activity = MainApplication.getActivity();
+            if (activity != null) {
+                activity.launchNotification((notiCode, notiIntent) -> {
+                    if (notiCode == Activity.RESULT_OK) {
+                        activity.launchCapture(((code, data) -> {
+                            if (code == Activity.RESULT_OK) {
+                                connection = new ServiceConnection() {
+                                    @Override
+                                    public void onServiceConnected(ComponentName name, IBinder service) {
+                                        binder = (MainCaptureService.CaptureServiceBinder) service;
+                                        captureEnabled.setValue(true);
+                                        if (moveBack) activity.moveTaskToBack(true);
+                                        if (callback != null) callback.onResult(true);
+                                    }
+
+                                    @Override
+                                    public void onServiceDisconnected(ComponentName name) {
+                                        stopCaptureService();
+                                    }
+                                };
+                                Intent intent = new Intent(this, MainCaptureService.class);
+                                intent.putExtra("Data", data);
+                                boolean result = bindService(intent, connection, Context.BIND_AUTO_CREATE);
+                                if (!result) if (callback != null) callback.onResult(false);
+                            } else {
+                                if (callback != null) callback.onResult(false);
+                            }
+                        }));
+                    } else {
+                        if (callback != null) callback.onResult(false);
+                    }
+                });
+            } else {
+                captureResultCallback = callback;
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
+                intent.putExtra(MainActivity.INTENT_KEY_START_CAPTURE, true);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        } else {
+            if (callback != null) callback.onResult(true);
+        }
+    }
+
+    public void stopCaptureService() {
+        if (connection != null) {
+            unbindService(connection);
+            connection = null;
+            stopService(new Intent(this, MainCaptureService.class));
+        }
+        binder = null;
+        captureEnabled.setValue(false);
+    }
+
+    public boolean isCaptureEnabled() {
+        return isServiceEnabled() && Boolean.TRUE.equals(captureEnabled.getValue());
+    }
+
 
     public void runGesture(int x, int y, int time, ResultCallback callback) {
         Path path = new Path();

@@ -27,10 +27,10 @@ public class DelayAction extends NormalAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
         PinTimeArea pinTimeArea = (PinTimeArea) getPinValue(worldState, runnable.getTask(), delayPin);
         boolean sleep = sleep(pinTimeArea.getRandomTime());
-        if (sleep) return super.doAction(worldState, runnable);
-        return false;
+        if (!sleep) return;
+        super.doAction(worldState, runnable);
     }
 }

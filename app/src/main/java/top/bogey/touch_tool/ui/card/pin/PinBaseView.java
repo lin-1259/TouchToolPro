@@ -11,29 +11,35 @@ import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.shape.CornerFamily;
-import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.util.Map;
+import java.util.HashMap;
 
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSubType;
+import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
+import top.bogey.touch_tool.data.pin.object.PinColor;
+import top.bogey.touch_tool.data.pin.object.PinImage;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinLong;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinTimeArea;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
+import top.bogey.touch_tool.ui.card.BaseCard;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAdd;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetColorPicker;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetImagePicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLongPicker;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetPathPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSelectApp;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
@@ -54,9 +60,9 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
     protected final BaseAction action;
     protected final Pin<? extends PinObject> pin;
 
-    public PinBaseView(@NonNull Context context, Class<T> tClass, BaseAction action, Pin<? extends PinObject> pin) {
+    public PinBaseView(@NonNull Context context, Class<T> tClass, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
         super(context, null, tClass);
-        this.action = action;
+        action = card.getAction();
         this.pin = pin;
 
         try {
@@ -77,6 +83,10 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
+        removeButton.setOnClickListener(v -> {
+            card.getParentCard().linksRemovePin(pin.getLinks(), this);
+            card.removeMorePinView(pin);
+        });
 
         Class<? extends PinObject> aClass = pin.getPinClass();
         if (PinTimeArea.class.equals(aClass)) {
@@ -95,10 +105,23 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
             } else {
                 pinBox.addView(new PinWidgetStringPicker(context, (PinString) pin.getValue(), pin.getSubType()));
             }
-        } else if (PinLong.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetLongPicker(context, (PinLong) pin.getValue(), pin.getSubType()));
         } else if (PinValueArea.class.equals(aClass)) {
             pinBox.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));
+        }
+
+        // picker
+        if (PinPath.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetPathPicker(context, (PinPath) pin.getValue()));
+        } else if (PinImage.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetImagePicker(context, (PinImage) pin.getValue()));
+        } else if (PinColor.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetColorPicker(context, (PinColor) pin.getValue()));
+        } else if (PinLong.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetLongPicker(context, (PinLong) pin.getValue(), pin.getSubType()));
+        }
+
+        if (PinAdd.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetAdd(context, (PinAdd) pin.getValue(), card));
         }
     }
 
@@ -106,8 +129,8 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         return pin;
     }
 
-    public Map<String, String> addLink(Pin<? extends PinObject> pin) {
-        Map<String, String> removedLinkMap = this.pin.addLink(pin);
+    public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
+        HashMap<String, String> removedLinkMap = this.pin.addLink(pin);
         refreshPinUI();
         return removedLinkMap;
     }
@@ -125,23 +148,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
             titleText.setText(String.format(hidePinBox ? " %s " : " %s: ", getContext().getString(pin.getTitle())));
 
         pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
-
-        int cornerSize = DisplayUtils.dp2px(getContext(), 6);
-        if (pin.getPinClass().equals(PinExecute.class)) {
-            pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
-                    .setTopLeftCorner(CornerFamily.CUT, 0)
-                    .setTopRightCorner(CornerFamily.CUT, cornerSize)
-                    .setBottomLeftCorner(CornerFamily.CUT, 0)
-                    .setBottomRightCorner(CornerFamily.CUT, cornerSize)
-                    .build());
-        } else {
-            pinSlot.setShapeAppearanceModel(ShapeAppearanceModel.builder()
-                    .setTopLeftCorner(CornerFamily.ROUNDED, cornerSize)
-                    .setTopRightCorner(CornerFamily.ROUNDED, cornerSize)
-                    .setBottomLeftCorner(CornerFamily.ROUNDED, cornerSize)
-                    .setBottomRightCorner(CornerFamily.ROUNDED, cornerSize)
-                    .build());
-        }
+        pinSlot.setShapeAppearanceModel(pin.getValue().getPinStyle(getContext()));
     }
 
     public int[] getSlotLocationOnScreen() {
@@ -150,5 +157,9 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
 
     public View getPinBox() {
         return pinSlotBox;
+    }
+
+    public BaseAction getAction() {
+        return action;
     }
 }

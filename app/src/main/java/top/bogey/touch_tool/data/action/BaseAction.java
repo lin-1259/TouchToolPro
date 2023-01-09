@@ -27,8 +27,6 @@ public class BaseAction implements Parcelable {
     private CharSequence title;
     protected transient int titleId;
 
-    private boolean enable = true;
-
     private final ArrayList<Pin<? extends PinObject>> pins = new ArrayList<>();
 
     public int x;
@@ -50,7 +48,6 @@ public class BaseAction implements Parcelable {
         cls = getClass().getName();
         id = in.readString();
         title = in.readString();
-        enable = in.readByte() == 1;
         in.readTypedList(pinsTmp, Pin.CREATOR);
         x = in.readInt();
         y = in.readInt();
@@ -75,21 +72,25 @@ public class BaseAction implements Parcelable {
         }
     };
 
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
-        if (Thread.currentThread().isInterrupted()) return false;
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
+        doAction(worldState, runnable, outPin);
+    }
 
-        for (Map.Entry<String, String> entry : outPin.getLinks().entrySet()) {
-            BaseAction action = runnable.getTask().getActionById(entry.getKey());
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+        if (Thread.currentThread().isInterrupted()) return;
+        if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行插槽不正确");
+
+        for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
+            BaseAction action = runnable.getTask().getActionById(entry.getValue());
             if (action == null) continue;
             runnable.addProgress();
-            return action.doAction(worldState, runnable);
+            action.doAction(worldState, runnable);
+            return;
         }
-        return true;
     }
 
     // 获取针脚值之前先计算下针脚
-    protected void calculatePinValue(WorldState worldState, Task task) {
-
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
     }
 
     protected boolean sleep(long time) {
@@ -103,13 +104,29 @@ public class BaseAction implements Parcelable {
     }
 
     public <T extends PinObject> Pin<T> addPin(Pin<T> pin) {
+        addPin(pins.size(), pin);
+        return pin;
+    }
+
+    public Pin<? extends PinObject> addPin(int index, Pin<? extends PinObject> pin) {
         if (pin == null) throw new RuntimeException("空的插槽");
         for (Pin<? extends PinObject> oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的插槽");
         }
-        pins.add(pin);
+        pins.add(index, pin);
         pin.setActionId(id);
         return pin;
+    }
+
+    public Pin<? extends PinObject> removePin(Pin<? extends PinObject> pin) {
+        if (pin == null) return null;
+        for (Pin<? extends PinObject> oldPin : pins) {
+            if (oldPin.getId().equals(pin.getId())) {
+                pins.remove(oldPin);
+                return oldPin;
+            }
+        }
+        return null;
     }
 
     public Pin<? extends PinObject> getPinById(String id) {
@@ -123,14 +140,14 @@ public class BaseAction implements Parcelable {
     protected PinObject getPinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         // 先看看自己是不是输出针脚，输出针脚直接返回针脚值
         if (pin.getDirection() == PinDirection.OUT) {
-            calculatePinValue(worldState, task);
+            calculatePinValue(worldState, task, pin);
             return pin.getValue();
         }
 
         // 再看看针脚有没有连接，有连接就是连接的值
         if (pin.getLinks().size() > 0) {
             for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
-                BaseAction action = task.getActionById(entry.getKey());
+                BaseAction action = task.getActionById(entry.getValue());
                 if (action == null) continue;
                 Pin<? extends PinObject> pinById = action.getPinById(id);
                 if (pinById == null) continue;
@@ -139,7 +156,7 @@ public class BaseAction implements Parcelable {
             throw new RuntimeException("针脚没有默认值");
         } else {
             // 否则，就是自己的默认值
-            calculatePinValue(worldState, task);
+            calculatePinValue(worldState, task, pin);
             return pin.getValue();
         }
     }
@@ -163,14 +180,6 @@ public class BaseAction implements Parcelable {
         this.title = title;
     }
 
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
     public ArrayList<Pin<? extends PinObject>> getPins() {
         return pins;
     }
@@ -185,7 +194,6 @@ public class BaseAction implements Parcelable {
         dest.writeString(cls);
         dest.writeString(id);
         dest.writeString(title == null ? null : title.toString());
-        dest.writeByte((byte) (enable ? 1 : 0));
         dest.writeTypedList(pins);
         dest.writeInt(x);
         dest.writeInt(y);

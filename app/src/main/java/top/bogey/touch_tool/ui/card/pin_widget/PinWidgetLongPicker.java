@@ -19,11 +19,11 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinLong;
-import top.bogey.touch_tool.databinding.PinWidgetPickerBinding;
+import top.bogey.touch_tool.databinding.PinWidgetStringPickerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class PinWidgetLongPicker extends BindingView<PinWidgetPickerBinding> {
+public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBinding> {
     private final PinLong atomicLong;
 
     public PinWidgetLongPicker(@NonNull Context context, PinLong atomicLong, PinSubType pinSubType) {
@@ -35,7 +35,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetPickerBinding> {
     }
 
     public PinWidgetLongPicker(@NonNull Context context, @Nullable AttributeSet attrs, PinLong atomicLong, PinSubType pinSubType) {
-        super(context, attrs, PinWidgetPickerBinding.class);
+        super(context, attrs, PinWidgetStringPickerBinding.class);
         if (atomicLong == null) throw new RuntimeException("不是有效的引用");
         this.atomicLong = atomicLong;
 

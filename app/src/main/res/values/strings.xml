@@ -45,7 +45,7 @@
     <string name="capture_service_on_tips_1">需要授予屏幕录制权限才能使用检测图片的能力</string>
     <string name="capture_service_on_tips_2">当前任务需要检测图片，请开启屏幕录制</string>
     <string name="capture_service_on_tips_3">未开启无障碍服务，暂时无法使用</string>
-    <string name="capture_service_on_tips_4">屏幕录制需要发送通知，请授予应用发送通知的权限</string>
+    <string name="capture_service_on_tips_4">应用需要发送通知，请授予应用发送通知的权限</string>
 
     <string name="auto_start_app">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
@@ -67,6 +67,8 @@
     <string name="pop_on_background_tips_2">如果设置中无此权限，请忽略此条信息！</string>
 
     <!-- 任务 -->
+    <string name="action_subtitle_add_pin">添加插槽</string>
+
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
 
@@ -113,16 +115,27 @@
     <string name="action_text_state_title">界面内存在文本</string>
     <string name="action_text_state_subtitle_text">文本</string>
 
+    <string name="action_image_state_title">界面内存在图片</string>
+    <string name="action_image_state_subtitle_image">图片</string>
+    <string name="action_image_state_subtitle_similar">相似度</string>
+
+    <string name="action_color_state_title">界面内存在颜色</string>
+    <string name="action_color_state_subtitle_color">颜色</string>
+    <string name="action_color_state_subtitle_path">手势</string>
+
     <string name="action_widget_state_title">界面内存在控件</string>
     <string name="action_widget_state_subtitle_id">ID</string>
     <string name="action_widget_state_subtitle_level">层级</string>
+
+    <string name="action_capture_state_title">录屏服务状态</string>
+
 
     <!-- 任务 - 动作 -->
     <string name="action_delay_action_title">延迟</string>
 
     <string name="action_log_action_title">输出日志</string>
     <string name="action_log_action_subtitle_tips">文本</string>
-    <string name="action_log_action_subtitle_toast">提示</string>
+    <string name="action_log_action_subtitle_toast">弹出提示</string>
 
     <string name="action_touch_pos_action_title">点击位置</string>
     <string name="action_touch_pos_action_subtitle_position">位置</string>
@@ -136,11 +149,37 @@
 
 
     <!-- 任务 - 转换 -->
-    <string name="action_convert_subtitle_object">对象</string>
-    <string name="action_convert_subtitle_string">文本</string>
+    <string name="action_value_convert_string_title">转换为文本</string>
+    <string name="action_value_convert_string_subtitle_value">对象</string>
+    <string name="action_value_convert_string_subtitle_string">文本</string>
 
-    <string name="action_value_convert_string_subtitle_object">转换为文本</string>
+    <string name="action_int_convert_position_title">组合为位置</string>
+    <string name="action_int_convert_position_subtitle_x">X轴</string>
+    <string name="action_int_convert_position_subtitle_y">Y轴</string>
+    <string name="action_int_convert_position_subtitle_position">位置</string>
 
+    <string name="action_bool_convert_and_title">所有条件都达成</string>
+    <string name="action_bool_convert_and_subtitle_condition">条件</string>
+
+
+    <!-- 任务 - 逻辑 -->
+    <string name="action_condition_logic_title">如果…就…</string>
+    <string name="action_condition_logic_subtitle_condition">条件</string>
+    <string name="action_condition_logic_subtitle_true">达成</string>
+    <string name="action_condition_logic_subtitle_false">未达成</string>
+
+    <string name="action_condition_while_logic_title">一直…到不满足条件</string>
+    <string name="action_condition_while_logic_subtitle_condition">条件</string>
+    <string name="action_condition_while_logic_subtitle_end">结束</string>
+
+    <string name="action_for_loop_logic_title">循环执行</string>
+    <string name="action_for_loop_logic_subtitle_start">开始值</string>
+    <string name="action_for_loop_logic_subtitle_end">结束值</string>
+    <string name="action_for_loop_logic_subtitle_curr">当前值</string>
+    <string name="action_for_loop_logic_subtitle_complete">结束</string>
+
+    <string name="action_sequence_logic_title">顺序执行</string>
+    <string name="action_sequence_logic_subtitle_start">执行</string>
 
 
     <string name="sort">排序</string>

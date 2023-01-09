@@ -26,7 +26,7 @@ public class BatteryStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
 
         int batteryPercent = worldState.getBatteryPercent();

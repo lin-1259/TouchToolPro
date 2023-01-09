@@ -38,12 +38,12 @@ public class CardLayoutView extends FrameLayout {
     private final int gridSize;
     private final Paint linePaint;
     private final int[] location = new int[2];
-    private final Map<String, BaseCard<? extends BaseAction>> cardMap = new LinkedHashMap<>();
+    private final HashMap<String, BaseCard<? extends BaseAction>> cardMap = new LinkedHashMap<>();
 
     private Task task;
 
     private int dragState = DRAG_NONE;
-    private final Map<String, String> dragLinks = new HashMap<>();
+    private final HashMap<String, String> dragLinks = new HashMap<>();
     private BaseCard<? extends BaseAction> dragCard = null;
     private float dragX = 0;
     private float dragY = 0;
@@ -113,13 +113,13 @@ public class CardLayoutView extends FrameLayout {
             BaseAction action = card.getAction();
             for (Pin<?> pin : action.getPins()) {
                 for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
-                    BaseCard<? extends BaseAction> baseCard = cardMap.get(entry.getKey());
+                    BaseCard<? extends BaseAction> baseCard = cardMap.get(entry.getValue());
                     if (baseCard == null) continue;
-                    PinBaseView<?> pinBaseView = baseCard.getPinById(entry.getValue());
+                    PinBaseView<?> pinBaseView = baseCard.getPinById(entry.getKey());
                     if (pinBaseView == null) continue;
                     // 只画输出的线
                     if (pinBaseView.getPin().getDirection() == PinDirection.OUT) {
-                        linePaint.setColor(pin.getPinColor(getContext()));
+                        linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
                         canvas.drawPath(calculateLinePath(pinBaseView, card.getPinById(pin.getId())), linePaint);
                     }
                 }
@@ -127,9 +127,9 @@ public class CardLayoutView extends FrameLayout {
         }
         if (dragState == DRAG_PIN) {
             for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
-                BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
+                BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
                 if (card == null) continue;
-                PinBaseView<?> pinBaseView = card.getPinById(entry.getValue());
+                PinBaseView<?> pinBaseView = card.getPinById(entry.getKey());
                 if (pinBaseView == null) continue;
                 linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
                 canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
@@ -164,9 +164,9 @@ public class CardLayoutView extends FrameLayout {
         int[] outLocation, inLocation;
         if (dragDirection == PinDirection.OUT) {
             inLocation = pinLocation;
-            outLocation = new int[] {(int) dragX, (int) dragY};
+            outLocation = new int[]{(int) dragX, (int) dragY};
         } else {
-            inLocation = new int[] {(int) dragX, (int) dragY};
+            inLocation = new int[]{(int) dragX, (int) dragY};
             outLocation = pinLocation;
         }
         int offset = inLocation[0] - outLocation[0];
@@ -199,10 +199,10 @@ public class CardLayoutView extends FrameLayout {
                     if (pinBaseView != null) {
                         dragState = DRAG_PIN;
                         Pin<?> pin = pinBaseView.getPin();
-                        Map<String, String> links = pin.getLinks();
+                        HashMap<String, String> links = pin.getLinks();
                         // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
                         if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection() == PinDirection.OUT)) {
-                            dragLinks.put(pin.getActionId(), pin.getId());
+                            dragLinks.put(pin.getId(), pin.getActionId());
                             // 目标方向与自身相反
                             dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
                         } else {
@@ -284,14 +284,14 @@ public class CardLayoutView extends FrameLayout {
         return true;
     }
 
-    private boolean pinAddLinks(PinBaseView<?> pinBaseView, Map<String, String> links) {
+    private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
         Pin<?> pin = pinBaseView.getPin();
         boolean flag = true;
         // 先判断一下插槽是否匹配
-        for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
-            BaseAction action = task.getActionById(entry.getKey());
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseAction action = task.getActionById(entry.getValue());
             if (action == null) continue;
-            Pin<?> linkPin = action.getPinById(entry.getValue());
+            Pin<?> linkPin = action.getPinById(entry.getKey());
             if (!pin.getPinClass().isAssignableFrom(linkPin.getPinClass())) {
                 flag = false;
                 break;
@@ -305,9 +305,9 @@ public class CardLayoutView extends FrameLayout {
 
         if (flag) {
             for (Map.Entry<String, String> entry : links.entrySet()) {
-                BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
+                BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
                 if (card == null) continue;
-                PinBaseView<?> cardPin = card.getPinById(entry.getValue());
+                PinBaseView<?> cardPin = card.getPinById(entry.getKey());
                 if (cardPin == null) continue;
                 // 不能自己首尾相连
                 if (pin.getActionId().equals(cardPin.getPin().getActionId())) continue;
@@ -319,16 +319,15 @@ public class CardLayoutView extends FrameLayout {
         return flag;
     }
 
-    private void linksRemovePin(Map<String, String> links, PinBaseView<?> pinBaseView) {
+    public void linksRemovePin(HashMap<String, String> links, PinBaseView<?> pinBaseView) {
         for (Map.Entry<String, String> entry : links.entrySet()) {
-            BaseCard<? extends BaseAction> card = cardMap.get(entry.getKey());
+            BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
             if (card == null) continue;
-            PinBaseView<?> cardPin = card.getPinById(entry.getValue());
+            PinBaseView<?> cardPin = card.getPinById(entry.getKey());
             if (cardPin == null) continue;
             cardPin.removeLink(pinBaseView.getPin());
         }
     }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {

@@ -5,6 +5,9 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.ShapeAppearanceModel;
+
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinExecute extends PinObject {
@@ -19,6 +22,17 @@ public class PinExecute extends PinObject {
     @Override
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimary, 0);
+    }
+
+    @Override
+    public ShapeAppearanceModel getPinStyle(Context context) {
+        int cornerSize = DisplayUtils.dp2px(context, 6);
+        return ShapeAppearanceModel.builder()
+                .setTopLeftCorner(CornerFamily.CUT, 0)
+                .setTopRightCorner(CornerFamily.CUT, cornerSize)
+                .setBottomLeftCorner(CornerFamily.CUT, 0)
+                .setBottomRightCorner(CornerFamily.CUT, cornerSize)
+                .build();
     }
 
     @Override

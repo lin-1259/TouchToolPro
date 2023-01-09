@@ -32,7 +32,7 @@ public class LogAction extends NormalAction {
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
         PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
         // todo: 输出日志
 
@@ -43,6 +43,6 @@ public class LogAction extends NormalAction {
             Looper.loop();
             Looper.myLooper().quit();
         }
-        return super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable);
     }
 }

@@ -1,6 +1,12 @@
 package top.bogey.touch_tool;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -15,7 +21,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
+import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.PermissionResultCallback;
+import top.bogey.touch_tool.utils.ResultCallback;
 
 public class MainActivity extends AppCompatActivity {
     static {
@@ -32,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> intentLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<String> contentLauncher;
+    private PermissionResultCallback resultCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +62,26 @@ public class MainActivity extends AppCompatActivity {
         DisplayUtils.initParams(this);
 
         intentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-
+            if (resultCallback != null) {
+                resultCallback.onResult(result.getResultCode(), result.getData());
+            }
         });
 
         permissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), result -> {
-
+            if (result && resultCallback != null) resultCallback.onResult(RESULT_OK, null);
         });
 
         contentLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
+            if (result != null && resultCallback != null) {
+                Intent intent = new Intent();
+                intent.setData(result);
+                resultCallback.onResult(RESULT_OK, intent);
+            }
+        });
 
+        binding.getRoot().post(() -> {
+            handleIntent(getIntent());
+            setIntent(null);
         });
     }
 
@@ -94,5 +115,67 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         WorldState.getInstance().resetAppMap(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    public void handleIntent(Intent intent) {
+        if (intent == null) return;
+
+        boolean isBackground = intent.getBooleanExtra(INTENT_KEY_BACKGROUND, false);
+        if (isBackground) {
+            moveTaskToBack(true);
+        }
+
+        String pkgName = intent.getStringExtra(INTENT_KEY_PLAY_PACKAGE);
+        if (pkgName != null && !pkgName.isEmpty()) {
+        }
+
+        boolean showQuickMenu = intent.getBooleanExtra(INTENT_KEY_QUICK_MENU, false);
+        if (showQuickMenu) {
+        }
+
+        boolean startCaptureService = intent.getBooleanExtra(INTENT_KEY_START_CAPTURE, false);
+        if (startCaptureService) {
+            Intent serviceIntent = new Intent(this, MainAccessibilityService.class);
+            serviceIntent.putExtra(INTENT_KEY_START_CAPTURE, true);
+            serviceIntent.putExtra(INTENT_KEY_BACKGROUND, isBackground);
+            startService(serviceIntent);
+        }
+    }
+
+
+
+    public void launchCapture(PermissionResultCallback callback) {
+        resultCallback = callback;
+        MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        intentLauncher.launch(manager.createScreenCaptureIntent());
+    }
+
+    public void launchNotification(PermissionResultCallback callback) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            String permission = Manifest.permission.POST_NOTIFICATIONS;
+            if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+                callback.onResult(Activity.RESULT_OK, null);
+            } else if (shouldShowRequestPermissionRationale(permission)) {
+                AppUtils.showDialog(this, R.string.capture_service_on_tips_4, result -> {
+                    if (result) {
+                        resultCallback = callback;
+                        permissionLauncher.launch(permission);
+                    } else {
+                        callback.onResult(Activity.RESULT_CANCELED, null);
+                    }
+                });
+            } else {
+                resultCallback = callback;
+                permissionLauncher.launch(permission);
+            }
+        } else {
+            callback.onResult(Activity.RESULT_OK, null);
+        }
     }
 }

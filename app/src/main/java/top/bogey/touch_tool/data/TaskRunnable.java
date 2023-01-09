@@ -27,15 +27,13 @@ public class TaskRunnable implements Runnable {
 
     @Override
     public void run() {
-        boolean result = false;
         try {
             callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onStart(this));
-            result = startAction.doAction(WorldState.getInstance(), this);
+            startAction.doAction(WorldState.getInstance(), this);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            boolean finalResult = result;
-            callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this, finalResult));
+            callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
         }
     }
 

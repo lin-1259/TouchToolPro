@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 
@@ -18,6 +19,7 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;
@@ -57,8 +59,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
                 A o = (A) aClass.newInstance();
                 o.x = action.x + 1;
                 o.y = action.y + 1;
-                CardLayoutView parent = (CardLayoutView) getParent();
-                parent.addAction(o);
+                getParentCard().addAction(o);
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException(e);
             }
@@ -68,8 +69,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             if (needDelete) {
                 binding.removeButton.setChecked(false);
                 needDelete = false;
-                CardLayoutView parent = (CardLayoutView) getParent();
-                parent.removeAction(action);
+                getParentCard().removeAction(action);
             } else {
                 binding.removeButton.setChecked(true);
                 needDelete = true;
@@ -82,17 +82,43 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
 
         binding.title.setText(action.getTitle(context));
 
-        for (Pin<?> pin : action.getPins()) {
+        for (Pin<? extends PinObject> pin : action.getPins()) {
             if (pin.getDirection() == PinDirection.IN) {
-                PinInView pinInView = new PinInView(context, action, pin);
+                PinInView pinInView = new PinInView(getContext(), this, pin);
                 binding.inBox.addView(pinInView);
                 pinBaseViews.add(pinInView);
             } else if (pin.getDirection() == PinDirection.OUT) {
-                PinOutView pinOutView = new PinOutView(context, action, pin);
+                PinOutView pinOutView = new PinOutView(getContext(), this, pin);
                 binding.outBox.addView(pinOutView);
                 pinBaseViews.add(pinOutView);
             }
         }
+    }
+
+    public void addMorePinView(Pin<? extends PinObject> pin) {
+        action.addPin(action.getPins().size() - 1, pin);
+        if (pin.getDirection() == PinDirection.IN) {
+            PinInView pinInView = new PinInView(getContext(), this, pin);
+            binding.inBox.addView(pinInView, binding.inBox.getChildCount() - 1);
+            pinBaseViews.add(pinInView);
+        } else if (pin.getDirection() == PinDirection.OUT) {
+            PinOutView pinOutView = new PinOutView(getContext(), this, pin);
+            binding.outBox.addView(pinOutView, binding.outBox.getChildCount() - 1);
+            pinBaseViews.add(pinOutView);
+        }
+    }
+
+    public void removeMorePinView(Pin<? extends PinObject> pin) {
+        Pin<? extends PinObject> removePin = action.removePin(pin);
+        if (removePin == null) return;
+
+        PinBaseView<?> pinBaseView = getPinById(removePin.getId());
+        LinearLayout linearLayout = removePin.getDirection() == PinDirection.IN ? binding.inBox : binding.outBox;
+        linearLayout.removeView(pinBaseView);
+    }
+
+    public Task getTask() {
+        return task;
     }
 
     public A getAction() {
@@ -119,5 +145,9 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             }
         }
         return null;
+    }
+
+    public CardLayoutView getParentCard() {
+        return (CardLayoutView) getParent();
     }
 }

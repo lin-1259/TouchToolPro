@@ -42,7 +42,8 @@ public class WidgetStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+        if (!pin.getId().equals(statePin.getId())) return;
         PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
         MainAccessibilityService service = MainApplication.getService();
         AccessibilityNodeInfo root = service.getRootInActiveWindow();

@@ -4,7 +4,7 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-public class PinValue extends PinObject{
+public class PinValue extends PinObject {
 
     public PinValue() {
         super();

@@ -19,7 +19,7 @@ import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
 public class PinPath extends PinValue {
     private final ArrayList<TouchPath> paths = new ArrayList<>();
-    private final int screen;
+    private int screen;
     private final FloatGravity gravity;
     private final Point offset;
 
@@ -44,25 +44,31 @@ public class PinPath extends PinValue {
         this.offset = offset;
     }
 
-    public List<Path> getRealPaths(Context context, boolean fixed) {
-        List<Path> paths = new ArrayList<>();
-        List<TouchPath> touchPaths = getPaths(context);
+    public ArrayList<Path> getRealPaths(Context context, boolean fixed) {
+        ArrayList<Path> paths = new ArrayList<>();
+        ArrayList<TouchPath> touchPaths = getPaths(context);
         for (TouchPath touchPath : touchPaths) {
             paths.add(touchPath.getPath(fixed));
         }
         return paths;
     }
 
-    public List<TouchPath> getPaths(Context context) {
+    public ArrayList<TouchPath> getPaths(Context context) {
         Point start = getStartScreenPoint(context);
         int width = DisplayUtils.getScreen(context);
         float scale = width * 1f / screen;
 
-        List<TouchPath> pathList = new ArrayList<>();
+        ArrayList<TouchPath> pathList = new ArrayList<>();
         for (TouchPath path : paths) {
             pathList.add(new TouchPath(path.points, start, scale));
         }
         return pathList;
+    }
+
+    public void setPaths(Context context, ArrayList<TouchPath> paths) {
+        screen = DisplayUtils.getScreen(context);
+        this.paths.clear();
+        this.paths.addAll(paths);
     }
 
     private Point getStartScreenPoint(Context context) {
@@ -110,7 +116,7 @@ public class PinPath extends PinValue {
 
     public static class TouchPath implements Parcelable {
         private transient int pointerId = -1;
-        private List<Point> points = new ArrayList<>();
+        private ArrayList<Point> points = new ArrayList<>();
 
         public TouchPath() {
         }
@@ -119,7 +125,7 @@ public class PinPath extends PinValue {
             points = in.createTypedArrayList(Point.CREATOR);
         }
 
-        public TouchPath(List<Point> points, Point offset, float scale) {
+        public TouchPath(ArrayList<Point> points, Point offset, float scale) {
             for (Point point : points) {
                 this.points.add(new Point((int) (point.x * scale) + offset.x, (int) (point.y * scale) + offset.y));
             }
@@ -137,9 +143,9 @@ public class PinPath extends PinValue {
             points.forEach(point -> point.set(point.x + x, point.y + y));
         }
 
-        public void toLine(){
+        public void toLine() {
             if (points.size() > 2) {
-                setPoints(Arrays.asList(points.get(0), points.get(points.size() - 1)));
+                setPoints(new ArrayList<>(Arrays.asList(points.get(0), points.get(points.size() - 1))));
             }
         }
 
@@ -188,27 +194,12 @@ public class PinPath extends PinValue {
             this.pointerId = pointerId;
         }
 
-        public List<Point> getPoints() {
+        public ArrayList<Point> getPoints() {
             return points;
         }
 
-        public void setPoints(List<Point> points) {
+        public void setPoints(ArrayList<Point> points) {
             this.points = points;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            TouchPath path = (TouchPath) o;
-
-            return points.equals(path.points);
-        }
-
-        @Override
-        public int hashCode() {
-            return points.hashCode();
         }
     }
 }

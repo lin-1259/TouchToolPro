@@ -20,25 +20,23 @@ public class ValueConvertToString extends BaseAction {
 
     public ValueConvertToString() {
         super();
-        valuePin = addPin(new Pin<>(new PinValue(), R.string.action_convert_subtitle_object));
-        stringPin = addPin(new Pin<>(new PinString(), R.string.action_convert_subtitle_string, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_value_convert_string_subtitle_object;
+        valuePin = addPin(new Pin<>(new PinValue(), R.string.action_value_convert_string_subtitle_value));
+        stringPin = addPin(new Pin<>(new PinString(), R.string.action_value_convert_string_subtitle_string, PinDirection.OUT, PinSlotType.MULTI));
+        titleId = R.string.action_value_convert_string_title;
     }
 
     public ValueConvertToString(Parcel in) {
         super(in);
         valuePin = addPin(pinsTmp.remove(0));
         stringPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_value_convert_string_subtitle_object;
+        titleId = R.string.action_value_convert_string_title;
     }
 
     @Override
-    public boolean doAction(WorldState worldState, TaskRunnable runnable) {
-        return false;
-    }
+    public void doAction(WorldState worldState, TaskRunnable runnable) {}
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         PinValue value = (PinValue) getPinValue(worldState, task, valuePin);
         PinString string = (PinString) getPinValue(worldState, task, stringPin);
         string.setValue(value.toString());

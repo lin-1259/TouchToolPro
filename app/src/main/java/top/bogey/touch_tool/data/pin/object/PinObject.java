@@ -6,6 +6,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.shape.CornerFamily;
+import com.google.android.material.shape.ShapeAppearanceModel;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -15,7 +18,7 @@ public class PinObject implements Parcelable {
     private final String cls;
 
     public PinObject() {
-        cls = getClass().getSimpleName();
+        cls = getClass().getName();
     }
 
     public PinObject(Parcel in) {
@@ -26,10 +29,8 @@ public class PinObject implements Parcelable {
         @Override
         public PinObject createFromParcel(Parcel in) {
             String cls = in.readString();
-            Package aPackage = getClass().getPackage();
-            if (aPackage == null) return null;
             try {
-                Class<?> aClass = Class.forName(aPackage.getName() + "." + cls);
+                Class<?> aClass = Class.forName(cls);
                 Constructor<?> constructor = aClass.getConstructor(Parcel.class);
                 Object o = constructor.newInstance(in);
                 return (PinObject) o;
@@ -47,6 +48,16 @@ public class PinObject implements Parcelable {
 
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorOutlineVariant, 0);
+    }
+
+    public ShapeAppearanceModel getPinStyle(Context context) {
+        int cornerSize = DisplayUtils.dp2px(context, 6);
+        return ShapeAppearanceModel.builder()
+                .setTopLeftCorner(CornerFamily.ROUNDED, cornerSize)
+                .setTopRightCorner(CornerFamily.ROUNDED, cornerSize)
+                .setBottomLeftCorner(CornerFamily.ROUNDED, cornerSize)
+                .setBottomRightCorner(CornerFamily.ROUNDED, cornerSize)
+                .build();
     }
 
     @Override
