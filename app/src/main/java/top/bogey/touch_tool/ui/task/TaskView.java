@@ -10,12 +10,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.action.convert.ValueConvertToString;
-import top.bogey.touch_tool.data.action.logic.ConditionLogicAction;
+import top.bogey.touch_tool.data.action.convert.BoolConvertToAnd;
+import top.bogey.touch_tool.data.action.convert.IntConvertToPosition;
+import top.bogey.touch_tool.data.action.convert.PositionConvertToInt;
 import top.bogey.touch_tool.data.action.logic.ForLoopLogicAction;
-import top.bogey.touch_tool.data.action.logic.SequenceLogicAction;
-import top.bogey.touch_tool.data.action.start.NormalStartAction;
-import top.bogey.touch_tool.data.action.state.TextStateAction;
+import top.bogey.touch_tool.data.action.operator.IntAddAction;
+import top.bogey.touch_tool.data.action.operator.IntDivAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -29,17 +29,17 @@ public class TaskView extends Fragment {
         ForLoopLogicAction startAction = new ForLoopLogicAction();
         task.addAction(startAction);
         startAction.x = 1;
-        startAction.y = 7;
+        startAction.y = 1;
 
-        TextStateAction delayAction = new TextStateAction();
+        IntAddAction delayAction = new IntAddAction();
         task.addAction(delayAction);
-        delayAction.x = 2;
+        delayAction.x = 1;
         delayAction.y = 5;
 
-        SequenceLogicAction delayAction2 = new SequenceLogicAction();
+        IntDivAction delayAction2 = new IntDivAction();
         task.addAction(delayAction2);
-        delayAction2.x = 3;
-        delayAction2.y = 5;
+        delayAction2.x = 1;
+        delayAction2.y = 10;
 
         binding.cardLayout.setTask(task);
 

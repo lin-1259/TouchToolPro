@@ -153,12 +153,14 @@
     <string name="action_value_convert_string_subtitle_value">对象</string>
     <string name="action_value_convert_string_subtitle_string">文本</string>
 
+    <string name="action_position_convert_int_title">拆分为数字</string>
     <string name="action_int_convert_position_title">组合为位置</string>
-    <string name="action_int_convert_position_subtitle_x">X轴</string>
-    <string name="action_int_convert_position_subtitle_y">Y轴</string>
+    <string name="action_int_convert_position_subtitle_x">X</string>
+    <string name="action_int_convert_position_subtitle_y">Y</string>
     <string name="action_int_convert_position_subtitle_position">位置</string>
 
-    <string name="action_bool_convert_and_title">所有条件都达成</string>
+    <string name="action_bool_convert_or_title">任何条件达成</string>
+    <string name="action_bool_convert_and_title">所有条件达成</string>
     <string name="action_bool_convert_and_subtitle_condition">条件</string>
 
 
@@ -180,6 +182,14 @@
 
     <string name="action_sequence_logic_title">顺序执行</string>
     <string name="action_sequence_logic_subtitle_start">执行</string>
+
+
+    <!-- 任务 - 加减乘除 -->
+    <string name="action_int_add_operator_title">相加 +</string>
+    <string name="action_int_reduce_operator_title">相减 -</string>
+    <string name="action_int_multi_operator_title">相乘 ×</string>
+    <string name="action_int_div_operator_title">相除 ÷</string>
+
 
 
     <string name="sort">排序</string>

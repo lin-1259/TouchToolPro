@@ -10,6 +10,7 @@ import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
@@ -23,7 +24,7 @@ public class SequenceLogicAction extends BaseAction {
         firstPin = addPin(new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT));
         addPin(new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT));
         Pin<PinExecute> executePin = new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT);
-        addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinDirection.OUT));
+        addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinDirection.OUT, PinSlotType.EMPTY));
         titleId = R.string.action_sequence_logic_title;
     }
 

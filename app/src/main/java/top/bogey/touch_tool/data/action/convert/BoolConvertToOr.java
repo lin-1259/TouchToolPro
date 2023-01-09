@@ -16,21 +16,21 @@ import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
-public class BoolConvertToAnd extends BaseAction {
+public class BoolConvertToOr extends BaseAction {
     protected final Pin<? extends PinObject> outConditionPin;
     protected final Pin<? extends PinObject> firstConditionPin;
 
-    public BoolConvertToAnd() {
+    public BoolConvertToOr() {
         super();
         outConditionPin = addPin(new Pin<>(new PinBoolean(), R.string.action_state_subtitle_state, PinDirection.OUT, PinSlotType.MULTI));
         firstConditionPin = addPin(new Pin<>(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition));
         addPin(new Pin<>(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition));
         Pin<PinBoolean> executePin = new Pin<>(new PinBoolean(false), R.string.action_bool_convert_and_subtitle_condition);
         addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinSlotType.EMPTY));
-        titleId = R.string.action_bool_convert_and_title;
+        titleId = R.string.action_bool_convert_or_title;
     }
 
-    public BoolConvertToAnd(Parcel in) {
+    public BoolConvertToOr(Parcel in) {
         super(in);
         outConditionPin = addPin(pinsTmp.remove(0));
         firstConditionPin = addPin(pinsTmp.remove(0));
@@ -38,7 +38,7 @@ public class BoolConvertToAnd extends BaseAction {
             addPin(pin);
         }
         pinsTmp.clear();
-        titleId = R.string.action_bool_convert_and_title;
+        titleId = R.string.action_bool_convert_or_title;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class BoolConvertToAnd extends BaseAction {
         for (; i < pins.size() - 1; i++) {
             Pin<? extends PinObject> pinObject = pins.get(i);
             PinBoolean result = (PinBoolean) getPinValue(worldState, task, pinObject);
-            value.setValue(value.getValue() && result.getValue());
+            value.setValue(value.getValue() || result.getValue());
         }
     }
 }

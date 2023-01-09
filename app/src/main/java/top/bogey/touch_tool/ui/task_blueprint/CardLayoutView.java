@@ -147,7 +147,7 @@ public class CardLayoutView extends FrameLayout {
         int[] inLocation = inPin.getSlotLocationOnScreen();
 
         int offset = inLocation[0] - outLocation[0];
-        offset = offset > gridSize * 4 ? offset : gridSize * 8;
+        offset = offset > gridSize ? offset : gridSize * 8;
         int x1 = outLocation[0] + offset;
         int x2 = inLocation[0] - offset;
         path.moveTo(outLocation[0], outLocation[1]);
@@ -170,7 +170,7 @@ public class CardLayoutView extends FrameLayout {
             outLocation = pinLocation;
         }
         int offset = inLocation[0] - outLocation[0];
-        offset = offset > gridSize * 4 ? offset : gridSize * 8;
+        offset = offset > gridSize ? offset : gridSize * 8;
         int x1 = outLocation[0] + offset;
         int x2 = inLocation[0] - offset;
         path.moveTo(outLocation[0], outLocation[1]);
@@ -197,21 +197,23 @@ public class CardLayoutView extends FrameLayout {
                     dragCard = card;
                     PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
                     if (pinBaseView != null) {
-                        dragState = DRAG_PIN;
                         Pin<?> pin = pinBaseView.getPin();
-                        HashMap<String, String> links = pin.getLinks();
-                        // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
-                        if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection() == PinDirection.OUT)) {
-                            dragLinks.put(pin.getId(), pin.getActionId());
-                            // 目标方向与自身相反
-                            dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
-                        } else {
-                            // 否则就是挪线
-                            dragLinks.putAll(links);
-                            dragDirection = pin.getDirection();
-                            linksRemovePin(links, pinBaseView);
-                            links.clear();
-                            pinBaseView.refreshPinUI();
+                        if (pin.getSlotType() != PinSlotType.EMPTY) {
+                            dragState = DRAG_PIN;
+                            HashMap<String, String> links = pin.getLinks();
+                            // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
+                            if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection() == PinDirection.OUT)) {
+                                dragLinks.put(pin.getId(), pin.getActionId());
+                                // 目标方向与自身相反
+                                dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
+                            } else {
+                                // 否则就是挪线
+                                dragLinks.putAll(links);
+                                dragDirection = pin.getDirection();
+                                linksRemovePin(links, pinBaseView);
+                                links.clear();
+                                pinBaseView.refreshPinUI();
+                            }
                         }
                     }
                     dragX = rawX;

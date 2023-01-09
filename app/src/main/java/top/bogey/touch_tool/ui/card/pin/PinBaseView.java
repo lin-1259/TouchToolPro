@@ -83,10 +83,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
-        removeButton.setOnClickListener(v -> {
-            card.getParentCard().linksRemovePin(pin.getLinks(), this);
-            card.removeMorePinView(pin);
-        });
+        removeButton.setOnClickListener(v -> card.removeMorePinView(this));
 
         Class<? extends PinObject> aClass = pin.getPinClass();
         if (PinTimeArea.class.equals(aClass)) {

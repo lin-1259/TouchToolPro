@@ -59,7 +59,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
                 A o = (A) aClass.newInstance();
                 o.x = action.x + 1;
                 o.y = action.y + 1;
-                getParentCard().addAction(o);
+                ((CardLayoutView) getParent()).addAction(o);
             } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
                 throw new RuntimeException(e);
             }
@@ -69,7 +69,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             if (needDelete) {
                 binding.removeButton.setChecked(false);
                 needDelete = false;
-                getParentCard().removeAction(action);
+                ((CardLayoutView) getParent()).removeAction(action);
             } else {
                 binding.removeButton.setChecked(true);
                 needDelete = true;
@@ -108,11 +108,12 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         }
     }
 
-    public void removeMorePinView(Pin<? extends PinObject> pin) {
+    public void removeMorePinView(PinBaseView<?> pinBaseView) {
+        Pin<?> pin = pinBaseView.getPin();
         Pin<? extends PinObject> removePin = action.removePin(pin);
         if (removePin == null) return;
+        ((CardLayoutView) getParent()).linksRemovePin(removePin.getLinks(), pinBaseView);
 
-        PinBaseView<?> pinBaseView = getPinById(removePin.getId());
         LinearLayout linearLayout = removePin.getDirection() == PinDirection.IN ? binding.inBox : binding.outBox;
         linearLayout.removeView(pinBaseView);
     }
@@ -145,9 +146,5 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             }
         }
         return null;
-    }
-
-    public CardLayoutView getParentCard() {
-        return (CardLayoutView) getParent();
     }
 }
