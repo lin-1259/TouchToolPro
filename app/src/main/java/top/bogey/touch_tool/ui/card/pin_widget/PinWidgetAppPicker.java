@@ -21,25 +21,25 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
-import top.bogey.touch_tool.databinding.PinWidgetSelectAppBinding;
-import top.bogey.touch_tool.databinding.PinWidgetSelectAppItemBinding;
+import top.bogey.touch_tool.databinding.PinWidgetAppPickerBinding;
+import top.bogey.touch_tool.databinding.PinWidgetAppPickerItemBinding;
 import top.bogey.touch_tool.ui.app.AppView;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
-public class PinWidgetSelectApp extends BindingView<PinWidgetSelectAppBinding> {
+public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
     private final PinSelectApp helper;
 
-    public PinWidgetSelectApp(@NonNull Context context, PinSelectApp helper) {
+    public PinWidgetAppPicker(@NonNull Context context, PinSelectApp helper) {
         this(context, null, helper);
     }
 
-    public PinWidgetSelectApp(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public PinWidgetAppPicker(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, new PinSelectApp(AppView.SINGLE_MODE));
     }
 
-    public PinWidgetSelectApp(@NonNull Context context, @Nullable AttributeSet attrs, PinSelectApp helper) {
-        super(context, attrs, PinWidgetSelectAppBinding.class);
+    public PinWidgetAppPicker(@NonNull Context context, @Nullable AttributeSet attrs, PinSelectApp helper) {
+        super(context, attrs, PinWidgetAppPickerBinding.class);
         if (helper == null) throw new RuntimeException("不是有效的引用");
         this.helper = helper;
 
@@ -63,7 +63,7 @@ public class PinWidgetSelectApp extends BindingView<PinWidgetSelectAppBinding> {
         LinearLayout appIconBox = binding.includeAppsIconBox;
         if (includeCommon) {
             Drawable drawable = getContext().getApplicationInfo().loadIcon(manager);
-            PinWidgetSelectAppItemBinding itemBinding = PinWidgetSelectAppItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
+            PinWidgetAppPickerItemBinding itemBinding = PinWidgetAppPickerItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
             itemBinding.icon.setImageDrawable(drawable);
             ((View) itemBinding.numberText.getParent()).setVisibility(GONE);
 
@@ -76,7 +76,7 @@ public class PinWidgetSelectApp extends BindingView<PinWidgetSelectAppBinding> {
         int index = 0;
         for (CharSequence packageName : packageNames) {
             if (TextUtils.equals(packageName, commonPackage)) continue;
-            PinWidgetSelectAppItemBinding itemBinding = PinWidgetSelectAppItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
+            PinWidgetAppPickerItemBinding itemBinding = PinWidgetAppPickerItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
             if (index == 4 && packageNames.size() > (includeCommon ? 6 : 5)) {
                 itemBinding.icon.setImageResource(R.drawable.icon_more);
                 ((View) itemBinding.numberText.getParent()).setVisibility(GONE);

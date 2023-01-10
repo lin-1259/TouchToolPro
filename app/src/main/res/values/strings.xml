@@ -87,7 +87,7 @@
     <string name="action_time_start_subtitle_periodic">间隔</string>
     <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
-    <string name="action_battery_start_title">电量范围内开始</string>
+    <string name="action_battery_start_title">到电量范围开始</string>
     <string name="action_battery_start_subtitle_battery">范围</string>
 
     <string name="action_battery_charging_start_title">电池状态变更开始</string>
@@ -147,6 +147,15 @@
     <string name="action_touch_path_action_subtitle_time">时长</string>
     <string name="action_touch_path_action_subtitle_offset">随机偏移</string>
 
+    <string name="action_system_ability_action_title">系统按键动作</string>
+
+    <string name="action_screen_action_title">亮屏或息屏</string>
+    <string name="action_screen_action_subtitle_state">亮屏</string>
+
+    <string name="action_open_capture_action_title">请求开关录屏</string>
+    <string name="action_open_capture_subtitle_state">开启</string>
+
+    <string name="action_open_app_action_title">打开应用或界面</string>
 
     <!-- 任务 - 转换 -->
     <string name="action_value_convert_string_title">转换为文本</string>

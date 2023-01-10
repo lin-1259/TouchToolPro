@@ -26,4 +26,12 @@
         <item>锁屏</item>
         <item>解锁</item>
     </string-array>
+
+    <string-array name="system_ability">
+        <item>使用 返回 按键</item>
+        <item>使用 主页 按键</item>
+        <item>打开 最近应用 界面</item>
+        <item>打开 通知 界面</item>
+        <item>手机截屏</item>
+    </string-array>
 </resources>

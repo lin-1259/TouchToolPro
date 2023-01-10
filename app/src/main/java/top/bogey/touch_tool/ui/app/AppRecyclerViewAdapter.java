@@ -154,11 +154,11 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             });
 
             binding.selectAppButton.setOnClickListener(v -> {
-                CharSequence[] choices = new CharSequence[info.activities.length];
-                ActivityInfo[] activities = info.activities;
-                for (int i = 0; i < activities.length; i++) {
-                    ActivityInfo activityInfo = activities[i];
-                    choices[i] = activityInfo.name;
+                ArrayList<CharSequence> choices = new ArrayList<>();
+                for (ActivityInfo activityInfo : info.activities) {
+                    if (activityInfo.exported) {
+                        choices.add(activityInfo.name);
+                    }
                 }
                 List<CharSequence> charSequences = selectedActivities.get(info.packageName);
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
@@ -168,41 +168,43 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
                     int index = 0;
                     if (charSequences != null) {
-                        for (int i = 0; i < choices.length; i++) {
-                            CharSequence choice = choices[i];
+                        for (int i = 0; i < choices.size(); i++) {
+                            CharSequence choice = choices.get(i);
                             if (charSequences.contains(choice)) {
                                 index = i;
                                 break;
                             }
                         }
                     }
-                    builder.setSingleChoiceItems(choices, index, null)
+                    CharSequence[] ch = new CharSequence[choices.size()];
+                    builder.setSingleChoiceItems(choices.toArray(ch), index, null)
                             .setPositiveButton(
                                     R.string.enter,
                                     (DialogInterface dialog, int which) -> {
                                         int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                                         if (checkedItemPosition != AdapterView.INVALID_POSITION) {
                                             selectedActivities.clear();
-                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(choices[checkedItemPosition])));
+                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(choices.get(checkedItemPosition))));
                                             notifyItemChanged(getAdapterPosition());
                                             callback.onResult(true);
                                         }
                                     });
                 } else {
                     if (charSequences == null) charSequences = new ArrayList<>();
-                    boolean[] choicesInitial = new boolean[choices.length];
-                    for (int i = 0; i < choices.length; i++) {
-                        CharSequence choice = choices[i];
+                    boolean[] choicesInitial = new boolean[choices.size()];
+                    for (int i = 0; i < choices.size(); i++) {
+                        CharSequence choice = choices.get(i);
                         choicesInitial[i] = charSequences.contains(choice);
                     }
 
-                    builder.setMultiChoiceItems(choices, choicesInitial, null)
+                    CharSequence[] ch = new CharSequence[choices.size()];
+                    builder.setMultiChoiceItems(choices.toArray(ch), choicesInitial, null)
                             .setPositiveButton(R.string.enter, (dialog, which) -> {
                                 SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
                                 ArrayList<CharSequence> result = new ArrayList<>();
-                                for (int i = 0; i < choices.length; i++) {
+                                for (int i = 0; i < choices.size(); i++) {
                                     if (checkedItemPositions.get(i)) {
-                                        result.add(choices[i]);
+                                        result.add(choices.get(i));
                                     }
                                 }
                                 selectedActivities.put(info.packageName, result);

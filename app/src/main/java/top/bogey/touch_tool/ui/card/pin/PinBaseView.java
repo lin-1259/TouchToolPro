@@ -40,7 +40,7 @@ import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetImagePicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLongPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetPathPicker;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSelectApp;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAppPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetStringPicker;
@@ -89,7 +89,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         if (PinTimeArea.class.equals(aClass)) {
             pinBox.addView(new PinWidgetTimeArea(context, (PinTimeArea) pin.getValue()));
         } else if (PinSelectApp.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetSelectApp(context, (PinSelectApp) pin.getValue()));
+            pinBox.addView(new PinWidgetAppPicker(context, (PinSelectApp) pin.getValue()));
         } else if (PinSpinner.class.equals(aClass)) {
             pinBox.addView(new PinWidgetSpinner(context, (PinSpinner) pin.getValue()));
         } else if (PinBoolean.class.equals(aClass)) {

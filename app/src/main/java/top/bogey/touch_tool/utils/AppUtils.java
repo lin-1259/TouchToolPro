@@ -59,6 +59,15 @@ public class AppUtils {
         }
     }
 
+    public static void gotoActivity(Context context, String pkgName, String activity) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setClassName(pkgName, activity);
+            context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
     public static boolean isIgnoredBattery(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());

@@ -20,8 +20,8 @@ import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 public class PinPath extends PinValue {
     private final ArrayList<TouchPath> paths = new ArrayList<>();
     private int screen;
-    private final FloatGravity gravity;
-    private final Point offset;
+    private FloatGravity gravity;
+    private Point offset;
 
     public PinPath() {
         super();
@@ -93,8 +93,32 @@ public class PinPath extends PinValue {
         return start;
     }
 
+    public ArrayList<TouchPath> getPaths() {
+        return paths;
+    }
+
+    public int getScreen() {
+        return screen;
+    }
+
+    public void setScreen(int screen) {
+        this.screen = screen;
+    }
+
     public FloatGravity getGravity() {
         return gravity;
+    }
+
+    public void setGravity(FloatGravity gravity) {
+        this.gravity = gravity;
+    }
+
+    public Point getOffset() {
+        return offset;
+    }
+
+    public void setOffset(Point offset) {
+        this.offset = offset;
     }
 
     @SuppressLint("DefaultLocale")

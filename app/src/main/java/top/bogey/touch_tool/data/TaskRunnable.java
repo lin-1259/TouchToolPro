@@ -1,5 +1,7 @@
 package top.bogey.touch_tool.data;
 
+import android.os.Looper;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.Future;
@@ -27,14 +29,16 @@ public class TaskRunnable implements Runnable {
 
     @Override
     public void run() {
+        Looper.prepare();
+        Looper.loop();
         try {
             callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onStart(this));
             startAction.doAction(WorldState.getInstance(), this);
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
         }
+        callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
+        Looper.myLooper().quit();
     }
 
     public void addCallback(TaskRunningCallback callback) {

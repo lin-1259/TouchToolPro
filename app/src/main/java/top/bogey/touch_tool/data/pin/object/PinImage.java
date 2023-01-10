@@ -15,7 +15,6 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinImage extends PinValue {
     private transient Bitmap bitmap;
-
     private transient Bitmap scaleBitmap;
     private transient float scale = 1;
 

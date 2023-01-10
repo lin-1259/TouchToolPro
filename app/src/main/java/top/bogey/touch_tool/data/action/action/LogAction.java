@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.os.Looper;
 import android.os.Parcel;
 import android.widget.Toast;
 
@@ -38,10 +37,7 @@ public class LogAction extends NormalAction {
 
         PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
         if (showToast.getValue()) {
-            Looper.prepare();
             Toast.makeText(MainApplication.getService(), pinString.getValue(), Toast.LENGTH_SHORT).show();
-            Looper.loop();
-            Looper.myLooper().quit();
         }
         super.doAction(worldState, runnable);
     }

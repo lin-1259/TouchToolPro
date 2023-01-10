@@ -8,10 +8,10 @@ import androidx.annotation.NonNull;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinColor extends PinValue {
-    private final int[] color;
-    private final int screen;
-    private final int minSize;
-    private final int maxSize;
+    private int[] color;
+    private int screen;
+    private int minSize;
+    private int maxSize;
 
     public PinColor() {
         super();
@@ -19,13 +19,6 @@ public class PinColor extends PinValue {
         screen = 1080;
         minSize = 0;
         maxSize = 0;
-    }
-
-    public PinColor(Context context, int[] color, int minSize, int maxSize) {
-        screen = DisplayUtils.getScreen(context);
-        this.color = color;
-        this.minSize = minSize;
-        this.maxSize = maxSize;
     }
 
     public PinColor(Parcel in) {
@@ -37,20 +30,61 @@ public class PinColor extends PinValue {
         maxSize = in.readInt();
     }
 
+    public boolean isValid() {
+        for (int i : color) {
+            if (i < 0) return false;
+        }
+        return true;
+    }
+
+    public int getMinSize(Context context) {
+        int screen = DisplayUtils.getScreen(context);
+        if (screen == this.screen) return minSize;
+        else {
+            float scale = screen * 1f / this.screen;
+            return (int) (scale * minSize);
+        }
+    }
+
+    public int getMaxSize(Context context) {
+        int screen = DisplayUtils.getScreen(context);
+        if (screen == this.screen) return maxSize;
+        else {
+            float scale = screen * 1f / this.screen;
+            return (int) (scale * maxSize);
+        }
+    }
+
     public int[] getColor() {
         return color;
+    }
+
+    public void setColor(int[] color) {
+        this.color = color;
     }
 
     public int getScreen() {
         return screen;
     }
 
+    public void setScreen(int screen) {
+        this.screen = screen;
+    }
+
     public int getMinSize() {
         return minSize;
     }
 
+    public void setMinSize(int minSize) {
+        this.minSize = minSize;
+    }
+
     public int getMaxSize() {
         return maxSize;
+    }
+
+    public void setMaxSize(int maxSize) {
+        this.maxSize = maxSize;
     }
 
     @Override

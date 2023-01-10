@@ -47,11 +47,9 @@ public class ColorStateAction extends StateAction {
         }
 
         PinColor color = (PinColor) getPinValue(worldState, task, colorPin);
-        for (int i : color.getColor()) {
-            if (i == -1) {
-                value.setValue(false);
-                return;
-            }
+        if (!color.isValid()) {
+            value.setValue(false);
+            return;
         }
 
         List<Rect> rects = service.binder.matchColor(color.getColor());
