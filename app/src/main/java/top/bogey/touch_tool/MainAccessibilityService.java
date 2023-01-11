@@ -92,6 +92,12 @@ public class MainAccessibilityService extends AccessibilityService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        MainApplication.setService(this);
+        if (intent != null) {
+            boolean startCaptureService = intent.getBooleanExtra(MainActivity.INTENT_KEY_START_CAPTURE, false);
+            boolean isBackground = intent.getBooleanExtra(MainActivity.INTENT_KEY_BACKGROUND, false);
+            if (startCaptureService) startCaptureService(isBackground, captureResultCallback);
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -106,6 +112,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public void onDestroy() {
         super.onDestroy();
         if (batteryReceiver != null) unregisterReceiver(batteryReceiver);
+        stopCaptureService();
 
         serviceConnected = false;
         MainApplication.setService(null);
@@ -115,11 +122,14 @@ public class MainAccessibilityService extends AccessibilityService {
         return serviceConnected && Boolean.TRUE.equals(serviceEnabled.getValue());
     }
 
+    public boolean isServiceConnected() {
+        return serviceConnected;
+    }
+
     public void setServiceEnabled(boolean enabled) {
         serviceEnabled.setValue(enabled);
         SettingSave.getInstance().setServiceEnabled(enabled);
     }
-
 
     public void addCallback(TaskRunningCallback callback) {
         callbacks.add(callback);

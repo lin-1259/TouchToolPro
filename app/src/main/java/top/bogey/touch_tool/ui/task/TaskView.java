@@ -16,6 +16,9 @@ import top.bogey.touch_tool.data.action.convert.PositionConvertToInt;
 import top.bogey.touch_tool.data.action.logic.ForLoopLogicAction;
 import top.bogey.touch_tool.data.action.operator.IntAddAction;
 import top.bogey.touch_tool.data.action.operator.IntDivAction;
+import top.bogey.touch_tool.data.action.state.ColorStateAction;
+import top.bogey.touch_tool.data.action.state.ImageStateAction;
+import top.bogey.touch_tool.data.action.state.WidgetStateAction;
 import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
 
 public class TaskView extends Fragment {
@@ -31,12 +34,12 @@ public class TaskView extends Fragment {
         startAction.x = 1;
         startAction.y = 1;
 
-        IntAddAction delayAction = new IntAddAction();
+        ColorStateAction delayAction = new ColorStateAction();
         task.addAction(delayAction);
         delayAction.x = 1;
         delayAction.y = 5;
 
-        IntDivAction delayAction2 = new IntDivAction();
+        ImageStateAction delayAction2 = new ImageStateAction();
         task.addAction(delayAction2);
         delayAction2.x = 1;
         delayAction2.y = 10;

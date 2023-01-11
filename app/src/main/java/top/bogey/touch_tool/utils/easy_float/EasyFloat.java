@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.utils.easy_float;
 
+import android.accessibilityservice.AccessibilityService;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
@@ -15,10 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import top.bogey.touch_tool.MainActivity;
-import top.bogey.touch_tool.MainApplication;
-import top.bogey.touch_tool.utils.AppUtils;
-
 public class EasyFloat {
     private static final String TAG = "DEFAULT_TAG";
     public static final int FOCUSABLE = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_LAYOUT_NO_LIMITS | LayoutParams.FLAG_SHOW_WHEN_LOCKED;
@@ -27,7 +24,7 @@ public class EasyFloat {
     private static final HashMap<String, FloatViewHelper> views = new HashMap<>();
     private static final List<String> tags = new ArrayList<>();
 
-    public static Builder with(Context context) {
+    public static Builder with(AccessibilityService context) {
         return new Builder(context);
     }
 
@@ -129,7 +126,7 @@ public class EasyFloat {
         private final Context context;
         private final FloatConfig config = new FloatConfig();
 
-        public Builder(Context context) {
+        public Builder(AccessibilityService context) {
             this.context = context;
         }
 
@@ -208,12 +205,7 @@ public class EasyFloat {
             if (config.tag == null || config.tag.isEmpty())
                 config.tag = TAG;
 
-            if (AppUtils.checkFloatPermission(context)) {
-                createFloatView();
-            } else {
-                MainActivity activity = MainApplication.getActivity();
-//                activity.launchFloat(null);
-            }
+            createFloatView();
         }
 
         private void createFloatView() {

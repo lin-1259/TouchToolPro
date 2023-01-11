@@ -18,7 +18,6 @@ import java.util.HashMap;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinColor;
@@ -32,20 +31,21 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinTimeArea;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
+import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAdd;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAppPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetColorPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetImagePicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetInteger;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLongPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetPathPicker;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAppPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetStringPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTimeArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetWidgetPicker;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -97,11 +97,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         } else if (PinInteger.class.equals(aClass)) {
             pinBox.addView(new PinWidgetInteger(context, (PinInteger) pin.getValue()));
         } else if (PinString.class.equals(aClass)) {
-            if (pin.getSubType() == PinSubType.NORMAL) {
-                pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
-            } else {
-                pinBox.addView(new PinWidgetStringPicker(context, (PinString) pin.getValue(), pin.getSubType()));
-            }
+            pinBox.addView(new PinWidgetString(context, (PinString) pin.getValue()));
         } else if (PinValueArea.class.equals(aClass)) {
             pinBox.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));
         }
@@ -115,6 +111,8 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
             pinBox.addView(new PinWidgetColorPicker(context, (PinColor) pin.getValue()));
         } else if (PinLong.class.equals(aClass)) {
             pinBox.addView(new PinWidgetLongPicker(context, (PinLong) pin.getValue(), pin.getSubType()));
+        } else if (PinWidget.class.equals(aClass)) {
+            pinBox.addView(new PinWidgetWidgetPicker(context, (PinWidget) pin.getValue()));
         }
 
         if (PinAdd.class.equals(aClass)) {

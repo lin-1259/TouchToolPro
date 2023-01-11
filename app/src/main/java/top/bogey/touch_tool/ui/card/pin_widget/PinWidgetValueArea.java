@@ -13,7 +13,6 @@ import top.bogey.touch_tool.databinding.PinWidgetValueAreaBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 public class PinWidgetValueArea extends BindingView<PinWidgetValueAreaBinding> {
-    private final PinValueArea pinValueArea;
 
     public PinWidgetValueArea(@NonNull Context context, PinValueArea pinValueArea) {
         this(context, null, pinValueArea);
@@ -26,7 +25,6 @@ public class PinWidgetValueArea extends BindingView<PinWidgetValueAreaBinding> {
     public PinWidgetValueArea(@NonNull Context context, @Nullable AttributeSet attrs, PinValueArea pinValueArea) {
         super(context, attrs, PinWidgetValueAreaBinding.class);
         if (pinValueArea == null) throw new RuntimeException("不是有效的引用");
-        this.pinValueArea = pinValueArea;
 
         binding.rangeSlider.setValueFrom(pinValueArea.getValueFrom());
         binding.rangeSlider.setValueTo(pinValueArea.getValueTo());

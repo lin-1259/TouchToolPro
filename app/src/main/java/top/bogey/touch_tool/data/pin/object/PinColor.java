@@ -21,6 +21,20 @@ public class PinColor extends PinValue {
         maxSize = 0;
     }
 
+    public PinColor(PinColor pinColor) {
+        color = new int[]{pinColor.color[0], pinColor.color[1], pinColor.color[2]};
+        screen = pinColor.screen;
+        minSize = pinColor.minSize;
+        maxSize = pinColor.maxSize;
+    }
+
+    public PinColor(Context context, int[] color, int minSize, int maxSize) {
+        this.color = color;
+        screen = DisplayUtils.getScreen(context);
+        this.minSize = minSize;
+        this.maxSize = maxSize;
+    }
+
     public PinColor(Parcel in) {
         super(in);
         color = new int[]{-1, -1, -1};

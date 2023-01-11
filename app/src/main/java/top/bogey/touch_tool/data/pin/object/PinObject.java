@@ -47,7 +47,7 @@ public class PinObject implements Parcelable {
     };
 
     public int getPinColor(Context context) {
-        return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorOutlineVariant, 0);
+        return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimaryInverse, 0);
     }
 
     public ShapeAppearanceModel getPinStyle(Context context) {

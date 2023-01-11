@@ -30,7 +30,7 @@
             android:layout_marginHorizontal="8dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:icon="@drawable/icon_save" />
+            app:icon="@drawable/icon_check" />
 
     </LinearLayout>
 
@@ -41,6 +41,7 @@
         android:layout_gravity="bottom|center_horizontal"
         android:layout_marginBottom="96dp"
         android:stepSize="1"
-        app:labelBehavior="visible" />
+        app:labelBehavior="visible"
+        app:tickVisible="false" />
 
 </FrameLayout>

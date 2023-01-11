@@ -80,6 +80,7 @@ public class MainCaptureService extends Service {
         if (projection != null) projection.stop();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(NOTIFICATION_ID);
         notificationManager.cancel(NOTIFICATION_ID + 1);
     }
 

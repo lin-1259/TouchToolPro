@@ -28,9 +28,6 @@ import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 @SuppressLint("ViewConstructor")
 public class ColorPickerFloatView extends BasePickerFloatView {
     private final PinColor pinColor;
-    private int[] color = new int[3];
-    private int minSize = 0;
-    private int maxSize = 0;
 
     private final FloatPickerColorBinding binding;
     private MainAccessibilityService service;
@@ -42,8 +39,8 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     public List<Rect> markArea = new ArrayList<>();
     private boolean isMarked = false;
 
-    public ColorPickerFloatView(Context context, PinColor pinColor) {
-        super(context);
+    public ColorPickerFloatView(Context context, PickerCallback callback, PinColor pinColor) {
+        super(context, callback);
         this.pinColor = pinColor;
 
         floatCallback = new ImagePickerCallback();
@@ -51,10 +48,8 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         binding = FloatPickerColorBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.saveButton.setOnClickListener(v -> {
-            pinColor.setColor(color);
-            pinColor.setMinSize(minSize);
-            pinColor.setMaxSize(maxSize);
-            pinColor.setScreen(DisplayUtils.getScreen(context));
+            if (callback != null)
+                callback.onComplete();
             dismiss();
         });
 
@@ -63,8 +58,8 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         binding.slider.addOnChangeListener((slider, value, fromUser) -> {
             List<Float> values = slider.getValues();
             if (values.size() >= 2) {
-                minSize = values.get(0).intValue();
-                maxSize = values.get(values.size() - 1).intValue();
+                pinColor.setMinSize(values.get(0).intValue());
+                pinColor.setMaxSize(values.get(values.size() - 1).intValue());
             }
             refreshUI();
         });
@@ -94,15 +89,17 @@ public class ColorPickerFloatView extends BasePickerFloatView {
                         markArea = service.binder.matchColor(showBitmap, pinColor.getColor());
                         if (markArea != null && markArea.size() > 0) {
                             isMarked = true;
-                            color[0] = pinColor.getColor()[0];
-                            color[1] = pinColor.getColor()[1];
-                            color[2] = pinColor.getColor()[2];
-                            minSize = pinColor.getMinSize(service);
-                            maxSize = pinColor.getMaxSize(service);
+                            int minSize = pinColor.getMinSize(getContext());
+                            int maxSize = pinColor.getMaxSize(getContext());
+                            binding.slider.setValueFrom(0);
+                            Rect max = markArea.get(0);
+                            int areaMaxSize = Math.max(max.width() * max.height(), maxSize);
+                            binding.slider.setValueTo(areaMaxSize);
+
                             Rect min = markArea.get(markArea.size() - 1);
-                            binding.slider.setValueFrom(Math.min(min.width() * min.height(), minSize));
-                            Rect max = markArea.get(markArea.size() - 1);
-                            binding.slider.setValueTo(Math.max(max.width() * max.height(), maxSize));
+                            int areaMinSize = Math.min(min.width() * min.height(), minSize);
+                            binding.slider.setValueFrom(areaMinSize == areaMaxSize ? areaMinSize - 1 : areaMinSize);
+
                             binding.slider.setValues((float) minSize, (float) maxSize);
                         }
                     }
@@ -145,7 +142,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         for (int i = 0; i < markArea.size(); i++) {
             Rect rect = markArea.get(i);
             int size = rect.width() * rect.height();
-            if (size >= minSize && size <= maxSize) {
+            if (size >= pinColor.getMinSize(getContext()) && size <= pinColor.getMaxSize(getContext())) {
                 canvas.drawRect(rect, markPaint);
             }
         }
@@ -169,17 +166,22 @@ public class ColorPickerFloatView extends BasePickerFloatView {
                 break;
             case MotionEvent.ACTION_UP:
                 if (service.isCaptureEnabled() && service.binder != null) {
-                    color = DisplayUtils.getHsvColor(showBitmap, (int) x, (int) y);
+                    int[] color = DisplayUtils.getHsvColor(showBitmap, (int) x, (int) y);
                     markArea = service.binder.matchColor(showBitmap, color);
                     if (markArea != null && markArea.size() > 0) {
+                        pinColor.setColor(color);
+                        pinColor.setScreen(DisplayUtils.getScreen(getContext()));
                         Rect max = markArea.get(0);
-                        maxSize = max.width() * max.height();
+                        int maxSize = max.width() * max.height();
+                        pinColor.setMaxSize(maxSize);
                         Rect min = markArea.get(markArea.size() - 1);
-                        minSize = min.width() * min.height();
+                        int minSize = min.width() * min.height();
+                        pinColor.setMinSize(minSize);
                         isMarked = true;
-                        binding.slider.setValueFrom(minSize);
+                        binding.slider.setValueFrom(0);
                         binding.slider.setValueTo(maxSize);
-                        binding.slider.setValues((float) minSize, (float) maxSize);
+                        binding.slider.setValueFrom(minSize == maxSize ? minSize - 1 : minSize);
+                        binding.slider.setValues((float) pinColor.getMinSize(), (float) pinColor.getMaxSize());
                     } else {
                         dismiss();
                     }

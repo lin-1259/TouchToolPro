@@ -1,16 +1,14 @@
 package top.bogey.touch_tool.utils;
 
 import android.graphics.Point;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class DouglasPeucker {
     private static final int epsilon = 8;
 
-    public static List<Point> compress(List<Point> points) {
+    public static ArrayList<Point> compress(ArrayList<Point> points) {
         if (points.size() <= 2) return points;
         float max = 0;
         int index = 0;
@@ -23,8 +21,8 @@ public class DouglasPeucker {
         }
 
         if (max > epsilon) {
-            List<Point> list = compress(new ArrayList<>(points.subList(0, index + 1)));
-            List<Point> list2 = compress(new ArrayList<>(points.subList(index, points.size())));
+            ArrayList<Point> list = compress(new ArrayList<>(points.subList(0, index + 1)));
+            ArrayList<Point> list2 = compress(new ArrayList<>(points.subList(index, points.size())));
             list2.remove(0);
             list.addAll(list2);
             return list;

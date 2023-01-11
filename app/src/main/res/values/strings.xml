@@ -124,8 +124,7 @@
     <string name="action_color_state_subtitle_path">手势</string>
 
     <string name="action_widget_state_title">界面内存在控件</string>
-    <string name="action_widget_state_subtitle_id">ID</string>
-    <string name="action_widget_state_subtitle_level">层级</string>
+    <string name="action_widget_state_subtitle_widget">控件</string>
 
     <string name="action_capture_state_title">录屏服务状态</string>
 
@@ -200,6 +199,19 @@
     <string name="action_int_div_operator_title">相除 ÷</string>
 
 
+    <!-- 采集器 -->
+    <string name="picker_color_preview_title">选择颜色</string>
+    <string name="picker_image_preview_title">选择图片</string>
+    <string name="picker_touch_preview_title">采集手势</string>
+    <string name="picker_widget_preview_title">选择控件</string>
+
+    <string name="include_apps">关联：</string>
+    <string name="exclude_apps">排除：</string>
+
+    <string name="widget_id">ID：%1$s</string>
+    <string name="widget_level">层级：%1$s</string>
+
+
 
     <string name="sort">排序</string>
     <string name="sort_by_create_time_asc">创建时间正序</string>
@@ -228,8 +240,6 @@
     <string name="normal_task">普通任务</string>
     <string name="across_app_task">跨应用任务</string>
 
-    <string name="include_apps">关联：</string>
-    <string name="exclude_apps">排除：</string>
 
     <!-- 行为 -->
     <string name="behavior_mode_condition">条件</string>

@@ -89,10 +89,6 @@ public class PinImage extends PinValue {
         return image;
     }
 
-    public int getScreen() {
-        return screen;
-    }
-
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);

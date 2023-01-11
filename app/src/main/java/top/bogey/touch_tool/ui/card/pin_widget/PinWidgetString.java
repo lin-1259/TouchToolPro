@@ -14,7 +14,6 @@ import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.TextChangedListener;
 
 public class PinWidgetString extends BindingView<PinWidgetInputBinding> {
-    private final PinString pinString;
 
     public PinWidgetString(@NonNull Context context, PinString pinString) {
         this(context, null, pinString);
@@ -27,9 +26,9 @@ public class PinWidgetString extends BindingView<PinWidgetInputBinding> {
     public PinWidgetString(@NonNull Context context, @Nullable AttributeSet attrs, PinString pinString) {
         super(context, attrs, PinWidgetInputBinding.class);
         if (pinString == null) throw new RuntimeException("不是有效的引用");
-        this.pinString = pinString;
 
         binding.editText.setInputType(EditorInfo.TYPE_CLASS_TEXT);
+        binding.editText.setText(pinString.getValue());
         binding.editText.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -37,6 +36,5 @@ public class PinWidgetString extends BindingView<PinWidgetInputBinding> {
                 else pinString.setValue(s.toString());
             }
         });
-        binding.editText.setText(pinString.getValue());
     }
 }

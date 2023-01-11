@@ -18,7 +18,12 @@ public class PinAdd extends PinObject {
 
     public PinAdd(Parcel in) {
         super(in);
-        pin = in.readParcelable(Pin.class.getClassLoader());
+        byte[] bytes = in.createByteArray();
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0);
+        pin = Pin.CREATOR.createFromParcel(parcel);
+        parcel.recycle();
     }
 
     public Pin<? extends PinObject> getPin() {
@@ -39,6 +44,9 @@ public class PinAdd extends PinObject {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeParcelable(pin, flags);
+        Parcel parcel = Parcel.obtain();
+        pin.writeToParcel(parcel, flags);
+        dest.writeByteArray(parcel.marshall());
+        parcel.recycle();
     }
 }

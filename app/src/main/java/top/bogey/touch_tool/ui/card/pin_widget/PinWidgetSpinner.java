@@ -15,7 +15,6 @@ import top.bogey.touch_tool.databinding.PinWidgetSpinnerBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
-    private final PinSpinner helper;
 
     public PinWidgetSpinner(@NonNull Context context, PinSpinner helper) {
         this(context, null, helper);
@@ -28,11 +27,11 @@ public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
     public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs, PinSpinner helper) {
         super(context, attrs, PinWidgetSpinnerBinding.class);
         if (helper == null) throw new RuntimeException("不是有效的引用");
-        this.helper = helper;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         adapter.addAll(helper.getArrays(context));
         binding.spinner.setAdapter(adapter);
+        binding.spinner.setSelection(helper.getIndex());
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -44,6 +43,5 @@ public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
 
             }
         });
-        binding.spinner.setSelection(helper.getIndex());
     }
 }

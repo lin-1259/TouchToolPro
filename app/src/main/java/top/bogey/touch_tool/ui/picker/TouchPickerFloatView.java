@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.database.bean.action.TouchAction;
-import top.bogey.touch_tool.databinding.FloatPickerPosBinding;
+import top.bogey.touch_tool.data.pin.object.PinPath;
+import top.bogey.touch_tool.databinding.FloatPickerTouchBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.DouglasPeucker;
@@ -26,11 +26,11 @@ import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
 @SuppressLint("ViewConstructor")
 public class TouchPickerFloatView extends BasePickerFloatView {
+    private final FloatPickerTouchBinding binding;
+
+    private final ArrayList<PinPath.TouchPath> paths = new ArrayList<>();
     private FloatGravity gravity = FloatGravity.TOP_LEFT;
 
-    private final FloatPickerPosBinding binding;
-
-    private final List<TouchAction.TouchPath> paths = new ArrayList<>();
     private float lastX = 0;
     private float lastY = 0;
 
@@ -46,18 +46,20 @@ public class TouchPickerFloatView extends BasePickerFloatView {
 
     private boolean isClick = false;
 
-    public TouchPickerFloatView(@NonNull Context context, PickerCallback pickerCallback, TouchAction touchAction) {
-        super(context, pickerCallback);
+    public TouchPickerFloatView(@NonNull Context context, PickerCallback callback, PinPath pinPath) {
+        super(context, callback);
 
-        binding = FloatPickerPosBinding.inflate(LayoutInflater.from(context), this, true);
+        binding = FloatPickerTouchBinding.inflate(LayoutInflater.from(context), this, true);
 
-        if (touchAction != null) {
-            paths.addAll(touchAction.getPaths(context));
-        }
+        paths.addAll(pinPath.getPaths(context));
         isMarked = paths.size() > 0;
 
         binding.saveButton.setOnClickListener(v -> {
-            pickerCallback.onComplete(this);
+            pinPath.setPaths(context, getGravityPaths());
+            pinPath.setGravity(gravity);
+            pinPath.setOffset(getGravityPoint());
+
+            callback.onComplete();
             dismiss();
         });
 
@@ -77,7 +79,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
 
         padding = DisplayUtils.dp2px(context, 20);
 
-        refreshGravityButton(touchAction == null ? FloatGravity.TOP_LEFT : touchAction.getGravity());
+        refreshGravityButton(pinPath.getGravity());
     }
 
     @SuppressLint("DrawAllocation")
@@ -93,7 +95,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
-        for (TouchAction.TouchPath touchPath : paths) {
+        for (PinPath.TouchPath touchPath : paths) {
             List<Point> points = touchPath.getPoints();
             if (points.size() >= 2) {
                 Path path = new Path();
@@ -108,10 +110,6 @@ public class TouchPickerFloatView extends BasePickerFloatView {
                 canvas.drawCircle(point.x - location[0], point.y - location[1], 5, paint);
             }
         }
-    }
-
-    public TouchAction getTouchAction() {
-        return new TouchAction(getContext(), gravity, getGravityPoint(), getGravityPaths());
     }
 
     private Point getGravityPoint() {
@@ -143,11 +141,11 @@ public class TouchPickerFloatView extends BasePickerFloatView {
         return new Point();
     }
 
-    private List<TouchAction.TouchPath> getGravityPaths() {
+    private ArrayList<PinPath.TouchPath> getGravityPaths() {
         Point gravityPoint = getScreenGravityPoint();
-        List<TouchAction.TouchPath> paths = new ArrayList<>();
-        for (TouchAction.TouchPath path : this.paths) {
-            TouchAction.TouchPath touchPath = AppUtils.copy(path);
+        ArrayList<PinPath.TouchPath> paths = new ArrayList<>();
+        for (PinPath.TouchPath path : this.paths) {
+            PinPath.TouchPath touchPath = AppUtils.copy(path);
             touchPath.offset(-gravityPoint.x, -gravityPoint.y);
             if (isChanged) touchPath.setPoints(DouglasPeucker.compress(touchPath.getPoints()));
             paths.add(touchPath);
@@ -184,7 +182,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
                 if (isMarked) {
                     float dx = x - lastX;
                     float dy = y - lastY;
-                    for (TouchAction.TouchPath path : paths) {
+                    for (PinPath.TouchPath path : paths) {
                         path.offset((int) dx, (int) dy);
                     }
                     lastX = x;
@@ -192,14 +190,15 @@ public class TouchPickerFloatView extends BasePickerFloatView {
                 } else {
                     for (int i = 0; i < event.getPointerCount(); i++) {
                         int pointerId = event.getPointerId(i);
-                        for (TouchAction.TouchPath path : paths) {
+                        for (PinPath.TouchPath path : paths) {
                             if (path.getPointerId() == pointerId) {
                                 float currX = 0, currY = 0;
                                 for (int j = 0; j < event.getHistorySize(); j++) {
                                     currX = event.getHistoricalX(i, j) + location[0];
                                     currY = event.getHistoricalY(i, j) + location[1];
                                 }
-                                if (!(currX == 0 && currY == 0)) path.addPoint((int) currX, (int) currY);
+                                if (!(currX == 0 && currY == 0))
+                                    path.addPoint((int) currX, (int) currY);
                             }
                         }
                     }
@@ -208,14 +207,14 @@ public class TouchPickerFloatView extends BasePickerFloatView {
             case MotionEvent.ACTION_UP:
                 if (isMarked) {
                     if (isClick) {
-                        paths.forEach(TouchAction.TouchPath::toLine);
+                        paths.forEach(PinPath.TouchPath::toLine);
                     } else {
                         isClick = true;
                         postDelayed(() -> isClick = false, 300);
                     }
                 } else {
                     isMarked = true;
-                    for (TouchAction.TouchPath path : paths) {
+                    for (PinPath.TouchPath path : paths) {
                         path.setPointerId(-1);
                     }
                 }
@@ -223,7 +222,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
             case MotionEvent.ACTION_POINTER_UP:
                 if (!isMarked) {
                     int pointerId = event.getPointerId(event.getActionIndex());
-                    for (TouchAction.TouchPath path : paths) {
+                    for (PinPath.TouchPath path : paths) {
                         if (path.getPointerId() == pointerId) {
                             path.setPointerId(-1);
                         }
@@ -240,7 +239,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     }
 
     private void addNewPath(MotionEvent event) {
-        TouchAction.TouchPath path = new TouchAction.TouchPath();
+        PinPath.TouchPath path = new PinPath.TouchPath();
         int pointerId = event.getPointerId(event.getActionIndex());
         path.setPointerId(pointerId);
         int x = (int) event.getX(event.findPointerIndex(pointerId));
@@ -252,7 +251,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
-        for (TouchAction.TouchPath path : paths) {
+        for (PinPath.TouchPath path : paths) {
             Rect rect = DisplayUtils.calculatePointArea(path.getPoints());
             if (paths.indexOf(path) == 0) realArea.set(rect);
             else {

@@ -37,12 +37,13 @@ public class FloatViewHelper {
         touchUtils = new FloatTouchUtils(context, config);
         manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         params = new LayoutParams();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (context instanceof AccessibilityService) params.type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
-            else params.type = LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } else {
-            params.type = LayoutParams.TYPE_PHONE;
-        }
+        params.type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            if (context instanceof AccessibilityService) params.type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY;
+//            else params.type = LayoutParams.TYPE_APPLICATION_OVERLAY;
+//        } else {
+//            params.type = LayoutParams.TYPE_PHONE;
+//        }
         params.format = PixelFormat.RGBA_8888;
         params.gravity = Gravity.START | Gravity.TOP;
         params.flags = EasyFloat.NOT_FOCUSABLE;

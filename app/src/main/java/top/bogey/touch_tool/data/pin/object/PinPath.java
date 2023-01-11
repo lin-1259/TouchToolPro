@@ -11,9 +11,11 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import top.bogey.touch_tool.ui.setting.SettingSave;
+import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
@@ -30,6 +32,15 @@ public class PinPath extends PinValue {
         offset = new Point();
     }
 
+    public PinPath(PinPath pinPath) {
+        for (TouchPath path : pinPath.paths) {
+            paths.add(AppUtils.copy(path));
+        }
+        screen = pinPath.screen;
+        gravity = FloatGravity.valueOf(pinPath.gravity.name());
+        offset = new Point(pinPath.offset);
+    }
+
     public PinPath(Parcel in) {
         in.readTypedList(paths, TouchPath.CREATOR);
         screen = in.readInt();
@@ -37,9 +48,9 @@ public class PinPath extends PinValue {
         offset = in.readParcelable(Point.class.getClassLoader());
     }
 
-    public PinPath(ArrayList<TouchPath> paths, int screen, FloatGravity gravity, Point offset) {
+    public PinPath(Context context, ArrayList<TouchPath> paths, FloatGravity gravity, Point offset) {
         this.paths.addAll(paths);
-        this.screen = screen;
+        screen = DisplayUtils.getScreen(context);
         this.gravity = gravity;
         this.offset = offset;
     }

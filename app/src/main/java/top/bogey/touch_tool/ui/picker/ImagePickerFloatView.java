@@ -48,8 +48,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     private final int offset;
 
-    public ImagePickerFloatView(Context context, PinImage pinImage) {
-        super(context);
+    public ImagePickerFloatView(Context context, PickerCallback callback, PinImage pinImage) {
+        super(context, callback);
         this.pinImage = pinImage;
 
         floatCallback = new ImagePickerCallback();
@@ -58,6 +58,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
         binding.saveButton.setOnClickListener(v -> {
             pinImage.setBitmap(context, getBitmap());
+            if (callback != null) callback.onComplete();
             dismiss();
         });
 

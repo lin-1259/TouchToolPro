@@ -11,7 +11,6 @@ import top.bogey.touch_tool.databinding.PinWidgetCheckboxBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 
 public class PinWidgetBoolean extends BindingView<PinWidgetCheckboxBinding> {
-    private final PinBoolean pinBoolean;
 
     public PinWidgetBoolean(@NonNull Context context, PinBoolean pinBoolean) {
         this(context, null, pinBoolean);
@@ -24,7 +23,6 @@ public class PinWidgetBoolean extends BindingView<PinWidgetCheckboxBinding> {
     public PinWidgetBoolean(@NonNull Context context, @Nullable AttributeSet attrs, PinBoolean pinBoolean) {
         super(context, attrs, PinWidgetCheckboxBinding.class);
         if (pinBoolean == null) throw new RuntimeException("不是有效的引用");
-        this.pinBoolean = pinBoolean;
 
         binding.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> pinBoolean.setValue(isChecked));
         binding.checkBox.setChecked(pinBoolean.getValue());

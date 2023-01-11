@@ -83,7 +83,7 @@
             android:layout_marginHorizontal="8dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"
-            app:icon="@drawable/icon_save" />
+            app:icon="@drawable/icon_check" />
 
     </LinearLayout>
 
