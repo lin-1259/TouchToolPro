@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.action.action.TouchPathAction;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToAnd;
 import top.bogey.touch_tool.data.action.convert.IntConvertToPosition;
 import top.bogey.touch_tool.data.action.convert.PositionConvertToInt;
@@ -39,7 +40,7 @@ public class TaskView extends Fragment {
         delayAction.x = 1;
         delayAction.y = 5;
 
-        ImageStateAction delayAction2 = new ImageStateAction();
+        TouchPathAction delayAction2 = new TouchPathAction();
         task.addAction(delayAction2);
         delayAction2.x = 1;
         delayAction2.y = 10;

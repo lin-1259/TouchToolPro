@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Path;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.lifecycle.MutableLiveData;
@@ -37,7 +38,7 @@ public class MainAccessibilityService extends AccessibilityService {
     private BatteryReceiver batteryReceiver;
 
     // 服务
-    private boolean serviceConnected = false;
+    public static final MutableLiveData<Boolean> serviceConnected = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
 
     // 截屏
@@ -50,9 +51,14 @@ public class MainAccessibilityService extends AccessibilityService {
     private final HashSet<TaskRunnable> runnables = new HashSet<>();
     private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
 
+    public MainAccessibilityService() {
+        serviceEnabled.setValue(SettingSave.getInstance().isServiceEnabled());
+    }
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
+            Log.d("TAG", "onAccessibilityEvent: " + event);
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 WorldState.getInstance().enterActivity(event.getPackageName(), event.getClassName());
                 if (getPackageName().contentEquals(event.getPackageName())) stopAllTask();
@@ -77,22 +83,17 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        serviceConnected = true;
-        setServiceEnabled(SettingSave.getInstance().isServiceEnabled());
-        MainApplication.setService(this);
+        serviceConnected.setValue(true);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
-        serviceConnected = false;
-        MainApplication.setService(null);
-
+        serviceConnected.setValue(false);
         return super.onUnbind(intent);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        MainApplication.setService(this);
         if (intent != null) {
             boolean startCaptureService = intent.getBooleanExtra(MainActivity.INTENT_KEY_START_CAPTURE, false);
             boolean isBackground = intent.getBooleanExtra(MainActivity.INTENT_KEY_BACKGROUND, false);
@@ -104,6 +105,7 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        MainApplication.setService(this);
         batteryReceiver = new BatteryReceiver();
         registerReceiver(batteryReceiver, batteryReceiver.getFilter());
     }
@@ -114,16 +116,16 @@ public class MainAccessibilityService extends AccessibilityService {
         if (batteryReceiver != null) unregisterReceiver(batteryReceiver);
         stopCaptureService();
 
-        serviceConnected = false;
+        serviceConnected.setValue(false);
         MainApplication.setService(null);
     }
 
     public boolean isServiceEnabled() {
-        return serviceConnected && Boolean.TRUE.equals(serviceEnabled.getValue());
+        return isServiceConnected() && Boolean.TRUE.equals(serviceEnabled.getValue());
     }
 
     public boolean isServiceConnected() {
-        return serviceConnected;
+        return Boolean.TRUE.equals(serviceConnected.getValue());
     }
 
     public void setServiceEnabled(boolean enabled) {

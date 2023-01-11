@@ -17,6 +17,6 @@
         android:layout_height="20dp"
         android:layout_marginHorizontal="4dp"
         app:iconSize="16dp"
-        app:icon="@drawable/icon_date" />
+        app:icon="@drawable/icon_action_touch" />
 
 </LinearLayout>

@@ -16,7 +16,11 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.start.AppStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryChargingStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
+import top.bogey.touch_tool.data.action.start.NotificationStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
@@ -94,16 +98,24 @@ public class WorldState {
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
             if (setPackageName(packageName) || setActivityName(className)) {
-                checkAutoStartAction();
+                checkAutoStartAction(AppStartAction.class);
             }
         }
     }
 
-    private void checkAutoStartAction() {
+    private void checkAutoStartAction(Class<? extends StartAction> actionType) {
         MainAccessibilityService service = MainApplication.getService();
         if (service == null || !service.isServiceEnabled()) return;
 
-        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
+        // 特有的开始项
+        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
+        for (Task task : tasks) {
+            StartAction startAction = task.getStartAction(actionType);
+            if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+        }
+
+        // 通用的开始项
+        tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
             StartAction startAction = task.getStartAction(NormalStartAction.class);
             if (startAction.checkReady(this, task)) service.runTask(task, startAction);
@@ -139,7 +151,7 @@ public class WorldState {
 
     public void setNotificationText(CharSequence notificationText) {
         this.notificationText = notificationText;
-        checkAutoStartAction();
+        checkAutoStartAction(NotificationStartAction.class);
     }
 
     public int getBatteryPercent() {
@@ -148,6 +160,7 @@ public class WorldState {
 
     public void setBatteryPercent(int batteryPercent) {
         this.batteryPercent = batteryPercent;
+        checkAutoStartAction(BatteryStartAction.class);
     }
 
     public int getBatteryState() {
@@ -156,6 +169,6 @@ public class WorldState {
 
     public void setBatteryState(int batteryState) {
         this.batteryState = batteryState;
-        checkAutoStartAction();
+        checkAutoStartAction(BatteryChargingStartAction.class);
     }
 }

@@ -50,7 +50,8 @@ public class HomeView extends Fragment {
                 });
             }
         });
-        MainAccessibilityService.serviceEnabled.observe(getViewLifecycleOwner(), this::setServiceChecked);
+        MainAccessibilityService.serviceEnabled.observe(getViewLifecycleOwner(), aBoolean -> setServiceChecked());
+        MainAccessibilityService.serviceConnected.observe(getViewLifecycleOwner(), aBoolean -> setServiceConnected());
 
         binding.captureServiceButton.setOnClickListener(view -> {
             MainActivity activity = MainApplication.getActivity();
@@ -90,8 +91,9 @@ public class HomeView extends Fragment {
         return binding.getRoot();
     }
 
-    private void setServiceChecked(boolean checked) {
-        if (checked) {
+    private void setServiceChecked() {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service != null && service.isServiceEnabled()) {
             binding.accessibilityServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
             binding.accessibilityServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0)));
             binding.accessibilityServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
@@ -104,12 +106,16 @@ public class HomeView extends Fragment {
             binding.accessibilityServiceTitle.setText(R.string.accessibility_service_off);
             binding.accessibilityServiceSubtitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
         }
+    }
+
+    private void setServiceConnected() {
         MainAccessibilityService service = MainApplication.getService();
-        if (service != null && service.isServiceEnabled()) {
+        if (service != null && service.isServiceConnected()) {
             binding.accessibilityServiceSubtitle.setText(R.string.accessibility_service_on_2);
         } else {
             binding.accessibilityServiceSubtitle.setText(R.string.accessibility_service_off_2);
         }
+        setServiceChecked();
     }
 
     private void setCaptureChecked(boolean checked) {

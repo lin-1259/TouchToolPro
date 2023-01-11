@@ -48,8 +48,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         binding = FloatPickerColorBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.saveButton.setOnClickListener(v -> {
-            if (callback != null)
-                callback.onComplete();
+            if (callback != null) callback.onComplete();
             dismiss();
         });
 
