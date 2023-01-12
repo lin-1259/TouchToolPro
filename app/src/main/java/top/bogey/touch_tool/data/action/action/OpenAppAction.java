@@ -11,6 +11,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
@@ -33,7 +34,7 @@ public class OpenAppAction extends NormalAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinSelectApp app = (PinSelectApp) getPinValue(worldState, runnable.getTask(), appPin);
         MainAccessibilityService service = MainApplication.getService();
         LinkedHashMap<CharSequence, ArrayList<CharSequence>> packages = app.getPackages();

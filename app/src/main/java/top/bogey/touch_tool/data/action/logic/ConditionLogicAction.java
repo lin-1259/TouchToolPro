@@ -36,7 +36,7 @@ public class ConditionLogicAction extends BaseAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         if (condition.getValue()) {
             doAction(worldState, runnable, truePin);

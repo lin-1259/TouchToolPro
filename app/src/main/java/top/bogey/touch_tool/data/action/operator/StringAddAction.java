@@ -12,24 +12,24 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
-import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinString;
 
-public class IntAddAction extends CalculateAction {
+public class StringAddAction extends CalculateAction {
     protected final Pin<? extends PinObject> outValuePin;
     protected final Pin<? extends PinObject> firstPin;
 
-    public IntAddAction() {
+    public StringAddAction() {
         super();
-        outValuePin = addPin(new Pin<>(new PinInteger(), 0, PinDirection.OUT, PinSlotType.MULTI));
-        firstPin = addPin(new Pin<>(new PinInteger()));
-        addPin(new Pin<>(new PinInteger()));
-        Pin<PinInteger> executePin = new Pin<>(new PinInteger());
+        outValuePin = addPin(new Pin<>(new PinString(), 0, PinDirection.OUT, PinSlotType.MULTI));
+        firstPin = addPin(new Pin<>(new PinString()));
+        addPin(new Pin<>(new PinString()));
+        Pin<PinString> executePin = new Pin<>(new PinString());
         addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinSlotType.EMPTY));
-        titleId = R.string.action_int_add_operator_title;
+        titleId = R.string.action_string_add_operator_title;
     }
 
-    public IntAddAction(Parcel in) {
+    public StringAddAction(Parcel in) {
         super(in);
         outValuePin = addPin(pinsTmp.remove(0));
         firstPin = addPin(pinsTmp.remove(0));
@@ -37,19 +37,19 @@ public class IntAddAction extends CalculateAction {
             addPin(pin);
         }
         pinsTmp.clear();
-        titleId = R.string.action_int_add_operator_title;
+        titleId = R.string.action_string_add_operator_title;
     }
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
-        PinInteger value = (PinInteger) getPinValue(worldState, task, outValuePin);
+        PinString value = (PinString) getPinValue(worldState, task, outValuePin);
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstPin);
         for (; i < pins.size() - 1; i++) {
             Pin<? extends PinObject> pinObject = pins.get(i);
-            PinInteger result = (PinInteger) getPinValue(worldState, task, pinObject);
+            PinString result = (PinString) getPinValue(worldState, task, pinObject);
             value.setValue(value.getValue() + result.getValue());
         }
     }

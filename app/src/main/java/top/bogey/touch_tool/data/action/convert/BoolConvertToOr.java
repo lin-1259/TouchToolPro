@@ -6,9 +6,8 @@ import java.util.ArrayList;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
@@ -16,7 +15,7 @@ import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
-public class BoolConvertToOr extends BaseAction {
+public class BoolConvertToOr extends CalculateAction {
     protected final Pin<? extends PinObject> outConditionPin;
     protected final Pin<? extends PinObject> firstConditionPin;
 
@@ -39,10 +38,6 @@ public class BoolConvertToOr extends BaseAction {
         }
         pinsTmp.clear();
         titleId = R.string.action_bool_convert_or_title;
-    }
-
-    @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
     }
 
     @Override

@@ -5,7 +5,7 @@ import android.os.Parcel;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.action.NormalAction;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
@@ -38,7 +38,7 @@ public class ForLoopLogicAction extends NormalAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);
         PinInteger end = (PinInteger) getPinValue(worldState, runnable.getTask(), endPin);
         PinInteger current = (PinInteger) getPinValue(worldState, runnable.getTask(), currentPin);

@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action.action;
+package top.bogey.touch_tool.data.action;
 
 import android.os.Parcel;
 

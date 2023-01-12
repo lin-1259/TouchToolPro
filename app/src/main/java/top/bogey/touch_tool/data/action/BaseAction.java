@@ -83,8 +83,10 @@ public class BaseAction implements Parcelable {
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getValue());
             if (action == null) continue;
+            Pin<? extends PinObject> pinById = action.getPinById(entry.getKey());
+            if (pinById == null) continue;
             runnable.addProgress();
-            action.doAction(worldState, runnable);
+            action.doAction(worldState, runnable, pinById);
             return;
         }
     }

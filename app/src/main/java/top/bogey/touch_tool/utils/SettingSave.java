@@ -1,8 +1,7 @@
-package top.bogey.touch_tool.ui.setting;
+package top.bogey.touch_tool.utils;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Point;
 
 import com.google.android.material.color.DynamicColors;
 import com.google.android.material.color.DynamicColorsOptions;

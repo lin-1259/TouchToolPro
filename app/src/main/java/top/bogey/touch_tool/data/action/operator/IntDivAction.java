@@ -4,16 +4,15 @@ import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
-public class IntDivAction extends BaseAction {
+public class IntDivAction extends CalculateAction {
     protected final Pin<? extends PinObject> outValuePin;
     protected final Pin<? extends PinObject> originPin;
     protected final Pin<? extends PinObject> secondPin;
@@ -32,10 +31,6 @@ public class IntDivAction extends BaseAction {
         originPin = addPin(pinsTmp.remove(0));
         secondPin = addPin(pinsTmp.remove(0));
         titleId = R.string.action_int_div_operator_title;
-    }
-
-    @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -24,7 +23,6 @@ import top.bogey.touch_tool.databinding.ActivityMainBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
-import top.bogey.touch_tool.utils.ResultCallback;
 
 public class MainActivity extends AppCompatActivity {
     static {
@@ -96,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         NavController controller = Navigation.findNavController(this, R.id.conView);
         NavigationUI.setupWithNavController(binding.menuView, controller);
-        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home, R.id.task, R.id.setting).build();
+        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home, R.id.task).build();
         NavigationUI.setupActionBarWithNavController(this, controller, configuration);
     }
 
@@ -147,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
             startService(serviceIntent);
         }
     }
-
-
 
     public void launchCapture(PermissionResultCallback callback) {
         resultCallback = callback;

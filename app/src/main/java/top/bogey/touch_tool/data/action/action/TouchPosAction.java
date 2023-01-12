@@ -9,6 +9,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinObject;
@@ -37,7 +38,7 @@ public class TouchPosAction extends NormalAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinPoint pos = (PinPoint) getPinValue(worldState, runnable.getTask(), posPin);
         PinTimeArea timeArea = (PinTimeArea) getPinValue(worldState, runnable.getTask(), timePin);
         PinBoolean offset = (PinBoolean) getPinValue(worldState, runnable.getTask(), offsetPin);

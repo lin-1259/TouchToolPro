@@ -40,7 +40,7 @@ public class SequenceLogicAction extends BaseAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstPin);
         for (; i < pins.size() - 1; i++) {

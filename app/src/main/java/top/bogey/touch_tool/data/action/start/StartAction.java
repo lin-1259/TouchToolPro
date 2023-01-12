@@ -26,12 +26,7 @@ public class StartAction extends BaseAction {
         restartPin = addPin(pinsTmp.remove(0));
     }
 
-    @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
-        if (!checkReady(worldState, runnable.getTask())) return;
-        super.doAction(worldState, runnable);
-    }
-
+    // 开始动作只做开始检测
     public boolean checkReady(WorldState worldState, Task task) {
         return true;
     }

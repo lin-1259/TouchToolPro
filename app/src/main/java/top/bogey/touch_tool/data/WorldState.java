@@ -31,7 +31,10 @@ public class WorldState {
 
     private CharSequence packageName;
     private CharSequence activityName;
+
+    private CharSequence notificationPackage;
     private CharSequence notificationText;
+
     private int batteryPercent;
     private int batteryState;
 
@@ -145,11 +148,15 @@ public class WorldState {
     }
 
     public CharSequence getNotificationText() {
-        if (notificationText == null) return null;
         return notificationText;
     }
 
-    public void setNotificationText(CharSequence notificationText) {
+    public CharSequence getNotificationPackage() {
+        return notificationPackage;
+    }
+
+    public void setNotification(CharSequence notificationPackage, CharSequence notificationText) {
+        this.notificationPackage = notificationPackage;
         this.notificationText = notificationText;
         checkAutoStartAction(NotificationStartAction.class);
     }
@@ -159,6 +166,7 @@ public class WorldState {
     }
 
     public void setBatteryPercent(int batteryPercent) {
+        if (batteryPercent == this.batteryPercent) return;
         this.batteryPercent = batteryPercent;
         checkAutoStartAction(BatteryStartAction.class);
     }
@@ -168,6 +176,7 @@ public class WorldState {
     }
 
     public void setBatteryState(int batteryState) {
+        if (batteryState == this.batteryState) return;
         this.batteryState = batteryState;
         checkAutoStartAction(BatteryChargingStartAction.class);
     }

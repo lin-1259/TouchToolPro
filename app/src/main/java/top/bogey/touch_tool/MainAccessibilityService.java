@@ -28,7 +28,7 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
-import top.bogey.touch_tool.ui.setting.SettingSave;
+import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.TaskQueue;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
@@ -48,7 +48,7 @@ public class MainAccessibilityService extends AccessibilityService {
     private ResultCallback captureResultCallback;
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
-    private final HashSet<TaskRunnable> runnables = new HashSet<>();
+    private final HashSet<TaskRunnable> runnableSet = new HashSet<>();
     private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
 
     public MainAccessibilityService() {
@@ -71,7 +71,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     builder.append(charSequence);
                     builder.append(" ");
                 }
-                WorldState.getInstance().setNotificationText(builder.toString().trim());
+                WorldState.getInstance().setNotification(event.getPackageName(), builder.toString().trim());
             }
         }
     }
@@ -135,12 +135,12 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public void addCallback(TaskRunningCallback callback) {
         callbacks.add(callback);
-        runnables.forEach(runnable -> runnable.addCallback(callback));
+        runnableSet.forEach(runnable -> runnable.addCallback(callback));
     }
 
     public void removeCallback(TaskRunningCallback callback) {
         callbacks.remove(callback);
-        runnables.forEach(runnable -> runnable.removeCallback(callback));
+        runnableSet.forEach(runnable -> runnable.removeCallback(callback));
     }
 
     public TaskRunnable runTask(Task task, StartAction startAction) {
@@ -153,15 +153,15 @@ public class MainAccessibilityService extends AccessibilityService {
         runnable.addCallback(new TaskRunningCallback() {
             @Override
             public void onStart(TaskRunnable runnable) {
-                synchronized (runnables) {
-                    runnables.add(runnable);
+                synchronized (runnableSet) {
+                    runnableSet.add(runnable);
                 }
             }
 
             @Override
             public void onEnd(TaskRunnable runnable) {
-                synchronized (runnables) {
-                    runnables.remove(runnable);
+                synchronized (runnableSet) {
+                    runnableSet.remove(runnable);
                 }
             }
 
@@ -179,25 +179,25 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void stopTask(TaskRunnable runnable) {
-        if (runnables.contains(runnable)) runnable.stop();
+        if (runnableSet.contains(runnable)) runnable.stop();
     }
 
     public void stopAllTask() {
-        synchronized (runnables) {
-            for (TaskRunnable taskRunnable : runnables) {
+        synchronized (runnableSet) {
+            for (TaskRunnable taskRunnable : runnableSet) {
                 taskRunnable.stop();
             }
-            runnables.clear();
+            runnableSet.clear();
         }
     }
 
     public boolean stopTaskIfNeed(Task task, StartAction startAction) {
         if (task == null || startAction == null) return false;
-        synchronized (runnables) {
+        synchronized (runnableSet) {
             switch (startAction.getRestartType()) {
                 // 需要重新运行
                 case RESTART:
-                    for (TaskRunnable runnable : runnables) {
+                    for (TaskRunnable runnable : runnableSet) {
                         if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
                             stopTask(runnable);
                         }
@@ -206,7 +206,7 @@ public class MainAccessibilityService extends AccessibilityService {
                 // 如果没有运行，则运行；如果正在运行，取消本次运行
                 case CANCEL:
                     boolean flag = true;
-                    for (TaskRunnable runnable : runnables) {
+                    for (TaskRunnable runnable : runnableSet) {
                         if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
                             flag = false;
                             break;
@@ -226,8 +226,8 @@ public class MainAccessibilityService extends AccessibilityService {
         if (binder == null) {
             MainActivity activity = MainApplication.getActivity();
             if (activity != null) {
-                activity.launchNotification((notiCode, notiIntent) -> {
-                    if (notiCode == Activity.RESULT_OK) {
+                activity.launchNotification((notifyCode, notifyIntent) -> {
+                    if (notifyCode == Activity.RESULT_OK) {
                         activity.launchCapture(((code, data) -> {
                             if (code == Activity.RESULT_OK) {
                                 connection = new ServiceConnection() {

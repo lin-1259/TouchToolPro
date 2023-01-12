@@ -10,6 +10,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
@@ -30,7 +31,7 @@ public class SystemAbilityAction extends NormalAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinSpinner ability = (PinSpinner) getPinValue(worldState, runnable.getTask(), abilityPin);
         MainAccessibilityService service = MainApplication.getService();
         switch (ability.getIndex()) {

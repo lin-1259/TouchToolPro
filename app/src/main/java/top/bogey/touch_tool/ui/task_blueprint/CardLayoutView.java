@@ -45,6 +45,7 @@ public class CardLayoutView extends FrameLayout {
     private int dragState = DRAG_NONE;
     private final HashMap<String, String> dragLinks = new HashMap<>();
     private BaseCard<? extends BaseAction> dragCard = null;
+    private PinBaseView<?> dragPin = null;
     private float dragX = 0;
     private float dragY = 0;
     private PinDirection dragDirection;
@@ -186,7 +187,6 @@ public class CardLayoutView extends FrameLayout {
         float rawY = event.getRawY();
         int actionMasked = event.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
-            dragLinks.clear();
             ArrayList<BaseCard<? extends BaseAction>> baseCards = new ArrayList<>(cardMap.values());
             for (int i = baseCards.size() - 1; i >= 0; i--) {
                 BaseCard<? extends BaseAction> card = baseCards.get(i);
@@ -206,6 +206,7 @@ public class CardLayoutView extends FrameLayout {
                                 dragLinks.put(pin.getId(), pin.getActionId());
                                 // 目标方向与自身相反
                                 dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
+                                dragPin = pinBaseView;
                             } else {
                                 // 否则就是挪线
                                 dragLinks.putAll(links);
@@ -228,6 +229,7 @@ public class CardLayoutView extends FrameLayout {
             }
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             if (dragState == DRAG_PIN) {
+                boolean flag = true;
                 for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
                     int[] location = new int[2];
                     baseCard.getLocationOnScreen(location);
@@ -235,12 +237,26 @@ public class CardLayoutView extends FrameLayout {
 
                         PinBaseView<?> pinBaseView = baseCard.getPinByPosition(rawX, rawY);
                         if (pinBaseView == null) continue;
-                        if (pinAddLinks(pinBaseView, dragLinks)) break;
+                        if (pinAddLinks(pinBaseView, dragLinks)) {
+                            flag = false;
+                            break;
+                        }
+                    }
+                }
+                if (flag && Math.abs(rawX - dragX) * Math.abs(rawY - dragY) <= 81) {
+                    // 无效的拖动且没怎么拖动，相当于点击了这个插槽，点击插槽是断开这个插槽
+                    if (dragPin != null) {
+                        HashMap<String, String> links = dragPin.getPin().getLinks();
+                        linksRemovePin(links, dragPin);
+                        links.clear();
+                        dragPin.refreshPinUI();
                     }
                 }
             }
+
             dragLinks.clear();
             dragCard = null;
+            dragPin = null;
             dragState = DRAG_NONE;
         } else if (actionMasked == MotionEvent.ACTION_MOVE) {
             if (dragState == DRAG_CARD) {

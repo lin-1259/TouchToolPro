@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.ui.home;
 
+import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -79,6 +80,14 @@ public class HomeView extends Fragment {
 
         binding.openBackgroundPopButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(requireActivity()));
 
+        binding.autoRunButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(requireActivity()));
+        binding.lockTaskButton.setOnClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceConnected()) {
+                service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+            }
+        });
+
         binding.tutorialButton.setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
@@ -99,12 +108,14 @@ public class HomeView extends Fragment {
             binding.accessibilityServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
             binding.accessibilityServiceTitle.setText(R.string.accessibility_service_on);
             binding.accessibilityServiceSubtitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
+            binding.lockTaskButton.setVisibility(View.VISIBLE);
         } else {
             binding.accessibilityServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
             binding.accessibilityServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0)));
             binding.accessibilityServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
             binding.accessibilityServiceTitle.setText(R.string.accessibility_service_off);
             binding.accessibilityServiceSubtitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
+            binding.lockTaskButton.setVisibility(View.GONE);
         }
     }
 

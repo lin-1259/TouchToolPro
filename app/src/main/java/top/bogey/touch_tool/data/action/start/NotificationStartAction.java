@@ -35,8 +35,7 @@ public class NotificationStartAction extends StartAction {
 
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
-
-        CharSequence packageName = worldState.getPackageName();
+        CharSequence packageName = worldState.getNotificationPackage();
         if (packageName == null) return false;
 
         PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);

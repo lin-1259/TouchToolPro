@@ -198,6 +198,8 @@
     <string name="action_int_multi_operator_title">相乘 ×</string>
     <string name="action_int_div_operator_title">相除 ÷</string>
 
+    <string name="action_string_add_operator_title">文本拼接</string>
+
 
     <!-- 采集器 -->
     <string name="picker_color_preview_title">选择颜色</string>
@@ -340,8 +342,6 @@
     <string name="setting_tile_quick_record_normal">快速录制</string>
 
     <string name="setting_app_config">应用设置</string>
-    <string name="setting_keep_alive">前台服务</string>
-    <string name="setting_keep_alive_tips">如果开启自启动和锁定后台之后，应用还是被频繁关闭，可开启前台服务保持应用运行</string>
     <string name="setting_action_touch_offset">点击偏移</string>
     <string name="setting_action_touch_offset_tips">手势、点击图片和点击颜色会进行小范围点击位置偏移</string>
     <string name="setting_action_touch_offset_format">%1$d 像素</string>

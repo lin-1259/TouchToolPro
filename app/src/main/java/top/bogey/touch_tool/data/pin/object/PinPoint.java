@@ -5,7 +5,7 @@ import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-import top.bogey.touch_tool.ui.setting.SettingSave;
+import top.bogey.touch_tool.utils.SettingSave;
 
 public class PinPoint extends PinValue {
     private int x;
