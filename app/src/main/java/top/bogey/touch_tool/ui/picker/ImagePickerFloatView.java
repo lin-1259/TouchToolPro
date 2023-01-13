@@ -121,9 +121,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             } else {
                 realShow(100);
             }
-        } else {
-            Toast.makeText(getContext(), R.string.capture_service_on_tips_3, Toast.LENGTH_SHORT).show();
-            dismiss();
         }
     }
 

@@ -32,28 +32,33 @@
     <string name="tasks">任务</string>
     <string name="setting">设置</string>
 
-    <string name="accessibility_service_on">功能已开启</string>
-    <string name="accessibility_service_off">功能已关闭</string>
-    <string name="accessibility_service_des">自动点击服务，开启之后能够使用自动点击功能</string>
-    <string name="accessibility_service_on_2">无障碍服务已开启</string>
-    <string name="accessibility_service_off_2">无障碍服务已关闭</string>
-    <string name="accessibility_service_on_tips">本应用需要先开启应用提供的无障碍服务才能使用</string>
+    <string name="notification_on_tips">应用需要发送通知，请授予应用发送通知的权限</string>
+
+    <string name="accessibility_service_on">无障碍服务已开启</string>
+    <string name="accessibility_service_off">无障碍服务已关闭</string>
+    <string name="accessibility_service_on_tips">开启无障碍服务，请依次点击“已下载的应用”->“%1$s”，然后开启服务。</string>
+    <string name="accessibility_service_off_tips">本应用需要先开启无障碍服务才能使用</string>
+
+    <string name="service_on">功能已开启</string>
+    <string name="service_off">功能已关闭</string>
+    <string name="service_des">自动点击服务，开启之后能够使用自动点击功能</string>
 
     <string name="capture_service_on">录屏已开启</string>
     <string name="capture_service_off">录屏已关闭</string>
     <string name="capture_service_des">屏幕录制服务，开启之后能够使用图片点击与检测功能</string>
+
     <string name="capture_service_on_tips_1">需要授予屏幕录制权限才能使用检测图片的能力</string>
     <string name="capture_service_on_tips_2">当前任务需要检测图片，请开启屏幕录制</string>
-    <string name="capture_service_on_tips_3">未开启无障碍服务，暂时无法使用</string>
-    <string name="capture_service_on_tips_4">应用需要发送通知，请授予应用发送通知的权限</string>
 
-    <string name="auto_start_app">电量限制</string>
+    <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
 
-    <string name="lock_on_background">稳定后台</string>
+    <string name="auto_start_app">自启动</string>
     <string name="open_auto_start_app">去开启自启动</string>
     <string name="auto_start_app_tips">本应用需要长时间在后台驻留，而一些系统会很激进的杀死在后台运行的任务，如果应用被授予自启动权限，相当于加入的系统白名单，就不会那么容易被系统杀死了。</string>
+
+    <string name="lock_on_background">锁定后台</string>
     <string name="goto_lock_on_background">去锁定后台</string>
     <string name="lock_on_background_tips">锁定后台使本应用在后台稳定运行，也可以防止清理后台任务时意外中止本应用。</string>
 

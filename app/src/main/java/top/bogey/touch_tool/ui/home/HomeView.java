@@ -1,19 +1,23 @@
 package top.bogey.touch_tool.ui.home;
 
 import android.accessibilityservice.AccessibilityService;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -22,7 +26,6 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.databinding.ViewHomeBinding;
 import top.bogey.touch_tool.utils.AppUtils;
-import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class HomeView extends Fragment {
     private ViewHomeBinding binding;
@@ -38,108 +41,112 @@ public class HomeView extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ViewHomeBinding.inflate(inflater, container, false);
 
-        binding.accessibilityServiceButton.setOnClickListener(view -> {
+        binding.accessibilityButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getService();
-            if (service != null && service.isServiceConnected()) {
-                service.setServiceEnabled(!service.isServiceEnabled());
-            } else {
-                AppUtils.showDialog(requireContext(), R.string.accessibility_service_on_tips, result -> {
+            if (service == null) {
+                AppUtils.showDialog(requireContext(), getString(R.string.accessibility_service_on_tips, getString(R.string.app_name)), result -> {
                     if (result) {
                         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
                         requireActivity().startActivity(intent);
                     }
                 });
+                binding.accessibilityButton.setChecked(false);
+            } else {
+                binding.accessibilityButton.setChecked(true);
             }
         });
-        MainAccessibilityService.serviceEnabled.observe(getViewLifecycleOwner(), aBoolean -> setServiceChecked());
-        MainAccessibilityService.serviceConnected.observe(getViewLifecycleOwner(), aBoolean -> setServiceConnected());
+        MainAccessibilityService.serviceConnected.observe(getViewLifecycleOwner(), aBoolean -> {
+            binding.accessibilityButton.setChecked(aBoolean);
+            binding.accessibilityButton.setText(aBoolean ? R.string.accessibility_service_on : R.string.accessibility_service_off);
+        });
 
-        binding.captureServiceButton.setOnClickListener(view -> {
+        binding.serviceButton.setOnClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceConnected()) {
+                if (service.isServiceEnabled()) {
+                    service.setServiceEnabled(false);
+                } else {
+                    AppUtils.showDialog(requireContext(), R.string.service_des, result -> {
+                        if (result) {
+                            service.setServiceEnabled(true);
+                        }
+                    });
+                }
+            } else {
+                Toast.makeText(getContext(), R.string.accessibility_service_off, Toast.LENGTH_SHORT).show();
+            }
+            binding.serviceButton.setChecked(false);
+        });
+        MainAccessibilityService.serviceEnabled.observe(getViewLifecycleOwner(), aBoolean -> {
+            binding.serviceButton.setChecked(aBoolean);
+            binding.serviceButton.setText(aBoolean ? R.string.service_on : R.string.service_off);
+        });
+
+        binding.captureButton.setOnClickListener(v -> {
             MainActivity activity = MainApplication.getActivity();
-            if (activity != null) activity.launchNotification((code, intent) -> {
+            activity.launchNotification((code, intent) -> {
                 if (code == Activity.RESULT_OK) {
                     MainAccessibilityService service = MainApplication.getService();
-                    if (service != null && service.isServiceEnabled()) {
-                        boolean enabled = Boolean.TRUE.equals(MainAccessibilityService.captureEnabled.getValue());
-                        if (enabled) {
+                    if (service != null && service.isServiceConnected()) {
+                        if (service.isCaptureEnabled()) {
                             service.stopCaptureService();
                         } else {
-                            Toast.makeText(requireActivity(), R.string.capture_service_on_tips_1, Toast.LENGTH_LONG).show();
-                            service.startCaptureService(false, null);
+                            AppUtils.showDialog(requireContext(), R.string.capture_service_des, result -> {
+                                if (result) {
+                                    service.startCaptureService(false, null);
+                                }
+                            });
                         }
                     } else {
-                        Toast.makeText(requireActivity(), R.string.capture_service_on_tips_3, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.accessibility_service_off, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
+            binding.captureButton.setChecked(false);
         });
-        MainAccessibilityService.captureEnabled.observe(getViewLifecycleOwner(), this::setCaptureChecked);
+        MainAccessibilityService.captureEnabled.observe(getViewLifecycleOwner(), aBoolean -> {
+            binding.captureButton.setChecked(aBoolean);
+            binding.captureButton.setText(aBoolean ? R.string.capture_service_on : R.string.capture_service_off);
+        });
 
         binding.ignoreBatteryBox.setVisibility(AppUtils.isIgnoredBattery(requireContext()) ? View.GONE : View.VISIBLE);
         binding.ignoreBatteryButton.setOnClickListener(v -> AppUtils.gotoBatterySetting(requireContext()));
 
-        binding.openBackgroundPopButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(requireActivity()));
-
-        binding.autoRunButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(requireActivity()));
-        binding.lockTaskButton.setOnClickListener(v -> {
-            MainAccessibilityService service = MainApplication.getService();
-            if (service != null && service.isServiceConnected()) {
-                service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu);
             }
-        });
 
-        binding.tutorialButton.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-            } catch (Exception ignored) {
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.autoStart:
+                    case R.id.popOnBackground:
+                        AppUtils.gotoAppDetailSetting(requireActivity());
+                        break;
+                    case R.id.lockApp:
+                        MainAccessibilityService service = MainApplication.getService();
+                        if (service != null && service.isServiceConnected()) {
+                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+                        } else {
+                            Toast.makeText(service, R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case R.id.tutorial:
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } catch (Exception ignored) {
+                        }
+                        break;
+                }
+                return true;
             }
         });
 
         return binding.getRoot();
-    }
-
-    private void setServiceChecked() {
-        MainAccessibilityService service = MainApplication.getService();
-        if (service != null && service.isServiceEnabled()) {
-            binding.accessibilityServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
-            binding.accessibilityServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0)));
-            binding.accessibilityServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
-            binding.accessibilityServiceTitle.setText(R.string.accessibility_service_on);
-            binding.accessibilityServiceSubtitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
-            binding.lockTaskButton.setVisibility(View.VISIBLE);
-        } else {
-            binding.accessibilityServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
-            binding.accessibilityServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0)));
-            binding.accessibilityServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
-            binding.accessibilityServiceTitle.setText(R.string.accessibility_service_off);
-            binding.accessibilityServiceSubtitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
-            binding.lockTaskButton.setVisibility(View.GONE);
-        }
-    }
-
-    private void setServiceConnected() {
-        MainAccessibilityService service = MainApplication.getService();
-        if (service != null && service.isServiceConnected()) {
-            binding.accessibilityServiceSubtitle.setText(R.string.accessibility_service_on_2);
-        } else {
-            binding.accessibilityServiceSubtitle.setText(R.string.accessibility_service_off_2);
-        }
-        setServiceChecked();
-    }
-
-    private void setCaptureChecked(boolean checked) {
-        if (checked) {
-            binding.captureServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
-            binding.captureServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0)));
-            binding.captureServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorOnPrimary, 0));
-            binding.captureServiceTitle.setText(R.string.capture_service_on);
-        } else {
-            binding.captureServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
-            binding.captureServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0)));
-            binding.captureServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
-            binding.captureServiceTitle.setText(R.string.capture_service_off);
-        }
     }
 }

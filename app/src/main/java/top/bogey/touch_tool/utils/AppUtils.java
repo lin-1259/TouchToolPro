@@ -26,6 +26,10 @@ public class AppUtils {
     public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor);
 
     public static void showDialog(Context context, int msg, ResultCallback callback) {
+        showDialog(context, context.getString(msg), callback);
+    }
+
+    public static void showDialog(Context context, String msg, ResultCallback callback) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title)
                 .setMessage(msg)

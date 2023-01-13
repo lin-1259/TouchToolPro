@@ -32,12 +32,6 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/navigation_main" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/menuView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:menu="@menu/menu_main" />
-
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

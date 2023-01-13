@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@+id/home"
-        android:icon="@drawable/icon_home"
-        android:title="@string/home" />
+    <group>
 
-    <item
-        android:id="@+id/task"
-        android:icon="@drawable/icon_action_task"
-        android:title="@string/tasks" />
+        <item
+            android:id="@+id/autoStart"
+            android:title="@string/auto_start_app" />
+
+        <item
+            android:id="@+id/lockApp"
+            android:title="@string/lock_on_background" />
+
+        <item
+            android:id="@+id/tutorial"
+            android:title="@string/tutorial" />
+
+        <item
+            android:id="@+id/popOnBackground"
+            android:title="@string/pop_on_background" />
+
+    </group>
+
 </menu>

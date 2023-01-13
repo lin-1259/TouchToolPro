@@ -7,15 +7,10 @@
         android:id="@+id/home"
         android:name="top.bogey.touch_tool.ui.home.HomeView"
         android:label="@string/home"
-        tools:layout="@layout/view_home" />
+        tools:layout="@layout/view_home">
 
-    <fragment
-        android:id="@+id/task"
-        android:name="top.bogey.touch_tool.ui.task.TaskView"
-        android:label="@string/tasks"
-        tools:layout="@layout/view_task">
         <action
-            android:id="@+id/action_task_to_taskBlueprint"
+            android:id="@+id/action_home_to_taskBlueprint"
             app:destination="@id/taskBlueprint" />
     </fragment>
 
@@ -27,4 +22,5 @@
             android:name="taskId"
             app:argType="string" />
     </fragment>
+
 </navigation>

@@ -92,10 +92,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        NavController controller = Navigation.findNavController(this, R.id.conView);
-        NavigationUI.setupWithNavController(binding.menuView, controller);
-        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home, R.id.task).build();
-        NavigationUI.setupActionBarWithNavController(this, controller, configuration);
     }
 
     @Override
@@ -158,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
                 callback.onResult(Activity.RESULT_OK, null);
             } else if (shouldShowRequestPermissionRationale(permission)) {
-                AppUtils.showDialog(this, R.string.capture_service_on_tips_4, result -> {
+                AppUtils.showDialog(this, R.string.notification_on_tips, result -> {
                     if (result) {
                         resultCallback = callback;
                         permissionLauncher.launch(permission);
