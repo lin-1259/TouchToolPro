@@ -6,8 +6,6 @@
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
     android:checkable="true"
-    android:clickable="true"
-    android:focusable="true"
     app:checkedIconGravity="TOP_END"
     app:checkedIconMargin="8dp"
     app:checkedIconSize="24dp"
@@ -28,7 +26,7 @@
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/app_name"
+            android:id="@+id/appName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -39,7 +37,7 @@
             app:layout_constraintTop_toBottomOf="@+id/icon" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/pkg_name"
+            android:id="@+id/pkgName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"

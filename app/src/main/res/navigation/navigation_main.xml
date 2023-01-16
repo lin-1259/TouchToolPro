@@ -6,7 +6,6 @@
     <fragment
         android:id="@+id/home"
         android:name="top.bogey.touch_tool.ui.home.HomeView"
-        android:label="@string/home"
         tools:layout="@layout/view_home">
 
         <action

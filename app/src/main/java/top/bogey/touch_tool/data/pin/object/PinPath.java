@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
@@ -197,8 +196,8 @@ public class PinPath extends PinValue {
         public Path getPath(boolean fixed) {
             Path tmp = null;
             for (Point point : points) {
-                int x = SettingSave.getInstance().getTouchOffset(fixed, point.x);
-                int y = SettingSave.getInstance().getTouchOffset(fixed, point.y);
+                int x = PinPoint.getOffsetValue(fixed, point.x);
+                int y = PinPoint.getOffsetValue(fixed, point.y);
                 if (tmp == null) {
                     tmp = new Path();
                     tmp.moveTo(Math.max(x, 0), Math.max(y, 0));

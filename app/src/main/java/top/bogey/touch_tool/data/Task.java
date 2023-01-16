@@ -1,12 +1,13 @@
 package top.bogey.touch_tool.data;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -14,13 +15,12 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 
 public class Task implements Parcelable {
     private final String id;
-    private final HashSet<BaseAction> actions = new HashSet<>();
+    private final LinkedHashSet<BaseAction> actions = new LinkedHashSet<>();
 
     private final long createTime;
     private String tag;
 
     private String title;
-    private String des;
 
     public Task() {
         id = UUID.randomUUID().toString();
@@ -35,7 +35,6 @@ public class Task implements Parcelable {
         createTime = in.readLong();
         tag = in.readString();
         title = in.readString();
-        des = in.readString();
     }
 
     public static final Creator<Task> CREATOR = new Creator<Task>() {
@@ -79,11 +78,24 @@ public class Task implements Parcelable {
         }
     }
 
+    public String getTaskDes(Context context) {
+        StringBuilder builder = new StringBuilder();
+        for (BaseAction baseAction : actions) {
+            if (baseAction instanceof StartAction) {
+                CharSequence title = baseAction.getTitle(context);
+                if (title == null) continue;
+                builder.append(title);
+                builder.append("\n");
+            }
+        }
+        return builder.toString().trim();
+    }
+
     public String getId() {
         return id;
     }
 
-    public HashSet<BaseAction> getActions() {
+    public LinkedHashSet<BaseAction> getActions() {
         return actions;
     }
 
@@ -107,14 +119,6 @@ public class Task implements Parcelable {
         this.title = title;
     }
 
-    public String getDes() {
-        return des;
-    }
-
-    public void setDes(String des) {
-        this.des = des;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -127,6 +131,5 @@ public class Task implements Parcelable {
         dest.writeLong(createTime);
         dest.writeString(tag);
         dest.writeString(title);
-        dest.writeString(des);
     }
 }

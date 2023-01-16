@@ -2,11 +2,12 @@ package top.bogey.touch_tool;
 
 import android.app.Application;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 
+import com.google.android.material.color.DynamicColors;
 import com.tencent.mmkv.MMKV;
 
-public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
+public class MainApplication extends Application {
     private static MainActivity activity;
     private static MainAccessibilityService service;
 
@@ -14,7 +15,8 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
     public void onCreate() {
         super.onCreate();
         MMKV.initialize(this);
-        Thread.setDefaultUncaughtExceptionHandler(this);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        DynamicColors.applyToActivitiesIfAvailable(this);
     }
 
     public static MainActivity getActivity() {
@@ -31,11 +33,5 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
     public static void setService(MainAccessibilityService service) {
         MainApplication.service = service;
-    }
-
-    @Override
-    public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {
-        e.printStackTrace();
-        System.exit(996);
     }
 }

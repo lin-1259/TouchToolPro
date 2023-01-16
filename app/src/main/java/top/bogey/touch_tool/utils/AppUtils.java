@@ -3,6 +3,7 @@ package top.bogey.touch_tool.utils;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -24,6 +25,11 @@ public class AppUtils {
     public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, int method);
 
     public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor);
+
+    public static boolean isDebug(Context context) {
+        ApplicationInfo applicationInfo = context.getApplicationInfo();
+        return applicationInfo != null && ((applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0);
+    }
 
     public static void showDialog(Context context, int msg, ResultCallback callback) {
         showDialog(context, context.getString(msg), callback);

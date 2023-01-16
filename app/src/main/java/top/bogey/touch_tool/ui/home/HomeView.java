@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -19,16 +21,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textfield.TextInputEditText;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewHomeBinding;
 import top.bogey.touch_tool.utils.AppUtils;
+import top.bogey.touch_tool.utils.SettingSave;
 
 public class HomeView extends Fragment {
     private ViewHomeBinding binding;
+    private TaskRecyclerViewAdapter adapter;
+
+    private float lastX, lastY;
 
     @Override
     public void onResume() {
@@ -36,9 +50,52 @@ public class HomeView extends Fragment {
         binding.ignoreBatteryBox.setVisibility(AppUtils.isIgnoredBattery(requireContext()) ? View.GONE : View.VISIBLE);
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding.tasksBox.setAdapter(null);
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        requireActivity().addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menuInflater.inflate(R.menu.menu_main, menu);
+            }
+
+            @SuppressLint("NonConstantResourceId")
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.autoStart:
+                    case R.id.popOnBackground:
+                        AppUtils.gotoAppDetailSetting(requireActivity());
+                        break;
+                    case R.id.lockApp:
+                        MainAccessibilityService service = MainApplication.getService();
+                        if (service != null && service.isServiceConnected()) {
+                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+                        } else {
+                            Toast.makeText(getContext(), R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case R.id.tutorial:
+                        try {
+                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                        } catch (Exception ignored) {
+                        }
+                        break;
+                }
+                return true;
+            }
+        }, getViewLifecycleOwner());
+
         binding = ViewHomeBinding.inflate(inflater, container, false);
 
         binding.accessibilityButton.setOnClickListener(v -> {
@@ -112,41 +169,136 @@ public class HomeView extends Fragment {
         binding.ignoreBatteryBox.setVisibility(AppUtils.isIgnoredBattery(requireContext()) ? View.GONE : View.VISIBLE);
         binding.ignoreBatteryButton.setOnClickListener(v -> AppUtils.gotoBatterySetting(requireContext()));
 
-        requireActivity().addMenuProvider(new MenuProvider() {
+
+        adapter = new TaskRecyclerViewAdapter(this);
+        binding.tasksBox.setAdapter(adapter);
+        binding.tasksBox.setOnTouchListener((v, event) -> {
+            float x = event.getX();
+            float y = event.getY();
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    lastX = x;
+                    lastY = y;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    float dx = lastX - x;
+                    float dy = lastY - y;
+                    // 横向滑动更多
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // 向左划，显示下一个
+                        if (dx > 0) {
+                            selectTab(binding.tabBox.getSelectedTabPosition() + 1);
+                        } else {
+                            selectTab(binding.tabBox.getSelectedTabPosition() - 1);
+                        }
+                    }
+                    break;
+            }
+            return false;
+        });
+
+        for (String tag : SettingSave.getInstance().getTags(requireContext())) {
+            binding.tabBox.addTab(binding.tabBox.newTab().setText(tag));
+        }
+        binding.tabBox.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menuInflater.inflate(R.menu.menu_main, menu);
+            public void onTabSelected(TabLayout.Tab tab) {
+                CharSequence text = tab.getText();
+                if (text == null) return;
+                adapter.showTasksByTag(text.toString());
             }
 
-            @SuppressLint("NonConstantResourceId")
             @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.autoStart:
-                    case R.id.popOnBackground:
-                        AppUtils.gotoAppDetailSetting(requireActivity());
-                        break;
-                    case R.id.lockApp:
-                        MainAccessibilityService service = MainApplication.getService();
-                        if (service != null && service.isServiceConnected()) {
-                            service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
-                        } else {
-                            Toast.makeText(service, R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case R.id.tutorial:
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } catch (Exception ignored) {
-                        }
-                        break;
-                }
-                return true;
+            public void onTabUnselected(TabLayout.Tab tab) {
+
             }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+        selectTab(0);
+
+        binding.folderButton.setOnClickListener(v -> showTabView());
+
+        binding.selectAllButton.setOnClickListener(v -> adapter.selectAll());
+        binding.deleteButton.setOnClickListener(v -> AppUtils.showDialog(requireContext(), R.string.delete_task_tips, result -> {
+            if (result) {
+                adapter.deleteSelectTasks();
+                hideBottomBar();
+            }
+        }));
+
+        binding.exportButton.setOnClickListener(v -> {
+            adapter.exportSelectTasks();
+            hideBottomBar();
+        });
+
+        binding.moveButton.setOnClickListener(v -> showTabView());
+        binding.cancelButton.setOnClickListener(v -> {
+            adapter.unSelectAll();
+            hideBottomBar();
+        });
+
+        binding.addButton.setOnClickListener(v -> {
+            View view = LayoutInflater.from(requireContext()).inflate(R.layout.widget_text_input, null);
+            TextInputEditText editText = view.findViewById(R.id.title_edit);
+
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setPositiveButton(R.string.enter, (dialog, which) -> {
+                        Editable text = editText.getText();
+                        if (text != null) {
+                            Task task = new Task();
+                            task.setTitle(text.toString());
+                            TaskRepository.getInstance().saveTask(task);
+                        }
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setView(view)
+                    .setTitle(R.string.task_add)
+                    .show();
+
         });
 
         return binding.getRoot();
+    }
+
+    public void selectTab(int index) {
+        TabLayout.Tab tab = binding.tabBox.getTabAt(index);
+        if (tab != null) {
+            CharSequence text = tab.getText();
+            if (adapter.isCheck() && text != null && text.length() > 0) {
+                adapter.setSelectTasksTag(text.toString());
+                hideBottomBar();
+            }
+            binding.tabBox.selectTab(tab);
+        }
+    }
+
+    public void addTab(String tag) {
+        binding.tabBox.addTab(binding.tabBox.newTab().setText(tag), binding.tabBox.getTabCount() - 1);
+    }
+
+    public void removeTab(int index) {
+        binding.tabBox.removeTabAt(index);
+    }
+
+    public void showBottomBar() {
+        binding.addButton.hide();
+        binding.bottomBar.setVisibility(View.VISIBLE);
+        adapter.setCheck(true);
+    }
+
+    public void hideBottomBar() {
+        binding.addButton.show();
+        binding.bottomBar.setVisibility(View.GONE);
+        adapter.setCheck(false);
+    }
+
+    private void showTabView() {
+        TagView tagView = new TagView(this);
+        tagView.show(requireActivity().getSupportFragmentManager(), null);
     }
 }

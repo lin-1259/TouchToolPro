@@ -23,6 +23,7 @@ import top.bogey.touch_tool.databinding.ActivityMainBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
+import top.bogey.touch_tool.utils.SettingSave;
 
 public class MainActivity extends AppCompatActivity {
     static {
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         MainApplication.setActivity(this);
 
         DisplayUtils.initParams(this);
+        SettingSave.getInstance().addRunTimes();
 
         intentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (resultCallback != null) {
@@ -92,6 +94,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        NavController controller = Navigation.findNavController(this, R.id.conView);
+        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home).build();
+        NavigationUI.setupActionBarWithNavController(this, controller, configuration);
     }
 
     @Override

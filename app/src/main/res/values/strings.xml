@@ -67,7 +67,7 @@
     <string name="tutorial_tips">当你不知道怎么使用本应用的时候，请点击这里查看教程。</string>
 
     <string name="pop_on_background">后台弹出界面</string>
-    <string name="open_pop_on_background">去开启权限</string>
+    <string name="open_pop_on_background">后台弹出界面权限</string>
     <string name="pop_on_background_tips">手动任务会在对应应用弹出执行按钮，所以需要开启“后台弹出界面”的权限才能正常使用。如果你使用手动任务，请在设置里开启“后台弹出界面”的权限。</string>
     <string name="pop_on_background_tips_2">如果设置中无此权限，请忽略此条信息！</string>
 
@@ -239,6 +239,7 @@
     <string name="tag_add">添加新的分类</string>
 
     <string name="task_title_default">默认标题</string>
+    <string name="task_add">添加任务</string>
     <string name="common_name">通用</string>
     <string name="common_package_name" translatable="false">configs.common</string>
 

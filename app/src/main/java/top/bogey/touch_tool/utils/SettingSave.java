@@ -1,32 +1,24 @@
 package top.bogey.touch_tool.utils;
 
-import android.app.Application;
 import android.content.Context;
 
-import com.google.android.material.color.DynamicColors;
-import com.google.android.material.color.DynamicColorsOptions;
 import com.tencent.mmkv.MMKV;
 
-import top.bogey.touch_tool.MainApplication;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import top.bogey.touch_tool.R;
 
 public class SettingSave {
-    private final static String RUN_TIMES = "RUN_TIMES";
+    private static final String RUN_TIMES = "RUN_TIMES";
+
     private static final String SERVICE_ENABLED = "SERVICE_ENABLED";
-    private final static String SORT_TYPE = "SORT_TYPE";
 
-    private final static String ACTION_TOUCH_OFFSET = "ACTION_TOUCH_OFFSET";
-    private final static String ACTION_RECORD_DELAY = "ACTION_RECORD_DELAY";
-
-    private final static String NIGHT_MODE = "NIGHT_MODE";
-    private final static String DYNAMIC_COLOR = "DYNAMIC_COLOR";
+    private static final String TAGS = "TAGS";
 
     private static SettingSave settingSave;
-
-    private boolean isAppliedDynamicColor = false;
-    private boolean isDynamicColor = true;
-    private final DynamicColorsOptions options = new DynamicColorsOptions.Builder().setPrecondition((activity, theme) -> isDynamicColor).build();
-
     private final MMKV settingMMKV;
+    private final MMKV tagsMMKV;
 
     public static SettingSave getInstance() {
         if (settingSave == null) settingSave = new SettingSave();
@@ -35,8 +27,8 @@ public class SettingSave {
 
     public SettingSave() {
         settingMMKV = MMKV.defaultMMKV();
+        tagsMMKV = MMKV.mmkvWithID(TAGS, MMKV.SINGLE_PROCESS_MODE, TAGS);
     }
-
 
     public int getRunTimes() {
         return settingMMKV.decodeInt(RUN_TIMES, 0);
@@ -55,45 +47,23 @@ public class SettingSave {
         settingMMKV.encode(SERVICE_ENABLED, enabled);
     }
 
-
-    public int getActionTouchOffset() {
-        return settingMMKV.decodeInt(ACTION_TOUCH_OFFSET, 10);
-    }
-
-    public void setActionTouchOffset(int offset) {
-        settingMMKV.encode(ACTION_TOUCH_OFFSET, offset);
-    }
-
-    public int getTouchOffset(boolean offset, int value) {
-        if (!offset) return value;
-        int touchOffset = getActionTouchOffset();
-        return (int) (Math.random() * touchOffset * 2 + value - touchOffset);
-    }
-
-    public int getActionRecordDelay() {
-        return settingMMKV.decodeInt(ACTION_RECORD_DELAY, 300);
-    }
-
-    public void setActionRecordDelay(int delay) {
-        settingMMKV.encode(ACTION_RECORD_DELAY, delay);
-    }
-
-
-    public boolean isDynamicColor() {
-        return settingMMKV.decodeBool(DYNAMIC_COLOR, isDynamicColor);
-    }
-
-    public void setDynamicColor(Context context, boolean enabled) {
-        if (!isAppliedDynamicColor) {
-            isAppliedDynamicColor = true;
-            isDynamicColor = enabled;
-            DynamicColors.applyToActivitiesIfAvailable((Application) context.getApplicationContext(), options);
-        } else {
-            if (isDynamicColor != enabled) {
-                isDynamicColor = enabled;
-                MainApplication.getActivity().recreate();
+    public ArrayList<String> getTags(Context context) {
+        String[] keys = tagsMMKV.allKeys();
+        ArrayList<String> tags = new ArrayList<>(Arrays.asList(context.getString(R.string.tag_all), context.getString(R.string.tag_no)));
+        if (keys != null) {
+            for (int i = keys.length - 1; i >= 0; i--) {
+                String key = keys[i];
+                tags.add(tags.size() - 1, key);
             }
         }
-        settingMMKV.encode(DYNAMIC_COLOR, enabled);
+        return tags;
+    }
+
+    public void addTag(String tag) {
+        tagsMMKV.encode(tag, true);
+    }
+
+    public void removeTag(String tag) {
+        tagsMMKV.remove(tag);
     }
 }

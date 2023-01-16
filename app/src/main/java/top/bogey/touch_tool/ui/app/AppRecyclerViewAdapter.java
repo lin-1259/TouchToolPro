@@ -110,6 +110,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         private final Context context;
 
         private final String commonPkgName;
+        private final ArrayList<CharSequence> activities = new ArrayList<>();
         private PackageInfo info;
 
         public ViewHolder(ViewAppItemBinding binding) {
@@ -154,12 +155,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             });
 
             binding.selectAppButton.setOnClickListener(v -> {
-                ArrayList<CharSequence> choices = new ArrayList<>();
-                for (ActivityInfo activityInfo : info.activities) {
-                    if (activityInfo.exported) {
-                        choices.add(activityInfo.name);
-                    }
-                }
                 List<CharSequence> charSequences = selectedActivities.get(info.packageName);
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                         .setTitle(R.string.select_activity)
@@ -168,43 +163,43 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
                     int index = 0;
                     if (charSequences != null) {
-                        for (int i = 0; i < choices.size(); i++) {
-                            CharSequence choice = choices.get(i);
+                        for (int i = 0; i < activities.size(); i++) {
+                            CharSequence choice = activities.get(i);
                             if (charSequences.contains(choice)) {
                                 index = i;
                                 break;
                             }
                         }
                     }
-                    CharSequence[] ch = new CharSequence[choices.size()];
-                    builder.setSingleChoiceItems(choices.toArray(ch), index, null)
+                    CharSequence[] ch = new CharSequence[activities.size()];
+                    builder.setSingleChoiceItems(activities.toArray(ch), index, null)
                             .setPositiveButton(
                                     R.string.enter,
                                     (DialogInterface dialog, int which) -> {
                                         int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                                         if (checkedItemPosition != AdapterView.INVALID_POSITION) {
                                             selectedActivities.clear();
-                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(choices.get(checkedItemPosition))));
+                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
                                             notifyItemChanged(getAdapterPosition());
                                             callback.onResult(true);
                                         }
                                     });
                 } else {
                     if (charSequences == null) charSequences = new ArrayList<>();
-                    boolean[] choicesInitial = new boolean[choices.size()];
-                    for (int i = 0; i < choices.size(); i++) {
-                        CharSequence choice = choices.get(i);
+                    boolean[] choicesInitial = new boolean[activities.size()];
+                    for (int i = 0; i < activities.size(); i++) {
+                        CharSequence choice = activities.get(i);
                         choicesInitial[i] = charSequences.contains(choice);
                     }
 
-                    CharSequence[] ch = new CharSequence[choices.size()];
-                    builder.setMultiChoiceItems(choices.toArray(ch), choicesInitial, null)
+                    CharSequence[] ch = new CharSequence[activities.size()];
+                    builder.setMultiChoiceItems(activities.toArray(ch), choicesInitial, null)
                             .setPositiveButton(R.string.enter, (dialog, which) -> {
                                 SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
                                 ArrayList<CharSequence> result = new ArrayList<>();
-                                for (int i = 0; i < choices.size(); i++) {
+                                for (int i = 0; i < activities.size(); i++) {
                                     if (checkedItemPositions.get(i)) {
-                                        result.add(choices.get(i));
+                                        result.add(activities.get(i));
                                     }
                                 }
                                 selectedActivities.put(info.packageName, result);
@@ -219,6 +214,13 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
         public void refreshView(PackageInfo packageInfo) {
             info = packageInfo;
+            activities.clear();
+            for (ActivityInfo activityInfo : info.activities) {
+                if (activityInfo.exported) {
+                    activities.add(activityInfo.name);
+                }
+            }
+
             PackageManager manager = context.getPackageManager();
             binding.pkgName.setText(packageInfo.packageName);
             if (packageInfo.packageName.equals(context.getString(R.string.common_package_name))) {
@@ -252,7 +254,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 binding.selectAppButton.setText(String.valueOf(list.size()));
                 binding.selectAppButton.setIcon(null);
             }
-            binding.selectAppButton.setVisibility(((!showMore) || isCommon || info.activities == null || info.activities.length == 0) ? View.GONE : View.VISIBLE);
+            binding.selectAppButton.setVisibility(((!showMore) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
         }
     }
 }

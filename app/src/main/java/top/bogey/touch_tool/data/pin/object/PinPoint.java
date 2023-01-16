@@ -27,11 +27,11 @@ public class PinPoint extends PinValue {
     }
 
     public int getX(boolean offset) {
-        return SettingSave.getInstance().getTouchOffset(offset, x);
+        return getOffsetValue(offset, x);
     }
 
     public int getY(boolean offset) {
-        return SettingSave.getInstance().getTouchOffset(offset, y);
+        return getOffsetValue(offset, y);
     }
 
     public int getX() {
@@ -48,6 +48,11 @@ public class PinPoint extends PinValue {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public static int getOffsetValue(boolean offset, int value) {
+        if (!offset) return value;
+        return (int) (Math.random() * 20 + value - 10);
     }
 
     @SuppressLint("DefaultLocale")
