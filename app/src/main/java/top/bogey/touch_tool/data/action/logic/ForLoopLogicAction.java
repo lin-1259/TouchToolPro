@@ -18,6 +18,9 @@ public class ForLoopLogicAction extends NormalAction {
     private final Pin<? extends PinObject> endPin;
     private final Pin<? extends PinObject> currentPin;
     private final Pin<? extends PinObject> completePin;
+    private final Pin<? extends PinObject> breakPin;
+
+    private boolean needBreak = false;
 
     public ForLoopLogicAction() {
         super();
@@ -25,6 +28,7 @@ public class ForLoopLogicAction extends NormalAction {
         endPin = addPin(new Pin<>(new PinInteger(), R.string.action_for_loop_logic_subtitle_end));
         currentPin = addPin(new Pin<>(new PinInteger(), R.string.action_for_loop_logic_subtitle_curr, PinDirection.OUT, PinSlotType.MULTI));
         completePin = addPin(new Pin<>(new PinExecute(), R.string.action_for_loop_logic_subtitle_complete, PinDirection.OUT));
+        breakPin = addPin(new Pin<>(new PinExecute(), R.string.action_for_loop_logic_subtitle_break, PinDirection.OUT));
         titleId = R.string.action_for_loop_logic_title;
     }
 
@@ -34,18 +38,25 @@ public class ForLoopLogicAction extends NormalAction {
         endPin = addPin(pinsTmp.remove(0));
         currentPin = addPin(pinsTmp.remove(0));
         completePin = addPin(pinsTmp.remove(0));
+        breakPin = addPin(pinsTmp.remove(0));
         titleId = R.string.action_for_loop_logic_title;
     }
 
     @Override
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
-        PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);
-        PinInteger end = (PinInteger) getPinValue(worldState, runnable.getTask(), endPin);
-        PinInteger current = (PinInteger) getPinValue(worldState, runnable.getTask(), currentPin);
-        for (int i = start.getValue(); i <= end.getValue(); i++) {
-            current.setValue(i);
-            doAction(worldState, runnable, outPin);
+        if (pin.getId().equals(inPin.getId())) {
+            needBreak = false;
+            PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);
+            PinInteger end = (PinInteger) getPinValue(worldState, runnable.getTask(), endPin);
+            PinInteger current = (PinInteger) currentPin.getValue();
+            for (int i = start.getValue(); i <= end.getValue(); i++) {
+                if (needBreak) break;
+                current.setValue(i);
+                super.doAction(worldState, runnable, outPin);
+            }
+            super.doAction(worldState, runnable, completePin);
+        } else {
+            needBreak = true;
         }
-        doAction(worldState, runnable, completePin);
     }
 }

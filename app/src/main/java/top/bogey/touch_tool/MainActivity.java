@@ -24,11 +24,15 @@ import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
+import top.bogey.touch_tool.utils.easy_float.EasyFloat;
+import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
 public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("touch_tool");
     }
+
+    public static final String KEEP_ALIVE = "KEEP_ALIVE";
 
     public static final String INTENT_KEY_BACKGROUND = "INTENT_KEY_BACKGROUND";
     public static final String INTENT_KEY_PLAY_PACKAGE = "INTENT_KEY_PLAY_PACKAGE";
@@ -76,6 +80,18 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setData(result);
                 resultCallback.onResult(RESULT_OK, intent);
+            }
+        });
+
+        MainAccessibilityService.serviceConnected.observe(this, aBoolean -> {
+            if (aBoolean) {
+                EasyFloat.with(MainApplication.getService())
+                        .setLayout(R.layout.view_keep_alive)
+                        .setTag(KEEP_ALIVE)
+                        .setGravity(FloatGravity.TOP_LEFT, -100, -100)
+                        .show();
+            } else {
+                EasyFloat.dismiss(KEEP_ALIVE);
             }
         });
 

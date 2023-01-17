@@ -25,7 +25,7 @@ public class ColorStateAction extends StateAction {
     public ColorStateAction() {
         super();
         colorPin = addPin(new Pin<>(new PinColor(), R.string.action_color_state_subtitle_color));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT, PinSlotType.MULTI));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
         titleId = R.string.action_color_state_title;
     }
 
@@ -39,7 +39,8 @@ public class ColorStateAction extends StateAction {
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         if (!pin.getId().equals(statePin.getId())) return;
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
+
+        PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         if (!service.isCaptureEnabled()) {
             value.setValue(false);
@@ -56,10 +57,10 @@ public class ColorStateAction extends StateAction {
         if (rects == null || rects.isEmpty()) value.setValue(false);
         else {
             value.setValue(true);
+            PinPoint point = (PinPoint) posPin.getValue();
             Rect rect = rects.get(0);
-            PinPoint position = (PinPoint) getPinValue(worldState, task, posPin);
-            position.setX(rect.centerX());
-            position.setY(rect.centerY());
+            point.setX(rect.centerX());
+            point.setY(rect.centerY());
         }
     }
 }

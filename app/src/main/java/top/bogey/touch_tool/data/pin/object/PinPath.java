@@ -30,6 +30,7 @@ public class PinPath extends PinValue {
     }
 
     public PinPath(PinPath pinPath) {
+        super();
         for (TouchPath path : pinPath.paths) {
             paths.add(AppUtils.copy(path));
         }
@@ -39,6 +40,7 @@ public class PinPath extends PinValue {
     }
 
     public PinPath(Parcel in) {
+        super(in);
         in.readTypedList(paths, TouchPath.CREATOR);
         screen = in.readInt();
         gravity = FloatGravity.valueOf(in.readString());
@@ -46,6 +48,7 @@ public class PinPath extends PinValue {
     }
 
     public PinPath(Context context, ArrayList<TouchPath> paths, FloatGravity gravity, Point offset) {
+        super();
         this.paths.addAll(paths);
         screen = DisplayUtils.getScreen(context);
         this.gravity = gravity;

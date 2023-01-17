@@ -100,9 +100,18 @@ public class WorldState {
 
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
-            if (setPackageName(packageName) || setActivityName(className)) {
+            boolean pkg = setPackageName(packageName);
+            boolean cls = setActivityName(className);
+            if (pkg || cls) {
                 checkAutoStartAction(AppStartAction.class);
             }
+        }
+    }
+
+    public void setEnterActivity(CharSequence packageName, CharSequence className) {
+        if (isActivityClass(packageName, className)) {
+            setPackageName(packageName);
+            setActivityName(className);
         }
     }
 

@@ -272,7 +272,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             context = binding.getRoot().getContext();
 
             binding.getRoot().setOnClickListener(v -> {
-                int index = getAdapterPosition();
+                int index = getBindingAdapterPosition();
                 Task task = tasks.get(index);
                 if (isCheck) {
                     if (selectTasks.containsKey(task.getId())) {
@@ -297,7 +297,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
             binding.getRoot().setOnLongClickListener(v -> {
                 if (!isCheck) {
-                    int index = getAdapterPosition();
+                    int index = getBindingAdapterPosition();
                     Task task = tasks.get(index);
                     selectTasks.put(task.getId(), task);
                     notifyItemChanged(index);

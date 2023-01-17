@@ -23,6 +23,7 @@ public class PinValueArea extends PinValue{
     }
 
     public PinValueArea(Parcel in) {
+        super(in);
         valueFrom = in.readInt();
         valueTo = in.readInt();
         step = in.readInt();

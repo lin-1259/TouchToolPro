@@ -29,13 +29,13 @@ public class CaptureServiceAction extends NormalAction {
 
     @Override
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
-        PinBoolean state = (PinBoolean) getPinValue(worldState, runnable.getTask(), statePin);
+        PinBoolean state = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         if (state.getValue()) {
             service.startCaptureService(true, null);
         } else {
             service.stopCaptureService();
         }
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

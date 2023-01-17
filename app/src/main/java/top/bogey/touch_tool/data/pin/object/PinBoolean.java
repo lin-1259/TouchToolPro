@@ -20,6 +20,7 @@ public class PinBoolean extends PinValue {
     }
 
     public PinBoolean(Parcel in) {
+        super(in);
         value = in.readByte() == 1;
     }
 

@@ -22,7 +22,7 @@ public class PinObject implements Parcelable {
     }
 
     public PinObject(Parcel in) {
-        cls = in.readString();
+        cls = getClass().getName();
     }
 
     public static final Creator<PinObject> CREATOR = new Creator<PinObject>() {

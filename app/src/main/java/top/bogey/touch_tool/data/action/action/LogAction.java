@@ -1,8 +1,10 @@
 package top.bogey.touch_tool.data.action.action;
 
+import android.os.Handler;
 import android.os.Parcel;
 import android.widget.Toast;
 
+import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
@@ -38,8 +40,9 @@ public class LogAction extends NormalAction {
 
         PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
         if (showToast.getValue()) {
-            Toast.makeText(MainApplication.getService(), pinString.getValue(), Toast.LENGTH_SHORT).show();
+            MainAccessibilityService service = MainApplication.getService();
+            new Handler(service.getMainLooper()).post(() -> Toast.makeText(MainApplication.getService(), pinString.getValue(), Toast.LENGTH_SHORT).show());
         }
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

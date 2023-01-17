@@ -78,7 +78,6 @@ public class Pin<T extends PinObject> implements Parcelable {
         id = in.readString();
         title = in.readInt();
         value = in.readParcelable(PinObject.class.getClassLoader());
-
         direction = PinDirection.valueOf(in.readString());
         slotType = PinSlotType.valueOf(in.readString());
         subType = PinSubType.valueOf(in.readString());
@@ -112,7 +111,7 @@ public class Pin<T extends PinObject> implements Parcelable {
 
     public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
         HashMap<String, String> removedLinks = new HashMap<>();
-        // 单插槽，需要先移除之前的连接
+        // 单针脚，需要先移除之前的连接
         if (slotType == PinSlotType.SINGLE) {
             removedLinks.putAll(links);
             links.clear();
@@ -126,12 +125,12 @@ public class Pin<T extends PinObject> implements Parcelable {
     }
 
     public int getPinColor(Context context) {
-        if (value == null) throw new RuntimeException("插槽的值为空");
+        if (value == null) throw new RuntimeException("针脚的值为空");
         return value.getPinColor(context);
     }
 
     public Class<? extends PinObject> getPinClass() {
-        if (value == null) throw new RuntimeException("插槽的值为空");
+        if (value == null) throw new RuntimeException("针脚的值为空");
         return value.getClass();
     }
 
@@ -148,7 +147,7 @@ public class Pin<T extends PinObject> implements Parcelable {
     }
 
     public T getValue() {
-        if (value == null) throw new RuntimeException("插槽的值为空");
+        if (value == null) throw new RuntimeException("针脚的值为空");
         return value;
     }
 

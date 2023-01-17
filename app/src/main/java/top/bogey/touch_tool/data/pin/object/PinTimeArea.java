@@ -23,6 +23,7 @@ public class PinTimeArea extends PinValue {
     }
 
     public PinTimeArea(Parcel in) {
+        super(in);
         min = in.readInt();
         max = in.readInt();
         unit = TimeUnit.values()[in.readByte()];

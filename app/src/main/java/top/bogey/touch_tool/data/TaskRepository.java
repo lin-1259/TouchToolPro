@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data;
 
-import android.content.Context;
-
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import top.bogey.touch_tool.utils.TaskChangedCallback;
 public class TaskRepository {
     private static TaskRepository repository;
     private final static String TASK_DB = "TASK_DB";
-    private final static MMKV taskMMKV = MMKV.mmkvWithID(TASK_DB, MMKV.SINGLE_PROCESS_MODE, TASK_DB);
+    private final static MMKV taskMMKV = MMKV.mmkvWithID(TASK_DB, MMKV.SINGLE_PROCESS_MODE);
 
     private final LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
     private final HashSet<TaskChangedCallback> callbacks = new HashSet<>();

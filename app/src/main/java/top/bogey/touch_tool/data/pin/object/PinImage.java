@@ -27,6 +27,7 @@ public class PinImage extends PinValue {
     }
 
     public PinImage(Context context, Bitmap bitmap) {
+        super();
         this.bitmap = bitmap;
         if (bitmap != null) {
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -38,6 +39,7 @@ public class PinImage extends PinValue {
     }
 
     public PinImage(Parcel in) {
+        super(in);
         image = in.readString();
         screen = in.readInt();
     }

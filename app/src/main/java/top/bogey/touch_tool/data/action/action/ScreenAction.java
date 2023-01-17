@@ -44,6 +44,6 @@ public class ScreenAction extends NormalAction {
                 Toast.makeText(service, R.string.action_device_not_support_lock, Toast.LENGTH_SHORT).show();
             }
         }
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

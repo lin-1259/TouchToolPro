@@ -46,6 +46,6 @@ public class OpenAppAction extends NormalAction {
             else AppUtils.gotoApp(service, entry.getKey().toString());
             break;
         }
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

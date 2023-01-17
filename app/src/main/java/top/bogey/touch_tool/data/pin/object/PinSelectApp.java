@@ -19,6 +19,7 @@ public class PinSelectApp extends PinValue {
     }
 
     public PinSelectApp(Parcel in) {
+        super(in);
         Bundle bundle = in.readBundle(getClass().getClassLoader());
         for (String key : bundle.keySet()) {
             packages.put(key, bundle.getCharSequenceArrayList(key));

@@ -78,7 +78,7 @@ public class BaseAction implements Parcelable {
 
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         if (Thread.currentThread().isInterrupted()) return;
-        if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行插槽不正确");
+        if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行针脚不正确");
 
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getValue());
@@ -111,9 +111,9 @@ public class BaseAction implements Parcelable {
     }
 
     public Pin<? extends PinObject> addPin(int index, Pin<? extends PinObject> pin) {
-        if (pin == null) throw new RuntimeException("空的插槽");
+        if (pin == null) throw new RuntimeException("空的针脚");
         for (Pin<? extends PinObject> oldPin : pins) {
-            if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的插槽");
+            if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的针脚");
         }
         pins.add(index, pin);
         pin.setActionId(id);
@@ -140,7 +140,7 @@ public class BaseAction implements Parcelable {
 
     // 获取针脚的值
     protected PinObject getPinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        // 先看看自己是不是输出针脚，输出针脚直接返回针脚值
+        // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
         if (pin.getDirection() == PinDirection.OUT) {
             calculatePinValue(worldState, task, pin);
             return pin.getValue();
@@ -151,14 +151,13 @@ public class BaseAction implements Parcelable {
             for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
                 BaseAction action = task.getActionById(entry.getValue());
                 if (action == null) continue;
-                Pin<? extends PinObject> pinById = action.getPinById(id);
+                Pin<? extends PinObject> pinById = action.getPinById(entry.getKey());
                 if (pinById == null) continue;
                 return action.getPinValue(worldState, task, pinById);
             }
             throw new RuntimeException("针脚没有默认值");
         } else {
             // 否则，就是自己的默认值
-            calculatePinValue(worldState, task, pin);
             return pin.getValue();
         }
     }

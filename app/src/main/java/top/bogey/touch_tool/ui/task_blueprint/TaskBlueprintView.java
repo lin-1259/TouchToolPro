@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.material.sidesheet.SideSheetDialog;
-
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
@@ -30,8 +28,7 @@ public class TaskBlueprintView extends Fragment {
         }
 
         binding.addButton.setOnClickListener(v -> {
-            CardSideSheetDialog dialog = new CardSideSheetDialog(requireContext());
-            dialog.setContentView(R.layout.widget_text_input);
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(requireContext(), binding.cardLayout);
             dialog.show();
         });
 

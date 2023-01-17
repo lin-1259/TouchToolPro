@@ -27,7 +27,7 @@ public class SettingSave {
 
     public SettingSave() {
         settingMMKV = MMKV.defaultMMKV();
-        tagsMMKV = MMKV.mmkvWithID(TAGS, MMKV.SINGLE_PROCESS_MODE, TAGS);
+        tagsMMKV = MMKV.mmkvWithID(TAGS, MMKV.SINGLE_PROCESS_MODE);
     }
 
     public int getRunTimes() {

@@ -12,6 +12,20 @@
 #   public *;
 #}
 
+#-assumenosideeffects class android.util.Log{
+#    public static int d(...);
+#}
+
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+-keep class top.bogey.touch_tool.utils.MatchResult{*;}
+
+-keep class top.bogey.touch_tool.databinding.**{*;}
+
+-keep enum top.bogey.touch_tool.** {*;}
+
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable

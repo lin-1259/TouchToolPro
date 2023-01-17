@@ -29,8 +29,7 @@ public class ScreenStateAction extends StateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        if (!pin.getId().equals(statePin.getId())) return;
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
+        PinBoolean value = (PinBoolean) statePin.getValue();
         ScreenState state = AppUtils.getScreenState(MainApplication.getService());
         int screenState = ((PinSpinner) getPinValue(worldState, task, screenStatePin)).getIndex();
         value.setValue(state.ordinal() == screenState);

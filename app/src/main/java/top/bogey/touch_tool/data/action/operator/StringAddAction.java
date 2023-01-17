@@ -43,14 +43,16 @@ public class StringAddAction extends CalculateAction {
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
-        PinString value = (PinString) getPinValue(worldState, task, outValuePin);
+        PinString value = (PinString) outValuePin.getValue();
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstPin);
+        StringBuilder builder = new StringBuilder();
         for (; i < pins.size() - 1; i++) {
             Pin<? extends PinObject> pinObject = pins.get(i);
             PinString result = (PinString) getPinValue(worldState, task, pinObject);
-            value.setValue(value.getValue() + result.getValue());
+            builder.append(result.getValue());
         }
+        value.setValue(builder.toString());
     }
 }

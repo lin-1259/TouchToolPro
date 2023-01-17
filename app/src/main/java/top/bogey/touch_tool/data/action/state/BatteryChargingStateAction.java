@@ -28,7 +28,7 @@ public class BatteryChargingStateAction extends StateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
+        PinBoolean value = (PinBoolean) statePin.getValue();
 
         int batteryState = worldState.getBatteryState();
         int chargingState = convertToChargingState(((PinSpinner) getPinValue(worldState, task, chargingStatePin)).getIndex());

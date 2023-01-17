@@ -38,7 +38,7 @@ public class IntConvertToPosition extends CalculateAction {
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         PinInteger x = (PinInteger) getPinValue(worldState, task, xPin);
         PinInteger y = (PinInteger) getPinValue(worldState, task, yPin);
-        PinPoint pos = (PinPoint) getPinValue(worldState, task, posPin);
+        PinPoint pos = (PinPoint) posPin.getValue();
         pos.setX(x.getValue());
         pos.setY(y.getValue());
     }

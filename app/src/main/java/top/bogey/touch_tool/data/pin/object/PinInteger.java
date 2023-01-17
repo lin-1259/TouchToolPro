@@ -20,6 +20,7 @@ public class PinInteger extends PinValue {
     }
 
     public PinInteger(Parcel in) {
+        super(in);
         value = in.readInt();
     }
 

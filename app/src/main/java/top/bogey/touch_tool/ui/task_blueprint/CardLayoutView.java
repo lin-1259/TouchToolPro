@@ -244,7 +244,7 @@ public class CardLayoutView extends FrameLayout {
                     }
                 }
                 if (flag && Math.abs(rawX - dragX) * Math.abs(rawY - dragY) <= 81) {
-                    // 无效的拖动且没怎么拖动，相当于点击了这个插槽，点击插槽是断开这个插槽
+                    // 无效的拖动且没怎么拖动，相当于点击了这个针脚，点击针脚是断开这个针脚
                     if (dragPin != null) {
                         HashMap<String, String> links = dragPin.getPin().getLinks();
                         linksRemovePin(links, dragPin);
@@ -305,7 +305,7 @@ public class CardLayoutView extends FrameLayout {
     private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
         Pin<?> pin = pinBaseView.getPin();
         boolean flag = true;
-        // 先判断一下插槽是否匹配
+        // 先判断一下针脚是否匹配
         for (Map.Entry<String, String> entry : links.entrySet()) {
             BaseAction action = task.getActionById(entry.getValue());
             if (action == null) continue;

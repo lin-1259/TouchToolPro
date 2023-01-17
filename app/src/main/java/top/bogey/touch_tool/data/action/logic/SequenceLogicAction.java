@@ -44,7 +44,7 @@ public class SequenceLogicAction extends BaseAction {
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstPin);
         for (; i < pins.size() - 1; i++) {
-            doAction(worldState, runnable, pins.get(i));
+            super.doAction(worldState, runnable, pins.get(i));
         }
     }
 }

@@ -72,7 +72,7 @@
     <string name="pop_on_background_tips_2">如果设置中无此权限，请忽略此条信息！</string>
 
     <!-- 任务 -->
-    <string name="action_subtitle_add_pin">添加插槽</string>
+    <string name="action_subtitle_add_pin">添加针脚</string>
 
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
@@ -84,6 +84,7 @@
     <string name="action_custom_start_subtitle_title">标题</string>
 
     <string name="action_manual_start_title">手动开始</string>
+
     <string name="action_app_start_title">进应用或界面开始</string>
 
     <string name="action_time_start_title">定时开始</string>
@@ -104,9 +105,11 @@
 
     <!-- 任务 - 状态 -->
     <string name="action_state_subtitle_state">结果</string>
-    <string name="action_state_subtitle_postion">位置</string>
+    <string name="action_state_subtitle_position">位置</string>
 
     <string name="action_app_state_title">在应用或界面内</string>
+    <string name="action_app_state_subtitle_package">包名</string>
+    <string name="action_app_state_subtitle_activity">界面</string>
 
     <string name="action_battery_state_title">在电量范围内</string>
     <string name="action_battery_state_subtitle_battery">范围</string>
@@ -185,6 +188,7 @@
 
     <string name="action_condition_while_logic_title">一直…到不满足条件</string>
     <string name="action_condition_while_logic_subtitle_condition">条件</string>
+    <string name="action_condition_while_logic_subtitle_timeout">超时(s)</string>
     <string name="action_condition_while_logic_subtitle_end">结束</string>
 
     <string name="action_for_loop_logic_title">循环执行</string>
@@ -192,6 +196,7 @@
     <string name="action_for_loop_logic_subtitle_end">结束值</string>
     <string name="action_for_loop_logic_subtitle_curr">当前值</string>
     <string name="action_for_loop_logic_subtitle_complete">结束</string>
+    <string name="action_for_loop_logic_subtitle_break">中断</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
     <string name="action_sequence_logic_subtitle_start">执行</string>
@@ -218,6 +223,9 @@
     <string name="widget_id">ID：%1$s</string>
     <string name="widget_level">层级：%1$s</string>
 
+
+    <!-- 卡片列表 -->
+    <string name="search_card">搜索卡片</string>
 
 
     <string name="sort">排序</string>

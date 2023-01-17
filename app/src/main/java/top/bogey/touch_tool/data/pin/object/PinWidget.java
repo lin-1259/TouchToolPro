@@ -16,6 +16,7 @@ public class PinWidget extends PinValue {
     }
 
     public PinWidget(String id, String level) {
+        super();
         this.id = id;
         this.level = level;
     }

@@ -17,6 +17,7 @@ public class PinExecute extends PinObject {
     }
 
     public PinExecute(Parcel in) {
+        super(in);
     }
 
     @Override

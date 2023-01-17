@@ -27,7 +27,7 @@ public class TextStateAction extends StateAction {
     public TextStateAction() {
         super();
         textPin = addPin(new Pin<>(new PinString(), R.string.action_text_state_subtitle_text));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT, PinSlotType.MULTI));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
         titleId = R.string.action_text_state_title;
     }
 
@@ -40,8 +40,7 @@ public class TextStateAction extends StateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        if (!pin.getId().equals(statePin.getId())) return;
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
+        PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
 
         String text = ((PinString) getPinValue(worldState, task, textPin)).getValue();
@@ -55,7 +54,7 @@ public class TextStateAction extends StateAction {
         if (searchNode == null) value.setValue(false);
         else {
             value.setValue(true);
-            PinPoint point = (PinPoint) getPinValue(worldState, task, posPin);
+            PinPoint point = (PinPoint) posPin.getValue();
             Rect bounds = new Rect();
             searchNode.getBoundsInScreen(bounds);
             point.setX(bounds.centerX());

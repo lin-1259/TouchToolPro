@@ -24,7 +24,7 @@ public class TouchPosAction extends NormalAction {
     public TouchPosAction() {
         super();
         posPin = addPin(new Pin<>(new PinPoint(), R.string.action_touch_pos_action_subtitle_position));
-        timePin = addPin(new Pin<>(new PinTimeArea(300, TimeUnit.MILLISECONDS), R.string.action_touch_pos_action_subtitle_time));
+        timePin = addPin(new Pin<>(new PinTimeArea(100, TimeUnit.MILLISECONDS), R.string.action_touch_pos_action_subtitle_time));
         offsetPin = addPin(new Pin<>(new PinBoolean(), R.string.action_touch_pos_action_subtitle_offset));
         titleId = R.string.action_touch_pos_action_title;
     }
@@ -48,6 +48,6 @@ public class TouchPosAction extends NormalAction {
         service.runGesture(pos.getX(offset.getValue()), pos.getY(offset.getValue()), randomTime, null);
         boolean sleep = sleep(randomTime);
         if (!sleep) return;
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

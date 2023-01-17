@@ -43,7 +43,7 @@ public class IntAddAction extends CalculateAction {
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
-        PinInteger value = (PinInteger) getPinValue(worldState, task, outValuePin);
+        PinInteger value = (PinInteger) outValuePin.getValue();
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstPin);

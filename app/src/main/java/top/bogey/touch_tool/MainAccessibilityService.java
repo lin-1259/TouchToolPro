@@ -58,12 +58,18 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
-            Log.d("TAG", "onAccessibilityEvent: " + event);
+            CharSequence packageName = event.getPackageName();
+            CharSequence className = event.getClassName();
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                WorldState.getInstance().enterActivity(event.getPackageName(), event.getClassName());
-                if (getPackageName().contentEquals(event.getPackageName())) stopAllTask();
+                Log.d("TouchToolPro", "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
+                if (getPackageName().contentEquals(packageName)) {
+                    stopAllTask();
+                    WorldState.getInstance().setEnterActivity(packageName, className);
+                }
+                else WorldState.getInstance().enterActivity(packageName, className);
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                if (!Notification.class.getName().contentEquals(event.getClassName())) return;
+                Log.d("TouchToolPro", "AccessibilityEvent: TYPE_NOTIFICATION_STATE_CHANGED");
+                if (!Notification.class.getName().contentEquals(className)) return;
                 List<CharSequence> eventText = event.getText();
                 if (eventText == null || eventText.size() == 0) return;
                 StringBuilder builder = new StringBuilder();
@@ -71,8 +77,9 @@ public class MainAccessibilityService extends AccessibilityService {
                     builder.append(charSequence);
                     builder.append(" ");
                 }
-                WorldState.getInstance().setNotification(event.getPackageName(), builder.toString().trim());
+                WorldState.getInstance().setNotification(packageName, builder.toString().trim());
             }
+            Log.d("TouchToolPro", "AccessibilityEvent: " + packageName + "/" + className);
         }
     }
 

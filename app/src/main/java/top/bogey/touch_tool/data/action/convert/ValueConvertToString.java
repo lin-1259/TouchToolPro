@@ -34,7 +34,7 @@ public class ValueConvertToString extends CalculateAction {
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
         PinValue value = (PinValue) getPinValue(worldState, task, valuePin);
-        PinString string = (PinString) getPinValue(worldState, task, stringPin);
+        PinString string = (PinString) stringPin.getValue();
         string.setValue(value.toString());
     }
 }

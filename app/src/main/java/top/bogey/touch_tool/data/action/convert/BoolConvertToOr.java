@@ -42,8 +42,7 @@ public class BoolConvertToOr extends CalculateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        if (!pin.getId().equals(outConditionPin.getId())) return;
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, outConditionPin);
+        PinBoolean value = (PinBoolean) outConditionPin.getValue();
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstConditionPin);

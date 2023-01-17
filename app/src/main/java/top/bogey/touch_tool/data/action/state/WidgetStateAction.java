@@ -25,7 +25,7 @@ public class WidgetStateAction extends StateAction {
     public WidgetStateAction() {
         super();
         widgetPin = addPin(new Pin<>(new PinWidget(), R.string.action_widget_state_subtitle_widget, PinSubType.ID));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_postion, PinDirection.OUT, PinSlotType.MULTI));
+        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
         titleId = R.string.action_widget_state_title;
     }
 
@@ -38,27 +38,22 @@ public class WidgetStateAction extends StateAction {
 
     @Override
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
-        if (!pin.getId().equals(statePin.getId())) return;
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, statePin);
+        PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
 
         PinWidget widget = (PinWidget) getPinValue(worldState, task, widgetPin);
-        PinPoint pinPoint = (PinPoint) getPinValue(worldState, task, posPin);
         AccessibilityNodeInfo node = widget.getNode(root);
         if (node != null) {
-            setPosPin(pinPoint, node);
             value.setValue(true);
+            PinPoint point = (PinPoint) posPin.getValue();
+            Rect bounds = new Rect();
+            node.getBoundsInScreen(bounds);
+            point.setX(bounds.centerX());
+            point.setY(bounds.centerY());
             return;
         }
 
         value.setValue(false);
-    }
-
-    private void setPosPin(PinPoint point, AccessibilityNodeInfo nodeInfo) {
-        Rect bounds = new Rect();
-        nodeInfo.getBoundsInScreen(bounds);
-        point.setX(bounds.centerX());
-        point.setY(bounds.centerY());
     }
 }

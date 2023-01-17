@@ -8,6 +8,15 @@
         <item>日</item>
     </string-array>
 
+    <string-array name="action_type">
+        <item>开始动作</item>
+        <item>逻辑动作</item>
+        <item>普通动作</item>
+        <item>状态获取</item>
+        <item>针脚转换</item>
+        <item>针脚运算</item>
+    </string-array>
+
     <string-array name="restart_type">
         <item>重新执行</item>
         <item>放弃重入</item>
@@ -34,4 +43,6 @@
         <item>打开 通知 界面</item>
         <item>手机截屏</item>
     </string-array>
+
+
 </resources>

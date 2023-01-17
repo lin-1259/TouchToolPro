@@ -15,6 +15,7 @@ public class PinSpinner extends PinValue {
     }
 
     public PinSpinner(Parcel in) {
+        super(in);
         array = in.readInt();
         index = in.readInt();
     }

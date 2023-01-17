@@ -39,9 +39,9 @@ public class ConditionLogicAction extends BaseAction {
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         if (condition.getValue()) {
-            doAction(worldState, runnable, truePin);
+            super.doAction(worldState, runnable, truePin);
         } else {
-            doAction(worldState, runnable, falsePin);
+            super.doAction(worldState, runnable, falsePin);
         }
     }
 }

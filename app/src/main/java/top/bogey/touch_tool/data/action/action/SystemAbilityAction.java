@@ -2,6 +2,7 @@ package top.bogey.touch_tool.data.action.action;
 
 import android.accessibilityservice.AccessibilityService;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcel;
 import android.widget.Toast;
 
@@ -51,10 +52,12 @@ public class SystemAbilityAction extends NormalAction {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT);
                 } else {
-                    Toast.makeText(service, R.string.action_device_not_support_snap, Toast.LENGTH_SHORT).show();
+                    new Handler(service.getMainLooper()).post(() -> {
+                        Toast.makeText(service, R.string.action_device_not_support_snap, Toast.LENGTH_SHORT).show();
+                    });
                 }
                 break;
         }
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

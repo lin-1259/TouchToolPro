@@ -58,7 +58,7 @@ public class Task implements Parcelable {
 
     public StartAction getStartAction(Class<? extends StartAction> startActionClass) {
         for (BaseAction action : actions) {
-            if (action.getClass().isInstance(startActionClass)) {
+            if (action.getClass().equals(startActionClass) || action.getClass().isInstance(startActionClass)) {
                 return (StartAction) action;
             }
         }

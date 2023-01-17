@@ -48,6 +48,6 @@ public class TouchPathAction extends NormalAction {
         service.runGesture(pinPath.getRealPaths(service, offset.getValue()), randomTime, null);
         boolean sleep = sleep(randomTime);
         if (!sleep) return;
-        super.doAction(worldState, runnable);
+        super.doAction(worldState, runnable, outPin);
     }
 }

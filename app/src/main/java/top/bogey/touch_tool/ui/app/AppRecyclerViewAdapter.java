@@ -215,9 +215,11 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         public void refreshView(PackageInfo packageInfo) {
             info = packageInfo;
             activities.clear();
-            for (ActivityInfo activityInfo : info.activities) {
-                if (activityInfo.exported) {
-                    activities.add(activityInfo.name);
+            if (info.activities != null) {
+                for (ActivityInfo activityInfo : info.activities) {
+                    if (activityInfo.exported) {
+                        activities.add(activityInfo.name);
+                    }
                 }
             }
 

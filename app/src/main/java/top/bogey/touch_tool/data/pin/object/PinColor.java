@@ -22,6 +22,7 @@ public class PinColor extends PinValue {
     }
 
     public PinColor(PinColor pinColor) {
+        super();
         color = new int[]{pinColor.color[0], pinColor.color[1], pinColor.color[2]};
         screen = pinColor.screen;
         minSize = pinColor.minSize;
@@ -29,6 +30,7 @@ public class PinColor extends PinValue {
     }
 
     public PinColor(Context context, int[] color, int minSize, int maxSize) {
+        super();
         this.color = color;
         screen = DisplayUtils.getScreen(context);
         this.minSize = minSize;

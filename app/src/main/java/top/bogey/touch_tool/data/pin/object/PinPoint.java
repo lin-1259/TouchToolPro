@@ -22,6 +22,7 @@ public class PinPoint extends PinValue {
     }
 
     public PinPoint(Parcel in) {
+        super(in);
         x = in.readInt();
         y = in.readInt();
     }
