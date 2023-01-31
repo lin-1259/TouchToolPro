@@ -150,7 +150,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                         }
                     }
                 }
-                notifyItemChanged(getAdapterPosition());
+                notifyItemChanged(getBindingAdapterPosition());
                 callback.onResult(true);
             });
 
@@ -180,7 +180,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                                         if (checkedItemPosition != AdapterView.INVALID_POSITION) {
                                             selectedActivities.clear();
                                             selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
-                                            notifyItemChanged(getAdapterPosition());
+                                            notifyItemChanged(getBindingAdapterPosition());
                                             callback.onResult(true);
                                         }
                                     });
@@ -203,7 +203,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                                     }
                                 }
                                 selectedActivities.put(info.packageName, result);
-                                notifyItemChanged(getAdapterPosition());
+                                notifyItemChanged(getBindingAdapterPosition());
                                 callback.onResult(true);
                             });
                 }
@@ -217,7 +217,11 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             activities.clear();
             if (info.activities != null) {
                 for (ActivityInfo activityInfo : info.activities) {
-                    if (activityInfo.exported) {
+                    if (single) {
+                        if (activityInfo.exported) {
+                            activities.add(activityInfo.name);
+                        }
+                    } else {
                         activities.add(activityInfo.name);
                     }
                 }

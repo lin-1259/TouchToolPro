@@ -164,12 +164,26 @@ public class MainCaptureService extends Service {
 
     public class CaptureServiceBinder extends Binder {
 
-        public List<Rect> matchColor(Bitmap bitmap, int[] color) {
-            List<MatchResult> matchResults = AppUtils.nativeMatchColor(bitmap, color);
+        public List<Rect> matchColor(Bitmap sourceBitmap, int[] color, Rect area) {
+            if (sourceBitmap == null) return null;
+
+            Bitmap bitmap = null;
+            if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
+                if (sourceBitmap.getWidth() >= area.right && sourceBitmap.getHeight() >= area.bottom) {
+                    sourceBitmap = Bitmap.createBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                    bitmap = sourceBitmap;
+                }
+            }
+
+            if (sourceBitmap == null) return null;
+            List<MatchResult> matchResults = AppUtils.nativeMatchColor(sourceBitmap, color);
+            if (bitmap != null) bitmap.recycle();
+
             if (matchResults != null) {
                 matchResults.sort((o1, o2) -> o2.value - o1.value);
                 List<Rect> rectList = new ArrayList<>();
                 for (MatchResult matchResult : matchResults) {
+                    matchResult.rect.offset(area.left, area.top);
                     rectList.add(matchResult.rect);
                 }
                 return rectList;
@@ -177,23 +191,36 @@ public class MainCaptureService extends Service {
             return null;
         }
 
-        public List<Rect> matchColor(int[] color) {
+        public List<Rect> matchColor(int[] color, Rect area) {
             Bitmap bitmap = getCurrImage();
-            List<Rect> rectList = matchColor(bitmap, color);
+            List<Rect> rectList = matchColor(bitmap, color, area);
             bitmap.recycle();
             return rectList;
         }
 
-        public Rect matchImage(Bitmap sourceBitmap, Bitmap matchBitmap, int matchValue) {
+        public Rect matchImage(Bitmap sourceBitmap, Bitmap matchBitmap, int matchValue, Rect area) {
             if (sourceBitmap == null || matchBitmap == null) return null;
+
+            Bitmap bitmap = null;
+            if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
+                if (sourceBitmap.getWidth() >= area.right && sourceBitmap.getHeight() >= area.bottom) {
+                    sourceBitmap = Bitmap.createBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                    bitmap = sourceBitmap;
+                }
+            }
+
+            if (sourceBitmap == null) return null;
             MatchResult matchResult = AppUtils.nativeMatchTemplate(sourceBitmap, matchBitmap, 5);
+            if (bitmap != null) bitmap.recycle();
+
             if (Math.min(100, matchValue) > matchResult.value) return null;
+            matchResult.rect.offset(area.left, area.top);
             return matchResult.rect;
         }
 
-        public Rect matchImage(Bitmap matchBitmap, int matchValue) {
+        public Rect matchImage(Bitmap matchBitmap, int matchValue, Rect area) {
             Bitmap bitmap = getCurrImage();
-            Rect rect = matchImage(bitmap, matchBitmap, matchValue);
+            Rect rect = matchImage(bitmap, matchBitmap, matchValue, area);
             bitmap.recycle();
             return rect;
         }

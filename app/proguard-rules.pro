@@ -23,6 +23,7 @@
 -keep class top.bogey.touch_tool.utils.MatchResult{*;}
 
 -keep class top.bogey.touch_tool.databinding.**{*;}
+-keep class top.bogey.touch_tool.data.**{*;}
 
 -keep enum top.bogey.touch_tool.** {*;}
 

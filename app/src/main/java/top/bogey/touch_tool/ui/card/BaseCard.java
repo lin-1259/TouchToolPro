@@ -3,6 +3,7 @@ package top.bogey.touch_tool.ui.card;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,13 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -36,7 +40,10 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     private final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
     private boolean needDelete = false;
+    private float lastX, lastY;
+    private long titleTouchStartTime;
 
+    @SuppressLint("ClickableViewAccessibility")
     public BaseCard(@NonNull Context context, Task task, A action) {
         super(context, null);
         if (action == null) throw new RuntimeException("无效的动作");
@@ -81,6 +88,27 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         });
 
         binding.title.setText(action.getTitle(context));
+        binding.des.setText(action.getDes());
+        binding.des.setVisibility((action.getDes() == null || action.getDes().length() == 0) ? GONE : VISIBLE);
+
+        binding.editButton.setOnClickListener(v -> {
+            View view = LayoutInflater.from(context).inflate(R.layout.widget_text_input, null);
+            TextInputEditText editText = view.findViewById(R.id.title_edit);
+            editText.setText(action.getDes());
+
+            new MaterialAlertDialogBuilder(context)
+                    .setPositiveButton(R.string.enter, (dialog, which) -> {
+                        Editable text = editText.getText();
+                        action.setDes(text);
+                        binding.des.setText(text);
+                        binding.des.setVisibility((text == null || text.length() == 0) ? GONE : VISIBLE);
+                        dialog.dismiss();
+                    })
+                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .setView(view)
+                    .setTitle(R.string.action_add_des_tips)
+                    .show();
+        });
 
         for (Pin<? extends PinObject> pin : action.getPins()) {
             if (pin.getDirection() == PinDirection.IN) {

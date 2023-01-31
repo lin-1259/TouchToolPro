@@ -6,27 +6,10 @@
     android:padding="8dp"
     android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="?attr/textInputFilledStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/search_card"
-        app:endIconMode="clear_text"
-        app:startIconDrawable="@drawable/icon_search">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/searchEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:singleLine="true" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/actionBox"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
         android:layout_weight="1"
         android:scrollbars="none"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />

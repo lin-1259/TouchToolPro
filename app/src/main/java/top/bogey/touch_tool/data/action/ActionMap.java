@@ -22,6 +22,7 @@ import top.bogey.touch_tool.data.action.logic.ConditionLogicAction;
 import top.bogey.touch_tool.data.action.logic.ConditionWhileLogicAction;
 import top.bogey.touch_tool.data.action.logic.ForLoopLogicAction;
 import top.bogey.touch_tool.data.action.logic.SequenceLogicAction;
+import top.bogey.touch_tool.data.action.logic.WaitConditionLogicAction;
 import top.bogey.touch_tool.data.action.operator.IntAddAction;
 import top.bogey.touch_tool.data.action.operator.IntDivAction;
 import top.bogey.touch_tool.data.action.operator.IntMultiAction;
@@ -84,6 +85,7 @@ public class ActionMap {
         LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
         actions.put(ActionType.LOGIC, logicActions);
         logicActions.put(ConditionLogicAction.class, R.string.action_condition_logic_title);
+        logicActions.put(WaitConditionLogicAction.class, R.string.action_wait_condition_logic_title);
         logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
         logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
         logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);

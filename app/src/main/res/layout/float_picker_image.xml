@@ -6,6 +6,42 @@
     android:background="#88000000">
 
     <FrameLayout
+        android:id="@+id/areaBox"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_border" >
+
+        <ImageView
+            android:id="@+id/areaLeft"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="start|center_vertical"
+            app:srcCompat="@drawable/icon_drag_left" />
+
+        <ImageView
+            android:id="@+id/areaTop"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top|center_horizontal"
+            app:srcCompat="@drawable/icon_drag_top" />
+
+        <ImageView
+            android:id="@+id/areaRight"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|center_vertical"
+            app:srcCompat="@drawable/icon_drag_right" />
+
+        <ImageView
+            android:id="@+id/areaBottom"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="bottom|center_horizontal"
+            app:srcCompat="@drawable/icon_drag_bottom" />
+
+    </FrameLayout>
+
+    <FrameLayout
         android:id="@+id/markBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -14,12 +50,14 @@
             android:id="@+id/moveLeft"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:layout_gravity="start|top"
             app:srcCompat="@drawable/icon_drag_left_top" />
 
         <ImageView
             android:id="@+id/moveRight"
             android:layout_width="16dp"
             android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
             app:srcCompat="@drawable/icon_drag_right_bottom" />
     </FrameLayout>
 

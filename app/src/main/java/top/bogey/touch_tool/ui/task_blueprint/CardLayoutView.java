@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -13,6 +14,8 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -82,6 +85,19 @@ public class CardLayoutView extends FrameLayout {
         setCardPosition(card);
         addView(card);
         cardMap.put(action.getId(), card);
+    }
+
+    public void addAction(Class<? extends BaseAction> actionClass) {
+        try {
+            Constructor<? extends BaseAction> constructor = actionClass.getConstructor();
+            BaseAction action = constructor.newInstance();
+            action.x = (int) (-offsetX / gridSize) + 1;
+            action.y = (int) (-offsetY / gridSize) + 1;
+            addAction(action);
+        } catch (NoSuchMethodException | InvocationTargetException |
+                 IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void removeAction(BaseAction action) {

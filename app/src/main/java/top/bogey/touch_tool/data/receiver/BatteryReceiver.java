@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.util.Log;
 
 import top.bogey.touch_tool.data.WorldState;
 
@@ -14,6 +15,7 @@ public class BatteryReceiver extends BroadcastReceiver {
         if (Intent.ACTION_BATTERY_CHANGED.equals(intent.getAction())) {
             int level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             int scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
+            Log.d("BatteryReceiver", "onReceive: " + intent);
             WorldState.getInstance().setBatteryPercent(level * 100 / scale);
             int state = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN);
             WorldState.getInstance().setBatteryState(state);

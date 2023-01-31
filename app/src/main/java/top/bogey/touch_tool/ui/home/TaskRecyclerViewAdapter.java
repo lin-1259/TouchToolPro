@@ -237,7 +237,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
         try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
             Parcel parcel = Parcel.obtain();
-            parcel.writeTypedList(tasks);
+            parcel.writeTypedList(new ArrayList<>(selectTasks.values()));
             fileOutputStream.write(parcel.marshall());
             parcel.recycle();
         } catch (IOException e) {

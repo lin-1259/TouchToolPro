@@ -8,6 +8,8 @@ import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -20,6 +22,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
+import top.bogey.touch_tool.ui.play.PlayFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
@@ -35,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String KEEP_ALIVE = "KEEP_ALIVE";
 
     public static final String INTENT_KEY_BACKGROUND = "INTENT_KEY_BACKGROUND";
-    public static final String INTENT_KEY_PLAY_PACKAGE = "INTENT_KEY_PLAY_PACKAGE";
+    public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
     public static final String INTENT_KEY_QUICK_MENU = "INTENT_KEY_QUICK_MENU";
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
 
@@ -83,12 +86,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        MainAccessibilityService.serviceConnected.observe(this, aBoolean -> {
+        MainAccessibilityService.serviceEnabled.observe(this, aBoolean -> {
+            if (MainApplication.getService() == null) return;
             if (aBoolean) {
+                View view = LayoutInflater.from(this).inflate(R.layout.view_keep_alive, binding.getRoot(), false);
                 EasyFloat.with(MainApplication.getService())
-                        .setLayout(R.layout.view_keep_alive)
+                        .setLayout(view)
                         .setTag(KEEP_ALIVE)
-                        .setGravity(FloatGravity.TOP_LEFT, -100, -100)
+                        .setGravity(FloatGravity.TOP_CENTER, 0, DisplayUtils.dp2px(this, 2))
+                        .setAlwaysShow(true)
                         .show();
             } else {
                 EasyFloat.dismiss(KEEP_ALIVE);
@@ -136,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
+        setIntent(null);
     }
 
     public void handleIntent(Intent intent) {
@@ -146,8 +153,9 @@ public class MainActivity extends AppCompatActivity {
             moveTaskToBack(true);
         }
 
-        String pkgName = intent.getStringExtra(INTENT_KEY_PLAY_PACKAGE);
-        if (pkgName != null && !pkgName.isEmpty()) {
+        int size = intent.getIntExtra(INTENT_KEY_SHOW_PLAY, -1);
+        if (size >= 0) {
+            handlePlayFloatView(size);
         }
 
         boolean showQuickMenu = intent.getBooleanExtra(INTENT_KEY_QUICK_MENU, false);
@@ -190,5 +198,20 @@ public class MainActivity extends AppCompatActivity {
         } else {
             callback.onResult(Activity.RESULT_OK, null);
         }
+    }
+
+    public void handlePlayFloatView(int size) {
+        binding.getRoot().post(() -> {
+            PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getCanonicalName());
+            if (size == 0) {
+                if (view != null) view.setNeedRemove(true);
+            } else {
+                if (view == null) {
+                    view = new PlayFloatView(this);
+                    view.show();
+                }
+                view.onNewActions();
+            }
+        });
     }
 }

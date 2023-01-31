@@ -12,8 +12,6 @@ import com.amrdeveloper.treeview.TreeNodeManager;
 import com.amrdeveloper.treeview.TreeViewAdapter;
 import com.amrdeveloper.treeview.TreeViewHolder;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,25 +25,15 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class ActionTreeAdapter extends TreeViewAdapter {
     private final TreeNodeManager manager;
-    private final CardLayoutView parent;
 
     public ActionTreeAdapter(CardLayoutView parent, TreeNodeManager manager) {
         super(null, manager);
         this.manager = manager;
-        this.parent = parent;
 
         setTreeNodeClickListener((treeNode, view) -> {
             if (treeNode.getLevel() == 1) {
                 Map.Entry<Class<? extends BaseAction>, Integer> entry = (Map.Entry<Class<? extends BaseAction>, Integer>) treeNode.getValue();
-                Class<? extends BaseAction> aClass = entry.getKey();
-                try {
-                    Constructor<? extends BaseAction> constructor = aClass.getConstructor();
-                    BaseAction action = constructor.newInstance();
-                    parent.addAction(action);
-                } catch (NoSuchMethodException | InvocationTargetException |
-                         IllegalAccessException | InstantiationException e) {
-                    throw new RuntimeException(e);
-                }
+                parent.addAction(entry.getKey());
             }
         });
 

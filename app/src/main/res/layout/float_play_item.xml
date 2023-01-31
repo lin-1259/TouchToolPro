@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="2dp">
+
+    <com.google.android.material.card.MaterialCardView
+        style="?attr/materialCardViewFilledStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.Button">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/playButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="false"
+            app:indicatorInset="0dp"
+            app:indicatorSize="30dp"
+            app:trackCornerRadius="2dp"
+            app:trackThickness="4dp"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="13sp" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+</FrameLayout>

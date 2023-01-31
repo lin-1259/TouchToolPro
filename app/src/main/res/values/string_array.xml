@@ -25,7 +25,7 @@
 
     <string-array name="charging_state">
         <item>充电中</item>
-        <item>放电中</item>
+        <item>入不敷出</item>
         <item>未充电</item>
         <item>充满了</item>
     </string-array>

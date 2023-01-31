@@ -53,12 +53,12 @@ public class ColorStateAction extends StateAction {
             return;
         }
 
-        List<Rect> rects = service.binder.matchColor(color.getColor());
-        if (rects == null || rects.isEmpty()) value.setValue(false);
+        List<Rect> rectList = service.binder.matchColor(color.getColor(), color.getArea(service));
+        if (rectList == null || rectList.isEmpty()) value.setValue(false);
         else {
             value.setValue(true);
             PinPoint point = (PinPoint) posPin.getValue();
-            Rect rect = rects.get(0);
+            Rect rect = rectList.get(0);
             point.setX(rect.centerX());
             point.setY(rect.centerY());
         }

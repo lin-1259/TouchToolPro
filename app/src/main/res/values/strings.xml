@@ -73,33 +73,30 @@
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
+    <string name="action_add_des_tips">修改备注</string>
 
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
 
-    <string name="action_normal_start_title">任务开始</string>
+    <string name="action_normal_start_title">自定义条件执行</string>
     <string name="action_normal_start_subtitle_condition">开始条件</string>
 
-    <string name="action_custom_start_title">自定义开始</string>
-    <string name="action_custom_start_subtitle_title">标题</string>
+    <string name="action_manual_start_title">手动执行</string>
+    <string name="action_app_start_title">进应用或界面时执行</string>
 
-    <string name="action_manual_start_title">手动开始</string>
-
-    <string name="action_app_start_title">进应用或界面开始</string>
-
-    <string name="action_time_start_title">定时开始</string>
+    <string name="action_time_start_title">定时执行</string>
     <string name="action_time_start_subtitle_date">日期</string>
     <string name="action_time_start_subtitle_time">时间</string>
     <string name="action_time_start_subtitle_periodic">间隔</string>
     <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
-    <string name="action_battery_start_title">到电量范围开始</string>
+    <string name="action_battery_start_title">到电量范围内执行</string>
     <string name="action_battery_start_subtitle_battery">范围</string>
 
-    <string name="action_battery_charging_start_title">电池状态变更开始</string>
+    <string name="action_battery_charging_start_title">充电状态变更时执行</string>
     <string name="action_battery_charging_start_subtitle_state">状态</string>
 
-    <string name="action_notification_start_title">新通知时开始</string>
+    <string name="action_notification_start_title">收到新通知时执行</string>
     <string name="action_notification_start_subtitle_text">匹配文本</string>
 
 
@@ -165,12 +162,12 @@
     <string name="action_open_app_action_title">打开应用或界面</string>
 
     <!-- 任务 - 转换 -->
-    <string name="action_value_convert_string_title">转换为文本</string>
+    <string name="action_value_convert_string_title">对象转换为文本</string>
     <string name="action_value_convert_string_subtitle_value">对象</string>
     <string name="action_value_convert_string_subtitle_string">文本</string>
 
-    <string name="action_position_convert_int_title">拆分为数字</string>
-    <string name="action_int_convert_position_title">组合为位置</string>
+    <string name="action_position_convert_int_title">位置拆分为数字</string>
+    <string name="action_int_convert_position_title">数值组合为位置</string>
     <string name="action_int_convert_position_subtitle_x">X</string>
     <string name="action_int_convert_position_subtitle_y">Y</string>
     <string name="action_int_convert_position_subtitle_position">位置</string>
@@ -186,9 +183,12 @@
     <string name="action_condition_logic_subtitle_true">达成</string>
     <string name="action_condition_logic_subtitle_false">未达成</string>
 
+    <string name="action_wait_condition_logic_title">等待条件成立</string>
+    <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>
+
     <string name="action_condition_while_logic_title">一直…到不满足条件</string>
     <string name="action_condition_while_logic_subtitle_condition">条件</string>
-    <string name="action_condition_while_logic_subtitle_timeout">超时(s)</string>
+    <string name="action_condition_while_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_condition_while_logic_subtitle_end">结束</string>
 
     <string name="action_for_loop_logic_title">循环执行</string>
@@ -203,10 +203,10 @@
 
 
     <!-- 任务 - 加减乘除 -->
-    <string name="action_int_add_operator_title">相加 +</string>
-    <string name="action_int_reduce_operator_title">相减 -</string>
-    <string name="action_int_multi_operator_title">相乘 ×</string>
-    <string name="action_int_div_operator_title">相除 ÷</string>
+    <string name="action_int_add_operator_title">数值相加 ＋</string>
+    <string name="action_int_reduce_operator_title">数值相减 －</string>
+    <string name="action_int_multi_operator_title">数值相乘 ×</string>
+    <string name="action_int_div_operator_title">数值相除 ÷</string>
 
     <string name="action_string_add_operator_title">文本拼接</string>
 

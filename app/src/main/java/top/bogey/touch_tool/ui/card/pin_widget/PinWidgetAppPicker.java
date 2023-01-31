@@ -35,7 +35,7 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
     }
 
     public PinWidgetAppPicker(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new PinSelectApp(AppView.SINGLE_MODE));
+        this(context, attrs, new PinSelectApp(AppView.SINGLE_WITH_ACTIVITY_MODE));
     }
 
     public PinWidgetAppPicker(@NonNull Context context, @Nullable AttributeSet attrs, PinSelectApp helper) {

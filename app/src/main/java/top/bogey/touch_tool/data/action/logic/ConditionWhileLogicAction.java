@@ -21,7 +21,7 @@ public class ConditionWhileLogicAction extends NormalAction {
     public ConditionWhileLogicAction() {
         super();
         conditionPin = addPin(new Pin<>(new PinBoolean(false), R.string.action_condition_while_logic_subtitle_condition));
-        timeOutPin = addPin(new Pin<>(new PinInteger(5), R.string.action_condition_while_logic_subtitle_timeout));
+        timeOutPin = addPin(new Pin<>(new PinInteger(5000), R.string.action_condition_while_logic_subtitle_timeout));
         endPin = addPin(new Pin<>(new PinExecute(), R.string.action_condition_while_logic_subtitle_end, PinDirection.OUT));
         titleId = R.string.action_condition_while_logic_title;
     }
@@ -42,7 +42,7 @@ public class ConditionWhileLogicAction extends NormalAction {
         long startTime = System.currentTimeMillis();
         while (condition.getValue()) {
             super.doAction(worldState, runnable, outPin);
-            if (timeout.getValue() * 1000L < System.currentTimeMillis() - startTime) break;
+            if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
         }
         super.doAction(worldState, runnable, endPin);
     }

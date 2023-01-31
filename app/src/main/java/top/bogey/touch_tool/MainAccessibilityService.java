@@ -2,6 +2,7 @@ package top.bogey.touch_tool;
 
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.ComponentName;
@@ -28,8 +29,8 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
-import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.ResultCallback;
+import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 import top.bogey.touch_tool.utils.TaskThreadPoolExecutor;
@@ -51,10 +52,6 @@ public class MainAccessibilityService extends AccessibilityService {
     private final HashSet<TaskRunnable> runnableSet = new HashSet<>();
     private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
 
-    public MainAccessibilityService() {
-        serviceEnabled.setValue(SettingSave.getInstance().isServiceEnabled());
-    }
-
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
@@ -65,8 +62,7 @@ public class MainAccessibilityService extends AccessibilityService {
                 if (getPackageName().contentEquals(packageName)) {
                     stopAllTask();
                     WorldState.getInstance().setEnterActivity(packageName, className);
-                }
-                else WorldState.getInstance().enterActivity(packageName, className);
+                } else WorldState.getInstance().enterActivity(packageName, className);
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
                 Log.d("TouchToolPro", "AccessibilityEvent: TYPE_NOTIFICATION_STATE_CHANGED");
                 if (!Notification.class.getName().contentEquals(className)) return;
@@ -91,6 +87,7 @@ public class MainAccessibilityService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         serviceConnected.setValue(true);
+        serviceEnabled.setValue(SettingSave.getInstance().isServiceEnabled());
     }
 
     @Override
@@ -109,6 +106,7 @@ public class MainAccessibilityService extends AccessibilityService {
         return super.onStartCommand(intent, flags, startId);
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     @Override
     public void onCreate() {
         super.onCreate();
@@ -124,6 +122,7 @@ public class MainAccessibilityService extends AccessibilityService {
         stopCaptureService();
 
         serviceConnected.setValue(false);
+        serviceEnabled.setValue(false);
         MainApplication.setService(null);
     }
 

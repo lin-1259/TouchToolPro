@@ -55,7 +55,7 @@ public class ImageStateAction extends StateAction {
         }
 
         PinInteger similar = (PinInteger) getPinValue(worldState, task, similarPin);
-        Rect rect = service.binder.matchImage(image.getScaleBitmap(service), similar.getValue());
+        Rect rect = service.binder.matchImage(image.getScaleBitmap(service), similar.getValue(), image.getArea(service));
         if (rect == null) {
             value.setValue(false);
         } else {

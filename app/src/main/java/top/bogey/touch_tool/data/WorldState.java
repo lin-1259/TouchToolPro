@@ -2,6 +2,7 @@ package top.bogey.touch_tool.data;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -14,11 +15,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryChargingStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryStartAction;
+import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
@@ -37,6 +40,8 @@ public class WorldState {
 
     private int batteryPercent;
     private int batteryState;
+
+    private final LinkedHashMap<ManualStartAction, Task> manualStartActions = new LinkedHashMap<>();
 
     public static WorldState getInstance() {
         if (helper == null) helper = new WorldState();
@@ -98,12 +103,62 @@ public class WorldState {
         return packages;
     }
 
+    private void checkAutoStartAction(Class<? extends StartAction> actionType) {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service == null || !service.isServiceEnabled()) return;
+
+        // 特有的开始项
+        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
+        for (Task task : tasks) {
+            for (StartAction startAction : task.getStartActions(actionType)) {
+                if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+            }
+        }
+
+        // 通用的开始项
+        tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
+        for (Task task : tasks) {
+            for (StartAction startAction : task.getStartActions(NormalStartAction.class)) {
+                if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+            }
+        }
+    }
+
+    private void showManualActionDialog(boolean show) {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service == null || !service.isServiceEnabled()) return;
+
+        manualStartActions.clear();
+        if (show) {
+            ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(ManualStartAction.class);
+            for (Task task : tasks) {
+                for (StartAction startAction : task.getStartActions(ManualStartAction.class)) {
+                    if (startAction.checkReady(this, task)) {
+                        manualStartActions.put((ManualStartAction) startAction, task);
+                    }
+                }
+            }
+        }
+
+        MainActivity activity = MainApplication.getActivity();
+        if (activity == null) {
+            Intent intent = new Intent(service, MainActivity.class);
+            intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
+            intent.putExtra(MainActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            service.startActivity(intent);
+        } else {
+            activity.handlePlayFloatView(manualStartActions.size());
+        }
+    }
+
     public void enterActivity(CharSequence packageName, CharSequence className) {
         if (isActivityClass(packageName, className)) {
             boolean pkg = setPackageName(packageName);
             boolean cls = setActivityName(className);
             if (pkg || cls) {
                 checkAutoStartAction(AppStartAction.class);
+                showManualActionDialog(true);
             }
         }
     }
@@ -112,25 +167,7 @@ public class WorldState {
         if (isActivityClass(packageName, className)) {
             setPackageName(packageName);
             setActivityName(className);
-        }
-    }
-
-    private void checkAutoStartAction(Class<? extends StartAction> actionType) {
-        MainAccessibilityService service = MainApplication.getService();
-        if (service == null || !service.isServiceEnabled()) return;
-
-        // 特有的开始项
-        ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
-        for (Task task : tasks) {
-            StartAction startAction = task.getStartAction(actionType);
-            if (startAction.checkReady(this, task)) service.runTask(task, startAction);
-        }
-
-        // 通用的开始项
-        tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
-        for (Task task : tasks) {
-            StartAction startAction = task.getStartAction(NormalStartAction.class);
-            if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+            showManualActionDialog(false);
         }
     }
 
@@ -188,5 +225,9 @@ public class WorldState {
         if (batteryState == this.batteryState) return;
         this.batteryState = batteryState;
         checkAutoStartAction(BatteryChargingStartAction.class);
+    }
+
+    public LinkedHashMap<ManualStartAction, Task> getManualStartActions() {
+        return manualStartActions;
     }
 }

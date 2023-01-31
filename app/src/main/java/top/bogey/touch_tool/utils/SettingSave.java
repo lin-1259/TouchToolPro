@@ -14,6 +14,8 @@ public class SettingSave {
 
     private static final String SERVICE_ENABLED = "SERVICE_ENABLED";
 
+    private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
+
     private static final String TAGS = "TAGS";
 
     private static SettingSave settingSave;
@@ -65,5 +67,14 @@ public class SettingSave {
 
     public void removeTag(String tag) {
         tagsMMKV.remove(tag);
+    }
+
+
+    public boolean isPlayViewExpand() {
+        return settingMMKV.decodeBool(PLAY_VIEW_STATE, false);
+    }
+
+    public void setPlayViewExpand(boolean expand) {
+        settingMMKV.encode(PLAY_VIEW_STATE, expand);
     }
 }

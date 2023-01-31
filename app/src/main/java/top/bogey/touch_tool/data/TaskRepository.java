@@ -1,5 +1,7 @@
 package top.bogey.touch_tool.data;
 
+import android.util.Log;
+
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
@@ -48,8 +50,8 @@ public class TaskRepository {
     public ArrayList<Task> getTasksByStart(Class<? extends StartAction> startActionClass) {
         ArrayList<Task> taskArrayList = new ArrayList<>();
         for (Task task : tasks.values()) {
-            StartAction startAction = task.getStartAction(startActionClass);
-            if (startAction == null) continue;
+            ArrayList<StartAction> startActions = task.getStartActions(startActionClass);
+            if (startActions.size() == 0) continue;
             taskArrayList.add(task);
         }
         return taskArrayList;

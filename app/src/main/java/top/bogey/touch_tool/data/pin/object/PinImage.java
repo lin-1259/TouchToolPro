@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.os.Parcel;
 import android.util.Base64;
 
@@ -18,15 +19,18 @@ public class PinImage extends PinValue {
     private transient Bitmap scaleBitmap;
     private transient float scale = 1;
 
-    private String image;
     private int screen;
+
+    private String image;
+    private Rect area;
 
     public PinImage() {
         super();
         screen = 1080;
+        area = new Rect();
     }
 
-    public PinImage(Context context, Bitmap bitmap) {
+    public PinImage(Context context, Bitmap bitmap, Rect area) {
         super();
         this.bitmap = bitmap;
         if (bitmap != null) {
@@ -35,13 +39,15 @@ public class PinImage extends PinValue {
             byte[] bytes = stream.toByteArray();
             image = Base64.encodeToString(bytes, Base64.DEFAULT);
         }
-        this.screen = DisplayUtils.getScreen(context);
+        screen = DisplayUtils.getScreen(context);
+        this.area = area;
     }
 
     public PinImage(Parcel in) {
         super(in);
         image = in.readString();
         screen = in.readInt();
+        area = in.readParcelable(Rect.class.getClassLoader());
     }
 
     public Bitmap getBitmap() {
@@ -55,8 +61,9 @@ public class PinImage extends PinValue {
         return bitmap;
     }
 
-    public void setBitmap(Context context, Bitmap bitmap) {
+    public void setBitmap(Context context, Bitmap bitmap, Rect area) {
         this.bitmap = bitmap;
+        this.area = area;
         screen = DisplayUtils.getScreen(context);
 
         if (bitmap == null) image = "";
@@ -91,10 +98,21 @@ public class PinImage extends PinValue {
         return image;
     }
 
+    public Rect getArea(Context context) {
+        if (area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0) {
+            area = DisplayUtils.getScreenArea(context);
+            return area;
+        }
+
+        float scale = DisplayUtils.getScreen(context) * 1f / screen;
+        return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
+    }
+
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeString(image);
         dest.writeInt(screen);
+        dest.writeParcelable(area, flags);
     }
 }

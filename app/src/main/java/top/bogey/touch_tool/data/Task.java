@@ -56,13 +56,14 @@ public class Task implements Parcelable {
         return null;
     }
 
-    public StartAction getStartAction(Class<? extends StartAction> startActionClass) {
+    public ArrayList<StartAction> getStartActions(Class<? extends StartAction> startActionClass) {
+        ArrayList<StartAction> startActions = new ArrayList<>();
         for (BaseAction action : actions) {
             if (action.getClass().equals(startActionClass) || action.getClass().isInstance(startActionClass)) {
-                return (StartAction) action;
+                startActions.add((StartAction) action);
             }
         }
-        return null;
+        return startActions;
     }
 
     public void addAction(BaseAction action) {

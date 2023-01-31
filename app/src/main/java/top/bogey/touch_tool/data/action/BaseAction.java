@@ -24,7 +24,7 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class BaseAction implements Parcelable {
     private final String id;
     private final String cls;
-    private CharSequence title;
+    private CharSequence des;
     protected transient int titleId;
 
     private final ArrayList<Pin<? extends PinObject>> pins = new ArrayList<>();
@@ -47,7 +47,7 @@ public class BaseAction implements Parcelable {
     public BaseAction(Parcel in) {
         cls = getClass().getName();
         id = in.readString();
-        title = in.readString();
+        des = in.readString();
         in.readTypedList(pinsTmp, Pin.CREATOR);
         x = in.readInt();
         y = in.readInt();
@@ -162,6 +162,11 @@ public class BaseAction implements Parcelable {
         }
     }
 
+    public CharSequence getTitle(Context context) {
+        if (titleId == 0) return "";
+        return context.getString(titleId);
+    }
+
     public String getId() {
         return id;
     }
@@ -170,15 +175,12 @@ public class BaseAction implements Parcelable {
         return cls;
     }
 
-    public CharSequence getTitle(Context context) {
-        if (title == null || title.length() == 0) {
-            if (titleId == 0) return null;
-            return context.getString(titleId);
-        } else return title;
+    public CharSequence getDes() {
+        return des;
     }
 
-    public void setTitle(CharSequence title) {
-        this.title = title;
+    public void setDes(CharSequence des) {
+        this.des = des;
     }
 
     public ArrayList<Pin<? extends PinObject>> getPins() {
@@ -194,7 +196,7 @@ public class BaseAction implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(cls);
         dest.writeString(id);
-        dest.writeString(title == null ? null : title.toString());
+        dest.writeString(des == null ? null : des.toString());
         dest.writeTypedList(pins);
         dest.writeInt(x);
         dest.writeInt(y);

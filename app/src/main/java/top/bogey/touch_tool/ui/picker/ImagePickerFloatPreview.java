@@ -30,7 +30,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
 
         if (isImage) {
             PinImage image = (PinImage) pinValue;
-            pinImage = new PinImage(context, image.getScaleBitmap(context));
+            pinImage = new PinImage(context, image.getScaleBitmap(context), image.getArea(context));
             binding.current.setImageBitmap(pinImage.getBitmap());
             binding.title.setText(R.string.picker_image_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_action_image);
@@ -49,16 +49,16 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
                     if (pinImage != null) {
                         PinImage image = (PinImage) pinValue;
                         Bitmap bitmap = pinImage.getBitmap();
-                        image.setBitmap(context, bitmap);
+                        image.setBitmap(context, bitmap, pinImage.getArea(context));
                     }
                 } else {
                     if (pinColor != null) {
                         PinColor color = (PinColor) pinValue;
-                        int[] colorValue = pinColor.getColor();
-                        color.setColor(colorValue);
-                        color.setMinSize(pinColor.getMinSize());
-                        color.setMaxSize(pinColor.getMaxSize());
+                        color.setColor(pinColor.getColor());
+                        color.setMinSize(pinColor.getMinSize(context));
+                        color.setMaxSize(pinColor.getMaxSize(context));
                         color.setScreen(DisplayUtils.getScreen(context));
+                        color.setArea(pinColor.getArea(context));
                     }
                 }
                 callback.onComplete();
