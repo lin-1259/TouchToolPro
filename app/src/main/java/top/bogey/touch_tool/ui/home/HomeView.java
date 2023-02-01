@@ -89,6 +89,19 @@ public class HomeView extends Fragment {
                         } catch (Exception ignored) {
                         }
                         break;
+                    case R.id.importTask:
+                        MainActivity activity = MainApplication.getActivity();
+                        if (activity != null) {
+                            activity.launcherContent((code, intent) -> {
+                                if (code == Activity.RESULT_OK) {
+                                    Uri uri = intent.getData();
+                                    if (uri != null) {
+                                        activity.saveTasksByFile(uri);
+                                    }
+                                }
+                            });
+                        }
+                        break;
                 }
                 return true;
             }
@@ -239,26 +252,13 @@ public class HomeView extends Fragment {
             hideBottomBar();
         });
 
-        binding.addButton.setOnClickListener(v -> {
-            View view = LayoutInflater.from(requireContext()).inflate(R.layout.widget_text_input, null);
-            TextInputEditText editText = view.findViewById(R.id.title_edit);
-
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setPositiveButton(R.string.enter, (dialog, which) -> {
-                        Editable text = editText.getText();
-                        if (text != null) {
-                            Task task = new Task();
-                            task.setTitle(text.toString());
-                            TaskRepository.getInstance().saveTask(task);
-                        }
-                        dialog.dismiss();
-                    })
-                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .setView(view)
-                    .setTitle(R.string.task_add)
-                    .show();
-
-        });
+        binding.addButton.setOnClickListener(v -> AppUtils.showEditDialog(requireContext(), R.string.task_add, null, result -> {
+            if (result != null && result.length() > 0) {
+                Task task = new Task();
+                task.setTitle(result.toString());
+                TaskRepository.getInstance().saveTask(task);
+            }
+        }));
 
         return binding.getRoot();
     }

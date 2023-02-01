@@ -24,9 +24,9 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/percent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:gravity="center"
             android:textColor="?attr/colorPrimary"
             android:textSize="13sp" />
 

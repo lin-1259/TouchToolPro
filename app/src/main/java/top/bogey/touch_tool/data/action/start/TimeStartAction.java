@@ -49,4 +49,14 @@ public class TimeStartAction extends StartAction {
     public RestartType getRestartType() {
         return RestartType.RESTART;
     }
+
+    public long getStartTime(WorldState worldState, Task task) {
+        long date = ((PinLong) getPinValue(worldState, task, datePin)).getValue();
+        long time = ((PinLong) getPinValue(worldState, task, timePin)).getValue();
+        return AppUtils.mergeDateTime(date, time);
+    }
+
+    public long getPeriodic(WorldState worldState, Task task) {
+        return ((PinLong) getPinValue(worldState, task, periodicPin)).getValue();
+    }
 }

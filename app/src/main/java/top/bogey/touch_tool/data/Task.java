@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.UUID;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 
@@ -59,7 +60,7 @@ public class Task implements Parcelable {
     public ArrayList<StartAction> getStartActions(Class<? extends StartAction> startActionClass) {
         ArrayList<StartAction> startActions = new ArrayList<>();
         for (BaseAction action : actions) {
-            if (action.getClass().equals(startActionClass) || action.getClass().isInstance(startActionClass)) {
+            if (startActionClass.isInstance(action)) {
                 startActions.add((StartAction) action);
             }
         }
@@ -81,13 +82,18 @@ public class Task implements Parcelable {
 
     public String getTaskDes(Context context) {
         StringBuilder builder = new StringBuilder();
-        for (BaseAction baseAction : actions) {
-            if (baseAction instanceof StartAction) {
-                CharSequence title = baseAction.getTitle(context);
-                if (title == null) continue;
-                builder.append(title);
-                builder.append("\n");
+        for (StartAction startAction : getStartActions(StartAction.class)) {
+            CharSequence title = startAction.getTitle(context);
+            if (title == null) continue;
+            builder.append(title);
+            builder.append("(");
+            if (startAction.isEnable()) {
+                builder.append(context.getString(R.string.action_start_subtitle_enable_true));
+            } else {
+                builder.append(context.getString(R.string.action_start_subtitle_enable_false));
             }
+            builder.append(")");
+            builder.append("\n");
         }
         return builder.toString().trim();
     }

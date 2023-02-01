@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,8 +22,16 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
+import top.bogey.touch_tool.ui.custom.ToastFloatView;
 import top.bogey.touch_tool.ui.play.PlayFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -39,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String INTENT_KEY_BACKGROUND = "INTENT_KEY_BACKGROUND";
     public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
+    public static final String INTENT_KEY_SHOW_TOAST = "INTENT_KEY_SHOW_TOAST";
     public static final String INTENT_KEY_QUICK_MENU = "INTENT_KEY_QUICK_MENU";
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
 
@@ -158,6 +169,11 @@ public class MainActivity extends AppCompatActivity {
             handlePlayFloatView(size);
         }
 
+        String msg = intent.getStringExtra(INTENT_KEY_SHOW_TOAST);
+        if (msg != null) {
+            showToast(msg);
+        }
+
         boolean showQuickMenu = intent.getBooleanExtra(INTENT_KEY_QUICK_MENU, false);
         if (showQuickMenu) {
         }
@@ -169,6 +185,33 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra(INTENT_KEY_BACKGROUND, isBackground);
             startService(serviceIntent);
         }
+    }
+
+    public void saveTasksByFile(Uri uri) {
+        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
+            byte[] bytes = new byte[inputStream.available()];
+            int read = inputStream.read(bytes);
+            if (read > 0)
+                saveTasks(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveTasks(byte[] bytes) {
+        if (bytes == null || bytes.length == 0) return;
+
+        Parcel parcel = Parcel.obtain();
+        parcel.unmarshall(bytes, 0, bytes.length);
+        parcel.setDataPosition(0);
+        List<Task> tasks = parcel.createTypedArrayList(Task.CREATOR);
+
+        if (tasks != null) {
+            for (Task task : tasks) {
+                TaskRepository.getInstance().saveTask(task);
+            }
+        }
+        parcel.recycle();
     }
 
     public void launchCapture(PermissionResultCallback callback) {
@@ -200,6 +243,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void launcherContent(PermissionResultCallback callback) {
+        resultCallback = callback;
+        contentLauncher.launch("application/octet-stream");
+    }
+
     public void handlePlayFloatView(int size) {
         binding.getRoot().post(() -> {
             PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getCanonicalName());
@@ -212,6 +260,17 @@ public class MainActivity extends AppCompatActivity {
                 }
                 view.onNewActions();
             }
+        });
+    }
+
+    public void showToast(String msg) {
+        binding.getRoot().post(() -> {
+            ToastFloatView view = (ToastFloatView) EasyFloat.getView(ToastFloatView.class.getCanonicalName());
+            if (view == null) {
+                view = new ToastFloatView(this);
+                view.show();
+            }
+            view.showToast(msg);
         });
     }
 }

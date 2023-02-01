@@ -13,6 +13,7 @@ public class TaskRunnable implements Runnable {
 
     private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
     private int progress = 0;
+    private boolean interrupt = false;
 
     private Future<?> future;
 
@@ -23,6 +24,11 @@ public class TaskRunnable implements Runnable {
 
     public void stop() {
         future.cancel(true);
+        interrupt = true;
+    }
+
+    public boolean isInterrupt() {
+        return interrupt;
     }
 
     @Override

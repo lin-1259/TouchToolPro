@@ -111,7 +111,7 @@ public class WorldState {
         ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(actionType)) {
-                if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+                if (startAction.isEnable() && startAction.checkReady(this, task)) service.runTask(task, startAction);
             }
         }
 
@@ -119,7 +119,7 @@ public class WorldState {
         tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(NormalStartAction.class)) {
-                if (startAction.checkReady(this, task)) service.runTask(task, startAction);
+                if (startAction.isEnable() && startAction.checkReady(this, task)) service.runTask(task, startAction);
             }
         }
     }
@@ -133,7 +133,7 @@ public class WorldState {
             ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(ManualStartAction.class);
             for (Task task : tasks) {
                 for (StartAction startAction : task.getStartActions(ManualStartAction.class)) {
-                    if (startAction.checkReady(this, task)) {
+                    if (startAction.isEnable() && startAction.checkReady(this, task)) {
                         manualStartActions.put((ManualStartAction) startAction, task);
                     }
                 }

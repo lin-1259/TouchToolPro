@@ -46,8 +46,7 @@ public class TouchPathAction extends NormalAction {
         MainAccessibilityService service = MainApplication.getService();
         int randomTime = timeArea.getRandomTime();
         service.runGesture(pinPath.getRealPaths(service, offset.getValue()), randomTime, null);
-        boolean sleep = sleep(randomTime);
-        if (!sleep) return;
+        sleep(randomTime);
         super.doAction(worldState, runnable, outPin);
     }
 }

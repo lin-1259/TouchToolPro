@@ -3,7 +3,6 @@ package top.bogey.touch_tool.ui.card;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,7 @@ import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;
 import top.bogey.touch_tool.ui.card.pin.PinOutView;
 import top.bogey.touch_tool.ui.task_blueprint.CardLayoutView;
+import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
@@ -40,8 +38,6 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     private final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
     private boolean needDelete = false;
-    private float lastX, lastY;
-    private long titleTouchStartTime;
 
     @SuppressLint("ClickableViewAccessibility")
     public BaseCard(@NonNull Context context, Task task, A action) {
@@ -59,18 +55,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         setLayoutParams(params);
 
         binding = CardBaseBinding.inflate(LayoutInflater.from(context), this, true);
-        binding.copyButton.setOnClickListener(v -> {
-            String cls = action.getCls();
-            try {
-                Class<?> aClass = Class.forName(cls);
-                A o = (A) aClass.newInstance();
-                o.x = action.x + 1;
-                o.y = action.y + 1;
-                ((CardLayoutView) getParent()).addAction(o);
-            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        binding.copyButton.setOnClickListener(v -> ((CardLayoutView) getParent()).addAction(action.copy()));
 
         binding.removeButton.setOnClickListener(v -> {
             if (needDelete) {
@@ -91,24 +76,11 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         binding.des.setText(action.getDes());
         binding.des.setVisibility((action.getDes() == null || action.getDes().length() == 0) ? GONE : VISIBLE);
 
-        binding.editButton.setOnClickListener(v -> {
-            View view = LayoutInflater.from(context).inflate(R.layout.widget_text_input, null);
-            TextInputEditText editText = view.findViewById(R.id.title_edit);
-            editText.setText(action.getDes());
-
-            new MaterialAlertDialogBuilder(context)
-                    .setPositiveButton(R.string.enter, (dialog, which) -> {
-                        Editable text = editText.getText();
-                        action.setDes(text);
-                        binding.des.setText(text);
-                        binding.des.setVisibility((text == null || text.length() == 0) ? GONE : VISIBLE);
-                        dialog.dismiss();
-                    })
-                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .setView(view)
-                    .setTitle(R.string.action_add_des_tips)
-                    .show();
-        });
+        binding.editButton.setOnClickListener(v -> AppUtils.showEditDialog(context, R.string.action_add_des_tips, action.getDes(), result -> {
+            action.setDes(result);
+            binding.des.setText(result);
+            binding.des.setVisibility((result == null || result.length() == 0) ? GONE : VISIBLE);
+        }));
 
         for (Pin<? extends PinObject> pin : action.getPins()) {
             if (pin.getDirection() == PinDirection.IN) {

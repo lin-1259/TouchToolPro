@@ -49,6 +49,7 @@ public class ForLoopLogicAction extends NormalAction {
             PinInteger end = (PinInteger) getPinValue(worldState, runnable.getTask(), endPin);
             PinInteger current = (PinInteger) currentPin.getValue();
             for (int i = start.getValue(); i <= end.getValue(); i++) {
+                if (runnable.isInterrupt()) return;
                 if (needBreak) break;
                 current.setValue(i);
                 super.doAction(worldState, runnable, outPin);

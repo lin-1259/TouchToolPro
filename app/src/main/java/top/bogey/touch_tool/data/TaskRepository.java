@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data;
 
-import android.util.Log;
-
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
@@ -9,6 +7,8 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
+import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
@@ -32,7 +32,8 @@ public class TaskRepository {
     private void readAllTasks() {
         String[] keys = taskMMKV.allKeys();
         if (keys == null) return;
-        for (String key : keys) {
+        for (int i = keys.length - 1; i >= 0; i--) {
+            String key = keys[i];
             Task task = taskMMKV.decodeParcelable(key, Task.class);
             if (task == null) continue;
             tasks.put(key, task);
@@ -45,6 +46,10 @@ public class TaskRepository {
 
     public Task getTaskById(String id) {
         return tasks.get(id);
+    }
+
+    public Task getOriginTaskById(String id) {
+        return taskMMKV.decodeParcelable(id, Task.class);
     }
 
     public ArrayList<Task> getTasksByStart(Class<? extends StartAction> startActionClass) {
@@ -76,6 +81,11 @@ public class TaskRepository {
     }
 
     public void saveTask(Task task) {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service != null && service.isServiceEnabled()) {
+            service.replaceWork(task);
+        }
+
         taskMMKV.encode(task.getId(), task);
         Task lastTask = tasks.put(task.getId(), task);
         if (lastTask == null) {
@@ -90,6 +100,8 @@ public class TaskRepository {
         Task removedTask = tasks.remove(id);
         if (removedTask != null)
             callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onRemoved(removedTask));
+        MMKV mmkv = MMKV.mmkvWithID(id, MMKV.SINGLE_PROCESS_MODE);
+        mmkv.clearAll();
     }
 
     public void removeTag(String tag) {
@@ -102,5 +114,10 @@ public class TaskRepository {
         });
 
         SettingSave.getInstance().removeTag(tag);
+    }
+
+    public void addLog(Task task, String action, String log) {
+        MMKV mmkv = MMKV.mmkvWithID(task.getId(), MMKV.SINGLE_PROCESS_MODE);
+        mmkv.encode(String.valueOf(System.currentTimeMillis()), action + ":" + log);
     }
 }

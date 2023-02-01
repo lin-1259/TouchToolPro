@@ -46,8 +46,7 @@ public class TouchPosAction extends NormalAction {
         MainAccessibilityService service = MainApplication.getService();
         int randomTime = timeArea.getRandomTime();
         service.runGesture(pos.getX(offset.getValue()), pos.getY(offset.getValue()), randomTime, null);
-        boolean sleep = sleep(randomTime);
-        if (!sleep) return;
+        sleep(randomTime);
         super.doAction(worldState, runnable, outPin);
     }
 }

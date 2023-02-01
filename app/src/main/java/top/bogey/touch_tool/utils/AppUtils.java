@@ -11,8 +11,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.PowerManager;
 import android.provider.Settings;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import androidx.annotation.StringRes;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.lang.reflect.Method;
 import java.util.Calendar;
@@ -47,6 +52,25 @@ public class AppUtils {
                     dialog.dismiss();
                     if (callback != null) callback.onResult(false);
                 })
+                .show();
+    }
+
+    public static void showEditDialog(Context context, @StringRes int title, CharSequence defaultValue, EditCallback callback) {
+        View view = LayoutInflater.from(context).inflate(R.layout.widget_text_input, null);
+        TextInputEditText editText = view.findViewById(R.id.title_edit);
+        editText.setText(defaultValue);
+
+        new MaterialAlertDialogBuilder(context)
+                .setPositiveButton(R.string.enter, (dialog, which) -> {
+                    if (callback != null) callback.onResult(editText.getText());
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> {
+                    if (callback != null) callback.onResult(null);
+                    dialog.dismiss();
+                })
+                .setView(view)
+                .setTitle(title)
                 .show();
     }
 

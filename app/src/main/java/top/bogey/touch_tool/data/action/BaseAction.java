@@ -20,9 +20,10 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.AppUtils;
 
 public class BaseAction implements Parcelable {
-    private final String id;
+    private String id;
     private final String cls;
     private CharSequence des;
     protected transient int titleId;
@@ -53,6 +54,19 @@ public class BaseAction implements Parcelable {
         y = in.readInt();
     }
 
+    public BaseAction copy() {
+        BaseAction copy = AppUtils.copy(this);
+        copy.setId(UUID.randomUUID().toString());
+        copy.getPins().forEach(pin -> {
+            pin.setId(UUID.randomUUID().toString());
+            pin.setActionId(copy.getId());
+            pin.getLinks().clear();
+        });
+        copy.x = x + 1;
+        copy.y = y + 1;
+        return copy;
+    }
+
     public static final Creator<BaseAction> CREATOR = new Creator<BaseAction>() {
         @Override
         public BaseAction createFromParcel(Parcel in) {
@@ -77,7 +91,7 @@ public class BaseAction implements Parcelable {
     }
 
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
-        if (Thread.currentThread().isInterrupted()) return;
+        if (runnable.isInterrupt()) return;
         if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行针脚不正确");
 
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
@@ -95,14 +109,12 @@ public class BaseAction implements Parcelable {
     protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
     }
 
-    protected boolean sleep(long time) {
+    protected void sleep(long time) {
         try {
             Thread.sleep(time);
-            return true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        return false;
     }
 
     public <T extends PinObject> Pin<T> addPin(Pin<T> pin) {
@@ -171,8 +183,8 @@ public class BaseAction implements Parcelable {
         return id;
     }
 
-    public String getCls() {
-        return cls;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public CharSequence getDes() {

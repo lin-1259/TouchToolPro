@@ -37,12 +37,12 @@ import top.bogey.touch_tool.utils.MatchResult;
 
 public class MainCaptureService extends Service {
     public static final String RUNNING_CHANNEL_ID = "RUNNING_CHANNEL_ID";
-
     private static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
 
     public static final int NOTIFICATION_ID = 10000;
 
     private static final String STOP_CAPTURE = "StopCapture";
+    public static final String DATA = "Data";
 
     private MediaProjection projection;
     private ImageReader imageReader;
@@ -55,7 +55,7 @@ public class MainCaptureService extends Service {
     public IBinder onBind(Intent intent) {
         if (projection == null) {
             MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
-            Intent data = intent.getParcelableExtra("Data");
+            Intent data = intent.getParcelableExtra(DATA);
             projection = manager.getMediaProjection(Activity.RESULT_OK, data);
             setVirtualDisplay();
         }

@@ -7,6 +7,7 @@ import android.widget.Toast;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.NormalAction;
@@ -36,12 +37,13 @@ public class LogAction extends NormalAction {
     @Override
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
         PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
-        // todo: 输出日志
+
+        MainAccessibilityService service = MainApplication.getService();
+        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(service).toString(), pinString.getValue());
 
         PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
         if (showToast.getValue()) {
-            MainAccessibilityService service = MainApplication.getService();
-            new Handler(service.getMainLooper()).post(() -> Toast.makeText(MainApplication.getService(), pinString.getValue(), Toast.LENGTH_SHORT).show());
+            service.showToast(pinString.getValue());
         }
         super.doAction(worldState, runnable, outPin);
     }

@@ -15,19 +15,28 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.lifecycle.MutableLiveData;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
+import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
@@ -50,19 +59,19 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final HashSet<TaskRunnable> runnableSet = new HashSet<>();
-    private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
+            WorldState worldState = WorldState.getInstance();
             CharSequence packageName = event.getPackageName();
             CharSequence className = event.getClassName();
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 Log.d("TouchToolPro", "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
-                if (getPackageName().contentEquals(packageName)) {
+                if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
                     stopAllTask();
-                    WorldState.getInstance().setEnterActivity(packageName, className);
-                } else WorldState.getInstance().enterActivity(packageName, className);
+                    worldState.setEnterActivity(packageName, className);
+                } else worldState.enterActivity(packageName, className);
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
                 Log.d("TouchToolPro", "AccessibilityEvent: TYPE_NOTIFICATION_STATE_CHANGED");
                 if (!Notification.class.getName().contentEquals(className)) return;
@@ -73,7 +82,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     builder.append(charSequence);
                     builder.append(" ");
                 }
-                WorldState.getInstance().setNotification(packageName, builder.toString().trim());
+                worldState.setNotification(packageName, builder.toString().trim());
             }
             Log.d("TouchToolPro", "AccessibilityEvent: " + packageName + "/" + className);
         }
@@ -137,16 +146,18 @@ public class MainAccessibilityService extends AccessibilityService {
     public void setServiceEnabled(boolean enabled) {
         serviceEnabled.setValue(enabled);
         SettingSave.getInstance().setServiceEnabled(enabled);
-    }
 
-    public void addCallback(TaskRunningCallback callback) {
-        callbacks.add(callback);
-        runnableSet.forEach(runnable -> runnable.addCallback(callback));
-    }
-
-    public void removeCallback(TaskRunningCallback callback) {
-        callbacks.remove(callback);
-        runnableSet.forEach(runnable -> runnable.removeCallback(callback));
+        if (isServiceEnabled()) {
+            for (Task task : TaskRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
+                for (StartAction startAction : task.getStartActions(TimeStartAction.class)) {
+                    if (startAction.isEnable() && startAction.checkReady(WorldState.getInstance(), task)) {
+                        addWork(task, (TimeStartAction) startAction);
+                    }
+                }
+            }
+        } else {
+            WorkManager.getInstance(this).cancelAllWork();
+        }
     }
 
     public TaskRunnable runTask(Task task, StartAction startAction) {
@@ -176,8 +187,6 @@ public class MainAccessibilityService extends AccessibilityService {
 
             }
         });
-
-        callbacks.stream().filter(Objects::nonNull).forEach(runnable::addCallback);
 
         Future<?> future = taskService.submit(runnable);
         runnable.setFuture(future);
@@ -227,7 +236,6 @@ public class MainAccessibilityService extends AccessibilityService {
         return false;
     }
 
-
     public void startCaptureService(boolean moveBack, ResultCallback callback) {
         if (binder == null) {
             MainActivity activity = MainApplication.getActivity();
@@ -251,7 +259,7 @@ public class MainAccessibilityService extends AccessibilityService {
                                     }
                                 };
                                 Intent intent = new Intent(this, MainCaptureService.class);
-                                intent.putExtra("Data", data);
+                                intent.putExtra(MainCaptureService.DATA, data);
                                 boolean result = bindService(intent, connection, Context.BIND_AUTO_CREATE);
                                 if (!result) if (callback != null) callback.onResult(false);
                             } else {
@@ -289,6 +297,85 @@ public class MainAccessibilityService extends AccessibilityService {
         return isServiceEnabled() && Boolean.TRUE.equals(captureEnabled.getValue());
     }
 
+    public void replaceWork(Task task) {
+        ArrayList<StartAction> startActions = task.getStartActions(TimeStartAction.class);
+
+        Task originTask = TaskRepository.getInstance().getOriginTaskById(task.getId());
+        if (originTask != null) {
+            WorkManager workManager = WorkManager.getInstance(this);
+            ArrayList<StartAction> originStartActions = originTask.getStartActions(TimeStartAction.class);
+
+            // 在之前的任务中找已经不存在的动作并取消，存在的任务之后会被覆盖掉
+            originStartActions.forEach(action -> {
+                if (!action.isEnable()) return;
+
+                boolean exist = false;
+                for (StartAction startAction : startActions) {
+                    if (startAction.getId().equals(action.getId())) {
+                        exist = true;
+                        break;
+                    }
+                }
+                if (!exist) {
+                    workManager.cancelUniqueWork(action.getId());
+                }
+            });
+        }
+
+        // 添加新的定时任务，覆盖之前设置的
+        for (StartAction startAction : startActions) {
+            if (startAction.isEnable() && startAction.checkReady(WorldState.getInstance(), task)) {
+                addWork(task, (TimeStartAction) startAction);
+            }
+        }
+    }
+
+    public void addWork(Task task, TimeStartAction startAction) {
+        if (!isServiceEnabled()) return;
+        if (task == null || startAction == null) return;
+        WorkManager workManager = WorkManager.getInstance(this);
+        WorldState worldState = WorldState.getInstance();
+
+        long timeMillis = System.currentTimeMillis();
+
+        long startTime = startAction.getStartTime(worldState, task);
+        long periodic = startAction.getPeriodic(worldState, task);
+
+        if (periodic > 0) {
+            long nextStartTime;
+            long l = timeMillis - startTime;
+            // 当前时间没达到定时时间，下次执行时间就是开始时间
+            if (l < 0) nextStartTime = startTime;
+            else {
+                // 当前时间大于开始时间，需要计算下次开始的时间，防止定时任务刚设定就执行了
+                int loop = (int) Math.floor(l * 1f / periodic);
+                nextStartTime = startTime + loop * periodic;
+            }
+
+            // 定时任务执行窗口时间，会在这个窗口时间任意时间执行
+            final long flexInterval = 5 * 60 * 1000;
+            // 带间隔的定时任务需要初始的时间在间隔前
+            long initDelay = nextStartTime - timeMillis + flexInterval;
+            // 尽量小延迟的执行间隔任务
+            PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(TaskWorker.class, periodic, TimeUnit.MILLISECONDS, flexInterval, TimeUnit.MILLISECONDS)
+                    .setInitialDelay(initDelay, TimeUnit.MILLISECONDS)
+                    .setInputData(new Data.Builder()
+                            .putString(TaskWorker.TASK, task.getId())
+                            .putString(TaskWorker.ACTION, startAction.getId())
+                            .build())
+                    .build();
+            workManager.enqueueUniquePeriodicWork(startAction.getId(), ExistingPeriodicWorkPolicy.REPLACE, workRequest);
+        } else {
+            OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(TaskWorker.class)
+                    .setInitialDelay(startTime - timeMillis, TimeUnit.MILLISECONDS)
+                    .setInputData(new Data.Builder()
+                            .putString(TaskWorker.TASK, task.getId())
+                            .putString(TaskWorker.ACTION, startAction.getId())
+                            .build())
+                    .build();
+            workManager.enqueueUniqueWork(startAction.getId(), ExistingWorkPolicy.REPLACE, workRequest);
+        }
+    }
 
     public void runGesture(int x, int y, int time, ResultCallback callback) {
         Path path = new Path();
@@ -326,5 +413,18 @@ public class MainAccessibilityService extends AccessibilityService {
                 if (callback != null) callback.onResult(false);
             }
         }, null);
+    }
+
+    public void showToast(String msg) {
+        MainActivity activity = MainApplication.getActivity();
+        if (activity == null) {
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
+            intent.putExtra(MainActivity.INTENT_KEY_SHOW_TOAST, msg);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            activity.showToast(msg);
+        }
     }
 }

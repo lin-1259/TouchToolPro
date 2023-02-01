@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
+import android.text.Editable;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -13,6 +15,9 @@ import androidx.core.content.FileProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,13 +31,11 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
-import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.databinding.ViewTaskItemBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
-import top.bogey.touch_tool.utils.TaskRunningCallback;
 
-public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> implements TaskChangedCallback, TaskRunningCallback {
+public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> implements TaskChangedCallback {
     private final ArrayList<Task> tasks = new ArrayList<>();
     private final HomeView parent;
     private final String ALL;
@@ -55,20 +58,12 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         TaskRepository.getInstance().addCallback(this);
-        MainAccessibilityService service = MainApplication.getService();
-        if (service != null && service.isServiceConnected()) {
-            service.addCallback(this);
-        }
     }
 
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         TaskRepository.getInstance().removeCallback(this);
-        MainAccessibilityService service = MainApplication.getService();
-        if (service != null && service.isServiceConnected()) {
-            service.removeCallback(this);
-        }
     }
 
     @NonNull
@@ -111,21 +106,6 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             tasks.remove(index);
             notifyItemRemoved(index);
         }
-    }
-
-    @Override
-    public void onStart(TaskRunnable runnable) {
-
-    }
-
-    @Override
-    public void onEnd(TaskRunnable runnable) {
-
-    }
-
-    @Override
-    public void onProgress(TaskRunnable runnable, int progress) {
-
     }
 
     private int getTaskIndex(Task task) {
@@ -261,7 +241,6 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         unSelectAll();
     }
 
-
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private final ViewTaskItemBinding binding;
         private final Context context;
@@ -304,6 +283,19 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                     parent.showBottomBar();
                 }
                 return true;
+            });
+
+            binding.editButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                Task task = tasks.get(index);
+
+                AppUtils.showEditDialog(context, R.string.task_change, task.getTitle(), result -> {
+                    if (result != null && result.length() > 0) {
+                        task.setTitle(result.toString());
+                        binding.taskName.setText(result);
+                        TaskRepository.getInstance().saveTask(task);
+                    }
+                });
             });
         }
 

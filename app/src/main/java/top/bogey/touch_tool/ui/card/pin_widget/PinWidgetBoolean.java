@@ -24,7 +24,7 @@ public class PinWidgetBoolean extends BindingView<PinWidgetCheckboxBinding> {
         super(context, attrs, PinWidgetCheckboxBinding.class);
         if (pinBoolean == null) throw new RuntimeException("不是有效的引用");
 
-        binding.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> pinBoolean.setValue(isChecked));
-        binding.checkBox.setChecked(pinBoolean.getValue());
+        binding.enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> pinBoolean.setValue(isChecked));
+        binding.enableSwitch.setChecked(pinBoolean.getValue());
     }
 }

@@ -30,6 +30,8 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
     private boolean playing = false;
     private boolean needRemove = false;
 
+    private final String title;
+
     public PlayFloatViewItem(@NonNull Context context, Task task, ManualStartAction startAction) {
         super(context);
         this.startAction = startAction;
@@ -40,7 +42,8 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
         if (title == null) {
             title = task.getTitle();
         }
-        binding.percent.setText(getPivotalTitle(title.toString()));
+        this.title = getPivotalTitle(title.toString());
+        binding.percent.setText(this.title);
 
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getService();
@@ -56,7 +59,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
             }
         });
 
-        refreshProgress();
+        refreshProgress(0);
     }
 
     public ManualStartAction getStartAction() {
@@ -82,20 +85,23 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
         return title.substring(0, 1);
     }
 
-    private void refreshProgress() {
-        post(() -> binding.playButton.setIndeterminate(playing));
+    private void refreshProgress(int progress) {
+        post(() -> {
+            binding.playButton.setIndeterminate(playing);
+            binding.percent.setText(progress == 0 ? title : String.valueOf(progress));
+        });
     }
 
     @Override
     public void onStart(TaskRunnable runnable) {
         playing = true;
-        refreshProgress();
+        refreshProgress(0);
     }
 
     @Override
     public void onEnd(TaskRunnable runnable) {
         playing = false;
-        refreshProgress();
+        refreshProgress(0);
         if (needRemove) {
             post(() -> {
                 ViewParent parent = getParent();
@@ -105,6 +111,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
     }
 
     @Override
-    public void onProgress(TaskRunnable runnable, int percent) {
+    public void onProgress(TaskRunnable runnable, int progress) {
+        refreshProgress(progress);
     }
 }

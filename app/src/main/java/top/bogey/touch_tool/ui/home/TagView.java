@@ -14,7 +14,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskTabBinding;
+import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class TagView extends BottomSheetDialogFragment {
@@ -32,24 +35,12 @@ public class TagView extends BottomSheetDialogFragment {
         TagRecyclerViewAdapter adapter = new TagRecyclerViewAdapter(parent);
         binding.tagBox.setAdapter(adapter);
 
-        binding.addButton.setOnClickListener(v -> {
-            View view = LayoutInflater.from(requireContext()).inflate(R.layout.widget_text_input, null);
-            TextInputEditText editText = view.findViewById(R.id.title_edit);
-
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setPositiveButton(R.string.enter, (dialog, which) -> {
-                        Editable text = editText.getText();
-                        if (text != null) {
-                            SettingSave.getInstance().addTag(text.toString());
-                            adapter.addTag(text.toString());
-                        }
-                        dialog.dismiss();
-                    })
-                    .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .setView(view)
-                    .setTitle(R.string.tag_add)
-                    .show();
-        });
+        binding.addButton.setOnClickListener(v -> AppUtils.showEditDialog(requireContext(), R.string.tag_add, null, result -> {
+            if (result != null && result.length() > 0) {
+                SettingSave.getInstance().addTag(result.toString());
+                adapter.addTag(result.toString());
+            }
+        }));
 
         return binding.getRoot();
     }

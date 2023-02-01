@@ -3,12 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="24dp">
 
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:scaleX="0.75"
-        android:scaleY="0.75"
-        android:layout_gravity="center_vertical" />
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:id="@+id/enableSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:translationX="-8dp"
+        android:scaleX="0.5"
+        android:scaleY="0.5" />
 
 </FrameLayout>

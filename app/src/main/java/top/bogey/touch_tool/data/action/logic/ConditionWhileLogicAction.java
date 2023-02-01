@@ -41,6 +41,7 @@ public class ConditionWhileLogicAction extends NormalAction {
 
         long startTime = System.currentTimeMillis();
         while (condition.getValue()) {
+            if (runnable.isInterrupt()) return;
             super.doAction(worldState, runnable, outPin);
             if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
         }
