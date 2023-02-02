@@ -4,9 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Parcel;
-import android.text.Editable;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -15,9 +13,6 @@ import androidx.core.content.FileProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -289,7 +284,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                 int index = getBindingAdapterPosition();
                 Task task = tasks.get(index);
 
-                AppUtils.showEditDialog(context, R.string.task_change, task.getTitle(), result -> {
+                AppUtils.showEditDialog(context, R.string.task_change_title, task.getTitle(), result -> {
                     if (result != null && result.length() > 0) {
                         task.setTitle(result.toString());
                         binding.taskName.setText(result);

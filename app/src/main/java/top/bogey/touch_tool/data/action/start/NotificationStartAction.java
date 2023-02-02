@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.start;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -21,18 +22,16 @@ public class NotificationStartAction extends StartAction {
     private final Pin<? extends PinObject> appPin;
     private final Pin<? extends PinObject> textPin;
 
-    public NotificationStartAction() {
-        super();
+    public NotificationStartAction(Context context) {
+        super(context, R.string.action_notification_start_title);
         appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_MODE)));
-        textPin = addPin(new Pin<>(new PinString(), R.string.action_notification_start_subtitle_text));
-        titleId = R.string.action_notification_start_title;
+        textPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_notification_start_subtitle_text)));
     }
 
     public NotificationStartAction(Parcel in) {
         super(in);
         appPin = addPin(pinsTmp.remove(0));
         textPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_notification_start_title;
     }
 
     @Override

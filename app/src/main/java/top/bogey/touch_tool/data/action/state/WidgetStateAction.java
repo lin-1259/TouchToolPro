@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Parcel;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -22,18 +23,16 @@ public class WidgetStateAction extends StateAction {
     private final Pin<? extends PinObject> widgetPin;
     private final Pin<? extends PinObject> posPin;
 
-    public WidgetStateAction() {
-        super();
-        widgetPin = addPin(new Pin<>(new PinWidget(), R.string.action_widget_state_subtitle_widget, PinSubType.ID));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_widget_state_title;
+    public WidgetStateAction(Context context) {
+        super(context, R.string.action_widget_state_title);
+        widgetPin = addPin(new Pin<>(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget), PinSubType.ID));
+        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public WidgetStateAction(Parcel in) {
         super(in);
         widgetPin = addPin(pinsTmp.remove(0));
         posPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_widget_state_title;
     }
 
     @Override

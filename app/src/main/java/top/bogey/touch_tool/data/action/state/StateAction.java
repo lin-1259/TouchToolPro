@@ -1,6 +1,9 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.Parcel;
+
+import androidx.annotation.StringRes;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.CalculateAction;
@@ -13,9 +16,9 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class StateAction extends CalculateAction {
     protected final Pin<? extends PinObject> statePin;
 
-    public StateAction() {
-        super();
-        statePin = addPin(new Pin<>(new PinBoolean(false), R.string.action_state_subtitle_state, PinDirection.OUT, PinSlotType.MULTI));
+    public StateAction(Context context, @StringRes int titleId) {
+        super(context, titleId);
+        statePin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public StateAction(Parcel in) {

@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.BatteryManager;
 import android.os.Parcel;
 
@@ -14,16 +15,14 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 public class BatteryChargingStateAction extends StateAction {
     private final Pin<? extends PinObject> chargingStatePin;
 
-    public BatteryChargingStateAction() {
-        super();
-        chargingStatePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), R.string.action_battery_charging_state_subtitle_state));
-        titleId = R.string.action_battery_charging_state_title;
+    public BatteryChargingStateAction(Context context) {
+        super(context, R.string.action_battery_charging_state_title);
+        chargingStatePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), context.getString(R.string.action_battery_charging_state_subtitle_state)));
     }
 
     public BatteryChargingStateAction(Parcel in) {
         super(in);
         chargingStatePin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_battery_charging_state_title;
     }
 
     @Override

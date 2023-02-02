@@ -127,9 +127,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        NavController controller = Navigation.findNavController(this, R.id.conView);
-        AppBarConfiguration configuration = new AppBarConfiguration.Builder(R.id.home).build();
-        NavigationUI.setupActionBarWithNavController(this, controller, configuration);
     }
 
     @Override
@@ -184,6 +181,13 @@ public class MainActivity extends AppCompatActivity {
             serviceIntent.putExtra(INTENT_KEY_START_CAPTURE, true);
             serviceIntent.putExtra(INTENT_KEY_BACKGROUND, isBackground);
             startService(serviceIntent);
+        }
+
+        if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
+            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (uri != null) {
+                saveTasksByFile(uri);
+            }
         }
     }
 

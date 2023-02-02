@@ -16,7 +16,7 @@ import top.bogey.touch_tool.utils.AppUtils;
 
 public class Pin<T extends PinObject> implements Parcelable {
     private String id;
-    private final int title;
+    private final CharSequence title;
 
     private final T value;
 
@@ -30,38 +30,38 @@ public class Pin<T extends PinObject> implements Parcelable {
     private transient String actionId;
 
     public Pin(T value) {
-        this(value, 0, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
+        this(value, null, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, int title) {
+    public Pin(T value, CharSequence title) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
     public Pin(T value, PinSlotType slotType) {
-        this(value, 0, PinDirection.IN, slotType, PinSubType.NORMAL, false);
+        this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, int title, PinDirection direction) {
+    public Pin(T value, CharSequence title, PinDirection direction) {
         this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, int title, PinSubType subType) {
+    public Pin(T value, CharSequence title, PinSubType subType) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, subType, false);
     }
 
-    public Pin(T value, int title, PinSlotType slotType) {
+    public Pin(T value, CharSequence title, PinSlotType slotType) {
         this(value, title, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
     public Pin(T value, PinDirection direction, PinSlotType slotType) {
-        this(value, 0, direction, slotType, PinSubType.NORMAL, false);
+        this(value, null, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, int title, PinDirection direction, PinSlotType slotType) {
+    public Pin(T value, CharSequence title, PinDirection direction, PinSlotType slotType) {
         this(value, title, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, int title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
+    public Pin(T value, CharSequence title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
 
@@ -76,7 +76,7 @@ public class Pin<T extends PinObject> implements Parcelable {
 
     protected Pin(Parcel in) {
         id = in.readString();
-        title = in.readInt();
+        title = in.readString();
         value = in.readParcelable(PinObject.class.getClassLoader());
         direction = PinDirection.valueOf(in.readString());
         slotType = PinSlotType.valueOf(in.readString());
@@ -107,7 +107,6 @@ public class Pin<T extends PinObject> implements Parcelable {
             return new Pin[size];
         }
     };
-
 
     public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
         HashMap<String, String> removedLinks = new HashMap<>();
@@ -142,7 +141,7 @@ public class Pin<T extends PinObject> implements Parcelable {
         this.id = id;
     }
 
-    public int getTitle() {
+    public CharSequence getTitle() {
         return title;
     }
 
@@ -187,7 +186,7 @@ public class Pin<T extends PinObject> implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeInt(title);
+        dest.writeString(title == null ? null : title.toString());
         dest.writeParcelable(value, flags);
 
         dest.writeString(direction.name());

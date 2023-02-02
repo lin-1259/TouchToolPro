@@ -9,14 +9,19 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
+import top.bogey.touch_tool.data.action.state.ColorStateAction;
+import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.databinding.FloatPlayItemBinding;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
@@ -24,6 +29,7 @@ import top.bogey.touch_tool.utils.TaskRunningCallback;
 public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallback {
     private final FloatPlayItemBinding binding;
 
+    private final Task task;
     private final ManualStartAction startAction;
     private TaskRunnable runnable;
 
@@ -34,6 +40,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
 
     public PlayFloatViewItem(@NonNull Context context, Task task, ManualStartAction startAction) {
         super(context);
+        this.task = task;
         this.startAction = startAction;
 
         binding = FloatPlayItemBinding.inflate(LayoutInflater.from(context), this, true);
@@ -47,19 +54,37 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
 
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getService();
-            if (service != null && service.isServiceConnected()) {
-                if (playing) {
-                    if (runnable != null) {
-                        service.stopTask(runnable);
-                    }
+            // 录屏服务没开启，需要检查涉及图片或颜色的动作
+            if (service != null && !service.isCaptureEnabled()) {
+                ArrayList<BaseAction> imageActions = task.getActionsByClass(ImageStateAction.class);
+                ArrayList<BaseAction> colorActions = task.getActionsByClass(ColorStateAction.class);
+
+                if (imageActions.size() + colorActions.size() > 0) {
+                    service.showToast(context.getString(R.string.capture_service_on_tips));
+                    service.startCaptureService(true, null);
                 } else {
-                    runnable = service.runTask(task, startAction);
-                    runnable.addCallback(this);
+                    startPlay();
                 }
+            } else {
+                startPlay();
             }
         });
 
         refreshProgress(0);
+    }
+
+    private void startPlay() {
+        MainAccessibilityService service = MainApplication.getService();
+        if (service != null && service.isServiceConnected()) {
+            if (playing) {
+                if (runnable != null) {
+                    service.stopTask(runnable);
+                }
+            } else {
+                runnable = service.runTask(task, startAction);
+                runnable.addCallback(this);
+            }
+        }
     }
 
     public ManualStartAction getStartAction() {
@@ -112,6 +137,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
 
     @Override
     public void onProgress(TaskRunnable runnable, int progress) {
+        playing = true;
         refreshProgress(progress);
     }
 }

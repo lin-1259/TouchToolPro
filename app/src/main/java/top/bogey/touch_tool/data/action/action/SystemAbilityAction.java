@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.data.action.action;
 
 import android.accessibilityservice.AccessibilityService;
+import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Parcel;
@@ -19,16 +20,14 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 public class SystemAbilityAction extends NormalAction {
     private final Pin<? extends PinObject> abilityPin;
 
-    public SystemAbilityAction() {
-        super();
+    public SystemAbilityAction(Context context) {
+        super(context, R.string.action_system_ability_action_title);
         abilityPin = addPin(new Pin<>(new PinSpinner(R.array.system_ability)));
-        titleId = R.string.action_system_ability_action_title;
     }
 
     public SystemAbilityAction(Parcel in) {
         super(in);
         abilityPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_system_ability_action_title;
     }
 
     @Override
@@ -53,7 +52,7 @@ public class SystemAbilityAction extends NormalAction {
                     service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT);
                 } else {
                     new Handler(service.getMainLooper()).post(() -> {
-                        Toast.makeText(service, R.string.action_device_not_support_snap, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(service, R.string.device_not_support_snap, Toast.LENGTH_SHORT).show();
                     });
                 }
                 break;

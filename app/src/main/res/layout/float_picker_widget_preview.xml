@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:gravity="center_vertical"
-                android:text="@string/widget_id"
+                android:text="@string/picker_widget_preview_subtitle_id"
                 android:textSize="11sp" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="24dp"
                 android:gravity="center_vertical"
-                android:text="@string/widget_level"
+                android:text="@string/picker_widget_preview_subtitle_level"
                 android:textSize="11sp" />
 
         </LinearLayout>
@@ -59,14 +59,14 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginHorizontal="8dp"
-                app:icon="@drawable/icon_save" />
+                app:icon="@drawable/icon_menu_save" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/pickerButton"
                 style="@style/Theme.TouchTool.IconButton.Filled"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                app:icon="@drawable/icon_action_text" />
+                app:icon="@drawable/icon_text" />
 
         </LinearLayout>
 

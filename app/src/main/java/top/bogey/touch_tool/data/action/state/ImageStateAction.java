@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Parcel;
 
@@ -22,12 +23,11 @@ public class ImageStateAction extends StateAction {
     private final Pin<? extends PinObject> similarPin;
     private final Pin<? extends PinObject> posPin;
 
-    public ImageStateAction() {
-        super();
-        imagePin = addPin(new Pin<>(new PinImage(), R.string.action_image_state_subtitle_image));
-        similarPin = addPin(new Pin<>(new PinInteger(), R.string.action_image_state_subtitle_similar));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_image_state_title;
+    public ImageStateAction(Context context) {
+        super(context, R.string.action_image_state_title);
+        imagePin = addPin(new Pin<>(new PinImage(), context.getString(R.string.action_image_state_subtitle_image)));
+        similarPin = addPin(new Pin<>(new PinInteger(85), context.getString(R.string.action_image_state_subtitle_similar)));
+        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ImageStateAction(Parcel in) {
@@ -35,7 +35,6 @@ public class ImageStateAction extends StateAction {
         imagePin = addPin(pinsTmp.remove(0));
         similarPin = addPin(pinsTmp.remove(0));
         posPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_image_state_title;
     }
 
     @Override

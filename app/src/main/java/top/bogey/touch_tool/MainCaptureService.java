@@ -47,8 +47,6 @@ public class MainCaptureService extends Service {
     private MediaProjection projection;
     private ImageReader imageReader;
     private VirtualDisplay virtualDisplay;
-    private Image image;
-    private static final Boolean lock = Boolean.FALSE;
 
     @Nullable
     @Override
@@ -77,6 +75,7 @@ public class MainCaptureService extends Service {
     public void onDestroy() {
         super.onDestroy();
         if (virtualDisplay != null) virtualDisplay.release();
+        if (imageReader != null) imageReader.close();
         if (projection != null) projection.stop();
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -102,12 +101,6 @@ public class MainCaptureService extends Service {
         super.onConfigurationChanged(newConfig);
         if (virtualDisplay != null) virtualDisplay.release();
         if (imageReader != null) imageReader.close();
-        if (image != null) {
-            synchronized (lock) {
-                image.close();
-                image = null;
-            }
-        }
         setVirtualDisplay();
     }
 
@@ -153,12 +146,6 @@ public class MainCaptureService extends Service {
         DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getRealMetrics(metrics);
         imageReader = ImageReader.newInstance(metrics.widthPixels, metrics.heightPixels, PixelFormat.RGBA_8888, 2);
-        imageReader.setOnImageAvailableListener(reader -> {
-            synchronized (lock) {
-                if (image != null) image.close();
-                image = reader.acquireLatestImage();
-            }
-        }, null);
         virtualDisplay = projection.createVirtualDisplay("CaptureService", metrics.widthPixels, metrics.heightPixels, metrics.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, imageReader.getSurface(), null, null);
     }
 
@@ -193,6 +180,7 @@ public class MainCaptureService extends Service {
 
         public List<Rect> matchColor(int[] color, Rect area) {
             Bitmap bitmap = getCurrImage();
+            if (bitmap == null) return null;
             List<Rect> rectList = matchColor(bitmap, color, area);
             bitmap.recycle();
             return rectList;
@@ -220,13 +208,14 @@ public class MainCaptureService extends Service {
 
         public Rect matchImage(Bitmap matchBitmap, int matchValue, Rect area) {
             Bitmap bitmap = getCurrImage();
+            if (bitmap == null) return null;
             Rect rect = matchImage(bitmap, matchBitmap, matchValue, area);
             bitmap.recycle();
             return rect;
         }
 
         public Bitmap getCurrImage() {
-            synchronized (lock) {
+            try (Image image = imageReader.acquireLatestImage()) {
                 if (image == null) return null;
                 Image.Plane[] planes = image.getPlanes();
                 ByteBuffer buffer = planes[0].getBuffer();
@@ -237,7 +226,9 @@ public class MainCaptureService extends Service {
                 Bitmap bitmap = Bitmap.createBitmap(width + (rowStride - pixelStride * width) / pixelStride, height, Bitmap.Config.ARGB_8888);
                 bitmap.copyPixelsFromBuffer(buffer);
                 return bitmap;
+            } catch (Exception ignored) {
             }
+            return null;
         }
     }
 }

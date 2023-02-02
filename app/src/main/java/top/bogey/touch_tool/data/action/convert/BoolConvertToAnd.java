@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.convert;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -19,14 +20,13 @@ public class BoolConvertToAnd extends CalculateAction {
     protected final Pin<? extends PinObject> outConditionPin;
     protected final Pin<? extends PinObject> firstConditionPin;
 
-    public BoolConvertToAnd() {
-        super();
-        outConditionPin = addPin(new Pin<>(new PinBoolean(), R.string.action_state_subtitle_state, PinDirection.OUT, PinSlotType.MULTI));
-        firstConditionPin = addPin(new Pin<>(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition));
-        addPin(new Pin<>(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition));
-        Pin<PinBoolean> executePin = new Pin<>(new PinBoolean(false), R.string.action_bool_convert_and_subtitle_condition);
-        addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinSlotType.EMPTY));
-        titleId = R.string.action_bool_convert_and_title;
+    public BoolConvertToAnd(Context context) {
+        super(context, R.string.action_bool_convert_and_title);
+        outConditionPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
+        firstConditionPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
+        addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
+        Pin<PinBoolean> executePin = new Pin<>(new PinBoolean(false), context.getString(R.string.action_bool_convert_and_subtitle_condition));
+        addPin(new Pin<>(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
     }
 
     public BoolConvertToAnd(Parcel in) {
@@ -37,7 +37,6 @@ public class BoolConvertToAnd extends CalculateAction {
             addPin(pin);
         }
         pinsTmp.clear();
-        titleId = R.string.action_bool_convert_and_title;
     }
 
     @Override
@@ -46,10 +45,12 @@ public class BoolConvertToAnd extends CalculateAction {
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstConditionPin);
+        boolean result = true;
         for (; i < pins.size() - 1; i++) {
             Pin<? extends PinObject> pinObject = pins.get(i);
-            PinBoolean result = (PinBoolean) getPinValue(worldState, task, pinObject);
-            value.setValue(value.getValue() && result.getValue());
+            PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, pinObject);
+            result = result && resultPin.getValue();
         }
+        value.setValue(result);
     }
 }

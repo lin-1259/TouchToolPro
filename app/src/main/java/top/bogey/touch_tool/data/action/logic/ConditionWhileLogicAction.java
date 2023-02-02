@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.logic;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -18,12 +19,11 @@ public class ConditionWhileLogicAction extends NormalAction {
     private final Pin<? extends PinObject> timeOutPin;
     private final Pin<? extends PinObject> endPin;
 
-    public ConditionWhileLogicAction() {
-        super();
-        conditionPin = addPin(new Pin<>(new PinBoolean(false), R.string.action_condition_while_logic_subtitle_condition));
-        timeOutPin = addPin(new Pin<>(new PinInteger(5000), R.string.action_condition_while_logic_subtitle_timeout));
-        endPin = addPin(new Pin<>(new PinExecute(), R.string.action_condition_while_logic_subtitle_end, PinDirection.OUT));
-        titleId = R.string.action_condition_while_logic_title;
+    public ConditionWhileLogicAction(Context context) {
+        super(context, R.string.action_condition_while_logic_title);
+        conditionPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_condition_while_logic_subtitle_condition)));
+        timeOutPin = addPin(new Pin<>(new PinInteger(5000), context.getString(R.string.action_condition_while_logic_subtitle_timeout)));
+        endPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_while_logic_subtitle_end), PinDirection.OUT));
     }
 
     public ConditionWhileLogicAction(Parcel in) {
@@ -31,7 +31,6 @@ public class ConditionWhileLogicAction extends NormalAction {
         conditionPin = addPin(pinsTmp.remove(0));
         timeOutPin = addPin(pinsTmp.remove(0));
         endPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_condition_while_logic_title;
     }
 
     @Override

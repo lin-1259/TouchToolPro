@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -13,14 +14,12 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class CaptureStateAction extends StateAction {
 
-    public CaptureStateAction() {
-        super();
-        titleId = R.string.action_capture_state_title;
+    public CaptureStateAction(Context context) {
+        super(context, R.string.action_capture_state_title);
     }
 
     public CaptureStateAction(Parcel in) {
         super(in);
-        titleId = R.string.action_capture_state_title;
     }
 
     @Override

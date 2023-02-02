@@ -89,8 +89,8 @@ public class CardLayoutView extends FrameLayout {
 
     public void addAction(Class<? extends BaseAction> actionClass) {
         try {
-            Constructor<? extends BaseAction> constructor = actionClass.getConstructor();
-            BaseAction action = constructor.newInstance();
+            Constructor<? extends BaseAction> constructor = actionClass.getConstructor(Context.class);
+            BaseAction action = constructor.newInstance(getContext());
             action.x = (int) (-offsetX / gridSize) + 1;
             action.y = (int) (-offsetY / gridSize) + 1;
             addAction(action);

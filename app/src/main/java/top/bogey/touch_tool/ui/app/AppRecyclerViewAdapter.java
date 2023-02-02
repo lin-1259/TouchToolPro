@@ -157,7 +157,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             binding.selectAppButton.setOnClickListener(v -> {
                 List<CharSequence> charSequences = selectedActivities.get(info.packageName);
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.select_activity)
+                        .setTitle(R.string.picker_app_title_select_activity)
                         .setNegativeButton(R.string.cancel, null);
                 if (single) {
 

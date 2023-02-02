@@ -1,13 +1,16 @@
 package top.bogey.touch_tool.data.action;
 
+import android.content.Context;
 import android.os.Parcel;
+
+import androidx.annotation.StringRes;
 
 import top.bogey.touch_tool.data.action.BaseAction;
 
 public class NormalAction extends BaseAction {
 
-    public NormalAction() {
-        super();
+    public NormalAction(Context context, @StringRes int titleId) {
+        super(context, titleId);
         addPin(inPin);
         addPin(outPin);
     }

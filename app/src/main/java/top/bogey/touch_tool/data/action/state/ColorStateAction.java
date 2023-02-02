@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.os.Parcel;
 
@@ -22,18 +23,16 @@ public class ColorStateAction extends StateAction {
     private final Pin<? extends PinObject> colorPin;
     private final Pin<? extends PinObject> posPin;
 
-    public ColorStateAction() {
-        super();
-        colorPin = addPin(new Pin<>(new PinColor(), R.string.action_color_state_subtitle_color));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_color_state_title;
+    public ColorStateAction(Context context) {
+        super(context, R.string.action_color_state_title);
+        colorPin = addPin(new Pin<>(new PinColor(), context.getString(R.string.action_color_state_subtitle_color)));
+        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ColorStateAction(Parcel in) {
         super(in);
         colorPin = addPin(pinsTmp.remove(0));
         posPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_color_state_title;
     }
 
     @Override

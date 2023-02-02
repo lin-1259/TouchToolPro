@@ -67,6 +67,16 @@ public class Task implements Parcelable {
         return startActions;
     }
 
+    public ArrayList<BaseAction> getActionsByClass(Class<? extends BaseAction> actionClass) {
+        ArrayList<BaseAction> actions = new ArrayList<>();
+        for (BaseAction action : this.actions) {
+            if (actionClass.isInstance(action)) {
+                actions.add(action);
+            }
+        }
+        return actions;
+    }
+
     public void addAction(BaseAction action) {
         actions.add(action);
     }
@@ -83,7 +93,7 @@ public class Task implements Parcelable {
     public String getTaskDes(Context context) {
         StringBuilder builder = new StringBuilder();
         for (StartAction startAction : getStartActions(StartAction.class)) {
-            CharSequence title = startAction.getTitle(context);
+            CharSequence title = startAction.getTitle();
             if (title == null) continue;
             builder.append(title);
             builder.append("(");

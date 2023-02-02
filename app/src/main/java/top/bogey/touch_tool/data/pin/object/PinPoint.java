@@ -1,10 +1,12 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class PinPoint extends PinValue {
@@ -54,6 +56,11 @@ public class PinPoint extends PinValue {
     public static int getOffsetValue(boolean offset, int value) {
         if (!offset) return value;
         return (int) (Math.random() * 20 + value - 10);
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getResources().getColor(R.color.PointPinColor, null);
     }
 
     @SuppressLint("DefaultLocale")

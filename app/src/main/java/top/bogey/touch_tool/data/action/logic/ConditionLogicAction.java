@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.logic;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -17,13 +18,12 @@ public class ConditionLogicAction extends BaseAction {
     private final Pin<? extends PinObject> truePin;
     private final Pin<? extends PinObject> falsePin;
 
-    public ConditionLogicAction() {
-        super();
+    public ConditionLogicAction(Context context) {
+        super(context, R.string.action_condition_logic_title);
         addPin(inPin);
-        conditionPin = addPin(new Pin<>(new PinBoolean(false), R.string.action_condition_logic_subtitle_condition));
-        truePin = addPin(new Pin<>(new PinExecute(), R.string.action_condition_logic_subtitle_true, PinDirection.OUT));
-        falsePin = addPin(new Pin<>(new PinExecute(), R.string.action_condition_logic_subtitle_false, PinDirection.OUT));
-        titleId = R.string.action_condition_logic_title;
+        conditionPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_condition_logic_subtitle_condition)));
+        truePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_true), PinDirection.OUT));
+        falsePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_false), PinDirection.OUT));
     }
 
     public ConditionLogicAction(Parcel in) {
@@ -32,7 +32,6 @@ public class ConditionLogicAction extends BaseAction {
         conditionPin = addPin(pinsTmp.remove(0));
         truePin = addPin(pinsTmp.remove(0));
         falsePin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_condition_logic_title;
     }
 
     @Override

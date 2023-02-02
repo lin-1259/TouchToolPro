@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.logic;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -21,14 +22,13 @@ public class ForLoopLogicAction extends NormalAction {
 
     private boolean needBreak = false;
 
-    public ForLoopLogicAction() {
-        super();
-        startPin = addPin(new Pin<>(new PinInteger(), R.string.action_for_loop_logic_subtitle_start));
-        endPin = addPin(new Pin<>(new PinInteger(), R.string.action_for_loop_logic_subtitle_end));
-        currentPin = addPin(new Pin<>(new PinInteger(), R.string.action_for_loop_logic_subtitle_curr, PinDirection.OUT, PinSlotType.MULTI));
-        completePin = addPin(new Pin<>(new PinExecute(), R.string.action_for_loop_logic_subtitle_complete, PinDirection.OUT));
-        addPin(new Pin<>(new PinExecute(), R.string.action_for_loop_logic_subtitle_break));
-        titleId = R.string.action_for_loop_logic_title;
+    public ForLoopLogicAction(Context context) {
+        super(context, R.string.action_for_loop_logic_title);
+        startPin = addPin(new Pin<>(new PinInteger(1), context.getString(R.string.action_for_loop_logic_subtitle_start)));
+        endPin = addPin(new Pin<>(new PinInteger(5), context.getString(R.string.action_for_loop_logic_subtitle_end)));
+        currentPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_for_loop_logic_subtitle_curr), PinDirection.OUT, PinSlotType.MULTI));
+        completePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_complete), PinDirection.OUT));
+        addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_break)));
     }
 
     public ForLoopLogicAction(Parcel in) {
@@ -38,7 +38,6 @@ public class ForLoopLogicAction extends NormalAction {
         currentPin = addPin(pinsTmp.remove(0));
         completePin = addPin(pinsTmp.remove(0));
         addPin(pinsTmp.remove(0));
-        titleId = R.string.action_for_loop_logic_title;
     }
 
     @Override

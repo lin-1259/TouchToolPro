@@ -17,7 +17,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginHorizontal="4dp"
-        app:icon="@drawable/icon_action_image"
+        app:icon="@drawable/icon_image"
         app:iconSize="16dp" />
 
 </LinearLayout>

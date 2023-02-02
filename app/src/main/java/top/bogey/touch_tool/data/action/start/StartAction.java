@@ -1,6 +1,9 @@
 package top.bogey.touch_tool.data.action.start;
 
+import android.content.Context;
 import android.os.Parcel;
+
+import androidx.annotation.StringRes;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
@@ -15,11 +18,11 @@ public class StartAction extends BaseAction {
     protected final Pin<? extends PinObject> enablePin;
     protected final Pin<? extends PinObject> restartPin;
 
-    public StartAction() {
-        super();
+    public StartAction(Context context, @StringRes int titleId) {
+        super(context, titleId);
         addPin(outPin);
-        enablePin = addPin(new Pin<>(new PinBoolean(true), R.string.action_start_subtitle_enable));
-        restartPin = addPin(new Pin<>(new PinSpinner(R.array.restart_type), R.string.action_start_subtitle_restart));
+        enablePin = addPin(new Pin<>(new PinBoolean(true), context.getString(R.string.action_start_subtitle_enable)));
+        restartPin = addPin(new Pin<>(new PinSpinner(R.array.restart_type), context.getString(R.string.action_start_subtitle_restart)));
     }
 
     public StartAction(Parcel in) {

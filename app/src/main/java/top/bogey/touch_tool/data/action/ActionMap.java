@@ -14,6 +14,7 @@ import top.bogey.touch_tool.data.action.action.SystemAbilityAction;
 import top.bogey.touch_tool.data.action.action.TouchPathAction;
 import top.bogey.touch_tool.data.action.action.TouchPosAction;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToAnd;
+import top.bogey.touch_tool.data.action.convert.BoolConvertToNot;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToOr;
 import top.bogey.touch_tool.data.action.convert.IntConvertToPosition;
 import top.bogey.touch_tool.data.action.convert.PositionConvertToInt;
@@ -59,6 +60,14 @@ public class ActionMap {
         startActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_start_title);
         startActions.put(NotificationStartAction.class, R.string.action_notification_start_title);
 
+        LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
+        actions.put(ActionType.LOGIC, logicActions);
+        logicActions.put(ConditionLogicAction.class, R.string.action_condition_logic_title);
+        logicActions.put(WaitConditionLogicAction.class, R.string.action_wait_condition_logic_title);
+        logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
+        logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
+        logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);
+
         LinkedHashMap<Class<? extends BaseAction>, Integer> normalActions = new LinkedHashMap<>();
         actions.put(ActionType.NORMAL, normalActions);
         normalActions.put(DelayAction.class, R.string.action_delay_action_title);
@@ -82,14 +91,6 @@ public class ActionMap {
         stateActions.put(ScreenStateAction.class, R.string.action_screen_state_title);
         stateActions.put(CaptureStateAction.class, R.string.action_capture_state_title);
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
-        actions.put(ActionType.LOGIC, logicActions);
-        logicActions.put(ConditionLogicAction.class, R.string.action_condition_logic_title);
-        logicActions.put(WaitConditionLogicAction.class, R.string.action_wait_condition_logic_title);
-        logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
-        logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
-        logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);
-
         LinkedHashMap<Class<? extends BaseAction>, Integer> convertActions = new LinkedHashMap<>();
         actions.put(ActionType.CONVERT, convertActions);
         convertActions.put(ValueConvertToString.class, R.string.action_value_convert_string_title);
@@ -97,6 +98,7 @@ public class ActionMap {
         convertActions.put(IntConvertToPosition.class, R.string.action_int_convert_position_title);
         convertActions.put(BoolConvertToOr.class, R.string.action_bool_convert_or_title);
         convertActions.put(BoolConvertToAnd.class, R.string.action_bool_convert_and_title);
+        convertActions.put(BoolConvertToNot.class, R.string.action_bool_convert_not_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> operateActions = new LinkedHashMap<>();
         actions.put(ActionType.OPERATE, operateActions);

@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.operator;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -19,14 +20,13 @@ public class IntAddAction extends CalculateAction {
     protected final Pin<? extends PinObject> outValuePin;
     protected final Pin<? extends PinObject> firstPin;
 
-    public IntAddAction() {
-        super();
-        outValuePin = addPin(new Pin<>(new PinInteger(), 0, PinDirection.OUT, PinSlotType.MULTI));
+    public IntAddAction(Context context) {
+        super(context, R.string.action_int_add_operator_title);
+        outValuePin = addPin(new Pin<>(new PinInteger(), PinDirection.OUT, PinSlotType.MULTI));
         firstPin = addPin(new Pin<>(new PinInteger()));
         addPin(new Pin<>(new PinInteger()));
         Pin<PinInteger> executePin = new Pin<>(new PinInteger());
-        addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinSlotType.EMPTY));
-        titleId = R.string.action_int_add_operator_title;
+        addPin(new Pin<>(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
     }
 
     public IntAddAction(Parcel in) {
@@ -37,7 +37,6 @@ public class IntAddAction extends CalculateAction {
             addPin(pin);
         }
         pinsTmp.clear();
-        titleId = R.string.action_int_add_operator_title;
     }
 
     @Override

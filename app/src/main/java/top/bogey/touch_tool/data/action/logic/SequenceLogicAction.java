@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.logic;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -18,14 +19,13 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class SequenceLogicAction extends BaseAction {
     private final Pin<? extends PinObject> firstPin;
 
-    public SequenceLogicAction() {
-        super();
+    public SequenceLogicAction(Context context) {
+        super(context, R.string.action_sequence_logic_title);
         addPin(inPin);
-        firstPin = addPin(new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT));
-        addPin(new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT));
-        Pin<PinExecute> executePin = new Pin<>(new PinExecute(), R.string.action_sequence_logic_subtitle_start, PinDirection.OUT);
-        addPin(new Pin<>(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinDirection.OUT, PinSlotType.EMPTY));
-        titleId = R.string.action_sequence_logic_title;
+        firstPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_sequence_logic_subtitle_start), PinDirection.OUT));
+        addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_sequence_logic_subtitle_start), PinDirection.OUT));
+        Pin<PinExecute> executePin = new Pin<>(new PinExecute(), context.getString(R.string.action_sequence_logic_subtitle_start), PinDirection.OUT);
+        addPin(new Pin<>(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinDirection.OUT, PinSlotType.EMPTY));
     }
 
     public SequenceLogicAction(Parcel in) {
@@ -36,7 +36,6 @@ public class SequenceLogicAction extends BaseAction {
             addPin(pin);
         }
         pinsTmp.clear();
-        titleId = R.string.action_sequence_logic_title;
     }
 
     @Override

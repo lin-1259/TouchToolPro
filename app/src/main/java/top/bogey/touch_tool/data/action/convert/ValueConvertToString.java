@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.convert;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -17,18 +18,16 @@ public class ValueConvertToString extends CalculateAction {
     protected final Pin<? extends PinObject> valuePin;
     protected final Pin<? extends PinObject> stringPin;
 
-    public ValueConvertToString() {
-        super();
-        valuePin = addPin(new Pin<>(new PinValue(), R.string.action_value_convert_string_subtitle_value));
-        stringPin = addPin(new Pin<>(new PinString(), R.string.action_value_convert_string_subtitle_string, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_value_convert_string_title;
+    public ValueConvertToString(Context context) {
+        super(context, R.string.action_value_convert_string_title);
+        valuePin = addPin(new Pin<>(new PinValue(), context.getString(R.string.action_value_convert_string_subtitle_value)));
+        stringPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_value_convert_string_subtitle_string), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ValueConvertToString(Parcel in) {
         super(in);
         valuePin = addPin(pinsTmp.remove(0));
         stringPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_value_convert_string_title;
     }
 
     @Override

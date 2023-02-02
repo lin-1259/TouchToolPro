@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -13,16 +14,14 @@ import top.bogey.touch_tool.data.pin.object.PinValueArea;
 public class BatteryStateAction extends StateAction {
     private final Pin<? extends PinObject> areaPin;
 
-    public BatteryStateAction() {
-        super();
-        areaPin = addPin(new Pin<>(new PinValueArea(1, 100, 1), R.string.action_battery_state_subtitle_battery));
-        titleId = R.string.action_battery_state_title;
+    public BatteryStateAction(Context context) {
+        super(context, R.string.action_battery_state_title);
+        areaPin = addPin(new Pin<>(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_state_subtitle_battery)));
     }
 
     public BatteryStateAction(Parcel in) {
         super(in);
         areaPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_battery_state_title;
     }
 
     @Override

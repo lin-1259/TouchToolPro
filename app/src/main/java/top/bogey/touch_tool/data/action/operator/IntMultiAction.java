@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.operator;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -11,14 +12,12 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class IntMultiAction extends IntDivAction {
 
-    public IntMultiAction() {
-        super();
-        titleId = R.string.action_int_multi_operator_title;
+    public IntMultiAction(Context context) {
+        super(context, R.string.action_int_multi_operator_title);
     }
 
     public IntMultiAction(Parcel in) {
         super(in);
-        titleId = R.string.action_int_multi_operator_title;
     }
 
     @Override

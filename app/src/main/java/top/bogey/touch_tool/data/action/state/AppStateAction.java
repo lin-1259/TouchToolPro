@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -24,12 +25,11 @@ public class AppStateAction extends StateAction {
     private final Pin<? extends PinObject> packagePin;
     private final Pin<? extends PinObject> activityPin;
 
-    public AppStateAction() {
-        super();
+    public AppStateAction(Context context) {
+        super(context, R.string.action_app_state_title);
         appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
-        packagePin = addPin(new Pin<>(new PinString(), R.string.action_app_state_subtitle_package, PinDirection.OUT, PinSlotType.MULTI));
-        activityPin = addPin(new Pin<>(new PinString(), R.string.action_app_state_subtitle_activity, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_app_state_title;
+        packagePin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_app_state_subtitle_package), PinDirection.OUT, PinSlotType.MULTI));
+        activityPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_app_state_subtitle_activity), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public AppStateAction(Parcel in) {
@@ -37,7 +37,6 @@ public class AppStateAction extends StateAction {
         appPin = addPin(pinsTmp.remove(0));
         packagePin = addPin(pinsTmp.remove(0));
         activityPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_app_state_title;
     }
 
     @Override

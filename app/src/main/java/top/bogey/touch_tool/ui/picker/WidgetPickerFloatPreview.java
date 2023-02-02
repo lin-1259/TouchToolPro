@@ -21,11 +21,11 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         newPinWidget = new PinWidget(pinWidget.getId(), pinWidget.getLevel());
 
         FloatPickerWidgetPreviewBinding binding = FloatPickerWidgetPreviewBinding.inflate(LayoutInflater.from(context), this, true);
-        binding.idTitle.setText(context.getString(R.string.widget_id, pinWidget.getId()));
-        binding.levelTitle.setText(context.getString(R.string.widget_level, pinWidget.getLevel()));
+        binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, pinWidget.getId()));
+        binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, pinWidget.getLevel()));
         binding.pickerButton.setOnClickListener(v -> new WidgetPickerFloatView(context, () -> {
-            binding.idTitle.setText(context.getString(R.string.widget_id, newPinWidget.getId()));
-            binding.levelTitle.setText(context.getString(R.string.widget_level, newPinWidget.getLevel()));
+            binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, newPinWidget.getId()));
+            binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, newPinWidget.getLevel()));
         }, newPinWidget).show());
 
         binding.saveButton.setOnClickListener(v -> {

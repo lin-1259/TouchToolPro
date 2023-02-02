@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.action;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.concurrent.TimeUnit;
@@ -21,12 +22,11 @@ public class TouchPosAction extends NormalAction {
     private final Pin<? extends PinObject> timePin;
     private final Pin<? extends PinObject> offsetPin;
 
-    public TouchPosAction() {
-        super();
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_touch_pos_action_subtitle_position));
-        timePin = addPin(new Pin<>(new PinTimeArea(100, TimeUnit.MILLISECONDS), R.string.action_touch_pos_action_subtitle_time));
-        offsetPin = addPin(new Pin<>(new PinBoolean(), R.string.action_touch_pos_action_subtitle_offset));
-        titleId = R.string.action_touch_pos_action_title;
+    public TouchPosAction(Context context) {
+        super(context, R.string.action_touch_pos_action_title);
+        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_touch_pos_action_subtitle_position)));
+        timePin = addPin(new Pin<>(new PinTimeArea(100, TimeUnit.MILLISECONDS), context.getString(R.string.action_touch_pos_action_subtitle_time)));
+        offsetPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_touch_pos_action_subtitle_offset)));
     }
 
     public TouchPosAction(Parcel in) {
@@ -34,7 +34,6 @@ public class TouchPosAction extends NormalAction {
         posPin = addPin(pinsTmp.remove(0));
         timePin = addPin(pinsTmp.remove(0));
         offsetPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_touch_pos_action_title;
     }
 
     @Override

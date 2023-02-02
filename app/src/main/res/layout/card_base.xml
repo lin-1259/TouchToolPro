@@ -42,7 +42,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
-            app:icon="@drawable/icon_action_input"
+            app:icon="@drawable/icon_edit"
             app:iconSize="16dp" />
 
         <com.google.android.material.button.MaterialButton

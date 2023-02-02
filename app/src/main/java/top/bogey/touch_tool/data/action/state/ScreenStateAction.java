@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.state;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.MainApplication;
@@ -15,16 +16,14 @@ import top.bogey.touch_tool.utils.AppUtils;
 public class ScreenStateAction extends StateAction {
     private final Pin<? extends PinObject> screenStatePin;
 
-    public ScreenStateAction() {
-        super();
-        screenStatePin = addPin(new Pin<>(new PinSpinner(R.array.screen_state), R.string.action_screen_state_subtitle_state));
-        titleId = R.string.action_screen_state_title;
+    public ScreenStateAction(Context context) {
+        super(context, R.string.action_screen_state_title);
+        screenStatePin = addPin(new Pin<>(new PinSpinner(R.array.screen_state), context.getString(R.string.action_screen_state_subtitle_state)));
     }
 
     public ScreenStateAction(Parcel in) {
         super(in);
         screenStatePin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_screen_state_title;
     }
 
     @Override

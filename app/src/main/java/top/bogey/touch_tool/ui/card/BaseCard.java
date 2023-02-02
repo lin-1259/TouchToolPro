@@ -72,11 +72,11 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             }
         });
 
-        binding.title.setText(action.getTitle(context));
+        binding.title.setText(action.getTitle());
         binding.des.setText(action.getDes());
         binding.des.setVisibility((action.getDes() == null || action.getDes().length() == 0) ? GONE : VISIBLE);
 
-        binding.editButton.setOnClickListener(v -> AppUtils.showEditDialog(context, R.string.action_add_des_tips, action.getDes(), result -> {
+        binding.editButton.setOnClickListener(v -> AppUtils.showEditDialog(context, R.string.action_subtitle_add_des, action.getDes(), result -> {
             action.setDes(result);
             binding.des.setText(result);
             binding.des.setVisibility((result == null || result.length() == 0) ? GONE : VISIBLE);

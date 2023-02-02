@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -25,8 +26,8 @@ import top.bogey.touch_tool.utils.AppUtils;
 public class BaseAction implements Parcelable {
     private String id;
     private final String cls;
+    private final CharSequence title;
     private CharSequence des;
-    protected transient int titleId;
 
     private final ArrayList<Pin<? extends PinObject>> pins = new ArrayList<>();
 
@@ -37,9 +38,19 @@ public class BaseAction implements Parcelable {
     protected transient Pin<? extends PinObject> outPin;
     protected transient ArrayList<Pin<? extends PinObject>> pinsTmp = new ArrayList<>();
 
-    public BaseAction() {
+    public BaseAction(Context context) {
         id = UUID.randomUUID().toString();
         cls = getClass().getName();
+        title = null;
+
+        inPin = new Pin<>(new PinExecute(), PinSlotType.MULTI);
+        outPin = new Pin<>(new PinExecute(), PinDirection.OUT, PinSlotType.SINGLE);
+    }
+
+    public BaseAction(Context context, @StringRes int titleId) {
+        id = UUID.randomUUID().toString();
+        cls = getClass().getName();
+        title = context.getString(titleId);
 
         inPin = new Pin<>(new PinExecute(), PinSlotType.MULTI);
         outPin = new Pin<>(new PinExecute(), PinDirection.OUT, PinSlotType.SINGLE);
@@ -48,6 +59,7 @@ public class BaseAction implements Parcelable {
     public BaseAction(Parcel in) {
         cls = getClass().getName();
         id = in.readString();
+        title = in.readString();
         des = in.readString();
         in.readTypedList(pinsTmp, Pin.CREATOR);
         x = in.readInt();
@@ -174,9 +186,8 @@ public class BaseAction implements Parcelable {
         }
     }
 
-    public CharSequence getTitle(Context context) {
-        if (titleId == 0) return "";
-        return context.getString(titleId);
+    public CharSequence getTitle() {
+        return title;
     }
 
     public String getId() {
@@ -208,6 +219,7 @@ public class BaseAction implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(cls);
         dest.writeString(id);
+        dest.writeString(title == null ? null : title.toString());
         dest.writeString(des == null ? null : des.toString());
         dest.writeTypedList(pins);
         dest.writeInt(x);

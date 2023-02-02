@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.start;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -16,13 +17,12 @@ public class TimeStartAction extends StartAction {
     private final Pin<? extends PinObject> timePin;
     private final Pin<? extends PinObject> periodicPin;
 
-    public TimeStartAction() {
-        super();
+    public TimeStartAction(Context context) {
+        super(context, R.string.action_time_start_title);
         long timeMillis = System.currentTimeMillis();
-        datePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.action_time_start_subtitle_date, PinSubType.DATE));
-        timePin = addPin(new Pin<>(new PinLong(timeMillis), R.string.action_time_start_subtitle_time, PinSubType.TIME));
-        periodicPin = addPin(new Pin<>(new PinLong(0), R.string.action_time_start_subtitle_periodic, PinSubType.PERIODIC));
-        titleId = R.string.action_time_start_title;
+        datePin = addPin(new Pin<>(new PinLong(timeMillis), context.getString(R.string.action_time_start_subtitle_date), PinSubType.DATE));
+        timePin = addPin(new Pin<>(new PinLong(timeMillis), context.getString(R.string.action_time_start_subtitle_time), PinSubType.TIME));
+        periodicPin = addPin(new Pin<>(new PinLong(0), context.getString(R.string.action_time_start_subtitle_periodic), PinSubType.PERIODIC));
     }
 
     public TimeStartAction(Parcel in) {
@@ -30,7 +30,6 @@ public class TimeStartAction extends StartAction {
         datePin = addPin(pinsTmp.remove(0));
         timePin = addPin(pinsTmp.remove(0));
         periodicPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_time_start_title;
     }
 
     @Override

@@ -1,8 +1,7 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.os.Handler;
+import android.content.Context;
 import android.os.Parcel;
-import android.widget.Toast;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
@@ -20,18 +19,16 @@ public class LogAction extends NormalAction {
     private final Pin<? extends PinObject> textPin;
     private final Pin<? extends PinObject> toastPin;
 
-    public LogAction() {
-        super();
-        textPin = addPin(new Pin<>(new PinString(), R.string.action_log_action_subtitle_tips));
-        toastPin = addPin(new Pin<>(new PinBoolean(false), R.string.action_log_action_subtitle_toast));
-        titleId = R.string.action_log_action_title;
+    public LogAction(Context context) {
+        super(context, R.string.action_log_action_title);
+        textPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_log_action_subtitle_tips)));
+        toastPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_log_action_subtitle_toast)));
     }
 
     public LogAction(Parcel in) {
         super(in);
         textPin = addPin(pinsTmp.remove(0));
         toastPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_log_action_title;
     }
 
     @Override
@@ -39,7 +36,7 @@ public class LogAction extends NormalAction {
         PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
 
         MainAccessibilityService service = MainApplication.getService();
-        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(service).toString(), pinString.getValue());
+        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle().toString(), pinString.getValue());
 
         PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
         if (showToast.getValue()) {

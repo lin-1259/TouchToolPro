@@ -139,8 +139,8 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         boolean linked = pin.getLinks().size() > 0;
         boolean hidePinBox = linked || pin.getDirection() == PinDirection.OUT;
         pinBox.setVisibility(hidePinBox ? GONE : VISIBLE);
-        if (pin.getTitle() != 0)
-            titleText.setText(String.format(hidePinBox ? " %s " : " %s: ", getContext().getString(pin.getTitle())));
+        if (pin.getTitle() != null)
+            titleText.setText(String.format(hidePinBox ? " %s " : " %s: ", pin.getTitle()));
 
         pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
         pinSlot.setShapeAppearanceModel(pin.getValue().getPinStyle(getContext()));

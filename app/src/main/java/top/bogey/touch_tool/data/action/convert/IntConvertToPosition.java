@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.convert;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -18,12 +19,11 @@ public class IntConvertToPosition extends CalculateAction {
     protected final Pin<? extends PinObject> yPin;
     protected final Pin<? extends PinObject> posPin;
 
-    public IntConvertToPosition() {
-        super();
-        xPin = addPin(new Pin<>(new PinInteger(), R.string.action_int_convert_position_subtitle_x));
-        yPin = addPin(new Pin<>(new PinInteger(), R.string.action_int_convert_position_subtitle_y));
-        posPin = addPin(new Pin<>(new PinPoint(), R.string.action_int_convert_position_subtitle_position, PinDirection.OUT, PinSlotType.MULTI));
-        titleId = R.string.action_int_convert_position_title;
+    public IntConvertToPosition(Context context) {
+        super(context, R.string.action_int_convert_position_title);
+        xPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_x)));
+        yPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_y)));
+        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_int_convert_position_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public IntConvertToPosition(Parcel in) {
@@ -31,7 +31,6 @@ public class IntConvertToPosition extends CalculateAction {
         xPin = addPin(pinsTmp.remove(0));
         yPin = addPin(pinsTmp.remove(0));
         posPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_int_convert_position_title;
     }
 
     @Override

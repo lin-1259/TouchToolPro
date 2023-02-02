@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.start;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import java.util.ArrayList;
@@ -18,16 +19,14 @@ import top.bogey.touch_tool.ui.app.AppView;
 public class AppStartAction extends StartAction {
     private final Pin<? extends PinObject> appPin;
 
-    public AppStartAction() {
-        super();
+    public AppStartAction(Context context) {
+        super(context, R.string.action_app_start_title);
         appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
-        titleId = R.string.action_app_start_title;
     }
 
     public AppStartAction(Parcel in) {
         super(in);
         appPin = addPin(pinsTmp.remove(0));
-        titleId = R.string.action_app_start_title;
     }
 
     @Override

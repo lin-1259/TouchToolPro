@@ -1,6 +1,7 @@
 <resources>
     <color name="IntegerPinColor">#43A047</color>
-    <color name="StringPinColor">#9C27B0</color>
+    <color name="StringPinColor">#AB47BC</color>
+    <color name="PointPinColor">#2196F3</color>
 
     <style name="Theme.TouchTool.IconButton" parent="Widget.Material3.Button.TextButton">
         <item name="iconPadding">0dp</item>

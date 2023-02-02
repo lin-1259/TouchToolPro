@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.action.operator;
 
+import android.content.Context;
 import android.os.Parcel;
 
 import top.bogey.touch_tool.R;
@@ -11,14 +12,12 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class IntReduceAction extends IntDivAction {
 
-    public IntReduceAction() {
-        super();
-        titleId = R.string.action_int_reduce_operator_title;
+    public IntReduceAction(Context context) {
+        super(context, R.string.action_int_reduce_operator_title);
     }
 
     public IntReduceAction(Parcel in) {
         super(in);
-        titleId = R.string.action_int_reduce_operator_title;
     }
 
     @Override

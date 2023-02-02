@@ -30,7 +30,7 @@ public class PinWidgetColorPicker extends BindingView<PinWidgetImagePickerBindin
         super(context, attrs, PinWidgetImagePickerBinding.class);
         if (pinColor == null) throw new RuntimeException("不是有效的引用");
 
-        binding.pickButton.setIconResource(R.drawable.icon_action_color);
+        binding.pickButton.setIconResource(R.drawable.icon_color);
         int cornerSize = DisplayUtils.dp2px(context, 12);
         binding.image.setShapeAppearanceModel(ShapeAppearanceModel.builder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, cornerSize)

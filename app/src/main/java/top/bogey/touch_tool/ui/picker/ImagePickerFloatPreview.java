@@ -33,13 +33,13 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             pinImage = new PinImage(context, image.getScaleBitmap(context), image.getArea(context));
             binding.current.setImageBitmap(pinImage.getBitmap());
             binding.title.setText(R.string.picker_image_preview_title);
-            binding.pickerButton.setIconResource(R.drawable.icon_action_image);
+            binding.pickerButton.setIconResource(R.drawable.icon_image);
             binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show());
         } else {
             pinColor = new PinColor((PinColor) pinValue);
             binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor()));
             binding.title.setText(R.string.picker_color_preview_title);
-            binding.pickerButton.setIconResource(R.drawable.icon_action_color);
+            binding.pickerButton.setIconResource(R.drawable.icon_color);
             binding.pickerButton.setOnClickListener(v -> new ColorPickerFloatView(context, () -> binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor())), pinColor).show());
         }
 

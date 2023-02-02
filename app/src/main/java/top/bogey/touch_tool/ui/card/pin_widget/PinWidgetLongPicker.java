@@ -85,7 +85,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBindin
             });
         } else if (pinSubType == PinSubType.PERIODIC) {
             binding.title.setText(AppUtils.formatDateLocalDuration(context, pinLong.getValue()));
-            binding.pickButton.setIconResource(R.drawable.icon_action_delay);
+            binding.pickButton.setIconResource(R.drawable.icon_delay);
             binding.pickButton.setOnClickListener(v -> {
                 MaterialTimePicker picker = new MaterialTimePicker.Builder()
                         .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
