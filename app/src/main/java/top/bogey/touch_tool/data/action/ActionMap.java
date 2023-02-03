@@ -34,6 +34,7 @@ import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
+import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.action.state.AppStateAction;
 import top.bogey.touch_tool.data.action.state.BatteryChargingStateAction;
@@ -59,6 +60,7 @@ public class ActionMap {
         startActions.put(BatteryStartAction.class, R.string.action_battery_start_title);
         startActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_start_title);
         startActions.put(NotificationStartAction.class, R.string.action_notification_start_title);
+        startActions.put(OutStartAction.class, R.string.action_out_start_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
         actions.put(ActionType.LOGIC, logicActions);

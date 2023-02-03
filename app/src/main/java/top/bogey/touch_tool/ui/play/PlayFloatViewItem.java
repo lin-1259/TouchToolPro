@@ -9,7 +9,6 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,10 +17,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
-import top.bogey.touch_tool.data.action.state.ColorStateAction;
-import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.databinding.FloatPlayItemBinding;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
@@ -56,10 +52,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
             MainAccessibilityService service = MainApplication.getService();
             // 录屏服务没开启，需要检查涉及图片或颜色的动作
             if (service != null && !service.isCaptureEnabled()) {
-                ArrayList<BaseAction> imageActions = task.getActionsByClass(ImageStateAction.class);
-                ArrayList<BaseAction> colorActions = task.getActionsByClass(ColorStateAction.class);
-
-                if (imageActions.size() + colorActions.size() > 0) {
+                if (task.needCaptureService()) {
                     service.showToast(context.getString(R.string.capture_service_on_tips));
                     service.startCaptureService(true, null);
                 } else {

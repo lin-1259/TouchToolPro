@@ -48,6 +48,8 @@
     <string name="capture_service_des">屏幕录制服务，开启之后能够使用图片点击与检测功能</string>
     <string name="capture_service_on_tips">当前任务需要检测图片，请开启屏幕录制</string>
 
+    <string name="action_exported_service_des">外部直接调用动作执行服务</string>
+
     <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
@@ -87,6 +89,8 @@
 
     <string name="action_normal_start_title">自定义条件执行</string>
     <string name="action_normal_start_subtitle_condition">开始条件</string>
+
+    <string name="action_out_start_title">外部应用主动执行</string>
 
     <string name="action_manual_start_title">手动执行</string>
     <string name="action_app_start_title">进应用或界面时执行</string>

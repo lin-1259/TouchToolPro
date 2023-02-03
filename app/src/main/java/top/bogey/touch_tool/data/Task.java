@@ -13,6 +13,8 @@ import java.util.UUID;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.state.ColorStateAction;
+import top.bogey.touch_tool.data.action.state.ImageStateAction;
 
 public class Task implements Parcelable {
     private final String id;
@@ -106,6 +108,12 @@ public class Task implements Parcelable {
             builder.append("\n");
         }
         return builder.toString().trim();
+    }
+
+    public boolean needCaptureService() {
+        ArrayList<BaseAction> imageActions = getActionsByClass(ImageStateAction.class);
+        ArrayList<BaseAction> colorActions = getActionsByClass(ColorStateAction.class);
+        return imageActions.size() + colorActions.size() > 0;
     }
 
     public String getId() {
