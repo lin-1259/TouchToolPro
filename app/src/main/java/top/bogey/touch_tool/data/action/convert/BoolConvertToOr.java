@@ -45,12 +45,13 @@ public class BoolConvertToOr extends CalculateAction {
 
         ArrayList<Pin<? extends PinObject>> pins = getPins();
         int i = pins.indexOf(firstConditionPin);
-        boolean result = false;
         for (; i < pins.size() - 1; i++) {
             Pin<? extends PinObject> pinObject = pins.get(i);
             PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, pinObject);
-            result = result || resultPin.getValue();
+            if (resultPin.getValue()) {
+                value.setValue(true);
+            }
         }
-        value.setValue(result);
+        value.setValue(false);
     }
 }

@@ -43,6 +43,7 @@ public class ConditionWhileLogicAction extends NormalAction {
             if (runnable.isInterrupt()) return;
             super.doAction(worldState, runnable, outPin);
             if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
+            condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         }
         super.doAction(worldState, runnable, endPin);
     }
