@@ -12,13 +12,13 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.databinding.PinOutBinding;
+import top.bogey.touch_tool.databinding.PinBottomBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
-public class PinOutView extends PinBaseView<PinOutBinding> {
-    public PinOutView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
-        super(context, PinOutBinding.class, card, pin);
+public class PinBottomView extends PinBaseView<PinBottomBinding> {
+    public PinBottomView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
+        super(context, PinBottomBinding.class, card, pin);
 
         if (PinAdd.class.equals(pin.getPinClass())) {
             binding.pinBox.setVisibility(VISIBLE);
@@ -31,8 +31,8 @@ public class PinOutView extends PinBaseView<PinOutBinding> {
     public int[] getSlotLocationOnScreen() {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
-        location[0] += pinSlot.getWidth();
-        location[1] += (pinSlot.getHeight() / 2);
+        location[0] += (pinSlot.getWidth() / 2);
+        location[1] += pinSlot.getHeight();
         return location;
     }
 }

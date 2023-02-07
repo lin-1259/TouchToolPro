@@ -19,12 +19,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 import top.bogey.touch_tool.data.Task;
@@ -116,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
             handleIntent(getIntent());
             setIntent(null);
         });
+
+        runFirstTimes();
     }
 
     @Override
@@ -151,6 +150,17 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         handleIntent(intent);
         setIntent(null);
+    }
+
+    private void runFirstTimes() {
+        if (SettingSave.getInstance().getRunTimes() == 1) {
+            try (InputStream inputStream = getAssets().open("default")) {
+                byte[] bytes = new byte[inputStream.available()];
+                if (inputStream.read(bytes) > 0) saveTasks(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void handleIntent(Intent intent) {

@@ -30,8 +30,8 @@ public class PinExecute extends PinObject {
         int cornerSize = DisplayUtils.dp2px(context, 5.5f);
         return ShapeAppearanceModel.builder()
                 .setTopLeftCorner(CornerFamily.CUT, 0)
-                .setTopRightCorner(CornerFamily.CUT, cornerSize)
-                .setBottomLeftCorner(CornerFamily.CUT, 0)
+                .setTopRightCorner(CornerFamily.CUT, 0)
+                .setBottomLeftCorner(CornerFamily.CUT, cornerSize)
                 .setBottomRightCorner(CornerFamily.CUT, cornerSize)
                 .build();
     }

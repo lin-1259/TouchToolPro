@@ -21,6 +21,7 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinColor;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinImage;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinLong;
@@ -137,10 +138,10 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
 
     public void refreshPinUI() {
         boolean linked = pin.getLinks().size() > 0;
-        boolean hidePinBox = linked || pin.getDirection() == PinDirection.OUT;
+        boolean hidePinBox = linked || pin.getDirection() == PinDirection.OUT || pin.getPinClass().isAssignableFrom(PinExecute.class);
         pinBox.setVisibility(hidePinBox ? GONE : VISIBLE);
-        if (pin.getTitle() != null)
-            titleText.setText(String.format(hidePinBox ? " %s " : " %s: ", pin.getTitle()));
+        if (pin.getTitle() != null) titleText.setText(String.format(hidePinBox ? "%s" : "%s:", pin.getTitle()));
+        else titleText.setVisibility(GONE);
 
         pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
         pinSlot.setShapeAppearanceModel(pin.getValue().getPinStyle(getContext()));

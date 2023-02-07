@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -27,6 +26,7 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
@@ -160,16 +160,28 @@ public class CardLayoutView extends FrameLayout {
     private Path calculateLinePath(PinBaseView<?> outPin, PinBaseView<?> inPin) {
         Path path = new Path();
         if (outPin == null || inPin == null) return path;
+
         int[] outLocation = outPin.getSlotLocationOnScreen();
         int[] inLocation = inPin.getSlotLocationOnScreen();
 
-        int offset = inLocation[0] - outLocation[0];
-        offset = offset > gridSize ? offset : gridSize * 8;
-        int x1 = outLocation[0] + offset;
-        int x2 = inLocation[0] - offset;
-        path.moveTo(outLocation[0], outLocation[1]);
-        path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
+        // 执行是上下的
+        if (outPin.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
+            int offset = inLocation[1] - outLocation[1];
+            offset = offset > gridSize ? offset : gridSize * 8;
+            int y1 = outLocation[1] + offset;
+            int y2 = inLocation[1] - offset;
+            path.moveTo(outLocation[0], outLocation[1]);
+            path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
+        } else {
+            int offset = inLocation[0] - outLocation[0];
+            offset = offset > gridSize ? offset : gridSize * 8;
+            int x1 = outLocation[0] + offset;
+            int x2 = inLocation[0] - offset;
+            path.moveTo(outLocation[0], outLocation[1]);
+            path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
+        }
         path.offset(-location[0] - getX(), -location[1] - getY());
+
         return path;
     }
 
@@ -186,12 +198,23 @@ public class CardLayoutView extends FrameLayout {
             inLocation = new int[]{(int) dragX, (int) dragY};
             outLocation = pinLocation;
         }
-        int offset = inLocation[0] - outLocation[0];
-        offset = offset > gridSize ? offset : gridSize * 8;
-        int x1 = outLocation[0] + offset;
-        int x2 = inLocation[0] - offset;
-        path.moveTo(outLocation[0], outLocation[1]);
-        path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
+
+        // 执行是上下的
+        if (pinBaseView.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
+            int offset = inLocation[1] - outLocation[1];
+            offset = offset > gridSize ? offset : gridSize * 8;
+            int y1 = outLocation[1] + offset;
+            int y2 = inLocation[1] - offset;
+            path.moveTo(outLocation[0], outLocation[1]);
+            path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
+        } else {
+            int offset = inLocation[0] - outLocation[0];
+            offset = offset > gridSize ? offset : gridSize * 8;
+            int x1 = outLocation[0] + offset;
+            int x2 = inLocation[0] - offset;
+            path.moveTo(outLocation[0], outLocation[1]);
+            path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
+        }
         path.offset(-location[0] - getX(), -location[1] - getY());
         return path;
     }

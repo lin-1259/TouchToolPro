@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.card.MaterialCardView;
 
@@ -20,11 +21,14 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
+import top.bogey.touch_tool.ui.card.pin.PinBottomView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;
 import top.bogey.touch_tool.ui.card.pin.PinOutView;
+import top.bogey.touch_tool.ui.card.pin.PinTopView;
 import top.bogey.touch_tool.ui.task_blueprint.CardLayoutView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -83,29 +87,35 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         }));
 
         for (Pin<? extends PinObject> pin : action.getPins()) {
-            if (pin.getDirection() == PinDirection.IN) {
-                PinInView pinInView = new PinInView(getContext(), this, pin);
-                binding.inBox.addView(pinInView);
-                pinBaseViews.add(pinInView);
-            } else if (pin.getDirection() == PinDirection.OUT) {
-                PinOutView pinOutView = new PinOutView(getContext(), this, pin);
-                binding.outBox.addView(pinOutView);
-                pinBaseViews.add(pinOutView);
-            }
+            addPinView(pin, 0);
         }
     }
 
     public void addMorePinView(Pin<? extends PinObject> pin) {
         action.addPin(action.getPins().size() - 1, pin);
+        addPinView(pin, 1);
+    }
+
+    public void addPinView(Pin<? extends PinObject> pin, int offset) {
+        PinBaseView<?> pinBaseView = null;
         if (pin.getDirection() == PinDirection.IN) {
-            PinInView pinInView = new PinInView(getContext(), this, pin);
-            binding.inBox.addView(pinInView, binding.inBox.getChildCount() - 1);
-            pinBaseViews.add(pinInView);
+            if (pin.getPinClass().isAssignableFrom(PinExecute.class)) {
+                pinBaseView = new PinTopView(getContext(), this, pin);
+                binding.topBox.addView(pinBaseView, binding.topBox.getChildCount());
+            } else {
+                pinBaseView = new PinInView(getContext(), this, pin);
+                binding.inBox.addView(pinBaseView, binding.inBox.getChildCount() - offset);
+            }
         } else if (pin.getDirection() == PinDirection.OUT) {
-            PinOutView pinOutView = new PinOutView(getContext(), this, pin);
-            binding.outBox.addView(pinOutView, binding.outBox.getChildCount() - 1);
-            pinBaseViews.add(pinOutView);
+            if (pin.getPinClass().isAssignableFrom(PinExecute.class)) {
+                pinBaseView = new PinBottomView(getContext(), this, pin);
+                binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount());
+            } else {
+                pinBaseView = new PinOutView(getContext(), this, pin);
+                binding.outBox.addView(pinBaseView, binding.outBox.getChildCount() - offset);
+            }
         }
+        pinBaseViews.add(pinBaseView);
     }
 
     public void removeMorePinView(PinBaseView<?> pinBaseView) {
@@ -113,9 +123,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         Pin<? extends PinObject> removePin = action.removePin(pin);
         if (removePin == null) return;
         ((CardLayoutView) getParent()).linksRemovePin(removePin.getLinks(), pinBaseView);
-
-        LinearLayout linearLayout = removePin.getDirection() == PinDirection.IN ? binding.inBox : binding.outBox;
-        linearLayout.removeView(pinBaseView);
+        ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
     }
 
     public Task getTask() {

@@ -74,10 +74,10 @@ public class WorldState {
         return appMap.get(pkgName);
     }
 
-    public ArrayList<PackageInfo> findPackageList(Context context, boolean system, CharSequence find, boolean common) {
+    public ArrayList<PackageInfo> findPackageList(Context context, boolean system, CharSequence find, boolean single) {
         ArrayList<PackageInfo> packages = new ArrayList<>();
 
-        if (common && (find == null || find.length() == 0)) {
+        if ((!single) && (find == null || find.length() == 0)) {
             PackageInfo info = new PackageInfo();
             info.packageName = context.getString(R.string.common_package_name);
             packages.add(info);
@@ -91,12 +91,25 @@ public class WorldState {
 
         for (PackageInfo value : appMap.values()) {
             if (value.packageName.equals(context.getPackageName())) continue;
-            if (system || (value.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 1) {
+            if (system || (value.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
                 CharSequence title = value.applicationInfo.loadLabel(manager);
                 // 包名和应用名一致的基本上都是无效应用，跳过
                 if (value.packageName.equalsIgnoreCase(title.toString())) continue;
-                if (pattern == null || pattern.matcher(title).find() || pattern.matcher(value.packageName).find()) {
+                if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(value.packageName.toLowerCase()).find()) {
                     packages.add(value);
+                    continue;
+                }
+                // 包含活动
+                if (value.activities != null) {
+                    for (ActivityInfo activityInfo : value.activities) {
+                        if (single && !activityInfo.exported) {
+                            continue;
+                        }
+                        if (pattern.matcher(activityInfo.name.toLowerCase()).find()) {
+                            packages.add(value);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -111,7 +124,8 @@ public class WorldState {
         ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(actionType)) {
-                if (startAction.isEnable() && startAction.checkReady(this, task)) service.runTask(task, startAction);
+                if (startAction.isEnable() && startAction.checkReady(this, task))
+                    service.runTask(task, startAction);
             }
         }
 
@@ -119,7 +133,8 @@ public class WorldState {
         tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(NormalStartAction.class)) {
-                if (startAction.isEnable() && startAction.checkReady(this, task)) service.runTask(task, startAction);
+                if (startAction.isEnable() && startAction.checkReady(this, task))
+                    service.runTask(task, startAction);
             }
         }
     }

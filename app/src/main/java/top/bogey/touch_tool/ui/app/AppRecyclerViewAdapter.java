@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.databinding.ViewAppItemBinding;
@@ -38,6 +39,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
     private final boolean single;
 
     private boolean showMore = true;
+    private CharSequence searchText;
 
     public AppRecyclerViewAdapter(Map<CharSequence, ArrayList<CharSequence>> selectedActivities, ResultCallback callback, boolean single) {
         this.selectedActivities = selectedActivities;
@@ -62,7 +64,8 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         return apps.size();
     }
 
-    public void refreshApps(List<PackageInfo> newApps) {
+    public void refreshApps(List<PackageInfo> newApps, CharSequence searchText) {
+        this.searchText = searchText;
         if (newApps == null || newApps.size() == 0) {
             int size = apps.size();
             apps.clear();
@@ -155,77 +158,91 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             });
 
             binding.selectAppButton.setOnClickListener(v -> {
-                List<CharSequence> charSequences = selectedActivities.get(info.packageName);
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
-                        .setTitle(R.string.picker_app_title_select_activity)
-                        .setNegativeButton(R.string.cancel, null);
-                if (single) {
+                filterActivities(searchText);
+                showSelectDialog();
+            });
+        }
 
-                    int index = 0;
-                    if (charSequences != null) {
-                        for (int i = 0; i < activities.size(); i++) {
-                            CharSequence choice = activities.get(i);
-                            if (charSequences.contains(choice)) {
-                                index = i;
-                                break;
-                            }
-                        }
-                    }
-                    CharSequence[] ch = new CharSequence[activities.size()];
-                    builder.setSingleChoiceItems(activities.toArray(ch), index, null)
-                            .setPositiveButton(
-                                    R.string.enter,
-                                    (DialogInterface dialog, int which) -> {
-                                        int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                                        if (checkedItemPosition != AdapterView.INVALID_POSITION) {
-                                            selectedActivities.clear();
-                                            selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
-                                            notifyItemChanged(getBindingAdapterPosition());
-                                            callback.onResult(true);
-                                        }
-                                    });
-                } else {
-                    if (charSequences == null) charSequences = new ArrayList<>();
-                    boolean[] choicesInitial = new boolean[activities.size()];
+        private void showSelectDialog() {
+            List<CharSequence> charSequences = selectedActivities.get(info.packageName);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.picker_app_title_select_activity)
+                    .setNegativeButton(R.string.cancel, null);
+            if (single) {
+                int index = 0;
+                if (charSequences != null) {
                     for (int i = 0; i < activities.size(); i++) {
                         CharSequence choice = activities.get(i);
-                        choicesInitial[i] = charSequences.contains(choice);
+                        if (charSequences.contains(choice)) {
+                            index = i;
+                            break;
+                        }
                     }
-
-                    CharSequence[] ch = new CharSequence[activities.size()];
-                    builder.setMultiChoiceItems(activities.toArray(ch), choicesInitial, null)
-                            .setPositiveButton(R.string.enter, (dialog, which) -> {
-                                SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                                ArrayList<CharSequence> result = new ArrayList<>();
-                                for (int i = 0; i < activities.size(); i++) {
-                                    if (checkedItemPositions.get(i)) {
-                                        result.add(activities.get(i));
+                }
+                CharSequence[] ch = new CharSequence[activities.size()];
+                builder.setSingleChoiceItems(activities.toArray(ch), index, null)
+                        .setPositiveButton(
+                                R.string.enter,
+                                (DialogInterface dialog, int which) -> {
+                                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                                    if (checkedItemPosition != AdapterView.INVALID_POSITION) {
+                                        selectedActivities.clear();
+                                        selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
+                                        notifyItemChanged(getBindingAdapterPosition());
+                                        callback.onResult(true);
                                     }
-                                }
-                                selectedActivities.put(info.packageName, result);
-                                notifyItemChanged(getBindingAdapterPosition());
-                                callback.onResult(true);
-                            });
+                                });
+            } else {
+                if (charSequences == null) charSequences = new ArrayList<>();
+                boolean[] choicesInitial = new boolean[activities.size()];
+                for (int i = 0; i < activities.size(); i++) {
+                    CharSequence choice = activities.get(i);
+                    choicesInitial[i] = charSequences.contains(choice);
                 }
 
-                builder.show();
-            });
+                CharSequence[] ch = new CharSequence[activities.size()];
+                builder.setMultiChoiceItems(activities.toArray(ch), choicesInitial, null)
+                        .setPositiveButton(R.string.enter, (dialog, which) -> {
+                            SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                            ArrayList<CharSequence> result = new ArrayList<>();
+                            for (int i = 0; i < activities.size(); i++) {
+                                if (checkedItemPositions.get(i)) {
+                                    result.add(activities.get(i));
+                                }
+                            }
+                            selectedActivities.put(info.packageName, result);
+                            notifyItemChanged(getBindingAdapterPosition());
+                            callback.onResult(true);
+                        });
+            }
+
+            builder.show();
+        }
+
+        private void filterActivities(CharSequence searchText) {
+            activities.clear();
+            if (info.activities != null) {
+                Pattern pattern = null;
+                if (!(searchText == null || searchText.length() == 0)) {
+                    pattern = Pattern.compile(searchText.toString().toLowerCase());
+                }
+                for (ActivityInfo activityInfo : info.activities) {
+                    if (!single || activityInfo.exported) {
+                        if (pattern != null) {
+                            if (pattern.matcher(activityInfo.name.toLowerCase()).find()) {
+                                activities.add(activityInfo.name);
+                            }
+                        } else {
+                            activities.add(activityInfo.name);
+                        }
+                    }
+                }
+            }
         }
 
         public void refreshView(PackageInfo packageInfo) {
             info = packageInfo;
-            activities.clear();
-            if (info.activities != null) {
-                for (ActivityInfo activityInfo : info.activities) {
-                    if (single) {
-                        if (activityInfo.exported) {
-                            activities.add(activityInfo.name);
-                        }
-                    } else {
-                        activities.add(activityInfo.name);
-                    }
-                }
-            }
+            filterActivities(null);
 
             PackageManager manager = context.getPackageManager();
             binding.pkgName.setText(packageInfo.packageName);
