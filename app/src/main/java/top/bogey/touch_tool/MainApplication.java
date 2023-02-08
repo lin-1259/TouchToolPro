@@ -54,7 +54,8 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
             PrintWriter printWriter = new PrintWriter(stringWriter);
             e.printStackTrace(printWriter);
             errorInfo = stringWriter.toString();
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         SettingSave.getInstance().setRunningError(errorInfo);
         handler.uncaughtException(t, e);
     }

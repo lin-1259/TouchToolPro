@@ -1,7 +1,6 @@
 package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
-import android.os.Parcel;
 
 import androidx.annotation.StringRes;
 
@@ -10,14 +9,12 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class StartAction extends BaseAction {

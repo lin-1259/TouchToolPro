@@ -19,7 +19,6 @@ import java.util.List;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.databinding.FloatPickerTouchBinding;
-import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.DouglasPeucker;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;

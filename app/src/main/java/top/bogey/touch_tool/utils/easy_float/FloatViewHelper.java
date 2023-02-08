@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.utils.easy_float;
 
-import android.accessibilityservice.AccessibilityService;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;

@@ -1,9 +1,6 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
-import android.os.Parcel;
-
-import androidx.annotation.NonNull;
 
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;

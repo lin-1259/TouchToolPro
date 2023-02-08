@@ -18,13 +18,13 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryChargingStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
-import top.bogey.touch_tool.data.action.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {

@@ -25,7 +25,6 @@ import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.utils.AppUtils;
 
 public class BaseAction {
     private String id;

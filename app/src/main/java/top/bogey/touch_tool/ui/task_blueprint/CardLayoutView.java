@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -40,6 +41,7 @@ public class CardLayoutView extends FrameLayout {
     private static final int DRAG_SCALE = 4;
 
     private final int gridSize;
+    private final Paint gridPaint;
     private final Paint linePaint;
     private final int[] location = new int[2];
 
@@ -64,6 +66,14 @@ public class CardLayoutView extends FrameLayout {
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         gridSize = DisplayUtils.dp2px(context, 8);
+
+        gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gridPaint.setStrokeWidth(1);
+        gridPaint.setStrokeCap(Paint.Cap.ROUND);
+        gridPaint.setStrokeJoin(Paint.Join.ROUND);
+        gridPaint.setStyle(Paint.Style.STROKE);
+        gridPaint.setColor(context.getColor(R.color.IntegerPinColor));
+        gridPaint.setAlpha(20);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setStrokeWidth(5);
@@ -153,6 +163,23 @@ public class CardLayoutView extends FrameLayout {
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        canvas.save();
+        canvas.translate(offsetX % (gridSize / scale), offsetY % (gridSize / scale));
+        canvas.scale(scale, scale);
+
+        // 格子背景
+        for (int i = 0; i < (getWidth() / scale / gridSize); i++) {
+            gridPaint.setStrokeWidth(i == 0 ? 2 : 1);
+            canvas.drawLine(i * gridSize, 0, i * gridSize, getHeight() / scale, gridPaint);
+        }
+
+        for (int i = 0; i < (getHeight() / scale / gridSize); i++) {
+            gridPaint.setStrokeWidth(i == 0 ? 2 : 1);
+            canvas.drawLine(0, i * gridSize, getWidth() / scale, i * gridSize, gridPaint);
+        }
+
+        canvas.restore();
+
         // 所有连接的线
         for (BaseCard<?> card : cardMap.values()) {
             BaseAction action = card.getAction();

@@ -10,7 +10,6 @@
         android:layout_gravity="center_vertical"
         android:background="@drawable/shape_spinner"
         android:dropDownWidth="wrap_content"
-        android:entries="@array/time_unit"
         android:popupBackground="@drawable/shape_spinner_background"
         android:spinnerMode="dropdown" />
 

@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.PinOutBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
