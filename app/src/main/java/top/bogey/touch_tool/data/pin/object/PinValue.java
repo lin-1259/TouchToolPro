@@ -1,8 +1,8 @@
 package top.bogey.touch_tool.data.pin.object;
 
-import android.os.Parcel;
-
 import androidx.annotation.NonNull;
+
+import com.google.gson.JsonObject;
 
 public class PinValue extends PinObject {
 
@@ -10,8 +10,8 @@ public class PinValue extends PinObject {
         super();
     }
 
-    public PinValue(Parcel in) {
-        super(in);
+    public PinValue(JsonObject jsonObject) {
+        super(jsonObject);
     }
 
     @NonNull

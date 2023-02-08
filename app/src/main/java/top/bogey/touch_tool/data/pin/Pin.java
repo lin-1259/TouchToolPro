@@ -1,24 +1,29 @@
 package top.bogey.touch_tool.data.pin;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class Pin<T extends PinObject> implements Parcelable {
+public class Pin<P extends PinObject> {
     private String id;
-    private final CharSequence title;
+    private String actionId;
 
-    private final T value;
+    private final String title;
+
+    private final P value;
 
     private final PinDirection direction;
     private final PinSlotType slotType;
@@ -27,41 +32,39 @@ public class Pin<T extends PinObject> implements Parcelable {
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
 
-    private transient String actionId;
-
-    public Pin(T value) {
+    public Pin(P value) {
         this(value, null, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, CharSequence title) {
+    public Pin(P value, String title) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, PinSlotType slotType) {
+    public Pin(P value, PinSlotType slotType) {
         this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, CharSequence title, PinDirection direction) {
+    public Pin(P value, String title, PinDirection direction) {
         this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, CharSequence title, PinSubType subType) {
+    public Pin(P value, String title, PinSubType subType) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, subType, false);
     }
 
-    public Pin(T value, CharSequence title, PinSlotType slotType) {
+    public Pin(P value, String title, PinSlotType slotType) {
         this(value, title, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, PinDirection direction, PinSlotType slotType) {
+    public Pin(P value, PinDirection direction, PinSlotType slotType) {
         this(value, null, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, CharSequence title, PinDirection direction, PinSlotType slotType) {
+    public Pin(P value, String title, PinDirection direction, PinSlotType slotType) {
         this(value, title, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(T value, CharSequence title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
+    public Pin(P value, String title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
 
@@ -74,41 +77,28 @@ public class Pin<T extends PinObject> implements Parcelable {
         this.removeAble = removeAble;
     }
 
-    protected Pin(Parcel in) {
-        id = in.readString();
-        title = in.readString();
-        value = in.readParcelable(PinObject.class.getClassLoader());
-        direction = PinDirection.valueOf(in.readString());
-        slotType = PinSlotType.valueOf(in.readString());
-        subType = PinSubType.valueOf(in.readString());
-
-        removeAble = in.readByte() == 1;
-        Bundle bundle = in.readBundle(getClass().getClassLoader());
-        for (String key : bundle.keySet()) {
-            links.put(key, bundle.getString(key));
-        }
+    public Pin(JsonObject jsonObject) {
+        id = jsonObject.get("id").getAsString();
+        actionId = jsonObject.get("actionId").getAsString();
+        title = jsonObject.get("title").getAsString();
+        direction = PinDirection.valueOf(jsonObject.get("direction").getAsString());
+        slotType = PinSlotType.valueOf(jsonObject.get("slotType").getAsString());
+        subType = PinSubType.valueOf(jsonObject.get("subType").getAsString());
+        removeAble = jsonObject.get("removeAble").getAsBoolean();
+        links.putAll(new Gson().fromJson(jsonObject.get("links"), new TypeToken<HashMap<String, String>>() {
+        }.getType()));
+        PinObject.PinObjectDeserializer pinObjectDeserializer = new PinObject.PinObjectDeserializer();
+        value = (P) pinObjectDeserializer.deserialize(jsonObject.get("value"), null, null);
     }
 
-    public Pin<T> copy(boolean removeAble) {
-        Pin<T> copy = AppUtils.copy(this);
+    public Pin<P> copy(boolean removeAble) {
+        Pin<P> copy = AppUtils.copy(new PinDeserializer<P>(), this, getClass());
         copy.id = UUID.randomUUID().toString();
         copy.removeAble = removeAble;
         return copy;
     }
 
-    public static final Creator<Pin<? extends PinObject>> CREATOR = new Creator<Pin<? extends PinObject>>() {
-        @Override
-        public Pin<? extends PinObject> createFromParcel(Parcel in) {
-            return new Pin<>(in);
-        }
-
-        @Override
-        public Pin[] newArray(int size) {
-            return new Pin[size];
-        }
-    };
-
-    public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
+    public HashMap<String, String> addLink(Pin<P> pin) {
         HashMap<String, String> removedLinks = new HashMap<>();
         // 单针脚，需要先移除之前的连接
         if (slotType == PinSlotType.SINGLE) {
@@ -119,7 +109,7 @@ public class Pin<T extends PinObject> implements Parcelable {
         return removedLinks;
     }
 
-    public void removeLink(Pin<? extends PinObject> pin) {
+    public void removeLink(Pin<P> pin) {
         links.remove(pin.getId());
     }
 
@@ -128,7 +118,7 @@ public class Pin<T extends PinObject> implements Parcelable {
         return value.getPinColor(context);
     }
 
-    public Class<? extends PinObject> getPinClass() {
+    public Class<?> getPinClass() {
         if (value == null) throw new RuntimeException("针脚的值为空");
         return value.getClass();
     }
@@ -141,11 +131,11 @@ public class Pin<T extends PinObject> implements Parcelable {
         this.id = id;
     }
 
-    public CharSequence getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    public T getValue() {
+    public P getValue() {
         if (value == null) throw new RuntimeException("针脚的值为空");
         return value;
     }
@@ -178,26 +168,11 @@ public class Pin<T extends PinObject> implements Parcelable {
         this.actionId = actionId;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(title == null ? null : title.toString());
-        dest.writeParcelable(value, flags);
-
-        dest.writeString(direction.name());
-        dest.writeString(slotType.name());
-        dest.writeString(subType.name());
-
-        dest.writeByte((byte) (removeAble ? 1 : 0));
-        Bundle bundle = new Bundle();
-        for (Map.Entry<String, String> entry : links.entrySet()) {
-            bundle.putString(entry.getKey(), entry.getValue());
+    public static class PinDeserializer<P extends PinObject> implements JsonDeserializer<Pin<P>> {
+        @Override
+        public Pin<P> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            return new Pin<>(jsonObject);
         }
-        dest.writeBundle(bundle);
     }
 }

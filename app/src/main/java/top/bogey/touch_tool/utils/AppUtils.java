@@ -18,6 +18,9 @@ import androidx.annotation.StringRes;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializer;
 
 import java.lang.reflect.Method;
 import java.util.Calendar;
@@ -66,7 +69,7 @@ public class AppUtils {
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> {
-                    if (callback != null) callback.onResult(null);
+                    if (callback != null) callback.onResult(defaultValue);
                     dialog.dismiss();
                 })
                 .setView(view)
@@ -97,6 +100,15 @@ public class AppUtils {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setClassName(pkgName, activity);
+            context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
+    public static void gotoUrl(Context context, String url) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception ignored) {
         }
@@ -159,6 +171,13 @@ public class AppUtils {
         } finally {
             if (parcel != null) parcel.recycle();
         }
+    }
+
+    public static <T> T copy(JsonDeserializer<T> deserializer, T target, Class<? extends T> tClass) {
+        if (target == null) return null;
+        Gson gson = new GsonBuilder().registerTypeAdapter(tClass, deserializer).create();
+        String json = gson.toJson(target);
+        return gson.fromJson(json, tClass);
     }
 
     public static String formatDateLocalDate(Context context, long dateTime) {

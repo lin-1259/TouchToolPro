@@ -50,6 +50,11 @@
 
     <string name="action_exported_service_des">外部直接调用动作执行服务</string>
 
+    <string name="report_running_error_tips">检测到应用出现崩溃，是否加入QQ群去上报错误？</string>
+    <string name="report_running_error_copied">已复制</string>
+    <string name="report_running_error_copy">复制</string>
+    <string name="report_running_error_copy_and_join">复制并加群</string>
+
     <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
@@ -80,6 +85,7 @@
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
     <string name="action_subtitle_add_des">修改备注</string>
+    <string name="action_subtitle_execute">执行</string>
 
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
@@ -170,6 +176,7 @@
     <string name="action_open_capture_subtitle_state">开启</string>
 
     <string name="action_open_app_action_title">打开应用或界面</string>
+    <string name="action_open_app_action_subtitle_params">参数</string>
 
     <!-- 任务 - 转换 -->
     <string name="action_value_convert_string_title">对象转换为文本</string>
@@ -211,7 +218,6 @@
     <string name="action_for_loop_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
-    <string name="action_sequence_logic_subtitle_start">执行</string>
 
 
     <!-- 任务 - 加减乘除 -->

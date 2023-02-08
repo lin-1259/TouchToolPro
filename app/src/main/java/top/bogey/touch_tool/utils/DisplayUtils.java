@@ -9,6 +9,8 @@ import android.graphics.Rect;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.WindowManager;
 
 import java.util.List;
@@ -120,5 +122,17 @@ public class DisplayUtils {
             }
         }
         return area;
+    }
+
+    public static Point getRelativePosition(View target, View self) {
+        float x = self.getX();
+        float y = self.getY();
+        ViewGroup parent = (ViewGroup) self.getParent();
+        if (parent!= null && !parent.equals(target)) {
+            Point position = getRelativePosition(target, parent);
+            x += position.x;
+            y += position.y;
+        }
+        return new Point((int) x, (int) y);
     }
 }

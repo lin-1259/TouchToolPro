@@ -4,8 +4,9 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Parcel;
 import android.widget.Toast;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
@@ -14,24 +15,23 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class SystemAbilityAction extends NormalAction {
-    private final Pin<? extends PinObject> abilityPin;
+    private transient final Pin<?> abilityPin;
 
     public SystemAbilityAction(Context context) {
         super(context, R.string.action_system_ability_action_title);
-        abilityPin = addPin(new Pin<>(new PinSpinner(R.array.system_ability)));
+        abilityPin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.system_ability))));
     }
 
-    public SystemAbilityAction(Parcel in) {
-        super(in);
-        abilityPin = addPin(pinsTmp.remove(0));
+    public SystemAbilityAction(JsonObject jsonObject) {
+        super(jsonObject);
+        abilityPin = addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
         PinSpinner ability = (PinSpinner) getPinValue(worldState, runnable.getTask(), abilityPin);
         MainAccessibilityService service = MainApplication.getService();
         switch (ability.getIndex()) {

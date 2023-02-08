@@ -2,9 +2,9 @@ package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Parcel;
 
-import androidx.annotation.NonNull;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -34,23 +34,14 @@ public class PinColor extends PinValue {
         area = new Rect(pinColor.area);
     }
 
-    public PinColor(Context context, int[] color, int minSize, int maxSize, Rect area) {
-        super();
-        this.color = color;
-        screen = DisplayUtils.getScreen(context);
-        this.minSize = minSize;
-        this.maxSize = maxSize;
-        this.area = area;
-    }
-
-    public PinColor(Parcel in) {
-        super(in);
-        color = new int[]{-1, -1, -1};
-        in.readIntArray(color);
-        screen = in.readInt();
-        minSize = in.readInt();
-        maxSize = in.readInt();
-        area = in.readParcelable(Rect.class.getClassLoader());
+    public PinColor(JsonObject jsonObject) {
+        super(jsonObject);
+        Gson gson = new Gson();
+        color = gson.fromJson(jsonObject.get("color"), int[].class);
+        screen = jsonObject.get("screen").getAsInt();
+        minSize = jsonObject.get("minSize").getAsInt();
+        maxSize = jsonObject.get("maxSize").getAsInt();
+        area = gson.fromJson(jsonObject.get("area"), Rect.class);
     }
 
     public boolean isValid() {
@@ -110,15 +101,5 @@ public class PinColor extends PinValue {
 
     public void setArea(Rect area) {
         this.area = area;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeIntArray(color);
-        dest.writeInt(screen);
-        dest.writeInt(minSize);
-        dest.writeInt(maxSize);
-        dest.writeParcelable(area, flags);
     }
 }

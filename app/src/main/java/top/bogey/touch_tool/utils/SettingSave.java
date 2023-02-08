@@ -11,10 +11,12 @@ import top.bogey.touch_tool.R;
 
 public class SettingSave {
     private static final String RUN_TIMES = "RUN_TIMES";
+    private final static String RUNNING_ERROR = "RUNNING_ERROR";
 
     private static final String SERVICE_ENABLED = "SERVICE_ENABLED";
 
     private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
+
 
     private static final String TAGS = "TAGS";
 
@@ -38,6 +40,15 @@ public class SettingSave {
 
     public void addRunTimes() {
         settingMMKV.encode(RUN_TIMES, getRunTimes() + 1);
+    }
+
+
+    public String getRunningError() {
+        return settingMMKV.decodeString(RUNNING_ERROR);
+    }
+
+    public void setRunningError(String error) {
+        settingMMKV.encode(RUNNING_ERROR, error);
     }
 
 

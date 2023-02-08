@@ -2,9 +2,7 @@ package top.bogey.touch_tool.ui.card.pin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.view.Gravity;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,8 +14,8 @@ import top.bogey.touch_tool.databinding.PinBottomBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
-public class PinBottomView extends PinBaseView<PinBottomBinding> {
-    public PinBottomView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
+public class PinBottomView<P extends PinObject, A extends BaseAction> extends PinBaseView<PinBottomBinding, P, A> {
+    public PinBottomView(@NonNull Context context, BaseCard<A> card, Pin<P> pin) {
         super(context, PinBottomBinding.class, card, pin);
 
         if (PinAdd.class.equals(pin.getPinClass())) {
@@ -28,11 +26,12 @@ public class PinBottomView extends PinBaseView<PinBottomBinding> {
     }
 
     @Override
-    public int[] getSlotLocationOnScreen() {
+    public int[] getSlotLocationOnScreen(float scale) {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
-        location[0] += (pinSlot.getWidth() / 2);
-        location[1] += pinSlot.getHeight();
+        location[0] += (pinSlot.getWidth() * scale / 2);
+        Log.d("TAG", "getSlotLocationOnScreen: " + getScaleX());
+        location[1] += (pinSlot.getHeight() * scale);
         return location;
     }
 }

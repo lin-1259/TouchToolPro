@@ -1,11 +1,12 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.annotation.SuppressLint;
-import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
-public class PinValueArea extends PinValue{
+import com.google.gson.JsonObject;
+
+public class PinValueArea extends PinValue {
     private final int valueFrom;
     private final int valueTo;
     private final int step;
@@ -15,6 +16,7 @@ public class PinValueArea extends PinValue{
 
     public PinValueArea(int valueFrom, int valueTo, int step) {
         super();
+        if ((valueTo - valueFrom) * 1f / step != 0) throw new RuntimeException("步长有问题");
         this.valueFrom = valueFrom;
         currMin = valueFrom;
         this.valueTo = valueTo;
@@ -22,13 +24,25 @@ public class PinValueArea extends PinValue{
         this.step = step;
     }
 
-    public PinValueArea(Parcel in) {
-        super(in);
-        valueFrom = in.readInt();
-        valueTo = in.readInt();
-        step = in.readInt();
-        currMin = in.readInt();
-        currMax = in.readInt();
+    public PinValueArea(int valueFrom, int valueTo, int step, int currMin, int currMax) {
+        this.valueFrom = valueFrom;
+        this.valueTo = valueTo;
+        this.step = step;
+        this.currMin = currMin;
+        this.currMax = currMax;
+    }
+
+    public PinValueArea(JsonObject jsonObject) {
+        super(jsonObject);
+        valueFrom = jsonObject.get("valueFrom").getAsInt();
+        valueTo = jsonObject.get("valueTo").getAsInt();
+        step = jsonObject.get("step").getAsInt();
+        currMin = jsonObject.get("currMin").getAsInt();
+        currMax = jsonObject.get("currMax").getAsInt();
+    }
+
+    public int getRandomValue() {
+        return (int) (currMin + (currMax - currMin) * Math.random());
     }
 
     public int getValueFrom() {
@@ -39,16 +53,14 @@ public class PinValueArea extends PinValue{
         return valueTo;
     }
 
-    public int getStep() {
-        return step;
-    }
-
     public int getCurrMin() {
         return currMin;
     }
 
     public void setCurrMin(int currMin) {
-        this.currMin = currMin;
+        currMin = Math.max(valueFrom, Math.min(valueTo, currMin));
+
+        this.currMin = (currMin - valueFrom) / step * step + valueFrom;
     }
 
     public int getCurrMax() {
@@ -56,23 +68,16 @@ public class PinValueArea extends PinValue{
     }
 
     public void setCurrMax(int currMax) {
-        this.currMax = currMax;
+        currMax = Math.max(valueFrom, Math.min(valueTo, currMax));
+
+        currMax = (currMax - valueFrom) / step * step + valueFrom;
+        this.currMax = Math.min(currMax, valueTo);
     }
 
     @SuppressLint("DefaultLocale")
     @NonNull
     @Override
     public String toString() {
-        return String.format("(%d - %d)", valueFrom, valueTo);
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(valueFrom);
-        dest.writeInt(valueTo);
-        dest.writeInt(step);
-        dest.writeInt(currMin);
-        dest.writeInt(currMax);
+        return String.format("(%d - %d)", currMin, currMax);
     }
 }

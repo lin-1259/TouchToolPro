@@ -1,24 +1,20 @@
 package top.bogey.touch_tool.data;
 
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
 
-public class Task implements Parcelable {
+public class Task {
     private final String id;
-    private final LinkedHashSet<BaseAction> actions = new LinkedHashSet<>();
+    private final HashSet<BaseAction> actions = new HashSet<>();
 
     private final long createTime;
     private String tag;
@@ -29,28 +25,6 @@ public class Task implements Parcelable {
         id = UUID.randomUUID().toString();
         createTime = System.currentTimeMillis();
     }
-
-    protected Task(Parcel in) {
-        id = in.readString();
-        ArrayList<BaseAction> actionArrayList = new ArrayList<>();
-        in.readTypedList(actionArrayList, BaseAction.CREATOR);
-        actions.addAll(actionArrayList);
-        createTime = in.readLong();
-        tag = in.readString();
-        title = in.readString();
-    }
-
-    public static final Creator<Task> CREATOR = new Creator<Task>() {
-        @Override
-        public Task createFromParcel(Parcel in) {
-            return new Task(in);
-        }
-
-        @Override
-        public Task[] newArray(int size) {
-            return new Task[size];
-        }
-    };
 
     public BaseAction getActionById(String id) {
         for (BaseAction action : actions) {
@@ -95,7 +69,7 @@ public class Task implements Parcelable {
     public String getTaskDes(Context context) {
         StringBuilder builder = new StringBuilder();
         for (StartAction startAction : getStartActions(StartAction.class)) {
-            CharSequence title = startAction.getTitle();
+            String title = startAction.getTitle();
             if (title == null) continue;
             builder.append(title);
             builder.append("(");
@@ -120,7 +94,7 @@ public class Task implements Parcelable {
         return id;
     }
 
-    public LinkedHashSet<BaseAction> getActions() {
+    public HashSet<BaseAction> getActions() {
         return actions;
     }
 
@@ -142,19 +116,5 @@ public class Task implements Parcelable {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeTypedList(new ArrayList<>(actions));
-        dest.writeLong(createTime);
-        dest.writeString(tag);
-        dest.writeString(title);
     }
 }

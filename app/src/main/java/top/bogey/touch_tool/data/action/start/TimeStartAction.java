@@ -1,21 +1,22 @@
 package top.bogey.touch_tool.data.action.start;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinLong;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class TimeStartAction extends StartAction {
-    private final Pin<? extends PinObject> datePin;
-    private final Pin<? extends PinObject> timePin;
-    private final Pin<? extends PinObject> periodicPin;
+    private transient final Pin<?> datePin;
+    private transient final Pin<?> timePin;
+    private transient final Pin<?> periodicPin;
 
     public TimeStartAction(Context context) {
         super(context, R.string.action_time_start_title);
@@ -25,11 +26,11 @@ public class TimeStartAction extends StartAction {
         periodicPin = addPin(new Pin<>(new PinLong(0), context.getString(R.string.action_time_start_subtitle_periodic), PinSubType.PERIODIC));
     }
 
-    public TimeStartAction(Parcel in) {
-        super(in);
-        datePin = addPin(pinsTmp.remove(0));
-        timePin = addPin(pinsTmp.remove(0));
-        periodicPin = addPin(pinsTmp.remove(0));
+    public TimeStartAction(JsonObject jsonObject) {
+        super(jsonObject);
+        datePin = addPin(tmpPins.remove(0));
+        timePin = addPin(tmpPins.remove(0));
+        periodicPin = addPin(tmpPins.remove(0));
     }
 
     @Override

@@ -4,15 +4,16 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
@@ -29,30 +30,14 @@ public class PinPath extends PinValue {
         offset = new Point();
     }
 
-    public PinPath(PinPath pinPath) {
-        super();
-        for (TouchPath path : pinPath.paths) {
-            paths.add(AppUtils.copy(path));
-        }
-        screen = pinPath.screen;
-        gravity = FloatGravity.valueOf(pinPath.gravity.name());
-        offset = new Point(pinPath.offset);
-    }
-
-    public PinPath(Parcel in) {
-        super(in);
-        in.readTypedList(paths, TouchPath.CREATOR);
-        screen = in.readInt();
-        gravity = FloatGravity.valueOf(in.readString());
-        offset = in.readParcelable(Point.class.getClassLoader());
-    }
-
-    public PinPath(Context context, ArrayList<TouchPath> paths, FloatGravity gravity, Point offset) {
-        super();
-        this.paths.addAll(paths);
-        screen = DisplayUtils.getScreen(context);
-        this.gravity = gravity;
-        this.offset = offset;
+    public PinPath(JsonObject jsonObject) {
+        super(jsonObject);
+        Gson gson = new Gson();
+        paths.addAll(gson.fromJson(jsonObject.get("paths"), new TypeToken<ArrayList<TouchPath>>() {
+        }.getType()));
+        screen = jsonObject.get("screen").getAsInt();
+        gravity = FloatGravity.valueOf(jsonObject.get("gravity").getAsString());
+        offset = gson.fromJson(jsonObject.get("offset"), Point.class);
     }
 
     public ArrayList<Path> getRealPaths(Context context, boolean fixed) {
@@ -139,25 +124,11 @@ public class PinPath extends PinValue {
         return paths.toString();
     }
 
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeTypedList(paths);
-        dest.writeInt(screen);
-        dest.writeString(gravity.name());
-        dest.writeParcelable(offset, flags);
-    }
-
-
-    public static class TouchPath implements Parcelable {
+    public static class TouchPath {
         private transient int pointerId = -1;
         private ArrayList<Point> points = new ArrayList<>();
 
         public TouchPath() {
-        }
-
-        public TouchPath(Parcel in) {
-            points = in.createTypedArrayList(Point.CREATOR);
         }
 
         public TouchPath(ArrayList<Point> points, Point offset, float scale) {
@@ -184,18 +155,6 @@ public class PinPath extends PinValue {
             }
         }
 
-        public static final Creator<TouchPath> CREATOR = new Creator<TouchPath>() {
-            @Override
-            public TouchPath createFromParcel(Parcel in) {
-                return new TouchPath(in);
-            }
-
-            @Override
-            public TouchPath[] newArray(int size) {
-                return new TouchPath[size];
-            }
-        };
-
         public Path getPath(boolean fixed) {
             Path tmp = null;
             for (Point point : points) {
@@ -209,16 +168,6 @@ public class PinPath extends PinValue {
                 }
             }
             return tmp;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(@NonNull Parcel dest, int flags) {
-            dest.writeTypedList(points);
         }
 
         public int getPointerId() {

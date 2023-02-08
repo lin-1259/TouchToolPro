@@ -30,7 +30,6 @@ import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.pin.object.PinString;
-import top.bogey.touch_tool.data.pin.object.PinTimeArea;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.ui.card.BaseCard;
@@ -44,24 +43,23 @@ import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetLongPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetPathPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
-import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTimeArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetWidgetPicker;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
-public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
+public class PinBaseView<V extends ViewBinding, P extends PinObject, A extends BaseAction> extends BindingView<V> {
     protected final LinearLayout pinSlotBox;
     protected final MaterialCardView pinSlot;
     protected final FrameLayout pinBox;
     protected final MaterialTextView titleText;
     protected final MaterialButton removeButton;
 
-    protected final BaseAction action;
-    protected final Pin<? extends PinObject> pin;
+    protected final A action;
+    protected final Pin<P> pin;
 
-    public PinBaseView(@NonNull Context context, Class<T> tClass, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
+    public PinBaseView(@NonNull Context context, Class<V> tClass, BaseCard<A> card, Pin<P> pin) {
         super(context, null, tClass);
         action = card.getAction();
         this.pin = pin;
@@ -86,10 +84,8 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
         removeButton.setOnClickListener(v -> card.removeMorePinView(this));
 
-        Class<? extends PinObject> aClass = pin.getPinClass();
-        if (PinTimeArea.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetTimeArea(context, (PinTimeArea) pin.getValue()));
-        } else if (PinSelectApp.class.equals(aClass)) {
+        Class<?> aClass = pin.getPinClass();
+        if (PinSelectApp.class.equals(aClass)) {
             pinBox.addView(new PinWidgetAppPicker(context, (PinSelectApp) pin.getValue()));
         } else if (PinSpinner.class.equals(aClass)) {
             pinBox.addView(new PinWidgetSpinner(context, (PinSpinner) pin.getValue()));
@@ -117,21 +113,21 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         }
 
         if (PinAdd.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetAdd(context, (PinAdd) pin.getValue(), card));
+            pinBox.addView(new PinWidgetAdd<>(context, (PinAdd<?>) pin.getValue(), card));
         }
     }
 
-    public Pin<?> getPin() {
+    public Pin<P> getPin() {
         return pin;
     }
 
-    public HashMap<String, String> addLink(Pin<? extends PinObject> pin) {
+    public HashMap<String, String> addLink(Pin<P> pin) {
         HashMap<String, String> removedLinkMap = this.pin.addLink(pin);
         refreshPinUI();
         return removedLinkMap;
     }
 
-    public void removeLink(Pin<? extends PinObject> pin) {
+    public void removeLink(Pin<P> pin) {
         this.pin.removeLink(pin);
         refreshPinUI();
     }
@@ -147,7 +143,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         pinSlot.setShapeAppearanceModel(pin.getValue().getPinStyle(getContext()));
     }
 
-    public int[] getSlotLocationOnScreen() {
+    public int[] getSlotLocationOnScreen(float scale) {
         throw new RuntimeException("未覆盖此方法");
     }
 
@@ -155,7 +151,7 @@ public class PinBaseView<T extends ViewBinding> extends BindingView<T> {
         return pinSlotBox;
     }
 
-    public BaseAction getAction() {
+    public A getAction() {
         return action;
     }
 }

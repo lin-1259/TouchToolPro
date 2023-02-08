@@ -1,27 +1,25 @@
 package top.bogey.touch_tool.data.pin.object;
 
-import android.content.Context;
-import android.os.Parcel;
-
-import androidx.annotation.NonNull;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 public class PinSpinner extends PinValue {
-    private final int array;
+    private final String[] array;
     private int index;
 
-    public PinSpinner(int array) {
+    public PinSpinner(String[] array) {
         super();
         this.array = array;
     }
 
-    public PinSpinner(Parcel in) {
-        super(in);
-        array = in.readInt();
-        index = in.readInt();
+    public PinSpinner(JsonObject jsonObject) {
+        super(jsonObject);
+        array = new Gson().fromJson(jsonObject.get("array"), String[].class);
+        index = jsonObject.get("index").getAsInt();
     }
 
-    public String[] getArrays(Context context) {
-        return context.getResources().getStringArray(array);
+    public String[] getArrays() {
+        return array;
     }
 
     public int getIndex() {
@@ -30,12 +28,5 @@ public class PinSpinner extends PinValue {
 
     public void setIndex(int index) {
         this.index = index;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(array);
-        dest.writeInt(index);
     }
 }

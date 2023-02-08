@@ -1,7 +1,8 @@
 package top.bogey.touch_tool.data.action.start;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -11,34 +12,34 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.pin.Pin;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStartAction extends StartAction {
-    private final Pin<? extends PinObject> appPin;
+    private transient final Pin<?> appPin;
 
     public AppStartAction(Context context) {
         super(context, R.string.action_app_start_title);
         appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
     }
 
-    public AppStartAction(Parcel in) {
-        super(in);
-        appPin = addPin(pinsTmp.remove(0));
+    public AppStartAction(JsonObject jsonObject) {
+        super(jsonObject);
+        appPin = addPin(tmpPins.remove(0));
     }
 
     @Override
     public boolean checkReady(WorldState worldState, Task task) {
-        CharSequence packageName = worldState.getPackageName();
+        String packageName = worldState.getPackageName();
         if (packageName == null) return false;
 
         MainAccessibilityService service = MainApplication.getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
         PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);
-        Map<CharSequence, ArrayList<CharSequence>> packages = helper.getPackages();
+        Map<String, ArrayList<String>> packages = helper.getPackages();
 
         // 包含通用且包含当前包，代表排除当前包
         if (packages.containsKey(commonPackageName) && packages.containsKey(packageName)) {
@@ -51,7 +52,7 @@ public class AppStartAction extends StartAction {
         }
 
         if (packages.containsKey(packageName)) {
-            ArrayList<CharSequence> activityClasses = packages.get(packageName);
+            ArrayList<String> activityClasses = packages.get(packageName);
             if (activityClasses == null) return false;
 
             return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());

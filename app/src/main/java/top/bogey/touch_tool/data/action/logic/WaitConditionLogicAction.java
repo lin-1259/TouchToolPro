@@ -1,48 +1,43 @@
 package top.bogey.touch_tool.data.action.logic;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
-public class WaitConditionLogicAction extends BaseAction {
-    private final Pin<? extends PinObject> conditionPin;
-    private final Pin<? extends PinObject> timeOutPin;
-    private final Pin<? extends PinObject> periodicPin;
-    private final Pin<? extends PinObject> truePin;
-    private final Pin<? extends PinObject> falsePin;
+public class WaitConditionLogicAction extends NormalAction {
+    private transient final Pin<?> conditionPin;
+    private transient final Pin<?> timeOutPin;
+    private transient final Pin<?> periodicPin;
+    private transient final Pin<?> falsePin;
 
     public WaitConditionLogicAction(Context context) {
         super(context, R.string.action_wait_condition_logic_title);
-        addPin(inPin);
         conditionPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_condition_logic_subtitle_condition)));
         timeOutPin = addPin(new Pin<>(new PinInteger(1000), context.getString(R.string.action_wait_condition_logic_subtitle_timeout)));
         periodicPin = addPin(new Pin<>(new PinInteger(100), context.getString(R.string.action_wait_condition_logic_subtitle_periodic)));
-        truePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_true), PinDirection.OUT));
         falsePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_false), PinDirection.OUT));
     }
 
-    public WaitConditionLogicAction(Parcel in) {
-        super(in);
-        inPin = addPin(pinsTmp.remove(0));
-        conditionPin = addPin(pinsTmp.remove(0));
-        timeOutPin = addPin(pinsTmp.remove(0));
-        periodicPin = addPin(pinsTmp.remove(0));
-        truePin = addPin(pinsTmp.remove(0));
-        falsePin = addPin(pinsTmp.remove(0));
+    public WaitConditionLogicAction(JsonObject jsonObject) {
+        super(jsonObject);
+        conditionPin = addPin(tmpPins.remove(0));
+        timeOutPin = addPin(tmpPins.remove(0));
+        periodicPin = addPin(tmpPins.remove(0));
+        falsePin = addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
         PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         PinInteger timeout = (PinInteger) getPinValue(worldState, runnable.getTask(), timeOutPin);
         PinInteger periodic = (PinInteger) getPinValue(worldState, runnable.getTask(), periodicPin);
@@ -55,7 +50,7 @@ public class WaitConditionLogicAction extends BaseAction {
         }
 
         if (condition.getValue()) {
-            super.doAction(worldState, runnable, truePin);
+            super.doAction(worldState, runnable, outPin);
         } else {
             super.doAction(worldState, runnable, falsePin);
         }

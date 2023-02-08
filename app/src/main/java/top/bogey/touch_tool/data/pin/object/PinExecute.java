@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -16,8 +17,8 @@ public class PinExecute extends PinObject {
         super();
     }
 
-    public PinExecute(Parcel in) {
-        super(in);
+    public PinExecute(JsonObject jsonObject) {
+        super(jsonObject);
     }
 
     @Override
@@ -34,10 +35,5 @@ public class PinExecute extends PinObject {
                 .setBottomLeftCorner(CornerFamily.CUT, cornerSize)
                 .setBottomRightCorner(CornerFamily.CUT, cornerSize)
                 .build();
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
     }
 }

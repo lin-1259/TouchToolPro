@@ -25,14 +25,14 @@ public class AppView extends BottomSheetDialogFragment {
     public final static int MULTI_MODE = 2;
     public final static int MULTI_WITH_ACTIVITY_MODE = 3;
 
-    private final Map<CharSequence, ArrayList<CharSequence>> packages;
+    private final Map<String, ArrayList<String>> packages;
     private final int mode;
     private ResultCallback callback;
 
     private CharSequence searchText = "";
     private boolean showSystem = false;
 
-    public AppView(Map<CharSequence, ArrayList<CharSequence>> packages, int mode, ResultCallback callback) {
+    public AppView(Map<String, ArrayList<String>> packages, int mode, ResultCallback callback) {
         this.packages = packages;
         this.mode = mode;
         this.callback = callback;

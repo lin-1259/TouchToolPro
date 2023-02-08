@@ -1,24 +1,21 @@
 package top.bogey.touch_tool.data;
 
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
-import java.util.UUID;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
-import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.start.StartAction;
-import top.bogey.touch_tool.utils.AppUtils;
+import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 
@@ -27,10 +24,17 @@ public class TaskRepository {
     private final static String TASK_DB = "TASK_DB";
     private final static MMKV taskMMKV = MMKV.mmkvWithID(TASK_DB, MMKV.SINGLE_PROCESS_MODE);
     private final static String LOG_DB = "LOG_DB";
-    private final static MMKV logMMKV = MMKV.mmkvWithID(LOG_DB, MMKV.SINGLE_PROCESS_MODE);
+    private final static MMKV loggerMMKV = MMKV.mmkvWithID(LOG_DB, MMKV.SINGLE_PROCESS_MODE);
+    private final Gson gson;
 
     private final LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
     private final HashSet<TaskChangedCallback> callbacks = new HashSet<>();
+
+    public TaskRepository() {
+        gson = new GsonBuilder()
+                .registerTypeAdapter(BaseAction.class, new BaseAction.BaseActionDeserialize())
+                .create();
+    }
 
     public static TaskRepository getInstance() {
         if (repository == null) {
@@ -43,12 +47,19 @@ public class TaskRepository {
     private void readAllTasks() {
         String[] keys = taskMMKV.allKeys();
         if (keys == null) return;
+
+        ArrayList<String> removeKeys = new ArrayList<>();
         for (int i = keys.length - 1; i >= 0; i--) {
             String key = keys[i];
-            Task task = taskMMKV.decodeParcelable(key, Task.class);
-            if (task == null) continue;
+            Task task = getOriginTaskById(key);
+            if (task == null) {
+                removeKeys.add(key);
+                continue;
+            }
             tasks.put(key, task);
         }
+
+        removeKeys.forEach(taskMMKV::remove);
     }
 
     public ArrayList<Task> getAllTasks() {
@@ -60,7 +71,12 @@ public class TaskRepository {
     }
 
     public Task getOriginTaskById(String id) {
-        return taskMMKV.decodeParcelable(id, Task.class);
+        try {
+            return gson.fromJson(taskMMKV.decodeString(id), Task.class);
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public ArrayList<Task> getTasksByStart(Class<? extends StartAction> startActionClass) {
@@ -83,6 +99,10 @@ public class TaskRepository {
         return taskArrayList;
     }
 
+    public Gson getGson() {
+        return gson;
+    }
+
     public void addCallback(TaskChangedCallback callback) {
         callbacks.add(callback);
     }
@@ -97,7 +117,7 @@ public class TaskRepository {
             service.replaceWork(task);
         }
 
-        taskMMKV.encode(task.getId(), task);
+        taskMMKV.encode(task.getId(), gson.toJson(task));
         Task lastTask = tasks.put(task.getId(), task);
         if (lastTask == null) {
             callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onCreated(task));
@@ -129,16 +149,16 @@ public class TaskRepository {
 
     public void addLog(Task task, String action, String log) {
         LogInfo logInfo = new LogInfo(task.getId(), action + ":" + log);
-        logMMKV.encode(logInfo.getId(), logInfo);
+        loggerMMKV.encode(logInfo.getId(), gson.toJson(logInfo));
     }
 
     public void removeLog(Task task) {
-        String[] keys = logMMKV.allKeys();
+        String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = logMMKV.decodeParcelable(key, LogInfo.class);
+                LogInfo logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
-                    logMMKV.remove(key);
+                    loggerMMKV.remove(key);
                 }
             }
         }
@@ -146,16 +166,16 @@ public class TaskRepository {
 
     public String getLogs(Context context, Task task) {
         ArrayList<LogInfo> infoList = new ArrayList<>();
-        String[] keys = logMMKV.allKeys();
+        String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = logMMKV.decodeParcelable(key, LogInfo.class);
+                LogInfo logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
                     infoList.add(logInfo);
                 }
             }
         }
-        infoList.sort((a, b) -> (int) (b.time - a.time));
+        infoList.sort((a, b) -> (int) (b.getTime() - a.getTime()));
 
         StringBuilder builder = new StringBuilder();
         for (LogInfo logInfo : infoList) {
@@ -164,71 +184,5 @@ public class TaskRepository {
         }
 
         return builder.toString().trim();
-    }
-
-    public static class LogInfo implements Parcelable {
-        private final String id;
-        private final long time;
-        private final String taskId;
-        private final String log;
-
-        public LogInfo(String taskId, String log) {
-            id = UUID.randomUUID().toString();
-            time = System.currentTimeMillis();
-            this.taskId = taskId;
-            this.log = log;
-        }
-
-        protected LogInfo(Parcel in) {
-            id = in.readString();
-            time = in.readLong();
-            taskId = in.readString();
-            log = in.readString();
-        }
-
-        public static final Creator<LogInfo> CREATOR = new Creator<LogInfo>() {
-            @Override
-            public LogInfo createFromParcel(Parcel in) {
-                return new LogInfo(in);
-            }
-
-            @Override
-            public LogInfo[] newArray(int size) {
-                return new LogInfo[size];
-            }
-        };
-
-        public String getId() {
-            return id;
-        }
-
-        public long getTime() {
-            return time;
-        }
-
-        public String getTime(Context context) {
-            return context.getString(R.string.date, AppUtils.formatDateLocalDate(context, time), AppUtils.formatDateLocalMillisecond(context, time));
-        }
-
-        public String getTaskId() {
-            return taskId;
-        }
-
-        public String getLog(Context context) {
-            return getTime(context) + "\t" + log;
-        }
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(@NonNull Parcel dest, int flags) {
-            dest.writeString(id);
-            dest.writeLong(time);
-            dest.writeString(taskId);
-            dest.writeString(log);
-        }
     }
 }

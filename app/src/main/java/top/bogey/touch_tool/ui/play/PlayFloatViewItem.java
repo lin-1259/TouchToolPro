@@ -41,11 +41,11 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
 
         binding = FloatPlayItemBinding.inflate(LayoutInflater.from(context), this, true);
 
-        CharSequence title = startAction.getDes();
+        String title = startAction.getDes();
         if (title == null) {
             title = task.getTitle();
         }
-        this.title = getPivotalTitle(title.toString());
+        this.title = getPivotalTitle(title);
         binding.percent.setText(this.title);
 
         binding.playButton.setOnClickListener(v -> {

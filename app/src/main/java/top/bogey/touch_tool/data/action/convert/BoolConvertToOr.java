@@ -1,7 +1,8 @@
 package top.bogey.touch_tool.data.action.convert;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -14,11 +15,10 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class BoolConvertToOr extends CalculateAction {
-    protected final Pin<? extends PinObject> outConditionPin;
-    protected final Pin<? extends PinObject> firstConditionPin;
+    private transient final Pin<?> outConditionPin;
+    private transient final Pin<?> firstConditionPin;
 
     public BoolConvertToOr(Context context) {
         super(context, R.string.action_bool_convert_or_title);
@@ -29,27 +29,28 @@ public class BoolConvertToOr extends CalculateAction {
         addPin(new Pin<>(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
     }
 
-    public BoolConvertToOr(Parcel in) {
-        super(in);
-        outConditionPin = addPin(pinsTmp.remove(0));
-        firstConditionPin = addPin(pinsTmp.remove(0));
-        for (Pin<? extends PinObject> pin : pinsTmp) {
+    public BoolConvertToOr(JsonObject jsonObject) {
+        super(jsonObject);
+        outConditionPin = addPin(tmpPins.remove(0));
+        firstConditionPin = addPin(tmpPins.remove(0));
+        for (Pin<?> pin : tmpPins) {
             addPin(pin);
         }
-        pinsTmp.clear();
+        tmpPins.clear();
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
         PinBoolean value = (PinBoolean) outConditionPin.getValue();
 
-        ArrayList<Pin<? extends PinObject>> pins = getPins();
+        ArrayList<Pin<?>> pins = getPins();
         int i = pins.indexOf(firstConditionPin);
         for (; i < pins.size() - 1; i++) {
-            Pin<? extends PinObject> pinObject = pins.get(i);
+            Pin<?> pinObject = pins.get(i);
             PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, pinObject);
             if (resultPin.getValue()) {
                 value.setValue(true);
+                return;
             }
         }
         value.setValue(false);

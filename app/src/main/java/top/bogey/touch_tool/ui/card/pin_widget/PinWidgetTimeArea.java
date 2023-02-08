@@ -14,22 +14,23 @@ import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinTimeArea;
+import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.databinding.PinWidgetTimeAreaBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.TextChangedListener;
 
 public class PinWidgetTimeArea extends BindingView<PinWidgetTimeAreaBinding> {
-    private final PinTimeArea pinTimeArea;
+    private final PinValueArea pinTimeArea;
 
-    public PinWidgetTimeArea(@NonNull Context context, PinTimeArea pinTimeArea) {
+    public PinWidgetTimeArea(@NonNull Context context, PinValueArea pinTimeArea) {
         this(context, null, pinTimeArea);
     }
 
     public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new PinTimeArea(300, TimeUnit.MILLISECONDS));
+        this(context, attrs, new PinValueArea(100, 100, 100));
     }
 
-    public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs, PinTimeArea pinTimeArea) {
+    public PinWidgetTimeArea(@NonNull Context context, @Nullable AttributeSet attrs, PinValueArea pinTimeArea) {
         super(context, attrs, PinWidgetTimeAreaBinding.class);
         if (pinTimeArea == null) throw new RuntimeException("不是有效的引用");
         this.pinTimeArea = pinTimeArea;

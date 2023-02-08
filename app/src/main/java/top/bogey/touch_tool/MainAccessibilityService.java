@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Path;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.lifecycle.MutableLiveData;
@@ -35,7 +34,7 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.utils.ResultCallback;
@@ -63,17 +62,18 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         if (event != null) {
+            String packageName = (String) event.getPackageName();
+            String className = (String) event.getClassName();
+            if (packageName == null || className == null) return;
+
             WorldState worldState = WorldState.getInstance();
-            CharSequence packageName = event.getPackageName();
-            CharSequence className = event.getClassName();
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                Log.d("TouchToolPro", "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
                 if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
                     stopAllTask();
                     worldState.setEnterActivity(packageName, className);
                 } else worldState.enterActivity(packageName, className);
+
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                Log.d("TouchToolPro", "AccessibilityEvent: TYPE_NOTIFICATION_STATE_CHANGED");
                 if (!Notification.class.getName().contentEquals(className)) return;
                 List<CharSequence> eventText = event.getText();
                 if (eventText == null || eventText.size() == 0) return;
@@ -84,7 +84,6 @@ public class MainAccessibilityService extends AccessibilityService {
                 }
                 worldState.setNotification(packageName, builder.toString().trim());
             }
-            Log.d("TouchToolPro", "AccessibilityEvent: " + packageName + "/" + className);
         }
     }
 

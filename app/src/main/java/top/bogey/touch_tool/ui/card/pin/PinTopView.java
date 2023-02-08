@@ -12,16 +12,16 @@ import top.bogey.touch_tool.databinding.PinTopBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
-public class PinTopView extends PinBaseView<PinTopBinding> {
-    public PinTopView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin<? extends PinObject> pin) {
+public class PinTopView<P extends PinObject, A extends BaseAction> extends PinBaseView<PinTopBinding, P, A> {
+    public PinTopView(@NonNull Context context, BaseCard<A> card, Pin<P> pin) {
         super(context, PinTopBinding.class, card, pin);
     }
 
     @Override
-    public int[] getSlotLocationOnScreen() {
+    public int[] getSlotLocationOnScreen(float scale) {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
-        location[0] += (pinSlot.getWidth() / 2);
+        location[0] += (pinSlot.getWidth() * scale / 2);
         return location;
     }
 }

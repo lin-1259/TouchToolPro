@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.start.OutStartAction;
-import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.StartAction;
 
 public class ActionExportedService extends Service {
 

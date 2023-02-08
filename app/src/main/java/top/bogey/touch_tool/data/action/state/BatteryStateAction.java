@@ -1,31 +1,32 @@
 package top.bogey.touch_tool.data.action.state;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.StateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class BatteryStateAction extends StateAction {
-    private final Pin<? extends PinObject> areaPin;
+    private transient final Pin<?> areaPin;
 
     public BatteryStateAction(Context context) {
         super(context, R.string.action_battery_state_title);
         areaPin = addPin(new Pin<>(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_state_subtitle_battery)));
     }
 
-    public BatteryStateAction(Parcel in) {
-        super(in);
-        areaPin = addPin(pinsTmp.remove(0));
+    public BatteryStateAction(JsonObject jsonObject) {
+        super(jsonObject);
+        areaPin = addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
 
         int batteryPercent = worldState.getBatteryPercent();

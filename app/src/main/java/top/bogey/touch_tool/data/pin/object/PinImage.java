@@ -10,6 +10,9 @@ import android.util.Base64;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import java.io.ByteArrayOutputStream;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -43,11 +46,11 @@ public class PinImage extends PinValue {
         this.area = area;
     }
 
-    public PinImage(Parcel in) {
-        super(in);
-        image = in.readString();
-        screen = in.readInt();
-        area = in.readParcelable(Rect.class.getClassLoader());
+    public PinImage(JsonObject jsonObject) {
+        super(jsonObject);
+        screen = jsonObject.get("screen").getAsInt();
+        image = jsonObject.get("image").getAsString();
+        area = new Gson().fromJson(jsonObject.get("area"), Rect.class);
     }
 
     public Bitmap getBitmap() {
@@ -106,13 +109,5 @@ public class PinImage extends PinValue {
 
         float scale = DisplayUtils.getScreen(context) * 1f / screen;
         return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeString(image);
-        dest.writeInt(screen);
-        dest.writeParcelable(area, flags);
     }
 }

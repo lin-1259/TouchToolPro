@@ -1,7 +1,8 @@
 package top.bogey.touch_tool.data.action.logic;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
@@ -12,12 +13,11 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class ConditionWhileLogicAction extends NormalAction {
-    private final Pin<? extends PinObject> conditionPin;
-    private final Pin<? extends PinObject> timeOutPin;
-    private final Pin<? extends PinObject> endPin;
+    private transient final Pin<?> conditionPin;
+    private transient final Pin<?> timeOutPin;
+    private transient final Pin<?> endPin;
 
     public ConditionWhileLogicAction(Context context) {
         super(context, R.string.action_condition_while_logic_title);
@@ -26,15 +26,15 @@ public class ConditionWhileLogicAction extends NormalAction {
         endPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_while_logic_subtitle_end), PinDirection.OUT));
     }
 
-    public ConditionWhileLogicAction(Parcel in) {
-        super(in);
-        conditionPin = addPin(pinsTmp.remove(0));
-        timeOutPin = addPin(pinsTmp.remove(0));
-        endPin = addPin(pinsTmp.remove(0));
+    public ConditionWhileLogicAction(JsonObject jsonObject) {
+        super(jsonObject);
+        conditionPin = addPin(tmpPins.remove(0));
+        timeOutPin = addPin(tmpPins.remove(0));
+        endPin = addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
         PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         PinInteger timeout = (PinInteger) getPinValue(worldState, runnable.getTask(), timeOutPin);
 

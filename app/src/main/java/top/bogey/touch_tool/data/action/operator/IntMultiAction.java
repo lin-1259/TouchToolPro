@@ -1,14 +1,14 @@
 package top.bogey.touch_tool.data.action.operator;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class IntMultiAction extends IntDivAction {
 
@@ -16,12 +16,12 @@ public class IntMultiAction extends IntDivAction {
         super(context, R.string.action_int_multi_operator_title);
     }
 
-    public IntMultiAction(Parcel in) {
-        super(in);
+    public IntMultiAction(JsonObject jsonObject) {
+        super(jsonObject);
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 

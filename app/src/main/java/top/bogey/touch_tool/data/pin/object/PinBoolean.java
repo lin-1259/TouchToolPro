@@ -1,9 +1,10 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
-import android.os.Parcel;
 
 import androidx.annotation.NonNull;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -19,9 +20,9 @@ public class PinBoolean extends PinValue {
         this.value = value;
     }
 
-    public PinBoolean(Parcel in) {
-        super(in);
-        value = in.readByte() == 1;
+    public PinBoolean(JsonObject jsonObject) {
+        super(jsonObject);
+        value = jsonObject.get("value").getAsBoolean();
     }
 
     public boolean getValue() {
@@ -41,11 +42,5 @@ public class PinBoolean extends PinValue {
     @Override
     public String toString() {
         return String.valueOf(value);
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeByte((byte) (value ? 1 : 0));
     }
 }

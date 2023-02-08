@@ -82,12 +82,7 @@ public class HomeView extends Fragment {
                         }
                         break;
                     case R.id.tutorial:
-                        try {
-                            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0"));
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(intent);
-                        } catch (Exception ignored) {
-                        }
+                        AppUtils.gotoUrl(getContext(), "https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0");
                         break;
                     case R.id.importTask:
                         MainActivity activity = MainApplication.getActivity();

@@ -1,7 +1,8 @@
 package top.bogey.touch_tool.data.action.logic;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
@@ -12,15 +13,14 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class ForLoopLogicAction extends NormalAction {
-    private final Pin<? extends PinObject> startPin;
-    private final Pin<? extends PinObject> endPin;
-    private final Pin<? extends PinObject> currentPin;
-    private final Pin<? extends PinObject> completePin;
+    private transient final Pin<?> startPin;
+    private transient final Pin<?> endPin;
+    private transient final Pin<?> currentPin;
+    private transient final Pin<?> completePin;
 
-    private boolean needBreak = false;
+    private transient boolean needBreak = false;
 
     public ForLoopLogicAction(Context context) {
         super(context, R.string.action_for_loop_logic_title);
@@ -31,17 +31,17 @@ public class ForLoopLogicAction extends NormalAction {
         addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_break)));
     }
 
-    public ForLoopLogicAction(Parcel in) {
-        super(in);
-        startPin = addPin(pinsTmp.remove(0));
-        endPin = addPin(pinsTmp.remove(0));
-        currentPin = addPin(pinsTmp.remove(0));
-        completePin = addPin(pinsTmp.remove(0));
-        addPin(pinsTmp.remove(0));
+    public ForLoopLogicAction(JsonObject jsonObject) {
+        super(jsonObject);
+        startPin = addPin(tmpPins.remove(0));
+        endPin = addPin(tmpPins.remove(0));
+        currentPin = addPin(tmpPins.remove(0));
+        completePin = addPin(tmpPins.remove(0));
+        addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
         if (pin.getId().equals(inPin.getId())) {
             needBreak = false;
             PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);

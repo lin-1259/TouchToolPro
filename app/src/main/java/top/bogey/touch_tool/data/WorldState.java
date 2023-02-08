@@ -24,19 +24,19 @@ import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
-import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.action.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
     private static WorldState helper;
 
-    private final LinkedHashMap<CharSequence, PackageInfo> appMap = new LinkedHashMap<>();
+    private final LinkedHashMap<String, PackageInfo> appMap = new LinkedHashMap<>();
 
-    private CharSequence packageName;
-    private CharSequence activityName;
+    private String packageName;
+    private String activityName;
 
-    private CharSequence notificationPackage;
-    private CharSequence notificationText;
+    private String notificationPackage;
+    private String notificationText;
 
     private int batteryPercent;
     private int batteryState;
@@ -60,7 +60,7 @@ public class WorldState {
         }
     }
 
-    public boolean isActivityClass(CharSequence packageName, CharSequence className) {
+    public boolean isActivityClass(String packageName, String className) {
         if (packageName == null) return false;
         PackageInfo packageInfo = appMap.get(packageName);
         if (packageInfo == null) return false;
@@ -70,7 +70,7 @@ public class WorldState {
         return false;
     }
 
-    public PackageInfo getPackage(CharSequence pkgName) {
+    public PackageInfo getPackage(String pkgName) {
         return appMap.get(pkgName);
     }
 
@@ -167,7 +167,7 @@ public class WorldState {
         }
     }
 
-    public void enterActivity(CharSequence packageName, CharSequence className) {
+    public void enterActivity(String packageName, String className) {
         if (isActivityClass(packageName, className)) {
             boolean pkg = setPackageName(packageName);
             boolean cls = setActivityName(className);
@@ -178,7 +178,7 @@ public class WorldState {
         }
     }
 
-    public void setEnterActivity(CharSequence packageName, CharSequence className) {
+    public void setEnterActivity(String packageName, String className) {
         if (isActivityClass(packageName, className)) {
             setPackageName(packageName);
             setActivityName(className);
@@ -186,37 +186,37 @@ public class WorldState {
         }
     }
 
-    public CharSequence getPackageName() {
+    public String getPackageName() {
         return packageName;
     }
 
-    public boolean setPackageName(CharSequence packageName) {
+    public boolean setPackageName(String packageName) {
         if (packageName == null) return false;
         if (TextUtils.equals(packageName, this.packageName)) return false;
         this.packageName = packageName;
         return true;
     }
 
-    public CharSequence getActivityName() {
+    public String getActivityName() {
         return activityName;
     }
 
-    public boolean setActivityName(CharSequence activityName) {
+    public boolean setActivityName(String activityName) {
         if (activityName == null) return false;
         if (TextUtils.equals(activityName, this.activityName)) return false;
         this.activityName = activityName;
         return true;
     }
 
-    public CharSequence getNotificationText() {
+    public String getNotificationText() {
         return notificationText;
     }
 
-    public CharSequence getNotificationPackage() {
+    public String getNotificationPackage() {
         return notificationPackage;
     }
 
-    public void setNotification(CharSequence notificationPackage, CharSequence notificationText) {
+    public void setNotification(String notificationPackage, String notificationText) {
         this.notificationPackage = notificationPackage;
         this.notificationText = notificationText;
         checkAutoStartAction(NotificationStartAction.class);

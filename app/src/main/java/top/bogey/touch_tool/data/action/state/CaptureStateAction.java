@@ -1,16 +1,17 @@
 package top.bogey.touch_tool.data.action.state;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.StateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class CaptureStateAction extends StateAction {
 
@@ -18,12 +19,12 @@ public class CaptureStateAction extends StateAction {
         super(context, R.string.action_capture_state_title);
     }
 
-    public CaptureStateAction(Parcel in) {
-        super(in);
+    public CaptureStateAction(JsonObject jsonObject) {
+        super(jsonObject);
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         value.setValue(service.isCaptureEnabled());

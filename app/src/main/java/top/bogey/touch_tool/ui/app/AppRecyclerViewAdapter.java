@@ -30,18 +30,18 @@ import top.bogey.touch_tool.databinding.ViewAppItemBinding;
 import top.bogey.touch_tool.utils.ResultCallback;
 
 public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerViewAdapter.ViewHolder> {
-    private final Map<CharSequence, ArrayList<CharSequence>> selectedActivities;
+    private final Map<String, ArrayList<String>> selectedActivities;
     private final ResultCallback callback;
 
     private final ArrayList<PackageInfo> apps = new ArrayList<>();
 
-    private final Map<CharSequence, Drawable> icons = new HashMap<>();
+    private final Map<String, Drawable> icons = new HashMap<>();
     private final boolean single;
 
     private boolean showMore = true;
     private CharSequence searchText;
 
-    public AppRecyclerViewAdapter(Map<CharSequence, ArrayList<CharSequence>> selectedActivities, ResultCallback callback, boolean single) {
+    public AppRecyclerViewAdapter(Map<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single) {
         this.selectedActivities = selectedActivities;
         this.callback = callback;
         this.single = single;
@@ -113,7 +113,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         private final Context context;
 
         private final String commonPkgName;
-        private final ArrayList<CharSequence> activities = new ArrayList<>();
+        private final ArrayList<String> activities = new ArrayList<>();
         private PackageInfo info;
 
         public ViewHolder(ViewAppItemBinding binding) {
@@ -123,13 +123,13 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             commonPkgName = context.getString(R.string.common_package_name);
 
             binding.getRoot().setOnClickListener(v -> {
-                List<CharSequence> remove = selectedActivities.remove(info.packageName);
+                List<String> remove = selectedActivities.remove(info.packageName);
                 if (remove == null || remove.size() > 0) {
                     if (single) {
-                        CharSequence[] keys = new CharSequence[selectedActivities.size()];
+                        String[] keys = new String[selectedActivities.size()];
                         selectedActivities.keySet().toArray(keys);
                         selectedActivities.clear();
-                        for (CharSequence packageName : keys) {
+                        for (String packageName : keys) {
                             for (int i = 0; i < apps.size(); i++) {
                                 PackageInfo info = apps.get(i);
                                 if (packageName.equals(info.packageName)) {
@@ -143,7 +143,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 }
 
                 if (!single && info.packageName.equals(commonPkgName)) {
-                    for (CharSequence packageName : selectedActivities.keySet()) {
+                    for (String packageName : selectedActivities.keySet()) {
                         for (int i = 0; i < apps.size(); i++) {
                             PackageInfo info = apps.get(i);
                             if (packageName.equals(info.packageName)) {
@@ -164,23 +164,23 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         }
 
         private void showSelectDialog() {
-            List<CharSequence> charSequences = selectedActivities.get(info.packageName);
+            List<String> strings = selectedActivities.get(info.packageName);
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.picker_app_title_select_activity)
                     .setNegativeButton(R.string.cancel, null);
             if (single) {
                 int index = 0;
-                if (charSequences != null) {
+                if (strings != null) {
                     for (int i = 0; i < activities.size(); i++) {
-                        CharSequence choice = activities.get(i);
-                        if (charSequences.contains(choice)) {
+                        String choice = activities.get(i);
+                        if (strings.contains(choice)) {
                             index = i;
                             break;
                         }
                     }
                 }
-                CharSequence[] ch = new CharSequence[activities.size()];
-                builder.setSingleChoiceItems(activities.toArray(ch), index, null)
+                String[] activitiesArray = new String[activities.size()];
+                builder.setSingleChoiceItems(activities.toArray(activitiesArray), index, null)
                         .setPositiveButton(
                                 R.string.enter,
                                 (DialogInterface dialog, int which) -> {
@@ -193,18 +193,18 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                                     }
                                 });
             } else {
-                if (charSequences == null) charSequences = new ArrayList<>();
+                if (strings == null) strings = new ArrayList<>();
                 boolean[] choicesInitial = new boolean[activities.size()];
                 for (int i = 0; i < activities.size(); i++) {
-                    CharSequence choice = activities.get(i);
-                    choicesInitial[i] = charSequences.contains(choice);
+                    String choice = activities.get(i);
+                    choicesInitial[i] = strings.contains(choice);
                 }
 
-                CharSequence[] ch = new CharSequence[activities.size()];
-                builder.setMultiChoiceItems(activities.toArray(ch), choicesInitial, null)
+                String[] activitiesArray = new String[activities.size()];
+                builder.setMultiChoiceItems(activities.toArray(activitiesArray), choicesInitial, null)
                         .setPositiveButton(R.string.enter, (dialog, which) -> {
                             SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                            ArrayList<CharSequence> result = new ArrayList<>();
+                            ArrayList<String> result = new ArrayList<>();
                             for (int i = 0; i < activities.size(); i++) {
                                 if (checkedItemPositions.get(i)) {
                                     result.add(activities.get(i));
@@ -269,7 +269,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             binding.getRoot().setCheckedIconResource(isCommon || !containsKey ? R.drawable.icon_radio_selected : R.drawable.icon_radio_unselected);
             binding.getRoot().setChecked(selectedActivities.containsKey(packageInfo.packageName));
 
-            List<CharSequence> list = selectedActivities.get(packageInfo.packageName);
+            List<String> list = selectedActivities.get(packageInfo.packageName);
             if (list == null || list.size() == 0) {
                 binding.selectAppButton.setText(null);
                 binding.selectAppButton.setIconResource(R.drawable.icon_more);

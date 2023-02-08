@@ -53,7 +53,7 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
         binding.excludeAppsIconBox.removeAllViews();
         binding.excludeAppsBox.setVisibility(GONE);
 
-        Set<CharSequence> packageNames = helper.getPackages().keySet();
+        Set<String> packageNames = helper.getPackages().keySet();
         if (packageNames.isEmpty()) return;
 
         PackageManager manager = getContext().getPackageManager();
@@ -74,7 +74,7 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
 
 
         int index = 0;
-        for (CharSequence packageName : packageNames) {
+        for (String packageName : packageNames) {
             if (TextUtils.equals(packageName, commonPackage)) continue;
             PinWidgetAppPickerItemBinding itemBinding = PinWidgetAppPickerItemBinding.inflate(LayoutInflater.from(getContext()), appIconBox, true);
             if (index == 4 && packageNames.size() > (includeCommon ? 6 : 5)) {
@@ -84,7 +84,7 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
                 break;
 
             } else {
-                List<CharSequence> list = helper.getPackages().get(packageName);
+                List<String> list = helper.getPackages().get(packageName);
                 if (list == null) continue;
                 PackageInfo packageInfo = WorldState.getInstance().getPackage(packageName);
                 itemBinding.icon.setImageDrawable(packageInfo.applicationInfo.loadIcon(manager));

@@ -2,12 +2,12 @@ package top.bogey.touch_tool.data.pin.object;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Parcel;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.JsonObject;
+
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.utils.SettingSave;
 
 public class PinPoint extends PinValue {
     private int x;
@@ -23,10 +23,10 @@ public class PinPoint extends PinValue {
         this.y = y;
     }
 
-    public PinPoint(Parcel in) {
-        super(in);
-        x = in.readInt();
-        y = in.readInt();
+    public PinPoint(JsonObject jsonObject) {
+        super(jsonObject);
+        x = jsonObject.get("x").getAsInt();
+        y = jsonObject.get("y").getAsInt();
     }
 
     public int getX(boolean offset) {
@@ -68,12 +68,5 @@ public class PinPoint extends PinValue {
     @Override
     public String toString() {
         return String.format("(%d, %d)", x, y);
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
-        dest.writeInt(x);
-        dest.writeInt(y);
     }
 }

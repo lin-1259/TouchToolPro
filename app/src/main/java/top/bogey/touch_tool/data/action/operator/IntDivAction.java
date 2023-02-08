@@ -1,9 +1,10 @@
 package top.bogey.touch_tool.data.action.operator;
 
 import android.content.Context;
-import android.os.Parcel;
 
 import androidx.annotation.StringRes;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
@@ -13,12 +14,11 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class IntDivAction extends CalculateAction {
-    protected final Pin<? extends PinObject> outValuePin;
-    protected final Pin<? extends PinObject> originPin;
-    protected final Pin<? extends PinObject> secondPin;
+    protected transient final Pin<?> outValuePin;
+    protected transient final Pin<?> originPin;
+    protected transient final Pin<?> secondPin;
 
     public IntDivAction(Context context) {
         this(context, R.string.action_int_div_operator_title);
@@ -31,15 +31,15 @@ public class IntDivAction extends CalculateAction {
         secondPin = addPin(new Pin<>(new PinInteger()));
     }
 
-    public IntDivAction(Parcel in) {
-        super(in);
-        outValuePin = addPin(pinsTmp.remove(0));
-        originPin = addPin(pinsTmp.remove(0));
-        secondPin = addPin(pinsTmp.remove(0));
+    public IntDivAction(JsonObject jsonObject) {
+        super(jsonObject);
+        outValuePin = addPin(tmpPins.remove(0));
+        originPin = addPin(tmpPins.remove(0));
+        secondPin = addPin(tmpPins.remove(0));
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 

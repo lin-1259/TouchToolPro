@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -37,10 +38,12 @@ public class CardLayoutView extends FrameLayout {
     private static final int DRAG_SELF = 1;
     private static final int DRAG_CARD = 2;
     private static final int DRAG_PIN = 3;
+    private static final int DRAG_SCALE = 4;
 
     private final int gridSize;
     private final Paint linePaint;
     private final int[] location = new int[2];
+
     private final HashMap<String, BaseCard<? extends BaseAction>> cardMap = new LinkedHashMap<>();
 
     private Task task;
@@ -56,6 +59,9 @@ public class CardLayoutView extends FrameLayout {
     private float offsetX = 0;
     private float offsetY = 0;
 
+    private float scale = 1f;
+    private final ScaleGestureDetector detector;
+
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         gridSize = DisplayUtils.dp2px(context, 8);
@@ -65,6 +71,28 @@ public class CardLayoutView extends FrameLayout {
         linePaint.setStrokeCap(Paint.Cap.ROUND);
         linePaint.setStrokeJoin(Paint.Join.ROUND);
         linePaint.setStyle(Paint.Style.STROKE);
+
+        detector = new ScaleGestureDetector(context, new ScaleGestureDetector.OnScaleGestureListener() {
+            @Override
+            public boolean onScaleBegin(@NonNull ScaleGestureDetector detector) {
+                dragState = DRAG_SCALE;
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(@NonNull ScaleGestureDetector detector) {
+                dragState = DRAG_NONE;
+            }
+
+            @Override
+            public boolean onScale(@NonNull ScaleGestureDetector detector) {
+                scale *= detector.getScaleFactor();
+                scale = Math.max(0.5f, Math.min(scale, 1.5f));
+                setCardsPosition();
+                postInvalidate();
+                return true;
+            }
+        });
     }
 
     public void setTask(Task task) {
@@ -119,8 +147,10 @@ public class CardLayoutView extends FrameLayout {
 
     private void setCardPosition(BaseCard<? extends BaseAction> card) {
         BaseAction action = card.getAction();
-        card.setX(action.x * gridSize + offsetX);
-        card.setY(action.y * gridSize + offsetY);
+        card.setScaleX(scale);
+        card.setScaleY(scale);
+        card.setX(action.x * gridSize * scale + offsetX);
+        card.setY(action.y * gridSize * scale + offsetY);
     }
 
     @Override
@@ -142,6 +172,7 @@ public class CardLayoutView extends FrameLayout {
                 }
             }
         }
+
         if (dragState == DRAG_PIN) {
             for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
                 BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
@@ -161,8 +192,8 @@ public class CardLayoutView extends FrameLayout {
         Path path = new Path();
         if (outPin == null || inPin == null) return path;
 
-        int[] outLocation = outPin.getSlotLocationOnScreen();
-        int[] inLocation = inPin.getSlotLocationOnScreen();
+        int[] outLocation = outPin.getSlotLocationOnScreen(scale);
+        int[] inLocation = inPin.getSlotLocationOnScreen(scale);
 
         // 执行是上下的
         if (outPin.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
@@ -188,7 +219,7 @@ public class CardLayoutView extends FrameLayout {
     private Path calculateLinePath(PinBaseView<?> pinBaseView) {
         Path path = new Path();
         if (pinBaseView == null) return path;
-        int[] pinLocation = pinBaseView.getSlotLocationOnScreen();
+        int[] pinLocation = pinBaseView.getSlotLocationOnScreen(scale);
 
         int[] outLocation, inLocation;
         if (dragDirection == PinDirection.OUT) {
@@ -222,6 +253,9 @@ public class CardLayoutView extends FrameLayout {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        detector.onTouchEvent(event);
+        if (dragState == DRAG_SCALE) return true;
+
         float rawX = event.getRawX();
         float rawY = event.getRawY();
         int actionMasked = event.getActionMasked();
@@ -231,7 +265,7 @@ public class CardLayoutView extends FrameLayout {
                 BaseCard<? extends BaseAction> card = baseCards.get(i);
                 int[] location = new int[2];
                 card.getLocationOnScreen(location);
-                if (new Rect(location[0], location[1], location[0] + card.getWidth(), location[1] + card.getHeight()).contains((int) rawX, (int) rawY)) {
+                if (new Rect(location[0], location[1], location[0] + (int) (card.getWidth() * scale), location[1] + (int) (card.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
                     dragState = DRAG_CARD;
                     dragCard = card;
                     PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
@@ -269,10 +303,11 @@ public class CardLayoutView extends FrameLayout {
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             if (dragState == DRAG_PIN) {
                 boolean flag = true;
+                // 看是否放到针脚上了
                 for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
                     int[] location = new int[2];
                     baseCard.getLocationOnScreen(location);
-                    if (new Rect(location[0], location[1], location[0] + baseCard.getWidth(), location[1] + baseCard.getHeight()).contains((int) rawX, (int) rawY)) {
+                    if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
 
                         PinBaseView<?> pinBaseView = baseCard.getPinByPosition(rawX, rawY);
                         if (pinBaseView == null) continue;
@@ -303,12 +338,12 @@ public class CardLayoutView extends FrameLayout {
                 int dx = (int) ((rawX - dragX) / gridSize);
                 if (dx != 0) {
                     action.x += dx;
-                    dragX = rawX;
+                    dragX += dx * gridSize;
                 }
                 int dy = (int) ((rawY - dragY) / gridSize);
                 if (dy != 0) {
                     action.y += dy;
-                    dragY = rawY;
+                    dragY += dy * gridSize;
                 }
                 setCardPosition(dragCard);
             } else if (dragState == DRAG_PIN) {
@@ -389,7 +424,9 @@ public class CardLayoutView extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        getLocationOnScreen(location);
+        if (changed) {
+            getLocationOnScreen(location);
+        }
     }
 
     @Override

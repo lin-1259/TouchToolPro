@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.databinding.FloatPickerTouchPreviewBinding;
+import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
@@ -29,6 +30,7 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
                 pinPath.setPaths(context, newPinPath.getPaths());
                 pinPath.setOffset(newPinPath.getOffset());
                 pinPath.setGravity(newPinPath.getGravity());
+                pinPath.setScreen(DisplayUtils.getScreen(context));
                 callback.onComplete();
             }
             dismiss();

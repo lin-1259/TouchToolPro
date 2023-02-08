@@ -1,28 +1,29 @@
 package top.bogey.touch_tool.data.action.start;
 
 import android.content.Context;
-import android.os.Parcel;
+
+import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.pin.Pin;
-import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.data.pin.object.PinSpinner;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.action.state.BatteryChargingStateAction;
+import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class BatteryChargingStartAction extends StartAction {
-    private final Pin<? extends PinObject> statePin;
+    private transient final Pin<?> statePin;
     private transient int currState;
 
     public BatteryChargingStartAction(Context context) {
         super(context, R.string.action_battery_charging_start_title);
-        statePin = addPin(new Pin<>(new PinSpinner(R.array.charging_state), context.getString(R.string.action_battery_charging_start_subtitle_state)));
+        statePin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_start_subtitle_state)));
     }
 
-    public BatteryChargingStartAction(Parcel in) {
-        super(in);
-        statePin = addPin(pinsTmp.remove(0));
+    public BatteryChargingStartAction(JsonObject jsonObject) {
+        super(jsonObject);
+        statePin = addPin(tmpPins.remove(0));
     }
 
     @Override

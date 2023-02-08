@@ -1,14 +1,18 @@
 package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
@@ -18,56 +22,49 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class BaseAction implements Parcelable {
+public class BaseAction {
     private String id;
     private final String cls;
-    private final CharSequence title;
-    private CharSequence des;
+    private final String title;
+    private String des;
 
-    private final ArrayList<Pin<? extends PinObject>> pins = new ArrayList<>();
+    private final ArrayList<Pin<?>> pins = new ArrayList<>();
 
     public int x;
     public int y;
 
-    protected transient Pin<? extends PinObject> inPin;
-    protected transient Pin<? extends PinObject> outPin;
-    protected transient ArrayList<Pin<? extends PinObject>> pinsTmp = new ArrayList<>();
+    protected transient final ArrayList<Pin<?>> tmpPins = new ArrayList<>();
 
     public BaseAction(Context context) {
-        id = UUID.randomUUID().toString();
-        cls = getClass().getName();
-        title = null;
-
-        inPin = new Pin<>(new PinExecute(), PinSlotType.MULTI);
-        outPin = new Pin<>(new PinExecute(), PinDirection.OUT, PinSlotType.SINGLE);
+        this(context, 0);
     }
 
     public BaseAction(Context context, @StringRes int titleId) {
         id = UUID.randomUUID().toString();
         cls = getClass().getName();
-        title = context.getString(titleId);
-
-        inPin = new Pin<>(new PinExecute(), PinSlotType.MULTI);
-        outPin = new Pin<>(new PinExecute(), PinDirection.OUT, PinSlotType.SINGLE);
+        if (titleId == 0) title = null;
+        else title = context.getString(titleId);
     }
 
-    public BaseAction(Parcel in) {
+    public BaseAction(JsonObject jsonObject) {
         cls = getClass().getName();
-        id = in.readString();
-        title = in.readString();
-        des = in.readString();
-        in.readTypedList(pinsTmp, Pin.CREATOR);
-        x = in.readInt();
-        y = in.readInt();
+        id = jsonObject.get("id").getAsString();
+        title = jsonObject.get("title").getAsString();
+        des = jsonObject.get("des").getAsString();
+        x = jsonObject.get("x").getAsInt();
+        y = jsonObject.get("y").getAsInt();
+        Pin.PinDeserializer<? extends PinObject> pinDeserializer = new Pin.PinDeserializer<>();
+        for (JsonElement jsonElement : jsonObject.get("pins").getAsJsonArray()) {
+            Pin<?> pin = pinDeserializer.deserialize(jsonElement, null, null);
+            tmpPins.add(pin);
+        }
     }
 
     public BaseAction copy() {
-        BaseAction copy = AppUtils.copy(this);
+        BaseAction copy = AppUtils.copy(new BaseActionDeserialize(), this, getClass());
         copy.setId(UUID.randomUUID().toString());
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());
@@ -79,37 +76,17 @@ public class BaseAction implements Parcelable {
         return copy;
     }
 
-    public static final Creator<BaseAction> CREATOR = new Creator<BaseAction>() {
-        @Override
-        public BaseAction createFromParcel(Parcel in) {
-            try {
-                Class<?> aClass = Class.forName(in.readString());
-                Constructor<?> constructor = aClass.getConstructor(Parcel.class);
-                return (BaseAction) constructor.newInstance(in);
-            } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
-                     IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        @Override
-        public BaseAction[] newArray(int size) {
-            return new BaseAction[size];
-        }
-    };
-
     public void doAction(WorldState worldState, TaskRunnable runnable) {
-        doAction(worldState, runnable, outPin);
     }
 
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<? extends PinObject> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
         if (runnable.isInterrupt()) return;
         if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行针脚不正确");
 
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getValue());
             if (action == null) continue;
-            Pin<? extends PinObject> pinById = action.getPinById(entry.getKey());
+            Pin<?> pinById = action.getPinById(entry.getKey());
             if (pinById == null) continue;
             runnable.addProgress();
             action.doAction(worldState, runnable, pinById);
@@ -118,7 +95,7 @@ public class BaseAction implements Parcelable {
     }
 
     // 获取针脚值之前先计算下针脚
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
     }
 
     protected void sleep(long time) {
@@ -129,14 +106,14 @@ public class BaseAction implements Parcelable {
         }
     }
 
-    public <T extends PinObject> Pin<T> addPin(Pin<T> pin) {
+    public Pin<?> addPin(Pin<?> pin) {
         addPin(pins.size(), pin);
         return pin;
     }
 
-    public Pin<? extends PinObject> addPin(int index, Pin<? extends PinObject> pin) {
+    public Pin<?> addPin(int index, Pin<?> pin) {
         if (pin == null) throw new RuntimeException("空的针脚");
-        for (Pin<? extends PinObject> oldPin : pins) {
+        for (Pin<?> oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的针脚");
         }
         pins.add(index, pin);
@@ -144,9 +121,9 @@ public class BaseAction implements Parcelable {
         return pin;
     }
 
-    public Pin<? extends PinObject> removePin(Pin<? extends PinObject> pin) {
+    public Pin<?> removePin(Pin<?> pin) {
         if (pin == null) return null;
-        for (Pin<? extends PinObject> oldPin : pins) {
+        for (Pin<?> oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) {
                 pins.remove(oldPin);
                 return oldPin;
@@ -155,15 +132,15 @@ public class BaseAction implements Parcelable {
         return null;
     }
 
-    public Pin<? extends PinObject> getPinById(String id) {
-        for (Pin<? extends PinObject> pin : pins) {
+    public Pin<?> getPinById(String id) {
+        for (Pin<?> pin : pins) {
             if (pin.getId().equals(id)) return pin;
         }
         return null;
     }
 
     // 获取针脚的值
-    protected PinObject getPinValue(WorldState worldState, Task task, Pin<? extends PinObject> pin) {
+    protected PinObject getPinValue(WorldState worldState, Task task, Pin<?> pin) {
         // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
         if (pin.getDirection() == PinDirection.OUT) {
             calculatePinValue(worldState, task, pin);
@@ -175,7 +152,7 @@ public class BaseAction implements Parcelable {
             for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
                 BaseAction action = task.getActionById(entry.getValue());
                 if (action == null) continue;
-                Pin<? extends PinObject> pinById = action.getPinById(entry.getKey());
+                Pin<?> pinById = action.getPinById(entry.getKey());
                 if (pinById == null) continue;
                 return action.getPinValue(worldState, task, pinById);
             }
@@ -186,7 +163,7 @@ public class BaseAction implements Parcelable {
         }
     }
 
-    public CharSequence getTitle() {
+    public String getTitle() {
         return title;
     }
 
@@ -198,31 +175,30 @@ public class BaseAction implements Parcelable {
         this.id = id;
     }
 
-    public CharSequence getDes() {
+    public String getDes() {
         return des;
     }
 
-    public void setDes(CharSequence des) {
+    public void setDes(String des) {
         this.des = des;
     }
 
-    public ArrayList<Pin<? extends PinObject>> getPins() {
+    public ArrayList<Pin<?>> getPins() {
         return pins;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
-        dest.writeString(cls);
-        dest.writeString(id);
-        dest.writeString(title == null ? null : title.toString());
-        dest.writeString(des == null ? null : des.toString());
-        dest.writeTypedList(pins);
-        dest.writeInt(x);
-        dest.writeInt(y);
+    public static class BaseActionDeserialize implements JsonDeserializer<BaseAction> {
+        @Override
+        public BaseAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            String cls = jsonObject.get("cls").getAsString();
+            try {
+                Class<?> aClass = Class.forName(cls);
+                Constructor<?> constructor = aClass.getConstructor(JsonObject.class);
+                return (BaseAction) constructor.newInstance(jsonObject);
+            } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 }
