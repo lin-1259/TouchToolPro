@@ -15,13 +15,13 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinValue;
 
 public class ValueConvertToString extends CalculateAction {
-    private transient final Pin<?> valuePin;
-    private transient final Pin<?> stringPin;
+    private transient final Pin valuePin;
+    private transient final Pin stringPin;
 
     public ValueConvertToString(Context context) {
         super(context, R.string.action_value_convert_string_title);
-        valuePin = addPin(new Pin<>(new PinValue(), context.getString(R.string.action_value_convert_string_subtitle_value)));
-        stringPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_value_convert_string_subtitle_string), PinDirection.OUT, PinSlotType.MULTI));
+        valuePin = addPin(new Pin(new PinValue(), context.getString(R.string.action_value_convert_string_subtitle_value)));
+        stringPin = addPin(new Pin(new PinString(), context.getString(R.string.action_value_convert_string_subtitle_string), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ValueConvertToString(JsonObject jsonObject) {
@@ -31,7 +31,7 @@ public class ValueConvertToString extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinValue value = (PinValue) getPinValue(worldState, task, valuePin);
         PinString string = (PinString) stringPin.getValue();
         string.setValue(value.toString());

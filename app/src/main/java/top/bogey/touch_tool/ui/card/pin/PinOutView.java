@@ -13,8 +13,8 @@ import top.bogey.touch_tool.databinding.PinOutBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
-public class PinOutView<P extends PinObject, A extends BaseAction> extends PinBaseView<PinOutBinding, P, A> {
-    public PinOutView(@NonNull Context context, BaseCard<A> card, Pin<P> pin) {
+public class PinOutView extends PinBaseView<PinOutBinding> {
+    public PinOutView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, PinOutBinding.class, card, pin);
 
         if (PinAdd.class.equals(pin.getPinClass())) {

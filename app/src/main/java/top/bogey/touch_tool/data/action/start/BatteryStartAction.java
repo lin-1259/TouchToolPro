@@ -12,12 +12,12 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class BatteryStartAction extends StartAction {
-    private transient final Pin<?> areaPin;
+    private transient final Pin areaPin;
     private transient boolean inRange = false;
 
     public BatteryStartAction(Context context) {
         super(context, R.string.action_battery_start_title);
-        areaPin = addPin(new Pin<>(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_start_subtitle_battery)));
+        areaPin = addPin(new Pin(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_start_subtitle_battery)));
     }
 
     public BatteryStartAction(JsonObject jsonObject) {

@@ -20,15 +20,15 @@ import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 
 public class ImageStateAction extends StateAction {
-    private transient final Pin<?> imagePin;
-    private transient final Pin<?> similarPin;
-    private transient final Pin<?> posPin;
+    private transient final Pin imagePin;
+    private transient final Pin similarPin;
+    private transient final Pin posPin;
 
     public ImageStateAction(Context context) {
         super(context, R.string.action_image_state_title);
-        imagePin = addPin(new Pin<>(new PinImage(), context.getString(R.string.action_image_state_subtitle_image)));
-        similarPin = addPin(new Pin<>(new PinInteger(85), context.getString(R.string.action_image_state_subtitle_similar)));
-        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        imagePin = addPin(new Pin(new PinImage(), context.getString(R.string.action_image_state_subtitle_image)));
+        similarPin = addPin(new Pin(new PinInteger(85), context.getString(R.string.action_image_state_subtitle_similar)));
+        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ImageStateAction(JsonObject jsonObject) {
@@ -39,7 +39,7 @@ public class ImageStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         if (!pin.getId().equals(statePin.getId())) return;
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();

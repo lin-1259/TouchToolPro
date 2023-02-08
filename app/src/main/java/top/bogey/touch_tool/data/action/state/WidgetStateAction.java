@@ -21,13 +21,13 @@ import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 
 public class WidgetStateAction extends StateAction {
-    private transient final Pin<?> widgetPin;
-    private transient final Pin<?> posPin;
+    private transient final Pin widgetPin;
+    private transient final Pin posPin;
 
     public WidgetStateAction(Context context) {
         super(context, R.string.action_widget_state_title);
-        widgetPin = addPin(new Pin<>(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget), PinSubType.ID));
-        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        widgetPin = addPin(new Pin(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget), PinSubType.ID));
+        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public WidgetStateAction(JsonObject jsonObject) {
@@ -37,7 +37,7 @@ public class WidgetStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         AccessibilityNodeInfo root = service.getRootInActiveWindow();

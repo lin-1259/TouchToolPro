@@ -20,11 +20,11 @@ import top.bogey.touch_tool.ui.app.AppView;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class OpenAppAction extends NormalAction {
-    private transient final Pin<?> appPin;
+    private transient final Pin appPin;
 
     public OpenAppAction(Context context) {
         super(context, R.string.action_open_app_action_title);
-        appPin = addPin(new Pin<>(new PinSelectApp(AppView.SINGLE_WITH_ACTIVITY_MODE)));
+        appPin = addPin(new Pin(new PinSelectApp(AppView.SINGLE_WITH_ACTIVITY_MODE)));
     }
 
     public OpenAppAction(JsonObject jsonObject) {
@@ -33,7 +33,7 @@ public class OpenAppAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinSelectApp app = (PinSelectApp) getPinValue(worldState, runnable.getTask(), appPin);
         MainAccessibilityService service = MainApplication.getService();
         LinkedHashMap<String, ArrayList<String>> packages = app.getPackages();

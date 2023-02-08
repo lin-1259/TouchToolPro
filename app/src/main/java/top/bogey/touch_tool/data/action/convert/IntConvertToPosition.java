@@ -15,15 +15,15 @@ import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 
 public class IntConvertToPosition extends CalculateAction {
-    private transient final Pin<?> xPin;
-    private transient final Pin<?> yPin;
-    private transient final Pin<?> posPin;
+    private transient final Pin xPin;
+    private transient final Pin yPin;
+    private transient final Pin posPin;
 
     public IntConvertToPosition(Context context) {
         super(context, R.string.action_int_convert_position_title);
-        xPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_x)));
-        yPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_y)));
-        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_int_convert_position_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        xPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_x)));
+        yPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_y)));
+        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_int_convert_position_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public IntConvertToPosition(JsonObject jsonObject) {
@@ -34,7 +34,7 @@ public class IntConvertToPosition extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinInteger x = (PinInteger) getPinValue(worldState, task, xPin);
         PinInteger y = (PinInteger) getPinValue(worldState, task, yPin);
         PinPoint pos = (PinPoint) posPin.getValue();

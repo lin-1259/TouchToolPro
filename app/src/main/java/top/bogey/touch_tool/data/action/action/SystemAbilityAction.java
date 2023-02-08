@@ -18,11 +18,11 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class SystemAbilityAction extends NormalAction {
-    private transient final Pin<?> abilityPin;
+    private transient final Pin abilityPin;
 
     public SystemAbilityAction(Context context) {
         super(context, R.string.action_system_ability_action_title);
-        abilityPin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.system_ability))));
+        abilityPin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.system_ability))));
     }
 
     public SystemAbilityAction(JsonObject jsonObject) {
@@ -31,7 +31,7 @@ public class SystemAbilityAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinSpinner ability = (PinSpinner) getPinValue(worldState, runnable.getTask(), abilityPin);
         MainAccessibilityService service = MainApplication.getService();
         switch (ability.getIndex()) {

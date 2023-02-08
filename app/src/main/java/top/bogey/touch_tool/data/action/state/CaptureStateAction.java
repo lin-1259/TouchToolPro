@@ -24,7 +24,7 @@ public class CaptureStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         value.setValue(service.isCaptureEnabled());

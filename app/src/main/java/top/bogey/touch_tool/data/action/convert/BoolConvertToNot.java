@@ -14,13 +14,13 @@ import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class BoolConvertToNot extends CalculateAction {
-    private transient final Pin<?> outConditionPin;
-    private transient final Pin<?> conditionPin;
+    private transient final Pin outConditionPin;
+    private transient final Pin conditionPin;
 
     public BoolConvertToNot(Context context) {
         super(context, R.string.action_bool_convert_not_title);
-        outConditionPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
-        conditionPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
+        outConditionPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
+        conditionPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
     }
 
     public BoolConvertToNot(JsonObject jsonObject) {
@@ -30,7 +30,7 @@ public class BoolConvertToNot extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) outConditionPin.getValue();
         PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, conditionPin);
         value.setValue(!resultPin.getValue());

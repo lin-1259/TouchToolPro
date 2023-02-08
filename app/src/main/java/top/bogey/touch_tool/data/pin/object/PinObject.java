@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -27,6 +29,12 @@ public class PinObject {
         cls = jsonObject.get("cls").getAsString();
     }
 
+    public PinObject copy() {
+        Gson gson = new GsonBuilder().registerTypeAdapter(PinObject.class, new PinObjectDeserializer()).create();
+        String json = gson.toJson(this);
+        return gson.fromJson(json, PinObject.class);
+    }
+
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimaryInverse, 0);
     }
@@ -42,7 +50,6 @@ public class PinObject {
     }
 
     public static class PinObjectDeserializer implements JsonDeserializer<PinObject> {
-
         @Override
         public PinObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();

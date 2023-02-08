@@ -15,11 +15,11 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class ScreenStateAction extends StateAction {
-    private transient final Pin<?> screenStatePin;
+    private transient final Pin screenStatePin;
 
     public ScreenStateAction(Context context) {
         super(context, R.string.action_screen_state_title);
-        screenStatePin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.screen_state)), context.getString(R.string.action_screen_state_subtitle_state)));
+        screenStatePin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.screen_state)), context.getString(R.string.action_screen_state_subtitle_state)));
     }
 
     public ScreenStateAction(JsonObject jsonObject) {
@@ -28,7 +28,7 @@ public class ScreenStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         ScreenState state = AppUtils.getScreenState(MainApplication.getService());
         int screenState = ((PinSpinner) getPinValue(worldState, task, screenStatePin)).getIndex();

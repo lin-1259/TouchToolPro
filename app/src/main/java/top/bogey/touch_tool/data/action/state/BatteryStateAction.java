@@ -13,11 +13,11 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class BatteryStateAction extends StateAction {
-    private transient final Pin<?> areaPin;
+    private transient final Pin areaPin;
 
     public BatteryStateAction(Context context) {
         super(context, R.string.action_battery_state_title);
-        areaPin = addPin(new Pin<>(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_state_subtitle_battery)));
+        areaPin = addPin(new Pin(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_state_subtitle_battery)));
     }
 
     public BatteryStateAction(JsonObject jsonObject) {
@@ -26,7 +26,7 @@ public class BatteryStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
 
         int batteryPercent = worldState.getBatteryPercent();

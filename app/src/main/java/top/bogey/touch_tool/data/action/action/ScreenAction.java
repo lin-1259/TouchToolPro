@@ -18,11 +18,11 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class ScreenAction extends NormalAction {
-    private transient final Pin<?> screenPin;
+    private transient final Pin screenPin;
 
     public ScreenAction(Context context) {
         super(context, R.string.action_screen_action_title);
-        screenPin = addPin(new Pin<>(new PinBoolean(true), context.getString(R.string.action_screen_action_subtitle_state)));
+        screenPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_screen_action_subtitle_state)));
     }
 
     public ScreenAction(JsonObject jsonObject) {
@@ -31,7 +31,7 @@ public class ScreenAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinBoolean state = (PinBoolean) getPinValue(worldState, runnable.getTask(), screenPin);
         MainAccessibilityService service = MainApplication.getService();
         if (state.getValue()) {

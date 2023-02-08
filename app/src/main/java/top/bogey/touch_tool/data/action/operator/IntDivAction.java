@@ -16,9 +16,9 @@ import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class IntDivAction extends CalculateAction {
-    protected transient final Pin<?> outValuePin;
-    protected transient final Pin<?> originPin;
-    protected transient final Pin<?> secondPin;
+    protected transient final Pin outValuePin;
+    protected transient final Pin originPin;
+    protected transient final Pin secondPin;
 
     public IntDivAction(Context context) {
         this(context, R.string.action_int_div_operator_title);
@@ -26,9 +26,9 @@ public class IntDivAction extends CalculateAction {
 
     public IntDivAction(Context context, @StringRes int titleId) {
         super(context, titleId);
-        outValuePin = addPin(new Pin<>(new PinInteger(), PinDirection.OUT, PinSlotType.MULTI));
-        originPin = addPin(new Pin<>(new PinInteger()));
-        secondPin = addPin(new Pin<>(new PinInteger()));
+        outValuePin = addPin(new Pin(new PinInteger(), PinDirection.OUT, PinSlotType.MULTI));
+        originPin = addPin(new Pin(new PinInteger()));
+        secondPin = addPin(new Pin(new PinInteger()));
     }
 
     public IntDivAction(JsonObject jsonObject) {
@@ -39,7 +39,7 @@ public class IntDivAction extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 

@@ -16,13 +16,13 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class LogAction extends NormalAction {
-    private transient final Pin<?> textPin;
-    private transient final Pin<?> toastPin;
+    private transient final Pin textPin;
+    private transient final Pin toastPin;
 
     public LogAction(Context context) {
         super(context, R.string.action_log_action_title);
-        textPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_log_action_subtitle_tips)));
-        toastPin = addPin(new Pin<>(new PinBoolean(true), context.getString(R.string.action_log_action_subtitle_toast)));
+        textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_log_action_subtitle_tips)));
+        toastPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_log_action_subtitle_toast)));
     }
 
     public LogAction(JsonObject jsonObject) {
@@ -32,7 +32,7 @@ public class LogAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
 
         MainAccessibilityService service = MainApplication.getService();

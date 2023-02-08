@@ -18,11 +18,11 @@ import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class ManualStartAction extends StartAction {
-    private transient final Pin<?> appPin;
+    private transient final Pin appPin;
 
     public ManualStartAction(Context context) {
         super(context, R.string.action_manual_start_title);
-        appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
+        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
     }
 
     public ManualStartAction(JsonObject jsonObject) {

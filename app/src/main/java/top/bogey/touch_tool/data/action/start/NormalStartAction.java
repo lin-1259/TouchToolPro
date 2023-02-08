@@ -13,11 +13,11 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class NormalStartAction extends StartAction {
-    private transient final Pin<?> startPin;
+    private transient final Pin startPin;
 
     public NormalStartAction(Context context) {
         super(context, R.string.action_normal_start_title);
-        startPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_normal_start_subtitle_condition)));
+        startPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_normal_start_subtitle_condition)));
     }
 
     public NormalStartAction(JsonObject jsonObject) {

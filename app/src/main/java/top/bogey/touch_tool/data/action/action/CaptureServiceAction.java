@@ -14,11 +14,11 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class CaptureServiceAction extends NormalAction {
-    private transient final Pin<?> statePin;
+    private transient final Pin statePin;
 
     public CaptureServiceAction(Context context) {
         super(context, R.string.action_open_capture_action_title);
-        statePin = addPin(new Pin<>(new PinBoolean(true), context.getString(R.string.action_open_capture_subtitle_state)));
+        statePin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_open_capture_subtitle_state)));
     }
 
     public CaptureServiceAction(JsonObject jsonObject) {
@@ -27,7 +27,7 @@ public class CaptureServiceAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinBoolean state = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         if (state.getValue()) {

@@ -144,8 +144,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     private ArrayList<PinPath.TouchPath> getGravityPaths() {
         Point gravityPoint = getScreenGravityPoint();
         ArrayList<PinPath.TouchPath> paths = new ArrayList<>();
-        for (PinPath.TouchPath path : this.paths) {
-            PinPath.TouchPath touchPath = AppUtils.copy(path);
+        for (PinPath.TouchPath touchPath : this.paths) {
             touchPath.offset(-gravityPoint.x, -gravityPoint.y);
             if (isChanged) touchPath.setPoints(DouglasPeucker.compress(touchPath.getPoints()));
             paths.add(touchPath);

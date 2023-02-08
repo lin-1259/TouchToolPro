@@ -28,7 +28,6 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
-import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -44,13 +43,13 @@ public class CardLayoutView extends FrameLayout {
     private final Paint linePaint;
     private final int[] location = new int[2];
 
-    private final HashMap<String, BaseCard<? extends BaseAction>> cardMap = new LinkedHashMap<>();
+    private final HashMap<String, BaseCard<?>> cardMap = new LinkedHashMap<>();
 
     private Task task;
 
     private int dragState = DRAG_NONE;
     private final HashMap<String, String> dragLinks = new HashMap<>();
-    private BaseCard<? extends BaseAction> dragCard = null;
+    private BaseCard<?> dragCard = null;
     private PinBaseView<?> dragPin = null;
     private float dragX = 0;
     private float dragY = 0;
@@ -100,7 +99,7 @@ public class CardLayoutView extends FrameLayout {
         cardMap.clear();
         removeAllViews();
         for (BaseAction action : task.getActions()) {
-            BaseCard<? extends BaseAction> card = new BaseCard<>(getContext(), task, action);
+            BaseCard<?> card = new BaseCard<>(getContext(), task, action);
             setCardPosition(card);
             addView(card);
             cardMap.put(action.getId(), card);
@@ -109,30 +108,29 @@ public class CardLayoutView extends FrameLayout {
 
     public void addAction(BaseAction action) {
         task.addAction(action);
-        BaseCard<? extends BaseAction> card = new BaseCard<>(getContext(), task, action);
+        BaseCard<?> card = new BaseCard<>(getContext(), task, action);
         setCardPosition(card);
         addView(card);
         cardMap.put(action.getId(), card);
     }
 
-    public void addAction(Class<? extends BaseAction> actionClass) {
+    public void addAction(Class<?> actionClass) {
         try {
-            Constructor<? extends BaseAction> constructor = actionClass.getConstructor(Context.class);
-            BaseAction action = constructor.newInstance(getContext());
+            Constructor<?> constructor = actionClass.getConstructor(Context.class);
+            BaseAction action = (BaseAction) constructor.newInstance(getContext());
             action.x = (int) (-offsetX / gridSize) + 1;
             action.y = (int) (-offsetY / gridSize) + 1;
             addAction(action);
-        } catch (NoSuchMethodException | InvocationTargetException |
-                 IllegalAccessException | InstantiationException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void removeAction(BaseAction action) {
         task.removeAction(action);
-        BaseCard<? extends BaseAction> card = cardMap.remove(action.getId());
+        BaseCard<?> card = cardMap.remove(action.getId());
         if (card == null) return;
-        for (Pin<? extends PinObject> pin : action.getPins()) {
+        for (Pin pin : action.getPins()) {
             linksRemovePin(pin.getLinks(), card.getPinById(pin.getId()));
         }
 
@@ -140,12 +138,12 @@ public class CardLayoutView extends FrameLayout {
     }
 
     private void setCardsPosition() {
-        for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
+        for (BaseCard<?> baseCard : cardMap.values()) {
             setCardPosition(baseCard);
         }
     }
 
-    private void setCardPosition(BaseCard<? extends BaseAction> card) {
+    private void setCardPosition(BaseCard<?> card) {
         BaseAction action = card.getAction();
         card.setScaleX(scale);
         card.setScaleY(scale);
@@ -156,11 +154,11 @@ public class CardLayoutView extends FrameLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         // 所有连接的线
-        for (BaseCard<? extends BaseAction> card : cardMap.values()) {
+        for (BaseCard<?> card : cardMap.values()) {
             BaseAction action = card.getAction();
-            for (Pin<?> pin : action.getPins()) {
+            for (Pin pin : action.getPins()) {
                 for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
-                    BaseCard<? extends BaseAction> baseCard = cardMap.get(entry.getValue());
+                    BaseCard<?> baseCard = cardMap.get(entry.getValue());
                     if (baseCard == null) continue;
                     PinBaseView<?> pinBaseView = baseCard.getPinById(entry.getKey());
                     if (pinBaseView == null) continue;
@@ -175,7 +173,7 @@ public class CardLayoutView extends FrameLayout {
 
         if (dragState == DRAG_PIN) {
             for (Map.Entry<String, String> entry : dragLinks.entrySet()) {
-                BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
+                BaseCard<?> card = cardMap.get(entry.getValue());
                 if (card == null) continue;
                 PinBaseView<?> pinBaseView = card.getPinById(entry.getKey());
                 if (pinBaseView == null) continue;
@@ -260,9 +258,9 @@ public class CardLayoutView extends FrameLayout {
         float rawY = event.getRawY();
         int actionMasked = event.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
-            ArrayList<BaseCard<? extends BaseAction>> baseCards = new ArrayList<>(cardMap.values());
+            ArrayList<BaseCard<?>> baseCards = new ArrayList<>(cardMap.values());
             for (int i = baseCards.size() - 1; i >= 0; i--) {
-                BaseCard<? extends BaseAction> card = baseCards.get(i);
+                BaseCard<?> card = baseCards.get(i);
                 int[] location = new int[2];
                 card.getLocationOnScreen(location);
                 if (new Rect(location[0], location[1], location[0] + (int) (card.getWidth() * scale), location[1] + (int) (card.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
@@ -270,7 +268,7 @@ public class CardLayoutView extends FrameLayout {
                     dragCard = card;
                     PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
                     if (pinBaseView != null) {
-                        Pin<?> pin = pinBaseView.getPin();
+                        Pin pin = pinBaseView.getPin();
                         if (pin.getSlotType() != PinSlotType.EMPTY) {
                             dragState = DRAG_PIN;
                             HashMap<String, String> links = pin.getLinks();
@@ -304,7 +302,7 @@ public class CardLayoutView extends FrameLayout {
             if (dragState == DRAG_PIN) {
                 boolean flag = true;
                 // 看是否放到针脚上了
-                for (BaseCard<? extends BaseAction> baseCard : cardMap.values()) {
+                for (BaseCard<?> baseCard : cardMap.values()) {
                     int[] location = new int[2];
                     baseCard.getLocationOnScreen(location);
                     if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
@@ -377,13 +375,13 @@ public class CardLayoutView extends FrameLayout {
     }
 
     private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
-        Pin<?> pin = pinBaseView.getPin();
+        Pin pin = pinBaseView.getPin();
         boolean flag = true;
         // 先判断一下针脚是否匹配
         for (Map.Entry<String, String> entry : links.entrySet()) {
             BaseAction action = task.getActionById(entry.getValue());
             if (action == null) continue;
-            Pin<?> linkPin = action.getPinById(entry.getKey());
+            Pin linkPin = action.getPinById(entry.getKey());
             if (!pin.getPinClass().isAssignableFrom(linkPin.getPinClass())) {
                 flag = false;
                 break;
@@ -397,7 +395,7 @@ public class CardLayoutView extends FrameLayout {
 
         if (flag) {
             for (Map.Entry<String, String> entry : links.entrySet()) {
-                BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
+                BaseCard<?> card = cardMap.get(entry.getValue());
                 if (card == null) continue;
                 PinBaseView<?> cardPin = card.getPinById(entry.getKey());
                 if (cardPin == null) continue;
@@ -413,7 +411,7 @@ public class CardLayoutView extends FrameLayout {
 
     public void linksRemovePin(HashMap<String, String> links, PinBaseView<?> pinBaseView) {
         for (Map.Entry<String, String> entry : links.entrySet()) {
-            BaseCard<? extends BaseAction> card = cardMap.get(entry.getValue());
+            BaseCard<?> card = cardMap.get(entry.getValue());
             if (card == null) continue;
             PinBaseView<?> cardPin = card.getPinById(entry.getKey());
             if (cardPin == null) continue;

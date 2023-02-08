@@ -17,38 +17,38 @@ import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class StringAddAction extends CalculateAction {
-    private transient final Pin<?> outValuePin;
-    private transient final Pin<?> firstPin;
+    private transient final Pin outValuePin;
+    private transient final Pin firstPin;
 
     public StringAddAction(Context context) {
         super(context, R.string.action_string_add_operator_title);
-        outValuePin = addPin(new Pin<>(new PinString(), PinDirection.OUT, PinSlotType.MULTI));
-        firstPin = addPin(new Pin<>(new PinString()));
-        addPin(new Pin<>(new PinString()));
-        Pin<PinString> executePin = new Pin<>(new PinString());
-        addPin(new Pin<>(new PinAdd<>(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
+        outValuePin = addPin(new Pin(new PinString(), PinDirection.OUT, PinSlotType.MULTI));
+        firstPin = addPin(new Pin(new PinString()));
+        addPin(new Pin(new PinString()));
+        Pin executePin = new Pin(new PinString());
+        addPin(new Pin(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
     }
 
     public StringAddAction(JsonObject jsonObject) {
         super(jsonObject);
         outValuePin = addPin(tmpPins.remove(0));
         firstPin = addPin(tmpPins.remove(0));
-        for (Pin<?> pin : tmpPins) {
+        for (Pin pin : tmpPins) {
             addPin(pin);
         }
         tmpPins.clear();
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinString value = (PinString) outValuePin.getValue();
 
-        ArrayList<Pin<?>> pins = getPins();
+        ArrayList<Pin> pins = getPins();
         int i = pins.indexOf(firstPin);
         StringBuilder builder = new StringBuilder();
         for (; i < pins.size() - 1; i++) {
-            Pin<?> pinObject = pins.get(i);
+            Pin pinObject = pins.get(i);
             PinString result = (PinString) getPinValue(worldState, task, pinObject);
             builder.append(result.getValue());
         }

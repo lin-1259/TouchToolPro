@@ -16,7 +16,7 @@ public class PinValueArea extends PinValue {
 
     public PinValueArea(int valueFrom, int valueTo, int step) {
         super();
-        if ((valueTo - valueFrom) * 1f / step != 0) throw new RuntimeException("步长有问题");
+        if ((valueTo - valueFrom) * 1f % step != 0) throw new RuntimeException("步长有问题");
         this.valueFrom = valueFrom;
         currMin = valueFrom;
         this.valueTo = valueTo;

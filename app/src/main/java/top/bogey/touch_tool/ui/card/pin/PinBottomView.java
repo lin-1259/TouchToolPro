@@ -14,8 +14,8 @@ import top.bogey.touch_tool.databinding.PinBottomBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
 
 @SuppressLint("ViewConstructor")
-public class PinBottomView<P extends PinObject, A extends BaseAction> extends PinBaseView<PinBottomBinding, P, A> {
-    public PinBottomView(@NonNull Context context, BaseCard<A> card, Pin<P> pin) {
+public class PinBottomView extends PinBaseView<PinBottomBinding> {
+    public PinBottomView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, PinBottomBinding.class, card, pin);
 
         if (PinAdd.class.equals(pin.getPinClass())) {

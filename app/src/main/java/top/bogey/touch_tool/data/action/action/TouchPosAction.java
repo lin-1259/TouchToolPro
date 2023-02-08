@@ -16,15 +16,15 @@ import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class TouchPosAction extends NormalAction {
-    private transient final Pin<?> posPin;
-    private transient final Pin<?> timePin;
-    private transient final Pin<?> offsetPin;
+    private transient final Pin posPin;
+    private transient final Pin timePin;
+    private transient final Pin offsetPin;
 
     public TouchPosAction(Context context) {
         super(context, R.string.action_touch_pos_action_title);
-        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_touch_pos_action_subtitle_position)));
-        timePin = addPin(new Pin<>(new PinValueArea(100, 60000, 100, 100, 100), context.getString(R.string.action_touch_pos_action_subtitle_time)));
-        offsetPin = addPin(new Pin<>(new PinBoolean(), context.getString(R.string.action_touch_pos_action_subtitle_offset)));
+        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_touch_pos_action_subtitle_position)));
+        timePin = addPin(new Pin(new PinValueArea(100, 60000, 100, 100, 100), context.getString(R.string.action_touch_pos_action_subtitle_time)));
+        offsetPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_touch_pos_action_subtitle_offset)));
     }
 
     public TouchPosAction(JsonObject jsonObject) {
@@ -35,7 +35,7 @@ public class TouchPosAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinPoint pos = (PinPoint) getPinValue(worldState, runnable.getTask(), posPin);
         PinValueArea timeArea = (PinValueArea) getPinValue(worldState, runnable.getTask(), timePin);
         PinBoolean offset = (PinBoolean) getPinValue(worldState, runnable.getTask(), offsetPin);

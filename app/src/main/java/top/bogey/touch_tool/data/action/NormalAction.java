@@ -13,13 +13,13 @@ import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 
 public class NormalAction extends BaseAction {
-    protected transient final Pin<?> inPin;
-    protected transient final Pin<?> outPin;
+    protected transient final Pin inPin;
+    protected transient final Pin outPin;
 
     public NormalAction(Context context, @StringRes int titleId) {
         super(context, titleId);
-        inPin = addPin(new Pin<>(new PinExecute(), PinSlotType.MULTI));
-        outPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
+        inPin = addPin(new Pin(new PinExecute(), PinSlotType.MULTI));
+        outPin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
     }
 
     public NormalAction(JsonObject jsonObject) {

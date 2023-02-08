@@ -29,14 +29,13 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
         FloatPickerImagePreviewBinding binding = FloatPickerImagePreviewBinding.inflate(LayoutInflater.from(context), this, true);
 
         if (isImage) {
-            PinImage image = (PinImage) pinValue;
-            pinImage = new PinImage(context, image.getScaleBitmap(context), image.getArea(context));
+            pinImage = (PinImage) pinValue.copy();
             binding.current.setImageBitmap(pinImage.getBitmap());
             binding.title.setText(R.string.picker_image_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_image);
             binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show());
         } else {
-            pinColor = new PinColor((PinColor) pinValue);
+            pinColor = (PinColor) pinValue.copy();
             binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor()));
             binding.title.setText(R.string.picker_color_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_color);

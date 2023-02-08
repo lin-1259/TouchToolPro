@@ -13,11 +13,11 @@ import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class StateAction extends CalculateAction {
-    protected transient final Pin<?> statePin;
+    protected transient final Pin statePin;
 
     public StateAction(Context context, @StringRes int titleId) {
         super(context, titleId);
-        statePin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
+        statePin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public StateAction(JsonObject jsonObject) {

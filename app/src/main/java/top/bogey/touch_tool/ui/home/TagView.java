@@ -1,7 +1,6 @@
 package top.bogey.touch_tool.ui.home;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskTabBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.SettingSave;

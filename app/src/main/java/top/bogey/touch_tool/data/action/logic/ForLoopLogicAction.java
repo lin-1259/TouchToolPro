@@ -15,20 +15,20 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class ForLoopLogicAction extends NormalAction {
-    private transient final Pin<?> startPin;
-    private transient final Pin<?> endPin;
-    private transient final Pin<?> currentPin;
-    private transient final Pin<?> completePin;
+    private transient final Pin startPin;
+    private transient final Pin endPin;
+    private transient final Pin currentPin;
+    private transient final Pin completePin;
 
     private transient boolean needBreak = false;
 
     public ForLoopLogicAction(Context context) {
         super(context, R.string.action_for_loop_logic_title);
-        startPin = addPin(new Pin<>(new PinInteger(1), context.getString(R.string.action_for_loop_logic_subtitle_start)));
-        endPin = addPin(new Pin<>(new PinInteger(5), context.getString(R.string.action_for_loop_logic_subtitle_end)));
-        currentPin = addPin(new Pin<>(new PinInteger(), context.getString(R.string.action_for_loop_logic_subtitle_curr), PinDirection.OUT, PinSlotType.MULTI));
-        completePin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_complete), PinDirection.OUT));
-        addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_break)));
+        startPin = addPin(new Pin(new PinInteger(1), context.getString(R.string.action_for_loop_logic_subtitle_start)));
+        endPin = addPin(new Pin(new PinInteger(5), context.getString(R.string.action_for_loop_logic_subtitle_end)));
+        currentPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_for_loop_logic_subtitle_curr), PinDirection.OUT, PinSlotType.MULTI));
+        completePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_complete), PinDirection.OUT));
+        addPin(new Pin(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_break)));
     }
 
     public ForLoopLogicAction(JsonObject jsonObject) {
@@ -41,7 +41,7 @@ public class ForLoopLogicAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         if (pin.getId().equals(inPin.getId())) {
             needBreak = false;
             PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);

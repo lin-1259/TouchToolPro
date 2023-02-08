@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -31,12 +33,12 @@ public class BaseAction {
     private final String title;
     private String des;
 
-    private final ArrayList<Pin<?>> pins = new ArrayList<>();
+    private final ArrayList<Pin> pins = new ArrayList<>();
 
     public int x;
     public int y;
 
-    protected transient final ArrayList<Pin<?>> tmpPins = new ArrayList<>();
+    protected transient final ArrayList<Pin> tmpPins = new ArrayList<>();
 
     public BaseAction(Context context) {
         this(context, 0);
@@ -53,18 +55,20 @@ public class BaseAction {
         cls = getClass().getName();
         id = jsonObject.get("id").getAsString();
         title = jsonObject.get("title").getAsString();
-        des = jsonObject.get("des").getAsString();
+        JsonElement element = jsonObject.get("des");
+        if (element != null) des = element.getAsString();
         x = jsonObject.get("x").getAsInt();
         y = jsonObject.get("y").getAsInt();
-        Pin.PinDeserializer<? extends PinObject> pinDeserializer = new Pin.PinDeserializer<>();
         for (JsonElement jsonElement : jsonObject.get("pins").getAsJsonArray()) {
-            Pin<?> pin = pinDeserializer.deserialize(jsonElement, null, null);
+            Pin pin = new Pin(jsonElement.getAsJsonObject());
             tmpPins.add(pin);
         }
     }
 
     public BaseAction copy() {
-        BaseAction copy = AppUtils.copy(new BaseActionDeserialize(), this, getClass());
+        Gson gson = new GsonBuilder().registerTypeAdapter(BaseAction.class, new BaseActionDeserialize()).create();
+        String json = gson.toJson(this);
+        BaseAction copy = gson.fromJson(json, BaseAction.class);
         copy.setId(UUID.randomUUID().toString());
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());
@@ -79,14 +83,14 @@ public class BaseAction {
     public void doAction(WorldState worldState, TaskRunnable runnable) {
     }
 
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         if (runnable.isInterrupt()) return;
         if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行针脚不正确");
 
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getValue());
             if (action == null) continue;
-            Pin<?> pinById = action.getPinById(entry.getKey());
+            Pin pinById = action.getPinById(entry.getKey());
             if (pinById == null) continue;
             runnable.addProgress();
             action.doAction(worldState, runnable, pinById);
@@ -95,7 +99,7 @@ public class BaseAction {
     }
 
     // 获取针脚值之前先计算下针脚
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
     }
 
     protected void sleep(long time) {
@@ -106,14 +110,14 @@ public class BaseAction {
         }
     }
 
-    public Pin<?> addPin(Pin<?> pin) {
+    public Pin addPin(Pin pin) {
         addPin(pins.size(), pin);
         return pin;
     }
 
-    public Pin<?> addPin(int index, Pin<?> pin) {
+    public Pin addPin(int index, Pin pin) {
         if (pin == null) throw new RuntimeException("空的针脚");
-        for (Pin<?> oldPin : pins) {
+        for (Pin oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) throw new RuntimeException("重复的针脚");
         }
         pins.add(index, pin);
@@ -121,9 +125,9 @@ public class BaseAction {
         return pin;
     }
 
-    public Pin<?> removePin(Pin<?> pin) {
+    public Pin removePin(Pin pin) {
         if (pin == null) return null;
-        for (Pin<?> oldPin : pins) {
+        for (Pin oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) {
                 pins.remove(oldPin);
                 return oldPin;
@@ -132,15 +136,15 @@ public class BaseAction {
         return null;
     }
 
-    public Pin<?> getPinById(String id) {
-        for (Pin<?> pin : pins) {
+    public Pin getPinById(String id) {
+        for (Pin pin : pins) {
             if (pin.getId().equals(id)) return pin;
         }
         return null;
     }
 
     // 获取针脚的值
-    protected PinObject getPinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected PinObject getPinValue(WorldState worldState, Task task, Pin pin) {
         // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
         if (pin.getDirection() == PinDirection.OUT) {
             calculatePinValue(worldState, task, pin);
@@ -152,7 +156,7 @@ public class BaseAction {
             for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
                 BaseAction action = task.getActionById(entry.getValue());
                 if (action == null) continue;
-                Pin<?> pinById = action.getPinById(entry.getKey());
+                Pin pinById = action.getPinById(entry.getKey());
                 if (pinById == null) continue;
                 return action.getPinValue(worldState, task, pinById);
             }
@@ -183,7 +187,7 @@ public class BaseAction {
         this.des = des;
     }
 
-    public ArrayList<Pin<?>> getPins() {
+    public ArrayList<Pin> getPins() {
         return pins;
     }
 

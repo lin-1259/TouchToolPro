@@ -3,7 +3,6 @@ package top.bogey.touch_tool.ui.home;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Parcel;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -211,10 +210,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         String fileName = String.format("%s_%s %s.ttp", context.getString(R.string.app_name), AppUtils.formatDateLocalDate(context, System.currentTimeMillis()), AppUtils.formatDateLocalTime(context, System.currentTimeMillis()));
 
         try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
-            Parcel parcel = Parcel.obtain();
-            parcel.writeTypedList(new ArrayList<>(selectTasks.values()));
-            fileOutputStream.write(parcel.marshall());
-            parcel.recycle();
+            String json = TaskRepository.getInstance().getGson().toJson(new ArrayList<>(selectTasks.values()));
+            fileOutputStream.write(json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }

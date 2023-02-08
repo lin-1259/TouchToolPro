@@ -15,15 +15,15 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class ConditionWhileLogicAction extends NormalAction {
-    private transient final Pin<?> conditionPin;
-    private transient final Pin<?> timeOutPin;
-    private transient final Pin<?> endPin;
+    private transient final Pin conditionPin;
+    private transient final Pin timeOutPin;
+    private transient final Pin endPin;
 
     public ConditionWhileLogicAction(Context context) {
         super(context, R.string.action_condition_while_logic_title);
-        conditionPin = addPin(new Pin<>(new PinBoolean(false), context.getString(R.string.action_condition_while_logic_subtitle_condition)));
-        timeOutPin = addPin(new Pin<>(new PinInteger(5000), context.getString(R.string.action_condition_while_logic_subtitle_timeout)));
-        endPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_condition_while_logic_subtitle_end), PinDirection.OUT));
+        conditionPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_condition_while_logic_subtitle_condition)));
+        timeOutPin = addPin(new Pin(new PinInteger(5000), context.getString(R.string.action_condition_while_logic_subtitle_timeout)));
+        endPin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_condition_while_logic_subtitle_end), PinDirection.OUT));
     }
 
     public ConditionWhileLogicAction(JsonObject jsonObject) {
@@ -34,7 +34,7 @@ public class ConditionWhileLogicAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
         PinInteger timeout = (PinInteger) getPinValue(worldState, runnable.getTask(), timeOutPin);
 

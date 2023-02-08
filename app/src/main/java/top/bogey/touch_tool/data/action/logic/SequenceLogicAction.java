@@ -19,22 +19,22 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 public class SequenceLogicAction extends NormalAction {
     public SequenceLogicAction(Context context) {
         super(context, R.string.action_sequence_logic_title);
-        addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT));
-        Pin<PinExecute> executePin = new Pin<>(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT);
-        addPin(new Pin<>(new PinAdd<>(executePin), context.getString(R.string.action_subtitle_add_pin), PinDirection.OUT, PinSlotType.EMPTY));
+        addPin(new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT));
+        Pin executePin = new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT);
+        addPin(new Pin(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinDirection.OUT, PinSlotType.EMPTY));
     }
 
     public SequenceLogicAction(JsonObject jsonObject) {
         super(jsonObject);
-        for (Pin<?> pin : tmpPins) {
+        for (Pin pin : tmpPins) {
             addPin(pin);
         }
         tmpPins.clear();
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
-        ArrayList<Pin<?>> pins = getPins();
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
+        ArrayList<Pin> pins = getPins();
         for (int i = pins.indexOf(outPin); i < pins.size() - 1; i++) {
             if (runnable.isInterrupt()) return;
             super.doAction(worldState, runnable, pins.get(i));

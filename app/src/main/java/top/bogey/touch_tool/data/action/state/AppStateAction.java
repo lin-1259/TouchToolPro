@@ -22,15 +22,15 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStateAction extends StateAction {
-    private transient final Pin<?> appPin;
-    private transient final Pin<?> packagePin;
-    private transient final Pin<?> activityPin;
+    private transient final Pin appPin;
+    private transient final Pin packagePin;
+    private transient final Pin activityPin;
 
     public AppStateAction(Context context) {
         super(context, R.string.action_app_state_title);
-        appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
-        packagePin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_app_state_subtitle_package), PinDirection.OUT, PinSlotType.MULTI));
-        activityPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_app_state_subtitle_activity), PinDirection.OUT, PinSlotType.MULTI));
+        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
+        packagePin = addPin(new Pin(new PinString(), context.getString(R.string.action_app_state_subtitle_package), PinDirection.OUT, PinSlotType.MULTI));
+        activityPin = addPin(new Pin(new PinString(), context.getString(R.string.action_app_state_subtitle_activity), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public AppStateAction(JsonObject jsonObject) {
@@ -41,7 +41,7 @@ public class AppStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         value.setValue(false);
         PinString pkg = (PinString) packagePin.getValue();

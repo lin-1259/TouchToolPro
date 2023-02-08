@@ -49,17 +49,17 @@ import top.bogey.touch_tool.ui.custom.BindingView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
-public class PinBaseView<V extends ViewBinding, P extends PinObject, A extends BaseAction> extends BindingView<V> {
+public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
     protected final LinearLayout pinSlotBox;
     protected final MaterialCardView pinSlot;
     protected final FrameLayout pinBox;
     protected final MaterialTextView titleText;
     protected final MaterialButton removeButton;
 
-    protected final A action;
-    protected final Pin<P> pin;
+    protected final BaseAction action;
+    protected final Pin pin;
 
-    public PinBaseView(@NonNull Context context, Class<V> tClass, BaseCard<A> card, Pin<P> pin) {
+    public PinBaseView(@NonNull Context context, Class<V> tClass, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, null, tClass);
         action = card.getAction();
         this.pin = pin;
@@ -113,21 +113,21 @@ public class PinBaseView<V extends ViewBinding, P extends PinObject, A extends B
         }
 
         if (PinAdd.class.equals(aClass)) {
-            pinBox.addView(new PinWidgetAdd<>(context, (PinAdd<?>) pin.getValue(), card));
+            pinBox.addView(new PinWidgetAdd(context, (PinAdd) pin.getValue(), card));
         }
     }
 
-    public Pin<P> getPin() {
+    public Pin getPin() {
         return pin;
     }
 
-    public HashMap<String, String> addLink(Pin<P> pin) {
+    public HashMap<String, String> addLink(Pin pin) {
         HashMap<String, String> removedLinkMap = this.pin.addLink(pin);
         refreshPinUI();
         return removedLinkMap;
     }
 
-    public void removeLink(Pin<P> pin) {
+    public void removeLink(Pin pin) {
         this.pin.removeLink(pin);
         refreshPinUI();
     }
@@ -151,7 +151,7 @@ public class PinBaseView<V extends ViewBinding, P extends PinObject, A extends B
         return pinSlotBox;
     }
 
-    public A getAction() {
+    public BaseAction getAction() {
         return action;
     }
 }

@@ -21,15 +21,15 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class StartAction extends BaseAction {
-    protected transient final Pin<?> outPin;
-    protected transient final Pin<?> enablePin;
-    protected transient final Pin<?> restartPin;
+    protected transient final Pin outPin;
+    protected transient final Pin enablePin;
+    protected transient final Pin restartPin;
 
     public StartAction(Context context, @StringRes int titleId) {
         super(context, titleId);
-        outPin = addPin(new Pin<>(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
-        enablePin = addPin(new Pin<>(new PinBoolean(true), context.getString(R.string.action_start_subtitle_enable)));
-        restartPin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.restart_type)), context.getString(R.string.action_start_subtitle_restart)));
+        outPin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
+        enablePin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_start_subtitle_enable)));
+        restartPin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.restart_type)), context.getString(R.string.action_start_subtitle_restart)));
     }
 
     public StartAction(JsonObject jsonObject) {

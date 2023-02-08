@@ -3,27 +3,22 @@ package top.bogey.touch_tool.data.pin;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.utils.AppUtils;
 
-public class Pin<P extends PinObject> {
+public class Pin {
     private String id;
-    private String actionId;
 
     private final String title;
 
-    private final P value;
+    private final PinObject value;
 
     private final PinDirection direction;
     private final PinSlotType slotType;
@@ -32,39 +27,41 @@ public class Pin<P extends PinObject> {
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
 
-    public Pin(P value) {
+    private transient String actionId;
+
+    public Pin(PinObject value) {
         this(value, null, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, String title) {
+    public Pin(PinObject value, String title) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, PinSlotType slotType) {
+    public Pin(PinObject value, PinSlotType slotType) {
         this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, String title, PinDirection direction) {
+    public Pin(PinObject value, String title, PinDirection direction) {
         this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, String title, PinSubType subType) {
+    public Pin(PinObject value, String title, PinSubType subType) {
         this(value, title, PinDirection.IN, PinSlotType.SINGLE, subType, false);
     }
 
-    public Pin(P value, String title, PinSlotType slotType) {
+    public Pin(PinObject value, String title, PinSlotType slotType) {
         this(value, title, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, PinDirection direction, PinSlotType slotType) {
+    public Pin(PinObject value, PinDirection direction, PinSlotType slotType) {
         this(value, null, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, String title, PinDirection direction, PinSlotType slotType) {
+    public Pin(PinObject value, String title, PinDirection direction, PinSlotType slotType) {
         this(value, title, direction, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(P value, String title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
+    public Pin(PinObject value, String title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
         this.id = UUID.randomUUID().toString();
         this.title = title;
 
@@ -79,8 +76,9 @@ public class Pin<P extends PinObject> {
 
     public Pin(JsonObject jsonObject) {
         id = jsonObject.get("id").getAsString();
-        actionId = jsonObject.get("actionId").getAsString();
-        title = jsonObject.get("title").getAsString();
+        JsonElement element = jsonObject.get("title");
+        if (element != null) title = element.getAsString();
+        else title = null;
         direction = PinDirection.valueOf(jsonObject.get("direction").getAsString());
         slotType = PinSlotType.valueOf(jsonObject.get("slotType").getAsString());
         subType = PinSubType.valueOf(jsonObject.get("subType").getAsString());
@@ -88,17 +86,19 @@ public class Pin<P extends PinObject> {
         links.putAll(new Gson().fromJson(jsonObject.get("links"), new TypeToken<HashMap<String, String>>() {
         }.getType()));
         PinObject.PinObjectDeserializer pinObjectDeserializer = new PinObject.PinObjectDeserializer();
-        value = (P) pinObjectDeserializer.deserialize(jsonObject.get("value"), null, null);
+        value = pinObjectDeserializer.deserialize(jsonObject.get("value"), null, null);
     }
 
-    public Pin<P> copy(boolean removeAble) {
-        Pin<P> copy = AppUtils.copy(new PinDeserializer<P>(), this, getClass());
+    public Pin copy(boolean removeAble) {
+        Gson gson = new GsonBuilder().registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer()).create();
+        String json = gson.toJson(this);
+        Pin copy = gson.fromJson(json, Pin.class);
         copy.id = UUID.randomUUID().toString();
         copy.removeAble = removeAble;
         return copy;
     }
 
-    public HashMap<String, String> addLink(Pin<P> pin) {
+    public HashMap<String, String> addLink(Pin pin) {
         HashMap<String, String> removedLinks = new HashMap<>();
         // 单针脚，需要先移除之前的连接
         if (slotType == PinSlotType.SINGLE) {
@@ -109,7 +109,7 @@ public class Pin<P extends PinObject> {
         return removedLinks;
     }
 
-    public void removeLink(Pin<P> pin) {
+    public void removeLink(Pin pin) {
         links.remove(pin.getId());
     }
 
@@ -135,7 +135,7 @@ public class Pin<P extends PinObject> {
         return title;
     }
 
-    public P getValue() {
+    public PinObject getValue() {
         if (value == null) throw new RuntimeException("针脚的值为空");
         return value;
     }
@@ -166,13 +166,5 @@ public class Pin<P extends PinObject> {
 
     public void setActionId(String actionId) {
         this.actionId = actionId;
-    }
-
-    public static class PinDeserializer<P extends PinObject> implements JsonDeserializer<Pin<P>> {
-        @Override
-        public Pin<P> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            return new Pin<>(jsonObject);
-        }
     }
 }

@@ -21,7 +21,7 @@ public class IntReduceAction extends IntDivAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 

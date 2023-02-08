@@ -173,13 +173,6 @@ public class AppUtils {
         }
     }
 
-    public static <T> T copy(JsonDeserializer<T> deserializer, T target, Class<? extends T> tClass) {
-        if (target == null) return null;
-        Gson gson = new GsonBuilder().registerTypeAdapter(tClass, deserializer).create();
-        String json = gson.toJson(target);
-        return gson.fromJson(json, tClass);
-    }
-
     public static String formatDateLocalDate(Context context, long dateTime) {
         Calendar timeCalendar = Calendar.getInstance();
         timeCalendar.setTimeInMillis(dateTime);

@@ -7,21 +7,20 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
-public class PinAdd<P extends PinObject> extends PinObject {
-    private final Pin<P> pin;
+public class PinAdd extends PinObject {
+    private final Pin pin;
 
-    public PinAdd(Pin<P> pin) {
+    public PinAdd(Pin pin) {
         super();
         this.pin = pin;
     }
 
     public PinAdd(JsonObject jsonObject) {
         super(jsonObject);
-        Pin.PinDeserializer<P> pinDeserializer = new Pin.PinDeserializer<>();
-        pin = pinDeserializer.deserialize(jsonObject.get("pin"), null, null);
+        pin = new Pin(jsonObject.get("pin").getAsJsonObject());
     }
 
-    public Pin<P> getPin() {
+    public Pin getPin() {
         return pin;
     }
 

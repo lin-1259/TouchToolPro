@@ -20,6 +20,9 @@
     public static final android.os.Parcelable$Creator *;
 }
 
+-keep class android.graphics.Point{*;}
+-keep class android.graphics.Rect{*;}
+
 -keep class top.bogey.touch_tool.utils.MatchResult{*;}
 
 -keep class top.bogey.touch_tool.databinding.**{*;}

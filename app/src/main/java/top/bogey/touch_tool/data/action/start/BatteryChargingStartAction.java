@@ -13,12 +13,12 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class BatteryChargingStartAction extends StartAction {
-    private transient final Pin<?> statePin;
+    private transient final Pin statePin;
     private transient int currState;
 
     public BatteryChargingStartAction(Context context) {
         super(context, R.string.action_battery_charging_start_title);
-        statePin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_start_subtitle_state)));
+        statePin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_start_subtitle_state)));
     }
 
     public BatteryChargingStartAction(JsonObject jsonObject) {

@@ -14,11 +14,11 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class BatteryChargingStateAction extends StateAction {
-    private transient final Pin<?> chargingStatePin;
+    private transient final Pin chargingStatePin;
 
     public BatteryChargingStateAction(Context context) {
         super(context, R.string.action_battery_charging_state_title);
-        chargingStatePin = addPin(new Pin<>(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_state_subtitle_state)));
+        chargingStatePin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_state_subtitle_state)));
     }
 
     public BatteryChargingStateAction(JsonObject jsonObject) {
@@ -27,7 +27,7 @@ public class BatteryChargingStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
 
         int batteryState = worldState.getBatteryState();

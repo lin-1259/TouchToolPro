@@ -21,13 +21,13 @@ import top.bogey.touch_tool.data.pin.object.PinColor;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 
 public class ColorStateAction extends StateAction {
-    private transient final Pin<?> colorPin;
-    private transient final Pin<?> posPin;
+    private transient final Pin colorPin;
+    private transient final Pin posPin;
 
     public ColorStateAction(Context context) {
         super(context, R.string.action_color_state_title);
-        colorPin = addPin(new Pin<>(new PinColor(), context.getString(R.string.action_color_state_subtitle_color)));
-        posPin = addPin(new Pin<>(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        colorPin = addPin(new Pin(new PinColor(), context.getString(R.string.action_color_state_subtitle_color)));
+        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public ColorStateAction(JsonObject jsonObject) {
@@ -37,7 +37,7 @@ public class ColorStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin<?> pin) {
+    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
         if (!pin.getId().equals(statePin.getId())) return;
 
         PinBoolean value = (PinBoolean) statePin.getValue();

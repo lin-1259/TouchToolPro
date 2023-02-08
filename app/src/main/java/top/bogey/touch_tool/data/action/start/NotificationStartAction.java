@@ -20,13 +20,13 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class NotificationStartAction extends StartAction {
-    private transient final Pin<?> appPin;
-    private transient final Pin<?> textPin;
+    private transient final Pin appPin;
+    private transient final Pin textPin;
 
     public NotificationStartAction(Context context) {
         super(context, R.string.action_notification_start_title);
-        appPin = addPin(new Pin<>(new PinSelectApp(AppView.MULTI_MODE)));
-        textPin = addPin(new Pin<>(new PinString(), context.getString(R.string.action_notification_start_subtitle_text)));
+        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_MODE)));
+        textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_notification_start_subtitle_text)));
     }
 
     public NotificationStartAction(JsonObject jsonObject) {

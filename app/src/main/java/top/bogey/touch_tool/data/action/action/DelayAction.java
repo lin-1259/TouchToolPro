@@ -12,11 +12,11 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class DelayAction extends NormalAction {
-    private transient final Pin<?> delayPin;
+    private transient final Pin delayPin;
 
     public DelayAction(Context context) {
         super(context, R.string.action_delay_action_title);
-        delayPin = addPin(new Pin<>(new PinValueArea(100, 60000, 100, 300, 300)));
+        delayPin = addPin(new Pin(new PinValueArea(100, 60000, 100, 300, 300)));
     }
 
     public DelayAction(JsonObject jsonObject) {
@@ -25,7 +25,7 @@ public class DelayAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin<?> pin) {
+    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         PinValueArea pinValueArea = (PinValueArea) getPinValue(worldState, runnable.getTask(), delayPin);
         sleep(pinValueArea.getRandomValue());
         super.doAction(worldState, runnable, outPin);
