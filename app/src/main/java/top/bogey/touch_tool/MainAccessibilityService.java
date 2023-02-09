@@ -35,13 +35,16 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
+import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 import top.bogey.touch_tool.utils.TaskThreadPoolExecutor;
+import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 public class MainAccessibilityService extends AccessibilityService {
     private BatteryReceiver batteryReceiver;
@@ -159,11 +162,42 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
+    public void doOutAction(String actionId) {
+        if (actionId != null) {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceEnabled()) {
+                for (Task task : TaskRepository.getInstance().getAllTasks()) {
+                    boolean flag = false;
+                    for (StartAction startAction : task.getStartActions(OutStartAction.class)) {
+                        if (startAction.isEnable() && startAction.getId().equals(actionId)) {
+                            flag = true;
+                            if (task.needCaptureService()) {
+                                service.showToast(service.getString(R.string.capture_service_on_tips));
+                                service.startCaptureService(true, result -> {
+                                    if (result) service.runTask(task, startAction);
+                                });
+                            } else {
+                                service.runTask(task, startAction);
+                            }
+                            break;
+                        }
+                    }
+                    if (flag) break;
+                }
+            }
+        }
+    }
+
     public TaskRunnable runTask(Task task, StartAction startAction) {
         if (task == null || startAction == null) return null;
         if (!isServiceEnabled()) return null;
 
         if (!stopTaskIfNeed(task, startAction)) return null;
+
+        KeepAliveFloatView view = (KeepAliveFloatView) EasyFloat.getView(KeepAliveFloatView.class.getCanonicalName());
+        if (view != null) {
+            view.showMe();
+        }
 
         TaskRunnable runnable = new TaskRunnable(task, startAction);
         runnable.addCallback(new TaskRunningCallback() {
@@ -363,7 +397,7 @@ public class MainAccessibilityService extends AccessibilityService {
                             .putString(TaskWorker.ACTION, startAction.getId())
                             .build())
                     .build();
-            workManager.enqueueUniquePeriodicWork(startAction.getId(), ExistingPeriodicWorkPolicy.REPLACE, workRequest);
+            workManager.enqueueUniquePeriodicWork(startAction.getId(), ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest);
         } else {
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(TaskWorker.class)
                     .setInitialDelay(startTime - timeMillis, TimeUnit.MILLISECONDS)

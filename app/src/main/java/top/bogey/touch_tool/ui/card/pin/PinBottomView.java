@@ -29,7 +29,6 @@ public class PinBottomView extends PinBaseView<PinBottomBinding> {
         int[] location = new int[2];
         pinSlot.getLocationOnScreen(location);
         location[0] += (pinSlot.getWidth() * scale / 2);
-        Log.d("TAG", "getSlotLocationOnScreen: " + getScaleX());
         location[1] += (pinSlot.getHeight() * scale);
         return location;
     }

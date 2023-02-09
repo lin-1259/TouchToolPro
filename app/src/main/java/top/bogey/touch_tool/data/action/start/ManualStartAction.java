@@ -22,17 +22,12 @@ public class ManualStartAction extends StartAction {
 
     public ManualStartAction(Context context) {
         super(context, R.string.action_manual_start_title);
-        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
+        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_MODE)));
     }
 
     public ManualStartAction(JsonObject jsonObject) {
         super(jsonObject);
         appPin = addPin(tmpPins.remove(0));
-    }
-
-    @Override
-    public RestartType getRestartType() {
-        return RestartType.RESTART;
     }
 
     @Override
@@ -56,12 +51,6 @@ public class ManualStartAction extends StartAction {
             return true;
         }
 
-        if (packages.containsKey(packageName)) {
-            ArrayList<String> activityClasses = packages.get(packageName);
-            if (activityClasses == null) return false;
-
-            return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());
-        }
-        return false;
+        return packages.containsKey(packageName);
     }
 }

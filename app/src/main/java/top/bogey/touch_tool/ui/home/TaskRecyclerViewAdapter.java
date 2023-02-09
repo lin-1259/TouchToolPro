@@ -78,7 +78,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     @Override
     public void onCreated(Task task) {
-        if (ALL.equals(tag) || task.getTag().equals(tag) || (task.getTag() == null && NO.equals(tag))) {
+        if (ALL.equals(tag) || (task.getTag() != null && task.getTag().equals(tag)) || (task.getTag() == null && NO.equals(tag))) {
             tasks.add(task);
             notifyItemInserted(tasks.size());
         }
@@ -206,11 +206,18 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     }
 
     public void exportSelectTasks() {
+        if (selectTasks.size() == 0) return;
         Context context = parent.requireContext();
-        String fileName = String.format("%s_%s %s.ttp", context.getString(R.string.app_name), AppUtils.formatDateLocalDate(context, System.currentTimeMillis()), AppUtils.formatDateLocalTime(context, System.currentTimeMillis()));
+        String name = context.getString(R.string.app_name);
+        ArrayList<Task> tasks = new ArrayList<>(selectTasks.values());
+        if (tasks.size() == 1) {
+            name = tasks.get(0).getTitle();
+        }
+
+        String fileName = String.format("%s_%s %s.ttp", name, AppUtils.formatDateLocalDate(context, System.currentTimeMillis()), AppUtils.formatDateLocalTime(context, System.currentTimeMillis()));
 
         try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
-            String json = TaskRepository.getInstance().getGson().toJson(new ArrayList<>(selectTasks.values()));
+            String json = TaskRepository.getInstance().getGson().toJson(tasks);
             fileOutputStream.write(json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();

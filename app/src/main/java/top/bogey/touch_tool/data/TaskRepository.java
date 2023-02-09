@@ -156,7 +156,10 @@ public class TaskRepository {
         String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
+                LogInfo logInfo = null;
+                try {
+                    logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
+                } catch (JsonParseException ignored) {}
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
                     loggerMMKV.remove(key);
                 }
@@ -169,7 +172,10 @@ public class TaskRepository {
         String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
+                LogInfo logInfo = null;
+                try {
+                    logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
+                } catch (JsonParseException ignored) {}
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
                     infoList.add(logInfo);
                 }

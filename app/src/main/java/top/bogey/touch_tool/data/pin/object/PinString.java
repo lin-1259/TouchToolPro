@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -22,7 +23,8 @@ public class PinString extends PinValue {
 
     public PinString(JsonObject jsonObject) {
         super(jsonObject);
-        value = jsonObject.get("value").getAsString();
+        JsonElement element = jsonObject.get("value");
+        if (element != null) value = element.getAsString();
     }
 
     @Override

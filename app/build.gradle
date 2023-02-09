@@ -12,8 +12,8 @@ android {
         applicationId "top.bogey.touch_tool_pro"
         minSdk 24
         targetSdk 33
-        versionCode 7
-        versionName "0.0.7"
+        versionCode 8
+        versionName "0.0.8"
 
         externalNativeBuild {
             cmake {
@@ -73,7 +73,7 @@ dependencies {
 
     implementation 'androidx.navigation:navigation-fragment:2.5.3'
     implementation 'androidx.navigation:navigation-ui:2.5.3'
-    implementation 'androidx.work:work-runtime:2.7.1'
+    implementation 'androidx.work:work-runtime:2.8.0'
 
     //noinspection GradleDependency
     implementation 'com.tencent:mmkv:1.2.14'

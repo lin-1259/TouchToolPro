@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.util.Base64;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
@@ -46,7 +47,8 @@ public class PinImage extends PinValue {
     public PinImage(JsonObject jsonObject) {
         super(jsonObject);
         screen = jsonObject.get("screen").getAsInt();
-        image = jsonObject.get("image").getAsString();
+        JsonElement element = jsonObject.get("image");
+        if (element != null) image = element.getAsString();
         area = new Gson().fromJson(jsonObject.get("area"), Rect.class);
     }
 

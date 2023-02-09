@@ -30,10 +30,4 @@ public class NormalStartAction extends StartAction {
         PinBoolean value = (PinBoolean) getPinValue(worldState, task, startPin);
         return value.getValue();
     }
-
-    @Override
-    public RestartType getRestartType() {
-        PinSpinner value = (PinSpinner) restartPin.getValue();
-        return RestartType.values()[value.getIndex()];
-    }
 }

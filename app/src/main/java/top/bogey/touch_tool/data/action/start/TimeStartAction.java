@@ -45,11 +45,6 @@ public class TimeStartAction extends StartAction {
         }
     }
 
-    @Override
-    public RestartType getRestartType() {
-        return RestartType.RESTART;
-    }
-
     public long getStartTime(WorldState worldState, Task task) {
         long date = ((PinLong) getPinValue(worldState, task, datePin)).getValue();
         long time = ((PinLong) getPinValue(worldState, task, timePin)).getValue();

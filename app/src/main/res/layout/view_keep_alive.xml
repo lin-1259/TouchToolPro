@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Theme.TouchTool.IconButton.Filled"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="?attr/materialCardViewFilledStyle"
     android:layout_width="4dp"
     android:layout_height="4dp"
-    android:backgroundTint="?attr/colorError"
-    android:alpha="0.25"/>
+    android:alpha="0"
+    app:cardBackgroundColor="?attr/colorPrimaryInverse"
+    app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />

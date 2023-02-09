@@ -11,8 +11,6 @@ import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -28,12 +26,12 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
+import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool.ui.custom.ToastFloatView;
 import top.bogey.touch_tool.ui.play.PlayFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
@@ -41,14 +39,11 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
-import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
 public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("touch_tool");
     }
-
-    public static final String KEEP_ALIVE = "KEEP_ALIVE";
 
     public static final String INTENT_KEY_BACKGROUND = "INTENT_KEY_BACKGROUND";
     public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
@@ -103,15 +98,10 @@ public class MainActivity extends AppCompatActivity {
         MainAccessibilityService.serviceEnabled.observe(this, aBoolean -> {
             if (MainApplication.getService() == null) return;
             if (aBoolean) {
-                View view = LayoutInflater.from(this).inflate(R.layout.view_keep_alive, binding.getRoot(), false);
-                EasyFloat.with(MainApplication.getService())
-                        .setLayout(view)
-                        .setTag(KEEP_ALIVE)
-                        .setGravity(FloatGravity.TOP_CENTER, 0, DisplayUtils.dp2px(this, 2))
-                        .setAlwaysShow(true)
-                        .show();
+                KeepAliveFloatView floatView = new KeepAliveFloatView(this);
+                floatView.show();
             } else {
-                EasyFloat.dismiss(KEEP_ALIVE);
+                EasyFloat.dismiss(KeepAliveFloatView.class.getCanonicalName());
             }
         });
 
@@ -198,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void handleIntent(Intent intent) {
         if (intent == null) return;
+        MainAccessibilityService service = MainApplication.getService();
 
         boolean isBackground = intent.getBooleanExtra(INTENT_KEY_BACKGROUND, false);
         if (isBackground) {
@@ -220,10 +211,12 @@ public class MainActivity extends AppCompatActivity {
 
         boolean startCaptureService = intent.getBooleanExtra(INTENT_KEY_START_CAPTURE, false);
         if (startCaptureService) {
-            Intent serviceIntent = new Intent(this, MainAccessibilityService.class);
-            serviceIntent.putExtra(INTENT_KEY_START_CAPTURE, true);
-            serviceIntent.putExtra(INTENT_KEY_BACKGROUND, isBackground);
-            startService(serviceIntent);
+            if (service != null && service.isServiceConnected()) {
+                Intent serviceIntent = new Intent(this, MainAccessibilityService.class);
+                serviceIntent.putExtra(INTENT_KEY_START_CAPTURE, true);
+                serviceIntent.putExtra(INTENT_KEY_BACKGROUND, isBackground);
+                startService(serviceIntent);
+            }
         }
 
         if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
@@ -248,11 +241,12 @@ public class MainActivity extends AppCompatActivity {
     public void saveTasks(byte[] bytes) {
         if (bytes == null || bytes.length == 0) return;
 
-        List<Task> tasks = null;
+        ArrayList<Task> tasks = new ArrayList<>();
         try {
             tasks = TaskRepository.getInstance().getGson().fromJson(new String(bytes), new TypeToken<ArrayList<Task>>() {
             }.getType());
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         if (tasks != null) {

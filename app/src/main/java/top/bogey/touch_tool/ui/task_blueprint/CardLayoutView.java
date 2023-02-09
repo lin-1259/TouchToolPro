@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -72,8 +71,8 @@ public class CardLayoutView extends FrameLayout {
         gridPaint.setStrokeCap(Paint.Cap.ROUND);
         gridPaint.setStrokeJoin(Paint.Join.ROUND);
         gridPaint.setStyle(Paint.Style.STROKE);
-        gridPaint.setColor(context.getColor(R.color.IntegerPinColor));
-        gridPaint.setAlpha(20);
+        gridPaint.setColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimary, 0));
+        gridPaint.setAlpha(40);
 
         linePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         linePaint.setStrokeWidth(5);
@@ -128,8 +127,8 @@ public class CardLayoutView extends FrameLayout {
         try {
             Constructor<?> constructor = actionClass.getConstructor(Context.class);
             BaseAction action = (BaseAction) constructor.newInstance(getContext());
-            action.x = (int) (-offsetX / gridSize) + 1;
-            action.y = (int) (-offsetY / gridSize) + 1;
+            action.x = (int) (-offsetX / gridSize / scale) + 1;
+            action.y = (int) (-offsetY / gridSize / scale) + 1;
             addAction(action);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
@@ -164,20 +163,37 @@ public class CardLayoutView extends FrameLayout {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        canvas.translate(offsetX % (gridSize / scale), offsetY % (gridSize / scale));
-        canvas.scale(scale, scale);
+        float gridScaleSize = gridSize * scale;
+        float ofX = offsetX % gridScaleSize;
+        float ofY = offsetY % gridScaleSize;
+        canvas.translate(ofX, ofY);
 
         // 格子背景
-        for (int i = 0; i < (getWidth() / scale / gridSize); i++) {
-            gridPaint.setStrokeWidth(i == 0 ? 2 : 1);
-            canvas.drawLine(i * gridSize, 0, i * gridSize, getHeight() / scale, gridPaint);
+        float gridRow = getHeight() / gridScaleSize; //有多少行
+        float gridCol = getWidth() / gridScaleSize;  //有多少列
+
+        float bigGridSize = 10 * gridScaleSize;
+        float startY = offsetY - ofY;
+        for (int i = 0; i < gridRow; i++) {
+            if (startY == i * gridScaleSize) {
+                gridPaint.setStrokeWidth(5);
+            } else {
+                float v = (startY - i * gridScaleSize) % bigGridSize;
+                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 3 : 1);
+            }
+            canvas.drawLine(-gridScaleSize, i * gridScaleSize, getWidth() + gridScaleSize, i * gridScaleSize, gridPaint);
         }
 
-        for (int i = 0; i < (getHeight() / scale / gridSize); i++) {
-            gridPaint.setStrokeWidth(i == 0 ? 2 : 1);
-            canvas.drawLine(0, i * gridSize, getWidth() / scale, i * gridSize, gridPaint);
+        float startX = offsetX - ofX;
+        for (int i = 0; i < gridCol; i++) {
+            if (offsetX == i * gridScaleSize + ofX) {
+                gridPaint.setStrokeWidth(5);
+            } else {
+                float v = (startX - i * gridScaleSize) % bigGridSize;
+                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 3 : 1);
+            }
+            canvas.drawLine(i * gridScaleSize, -gridScaleSize, i * gridScaleSize, getHeight() + gridScaleSize, gridPaint);
         }
-
         canvas.restore();
 
         // 所有连接的线
@@ -360,15 +376,15 @@ public class CardLayoutView extends FrameLayout {
         } else if (actionMasked == MotionEvent.ACTION_MOVE) {
             if (dragState == DRAG_CARD) {
                 BaseAction action = dragCard.getAction();
-                int dx = (int) ((rawX - dragX) / gridSize);
+                int dx = (int) ((rawX - dragX) / gridSize / scale);
                 if (dx != 0) {
                     action.x += dx;
-                    dragX += dx * gridSize;
+                    dragX += dx * gridSize * scale ;
                 }
-                int dy = (int) ((rawY - dragY) / gridSize);
+                int dy = (int) ((rawY - dragY) / gridSize / scale);
                 if (dy != 0) {
                     action.y += dy;
-                    dragY += dy * gridSize;
+                    dragY += dy * gridSize * scale;
                 }
                 setCardPosition(dragCard);
             } else if (dragState == DRAG_PIN) {

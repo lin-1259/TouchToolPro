@@ -62,7 +62,7 @@ public class AppUtils {
 
         new MaterialAlertDialogBuilder(context)
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
-                    if (callback != null) callback.onResult(editText.getText());
+                    if (callback != null && editText.getText() != null) callback.onResult(editText.getText().toString());
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -97,6 +97,7 @@ public class AppUtils {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setClassName(pkgName, activity);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception ignored) {
         }

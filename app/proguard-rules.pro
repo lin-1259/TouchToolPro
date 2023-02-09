@@ -12,12 +12,8 @@
 #   public *;
 #}
 
-#-assumenosideeffects class android.util.Log{
-#    public static int d(...);
-#}
-
--keep class * implements android.os.Parcelable {
-    public static final android.os.Parcelable$Creator *;
+-assumenosideeffects class android.util.Log{
+    public static int d(...);
 }
 
 -keep class android.graphics.Point{*;}

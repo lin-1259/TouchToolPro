@@ -15,17 +15,12 @@ public class OutStartAction extends StartAction {
 
     public OutStartAction(Context context) {
         super(context, R.string.action_out_start_title);
-        idPin = addPin(new Pin(new PinString(getId()), context.getString(R.string.action_normal_start_subtitle_condition)));
+        idPin = addPin(new Pin(new PinString(getId()), context.getString(R.string.action_out_start_subtitle_id)));
     }
 
     public OutStartAction(JsonObject jsonObject) {
         super(jsonObject);
         idPin = addPin(tmpPins.remove(0));
-    }
-
-    @Override
-    public RestartType getRestartType() {
-        PinSpinner value = (PinSpinner) restartPin.getValue();
-        return RestartType.values()[value.getIndex()];
+        ((PinString) idPin.getValue()).setValue(getId());
     }
 }

@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -36,6 +37,11 @@ public class StartAction extends BaseAction {
         restartPin = addPin(tmpPins.remove(0));
     }
 
+    @Override
+    public void doAction(WorldState worldState, TaskRunnable runnable) {
+        doAction(worldState, runnable, outPin);
+    }
+
     // 开始动作只做开始检测
     public boolean checkReady(WorldState worldState, Task task) {
         return true;
@@ -46,6 +52,7 @@ public class StartAction extends BaseAction {
     }
 
     public RestartType getRestartType() {
-        return RestartType.START_NEW;
+        PinSpinner value = (PinSpinner) restartPin.getValue();
+        return RestartType.values()[value.getIndex()];
     }
 }

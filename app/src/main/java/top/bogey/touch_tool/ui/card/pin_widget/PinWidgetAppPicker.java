@@ -87,7 +87,11 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
                 List<String> list = helper.getPackages().get(packageName);
                 if (list == null) continue;
                 PackageInfo packageInfo = WorldState.getInstance().getPackage(packageName);
-                itemBinding.icon.setImageDrawable(packageInfo.applicationInfo.loadIcon(manager));
+                if (packageInfo != null && packageInfo.applicationInfo != null) {
+                    itemBinding.icon.setImageDrawable(packageInfo.applicationInfo.loadIcon(manager));
+                } else {
+                    itemBinding.icon.setImageDrawable(null);
+                }
                 itemBinding.numberText.setText(String.valueOf(list.size()));
                 ((View) itemBinding.numberText.getParent()).setVisibility(list.size() == 0 ? GONE : VISIBLE);
             }
