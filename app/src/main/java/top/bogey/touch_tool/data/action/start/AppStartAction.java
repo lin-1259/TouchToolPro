@@ -34,6 +34,7 @@ public class AppStartAction extends StartAction {
     public boolean checkReady(WorldState worldState, Task task) {
         String packageName = worldState.getPackageName();
         if (packageName == null) return false;
+        String activityName = worldState.getActivityName();
 
         MainAccessibilityService service = MainApplication.getService();
         String commonPackageName = service.getString(R.string.common_package_name);
@@ -41,9 +42,13 @@ public class AppStartAction extends StartAction {
         PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);
         Map<String, ArrayList<String>> packages = helper.getPackages();
 
-        // 包含通用且包含当前包，代表排除当前包
+        // 包含通用且包含当前包，代表排除当前包内的一些东西
         if (packages.containsKey(commonPackageName) && packages.containsKey(packageName)) {
-            return false;
+            // 看下是排除活动还是排除应用
+            ArrayList<String> activityClasses = packages.get(packageName);
+            if (activityClasses == null) return false;
+            // 活动为空或者活动包含在排除中，返回
+            if (activityClasses.isEmpty() || activityClasses.contains(activityName)) return false;
         }
 
         // 包含通用，直接返回准备好了
@@ -55,6 +60,7 @@ public class AppStartAction extends StartAction {
             ArrayList<String> activityClasses = packages.get(packageName);
             if (activityClasses == null) return false;
 
+            // 活动为空表示只包含应用就行，或者包含对应活动才行
             return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());
         }
         return false;

@@ -19,23 +19,29 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class TextStateAction extends StateAction {
     private transient final Pin textPin;
     private transient final Pin posPin;
+    private transient final Pin nodePin;
 
     public TextStateAction(Context context) {
         super(context, R.string.action_text_state_title);
         textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_text_state_subtitle_text)));
         posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public TextStateAction(JsonObject jsonObject) {
         super(jsonObject);
         textPin = addPin(tmpPins.remove(0));
         posPin = addPin(tmpPins.remove(0));
+        if (tmpPins.size() != 0) {
+            nodePin = addPin(tmpPins.remove(0));
+        } else nodePin = null;
     }
 
     @Override
@@ -59,6 +65,11 @@ public class TextStateAction extends StateAction {
             searchNode.getBoundsInScreen(bounds);
             point.setX(bounds.centerX());
             point.setY(bounds.centerY());
+
+            if (nodePin != null) {
+                PinNodeInfo nodePinValue = (PinNodeInfo) nodePin.getValue();
+                nodePinValue.setNodeInfo(searchNode);
+            }
         }
     }
 

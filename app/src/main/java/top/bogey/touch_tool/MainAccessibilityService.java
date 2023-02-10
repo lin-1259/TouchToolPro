@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Path;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.lifecycle.MutableLiveData;
@@ -68,6 +69,7 @@ public class MainAccessibilityService extends AccessibilityService {
             String packageName = (String) event.getPackageName();
             String className = (String) event.getClassName();
             if (packageName == null || className == null) return;
+            Log.d("TAG", "onAccessibilityEvent: " + packageName + "/" + className);
 
             WorldState worldState = WorldState.getInstance();
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {

@@ -25,7 +25,7 @@ public class WaitConditionLogicAction extends NormalAction {
         conditionPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_condition_logic_subtitle_condition)));
         timeOutPin = addPin(new Pin(new PinInteger(1000), context.getString(R.string.action_wait_condition_logic_subtitle_timeout)));
         periodicPin = addPin(new Pin(new PinInteger(100), context.getString(R.string.action_wait_condition_logic_subtitle_periodic)));
-        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_false), PinDirection.OUT));
+        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
     }
 
     public WaitConditionLogicAction(JsonObject jsonObject) {

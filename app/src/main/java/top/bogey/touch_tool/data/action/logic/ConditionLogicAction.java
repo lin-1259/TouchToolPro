@@ -20,7 +20,7 @@ public class ConditionLogicAction extends NormalAction {
     public ConditionLogicAction(Context context) {
         super(context, R.string.action_condition_logic_title);
         conditionPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_condition_logic_subtitle_condition)));
-        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_condition_logic_subtitle_false), PinDirection.OUT));
+        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
     }
 
     public ConditionLogicAction(JsonObject jsonObject) {

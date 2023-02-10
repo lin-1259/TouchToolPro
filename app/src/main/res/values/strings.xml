@@ -119,6 +119,7 @@
     <!-- 任务 - 状态 -->
     <string name="action_state_subtitle_state">结果</string>
     <string name="action_state_subtitle_position">位置</string>
+    <string name="action_state_subtitle_node_info">控件</string>
 
     <string name="action_app_state_title">在应用或界面内</string>
     <string name="action_app_state_subtitle_package">包名</string>
@@ -161,6 +162,13 @@
     <string name="action_touch_pos_action_subtitle_time">时长</string>
     <string name="action_touch_pos_action_subtitle_offset">随机偏移</string>
 
+    <string name="action_touch_node_action_title">点击控件</string>
+    <string name="action_touch_node_action_subtitle_long_touch">长按</string>
+
+    <string name="action_input_node_action_title">输入框输入</string>
+    <string name="action_input_node_action_subtitle_content">内容</string>
+    <string name="action_input_node_action_subtitle_append">附加</string>
+
     <string name="action_touch_path_action_title">执行手势</string>
     <string name="action_touch_path_action_subtitle_path">手势</string>
     <string name="action_touch_path_action_subtitle_time">时长</string>
@@ -194,9 +202,10 @@
 
 
     <!-- 任务 - 逻辑 -->
+    <string name="action_logic_subtitle_false">未达成</string>
+
     <string name="action_condition_logic_title">如果…就…</string>
     <string name="action_condition_logic_subtitle_condition">条件</string>
-    <string name="action_condition_logic_subtitle_false">未达成</string>
 
     <string name="action_wait_condition_logic_title">等待条件成立</string>
     <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>

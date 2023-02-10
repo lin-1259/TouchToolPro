@@ -2,6 +2,8 @@ package top.bogey.touch_tool.ui.picker;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,10 +22,14 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetBinding;
+import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public class WidgetPickerFloatView extends BasePickerFloatView {
     protected final FloatPickerWidgetBinding binding;
+
+    private final Paint gridPaint;
+    private final int[] location = new int[2];
 
     private final AccessibilityNodeInfo rootNode;
     private AccessibilityNodeInfo selectNode;
@@ -32,6 +38,13 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
 
     public WidgetPickerFloatView(@NonNull Context context, PickerCallback callback, PinWidget pinWidget) {
         super(context, callback);
+
+        gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        gridPaint.setStrokeWidth(2);
+        gridPaint.setStrokeCap(Paint.Cap.ROUND);
+        gridPaint.setStrokeJoin(Paint.Join.ROUND);
+        gridPaint.setStyle(Paint.Style.STROKE);
+        gridPaint.setColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0));
 
         binding = FloatPickerWidgetBinding.inflate(LayoutInflater.from(context), this, true);
         MainAccessibilityService service = MainApplication.getService();
@@ -68,9 +81,6 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
             binding.levelTitle.setText(selectLevel);
             binding.levelTitle.setVisibility(selectLevel == null ? INVISIBLE : VISIBLE);
 
-            int[] location = new int[2];
-            getLocationOnScreen(location);
-
             Rect rect = new Rect();
 
             selectNode.getBoundsInScreen(rect);
@@ -80,6 +90,35 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
             binding.markBox.setLayoutParams(params);
             binding.markBox.setX(rect.left);
             binding.markBox.setY(rect.top - location[1]);
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        long drawingTime = getDrawingTime();
+
+        drawChild(canvas, binding.getRoot(), drawingTime);
+        drawNode(canvas, rootNode);
+
+        if (selectNode != null) {
+            drawChild(canvas, binding.markBox, drawingTime);
+            drawChild(canvas, binding.idTitle, drawingTime);
+            drawChild(canvas, binding.levelTitle, drawingTime);
+        }
+
+        drawChild(canvas, binding.buttonBox, drawingTime);
+    }
+
+    private void drawNode(Canvas canvas, AccessibilityNodeInfo nodeInfo) {
+        if (nodeInfo == null) return;
+
+        Rect bounds = new Rect();
+        nodeInfo.getBoundsInScreen(bounds);
+        bounds.offset(-location[0], -location[1]);
+        canvas.drawRect(bounds, gridPaint);
+
+        for (int i = 0; i < nodeInfo.getChildCount(); i++) {
+            drawNode(canvas, nodeInfo.getChild(i));
         }
     }
 
@@ -144,6 +183,9 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         }
         return node;
     }
+    /*
+
+    */
 
     private void findNodeIn(Map<Integer, AccessibilityNodeInfo> deepNodeInfo, int deep, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
         if (nodeInfo.getChildCount() == 0) return;
@@ -153,12 +195,19 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
                 Rect rect = new Rect();
                 child.getBoundsInScreen(rect);
                 if (rect.contains(x, y)) {
-                    if (child.isClickable() || child.isEditable() || child.isCheckable() || child.isLongClickable() || child.isScrollable()) {
-                        deepNodeInfo.put(deep, child);
-                    }
+                    deepNodeInfo.put(deep, child);
                     findNodeIn(deepNodeInfo, deep + 1, child, x, y);
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        if (changed) {
+            getLocationOnScreen(location);
         }
     }
 }

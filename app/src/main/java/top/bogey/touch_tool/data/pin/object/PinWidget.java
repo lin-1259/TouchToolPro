@@ -34,7 +34,8 @@ public class PinWidget extends PinValue {
 
         if (!(id == null || id.isEmpty())) {
             List<AccessibilityNodeInfo> nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
-            if (nodeInfo.size() > 0) {
+            // 仅有一个才是正确的，有多个的话，需要看层级
+            if (nodeInfo.size() == 1) {
                 return nodeInfo.get(0);
             }
         }

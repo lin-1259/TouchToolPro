@@ -94,8 +94,17 @@ public class CardLayoutView extends FrameLayout {
 
             @Override
             public boolean onScale(@NonNull ScaleGestureDetector detector) {
+                float oldScale = scale;
                 scale *= detector.getScaleFactor();
                 scale = Math.max(0.5f, Math.min(scale, 1.5f));
+
+                // 设置居中缩放偏移
+                float v = 1 - scale / oldScale;
+                float focusX = detector.getFocusX() - offsetX;
+                float focusY = detector.getFocusY() - offsetY;
+                offsetX += focusX * v;
+                offsetY += focusY * v;
+
                 setCardsPosition();
                 postInvalidate();
                 return true;
@@ -127,8 +136,8 @@ public class CardLayoutView extends FrameLayout {
         try {
             Constructor<?> constructor = actionClass.getConstructor(Context.class);
             BaseAction action = (BaseAction) constructor.newInstance(getContext());
-            action.x = (int) (-offsetX / gridSize / scale) + 1;
-            action.y = (int) (-offsetY / gridSize / scale) + 1;
+            action.x = (int) (-offsetX / getScaleGridSize()) + 1;
+            action.y = (int) (-offsetY / getScaleGridSize()) + 1;
             addAction(action);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
@@ -156,14 +165,18 @@ public class CardLayoutView extends FrameLayout {
         BaseAction action = card.getAction();
         card.setScaleX(scale);
         card.setScaleY(scale);
-        card.setX(action.x * gridSize * scale + offsetX);
-        card.setY(action.y * gridSize * scale + offsetY);
+        card.setX(action.x * getScaleGridSize() + offsetX);
+        card.setY(action.y * getScaleGridSize() + offsetY);
+    }
+
+    private float getScaleGridSize() {
+        return gridSize * scale;
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
         canvas.save();
-        float gridScaleSize = gridSize * scale;
+        float gridScaleSize = getScaleGridSize();
         float ofX = offsetX % gridScaleSize;
         float ofY = offsetY % gridScaleSize;
         canvas.translate(ofX, ofY);
@@ -179,7 +192,7 @@ public class CardLayoutView extends FrameLayout {
                 gridPaint.setStrokeWidth(5);
             } else {
                 float v = (startY - i * gridScaleSize) % bigGridSize;
-                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 3 : 1);
+                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
             }
             canvas.drawLine(-gridScaleSize, i * gridScaleSize, getWidth() + gridScaleSize, i * gridScaleSize, gridPaint);
         }
@@ -190,7 +203,7 @@ public class CardLayoutView extends FrameLayout {
                 gridPaint.setStrokeWidth(5);
             } else {
                 float v = (startX - i * gridScaleSize) % bigGridSize;
-                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 3 : 1);
+                gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
             }
             canvas.drawLine(i * gridScaleSize, -gridScaleSize, i * gridScaleSize, getHeight() + gridScaleSize, gridPaint);
         }
@@ -235,20 +248,21 @@ public class CardLayoutView extends FrameLayout {
 
         int[] outLocation = outPin.getSlotLocationOnScreen(scale);
         int[] inLocation = inPin.getSlotLocationOnScreen(scale);
+        float scaleGridSize = getScaleGridSize();
 
         // 执行是上下的
         if (outPin.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
-            int offset = inLocation[1] - outLocation[1];
-            offset = offset > gridSize ? offset : gridSize * 8;
-            int y1 = outLocation[1] + offset;
-            int y2 = inLocation[1] - offset;
+            float offset = inLocation[1] - outLocation[1];
+            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
+            float y1 = outLocation[1] + offset;
+            float y2 = inLocation[1] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
         } else {
-            int offset = inLocation[0] - outLocation[0];
-            offset = offset > gridSize ? offset : gridSize * 8;
-            int x1 = outLocation[0] + offset;
-            int x2 = inLocation[0] - offset;
+            float offset = inLocation[0] - outLocation[0];
+            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
+            float x1 = outLocation[0] + offset;
+            float x2 = inLocation[0] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
         }
@@ -271,19 +285,20 @@ public class CardLayoutView extends FrameLayout {
             outLocation = pinLocation;
         }
 
+        float scaleGridSize = getScaleGridSize();
         // 执行是上下的
         if (pinBaseView.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
-            int offset = inLocation[1] - outLocation[1];
-            offset = offset > gridSize ? offset : gridSize * 8;
-            int y1 = outLocation[1] + offset;
-            int y2 = inLocation[1] - offset;
+            float offset = inLocation[1] - outLocation[1];
+            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
+            float y1 = outLocation[1] + offset;
+            float y2 = inLocation[1] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
         } else {
-            int offset = inLocation[0] - outLocation[0];
-            offset = offset > gridSize ? offset : gridSize * 8;
-            int x1 = outLocation[0] + offset;
-            int x2 = inLocation[0] - offset;
+            float offset = inLocation[0] - outLocation[0];
+            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
+            float x1 = outLocation[0] + offset;
+            float x2 = inLocation[0] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
         }
@@ -375,16 +390,17 @@ public class CardLayoutView extends FrameLayout {
             dragState = DRAG_NONE;
         } else if (actionMasked == MotionEvent.ACTION_MOVE) {
             if (dragState == DRAG_CARD) {
+                float scaleGridSize = getScaleGridSize();
                 BaseAction action = dragCard.getAction();
-                int dx = (int) ((rawX - dragX) / gridSize / scale);
+                int dx = (int) ((rawX - dragX) / scaleGridSize);
                 if (dx != 0) {
                     action.x += dx;
-                    dragX += dx * gridSize * scale ;
+                    dragX += dx * scaleGridSize;
                 }
-                int dy = (int) ((rawY - dragY) / gridSize / scale);
+                int dy = (int) ((rawY - dragY) / scaleGridSize);
                 if (dy != 0) {
                     action.y += dy;
-                    dragY += dy * gridSize * scale;
+                    dragY += dy * scaleGridSize;
                 }
                 setCardPosition(dragCard);
             } else if (dragState == DRAG_PIN) {

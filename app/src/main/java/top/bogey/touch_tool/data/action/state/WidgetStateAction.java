@@ -17,23 +17,29 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
+import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 
 public class WidgetStateAction extends StateAction {
     private transient final Pin widgetPin;
     private transient final Pin posPin;
+    private transient final Pin nodePin;
 
     public WidgetStateAction(Context context) {
         super(context, R.string.action_widget_state_title);
         widgetPin = addPin(new Pin(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget), PinSubType.ID));
         posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info), PinDirection.OUT, PinSlotType.MULTI));
     }
 
     public WidgetStateAction(JsonObject jsonObject) {
         super(jsonObject);
         widgetPin = addPin(tmpPins.remove(0));
         posPin = addPin(tmpPins.remove(0));
+        if (tmpPins.size() != 0) {
+            nodePin = addPin(tmpPins.remove(0));
+        } else nodePin = null;
     }
 
     @Override
@@ -51,6 +57,12 @@ public class WidgetStateAction extends StateAction {
             node.getBoundsInScreen(bounds);
             point.setX(bounds.centerX());
             point.setY(bounds.centerY());
+
+            if (nodePin != null) {
+                PinNodeInfo nodePinValue = (PinNodeInfo) nodePin.getValue();
+                nodePinValue.setNodeInfo(node);
+            }
+
             return;
         }
 
