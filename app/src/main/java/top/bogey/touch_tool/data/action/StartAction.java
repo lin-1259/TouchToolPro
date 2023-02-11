@@ -51,6 +51,10 @@ public class StartAction extends BaseAction {
         return ((PinBoolean) enablePin.getValue()).getValue();
     }
 
+    public void setEnable(boolean enable) {
+        ((PinBoolean) enablePin.getValue()).setValue(enable);
+    }
+
     public RestartType getRestartType() {
         PinSpinner value = (PinSpinner) restartPin.getValue();
         return RestartType.values()[value.getIndex()];

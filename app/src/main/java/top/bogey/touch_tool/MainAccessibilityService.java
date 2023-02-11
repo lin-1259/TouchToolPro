@@ -24,8 +24,10 @@ import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -61,7 +63,8 @@ public class MainAccessibilityService extends AccessibilityService {
     private ResultCallback captureResultCallback;
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
-    private final HashSet<TaskRunnable> runnableSet = new HashSet<>();
+    private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Set<TaskRunningCallback> callbacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -74,7 +77,6 @@ public class MainAccessibilityService extends AccessibilityService {
             WorldState worldState = WorldState.getInstance();
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
                 if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
-                    stopAllTask();
                     worldState.setEnterActivity(packageName, className);
                 } else worldState.enterActivity(packageName, className);
 
@@ -133,6 +135,7 @@ public class MainAccessibilityService extends AccessibilityService {
         super.onDestroy();
         if (batteryReceiver != null) unregisterReceiver(batteryReceiver);
         stopCaptureService();
+        stopAllTask();
 
         serviceConnected.setValue(false);
         serviceEnabled.setValue(false);
@@ -164,33 +167,45 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
+    public void addRunningCallback(TaskRunningCallback callback) {
+        callbacks.add(callback);
+    }
+
+    public void removeRunningCallback(TaskRunningCallback callback) {
+        callbacks.remove(callback);
+    }
+
     public void doOutAction(String actionId) {
+        if (!isServiceEnabled()) return;
         if (actionId != null) {
-            MainAccessibilityService service = MainApplication.getService();
-            if (service != null && service.isServiceEnabled()) {
-                for (Task task : TaskRepository.getInstance().getAllTasks()) {
-                    boolean flag = false;
-                    for (StartAction startAction : task.getStartActions(OutStartAction.class)) {
-                        if (startAction.isEnable() && startAction.getId().equals(actionId)) {
-                            flag = true;
-                            if (task.needCaptureService()) {
-                                service.showToast(service.getString(R.string.capture_service_on_tips));
-                                service.startCaptureService(true, result -> {
-                                    if (result) service.runTask(task, startAction);
-                                });
-                            } else {
-                                service.runTask(task, startAction);
-                            }
-                            break;
+            for (Task task : TaskRepository.getInstance().getAllTasks()) {
+                boolean flag = false;
+                for (StartAction startAction : task.getStartActions(OutStartAction.class)) {
+                    if (startAction.isEnable() && startAction.getId().equals(actionId)) {
+                        flag = true;
+                        if (task.needCaptureService()) {
+                            showToast(getString(R.string.capture_service_on_tips));
+                            startCaptureService(true, result -> {
+                                if (result) {
+                                    runTask(task, startAction);
+                                }
+                            });
+                        } else {
+                            runTask(task, startAction);
                         }
+                        break;
                     }
-                    if (flag) break;
                 }
+                if (flag) break;
             }
         }
     }
 
     public TaskRunnable runTask(Task task, StartAction startAction) {
+        return runTask(task, startAction, null);
+    }
+
+    public TaskRunnable runTask(Task task, StartAction startAction, TaskRunningCallback callback) {
         if (task == null || startAction == null) return null;
         if (!isServiceEnabled()) return null;
 
@@ -202,19 +217,16 @@ public class MainAccessibilityService extends AccessibilityService {
         }
 
         TaskRunnable runnable = new TaskRunnable(task, startAction);
+        if (callback != null) runnable.addCallback(callback);
         runnable.addCallback(new TaskRunningCallback() {
             @Override
             public void onStart(TaskRunnable runnable) {
-                synchronized (runnableSet) {
-                    runnableSet.add(runnable);
-                }
+                runnableSet.add(runnable);
             }
 
             @Override
             public void onEnd(TaskRunnable runnable) {
-                synchronized (runnableSet) {
-                    runnableSet.remove(runnable);
-                }
+                runnableSet.remove(runnable);
             }
 
             @Override
@@ -222,6 +234,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
             }
         });
+        callbacks.stream().filter(Objects::nonNull).forEach(runnable::addCallback);
 
         Future<?> future = taskService.submit(runnable);
         runnable.setFuture(future);
@@ -232,41 +245,55 @@ public class MainAccessibilityService extends AccessibilityService {
         if (runnableSet.contains(runnable)) runnable.stop();
     }
 
-    public void stopAllTask() {
-        synchronized (runnableSet) {
-            for (TaskRunnable taskRunnable : runnableSet) {
+    public void stopTask(Task task) {
+        for (TaskRunnable taskRunnable : runnableSet) {
+            if (task.getId().equals(taskRunnable.getTask().getId())) {
                 taskRunnable.stop();
             }
-            runnableSet.clear();
         }
+    }
+
+    public void stopAllTask() {
+        for (TaskRunnable taskRunnable : runnableSet) {
+            taskRunnable.stop();
+        }
+        runnableSet.clear();
+    }
+
+    public boolean isTaskRunning(Task task) {
+        if (task == null) return false;
+        for (TaskRunnable runnable : runnableSet) {
+            if (task.getId().equals(runnable.getTask().getId())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean stopTaskIfNeed(Task task, StartAction startAction) {
         if (task == null || startAction == null) return false;
-        synchronized (runnableSet) {
-            switch (startAction.getRestartType()) {
-                // 需要重新运行
-                case RESTART:
-                    for (TaskRunnable runnable : runnableSet) {
-                        if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
-                            stopTask(runnable);
-                        }
+        switch (startAction.getRestartType()) {
+            // 需要重新运行
+            case RESTART:
+                for (TaskRunnable runnable : runnableSet) {
+                    if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
+                        stopTask(runnable);
                     }
-                    return true;
-                // 如果没有运行，则运行；如果正在运行，取消本次运行
-                case CANCEL:
-                    boolean flag = true;
-                    for (TaskRunnable runnable : runnableSet) {
-                        if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
-                            flag = false;
-                            break;
-                        }
+                }
+                return true;
+            // 如果没有运行，则运行；如果正在运行，取消本次运行
+            case CANCEL:
+                boolean flag = true;
+                for (TaskRunnable runnable : runnableSet) {
+                    if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
+                        flag = false;
+                        break;
                     }
-                    return flag;
-                // 每次都运行新的
-                case START_NEW:
-                    return true;
-            }
+                }
+                return flag;
+            // 每次都运行新的
+            case START_NEW:
+                return true;
         }
         return false;
     }

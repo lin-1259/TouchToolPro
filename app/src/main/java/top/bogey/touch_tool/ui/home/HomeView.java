@@ -291,4 +291,8 @@ public class HomeView extends Fragment {
         TagView tagView = new TagView(this);
         tagView.show(requireActivity().getSupportFragmentManager(), null);
     }
+
+    public View getRoot() {
+        return binding.getRoot();
+    }
 }

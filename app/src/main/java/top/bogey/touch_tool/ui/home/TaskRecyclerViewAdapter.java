@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
@@ -25,11 +26,14 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
+import top.bogey.touch_tool.data.TaskRunnable;
+import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.databinding.ViewTaskItemBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
+import top.bogey.touch_tool.utils.TaskRunningCallback;
 
-public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> implements TaskChangedCallback {
+public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> implements TaskChangedCallback, TaskRunningCallback {
     private final ArrayList<Task> tasks = new ArrayList<>();
     private final HomeView parent;
     private final String ALL;
@@ -46,6 +50,16 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         NO = parent.getString(R.string.tag_no);
 
         showTasksByTag(ALL);
+
+        MainAccessibilityService.serviceEnabled.observe(parent.getViewLifecycleOwner(), aBoolean -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service == null) return;
+            if (aBoolean) {
+                service.addRunningCallback(this);
+            } else {
+                service.removeRunningCallback(this);
+            }
+        });
     }
 
     @Override
@@ -100,6 +114,20 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             tasks.remove(index);
             notifyItemRemoved(index);
         }
+    }
+
+    @Override
+    public void onStart(TaskRunnable runnable) {
+        parent.getRoot().post(() -> onChanged(runnable.getTask()));
+    }
+
+    @Override
+    public void onEnd(TaskRunnable runnable) {
+        parent.getRoot().post(() -> onChanged(runnable.getTask()));
+    }
+
+    @Override
+    public void onProgress(TaskRunnable runnable, int progress) {
     }
 
     private int getTaskIndex(Task task) {
@@ -240,6 +268,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         unSelectAll();
     }
 
+
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private final ViewTaskItemBinding binding;
         private final Context context;
@@ -296,6 +325,24 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                     }
                 });
             });
+
+            binding.enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                int index = getBindingAdapterPosition();
+                Task task = tasks.get(index);
+
+                if (isChecked == isAllStartActionEnable(task)) return;
+                for (StartAction startAction : task.getStartActions(StartAction.class)) {
+                    startAction.setEnable(isChecked);
+                }
+                TaskRepository.getInstance().saveTask(task);
+            });
+
+            binding.stopButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                Task task = tasks.get(index);
+                MainAccessibilityService service = MainApplication.getService();
+                if (service != null) service.stopTask(task);
+            });
         }
 
         public void refreshItem(Task task) {
@@ -303,8 +350,19 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             binding.taskDes.setText(task.getTaskDes(context));
             binding.timeText.setText(AppUtils.formatDateLocalDate(context, task.getCreateTime()));
             binding.taskTag.setText(task.getTag());
+            binding.enableSwitch.setChecked(isAllStartActionEnable(task));
+
+            MainAccessibilityService service = MainApplication.getService();
+            binding.stopButton.setVisibility(service != null && service.isTaskRunning(task) ? View.VISIBLE : View.GONE);
 
             binding.getRoot().setChecked(selectTasks.containsKey(task.getId()));
+        }
+
+        private boolean isAllStartActionEnable(Task task) {
+            for (StartAction startAction : task.getStartActions(StartAction.class)) {
+                if (!startAction.isEnable()) return false;
+            }
+            return true;
         }
     }
 }

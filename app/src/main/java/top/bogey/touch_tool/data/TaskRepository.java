@@ -132,6 +132,9 @@ public class TaskRepository {
         if (removedTask != null) {
             callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onRemoved(removedTask));
             removeLog(removedTask);
+
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null) service.stopTask(removedTask);
         }
     }
 

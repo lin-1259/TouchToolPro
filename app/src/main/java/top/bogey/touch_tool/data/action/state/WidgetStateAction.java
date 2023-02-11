@@ -28,7 +28,7 @@ public class WidgetStateAction extends StateAction {
 
     public WidgetStateAction(Context context) {
         super(context, R.string.action_widget_state_title);
-        widgetPin = addPin(new Pin(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget), PinSubType.ID));
+        widgetPin = addPin(new Pin(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget)));
         posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
         nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info), PinDirection.OUT, PinSlotType.MULTI));
     }

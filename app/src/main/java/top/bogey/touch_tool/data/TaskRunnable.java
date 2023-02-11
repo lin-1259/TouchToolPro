@@ -23,8 +23,12 @@ public class TaskRunnable implements Runnable {
     }
 
     public void stop() {
-        future.cancel(true);
-        interrupt = true;
+        if (!interrupt) {
+            future.cancel(true);
+            interrupt = true;
+        } else {
+            callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
+        }
     }
 
     public boolean isInterrupt() {

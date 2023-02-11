@@ -95,7 +95,8 @@
     <string name="action_normal_start_subtitle_condition">开始条件</string>
 
     <string name="action_out_start_title">外部应用主动执行</string>
-    <string name="action_out_start_subtitle_id">ID(不能改)</string>
+    <string name="action_out_start_subtitle_id">Url</string>
+    <string name="action_out_start_subtitle_copy">复制链接</string>
 
     <string name="action_manual_start_title">手动执行</string>
     <string name="action_app_start_title">进应用或界面时执行</string>

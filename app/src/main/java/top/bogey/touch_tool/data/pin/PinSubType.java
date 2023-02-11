@@ -5,6 +5,7 @@ public enum PinSubType {
     DATE,
     TIME,
     PERIODIC,
+
     ID,
-    LEVEL
+    URL
 }
