@@ -36,7 +36,7 @@ public class LogAction extends NormalAction {
         PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
 
         MainAccessibilityService service = MainApplication.getService();
-        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle().toString(), pinString.getValue());
+        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(), pinString.getValue());
 
         PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
         if (showToast.getValue()) {

@@ -165,9 +165,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
         private void showSelectDialog() {
             List<String> strings = selectedActivities.get(info.packageName);
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context)
-                    .setTitle(R.string.picker_app_title_select_activity)
-                    .setNegativeButton(R.string.cancel, null);
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context).setTitle(R.string.picker_app_title_select_activity).setNegativeButton(R.string.cancel, null);
             if (single) {
                 int index = 0;
                 if (strings != null) {
@@ -180,18 +178,15 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                     }
                 }
                 String[] activitiesArray = new String[activities.size()];
-                builder.setSingleChoiceItems(activities.toArray(activitiesArray), index, null)
-                        .setPositiveButton(
-                                R.string.enter,
-                                (DialogInterface dialog, int which) -> {
-                                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                                    if (checkedItemPosition != AdapterView.INVALID_POSITION) {
-                                        selectedActivities.clear();
-                                        selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
-                                        notifyItemChanged(getBindingAdapterPosition());
-                                        callback.onResult(true);
-                                    }
-                                });
+                builder.setSingleChoiceItems(activities.toArray(activitiesArray), index, null).setPositiveButton(R.string.enter, (DialogInterface dialog, int which) -> {
+                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    if (checkedItemPosition != AdapterView.INVALID_POSITION) {
+                        selectedActivities.clear();
+                        selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
+                        notifyItemChanged(getBindingAdapterPosition());
+                        callback.onResult(true);
+                    }
+                });
             } else {
                 if (strings == null) strings = new ArrayList<>();
                 boolean[] choicesInitial = new boolean[activities.size()];
@@ -201,19 +196,18 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 }
 
                 String[] activitiesArray = new String[activities.size()];
-                builder.setMultiChoiceItems(activities.toArray(activitiesArray), choicesInitial, null)
-                        .setPositiveButton(R.string.enter, (dialog, which) -> {
-                            SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                            ArrayList<String> result = new ArrayList<>();
-                            for (int i = 0; i < activities.size(); i++) {
-                                if (checkedItemPositions.get(i)) {
-                                    result.add(activities.get(i));
-                                }
-                            }
-                            selectedActivities.put(info.packageName, result);
-                            notifyItemChanged(getBindingAdapterPosition());
-                            callback.onResult(true);
-                        });
+                builder.setMultiChoiceItems(activities.toArray(activitiesArray), choicesInitial, null).setPositiveButton(R.string.enter, (dialog, which) -> {
+                    SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                    ArrayList<String> result = new ArrayList<>();
+                    for (int i = 0; i < activities.size(); i++) {
+                        if (checkedItemPositions.get(i)) {
+                            result.add(activities.get(i));
+                        }
+                    }
+                    selectedActivities.put(info.packageName, result);
+                    notifyItemChanged(getBindingAdapterPosition());
+                    callback.onResult(true);
+                });
             }
 
             builder.show();

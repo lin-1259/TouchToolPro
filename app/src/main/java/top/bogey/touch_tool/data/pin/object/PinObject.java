@@ -16,6 +16,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
+import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinObject {

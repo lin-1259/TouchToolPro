@@ -23,7 +23,6 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
-import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class BaseAction {
@@ -84,7 +83,7 @@ public class BaseAction {
 
     protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
         if (runnable.isInterrupt()) return;
-        if (pin.getDirection() == PinDirection.IN) throw new RuntimeException("执行针脚不正确");
+        if (!pin.getDirection().isOut()) throw new RuntimeException("执行针脚不正确");
 
         for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
             BaseAction action = runnable.getTask().getActionById(entry.getValue());
@@ -104,8 +103,7 @@ public class BaseAction {
     protected void sleep(long time) {
         try {
             Thread.sleep(time);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -145,7 +143,7 @@ public class BaseAction {
     // 获取针脚的值
     protected PinObject getPinValue(WorldState worldState, Task task, Pin pin) {
         // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
-        if (pin.getDirection() == PinDirection.OUT) {
+        if (pin.getDirection().isOut()) {
             calculatePinValue(worldState, task, pin);
             return pin.getValue();
         }
@@ -200,8 +198,9 @@ public class BaseAction {
                 Constructor<?> constructor = aClass.getConstructor(JsonObject.class);
                 return (BaseAction) constructor.newInstance(jsonObject);
             } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
             }
+            return null;
         }
     }
 }

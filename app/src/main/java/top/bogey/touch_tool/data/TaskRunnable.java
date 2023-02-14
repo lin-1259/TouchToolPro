@@ -50,10 +50,6 @@ public class TaskRunnable implements Runnable {
         callbacks.add(callback);
     }
 
-    public void removeCallback(TaskRunningCallback callback) {
-        callbacks.remove(callback);
-    }
-
     public void addProgress() {
         progress++;
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onProgress(this, progress));

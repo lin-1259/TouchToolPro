@@ -20,9 +20,9 @@ public class Pin {
 
     private final PinObject value;
 
-    private final PinDirection direction;
-    private final PinSlotType slotType;
-    private final PinSubType subType;
+    private PinDirection direction;
+    private PinSlotType slotType;
+    private PinSubType subType;
 
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
@@ -144,12 +144,24 @@ public class Pin {
         return direction;
     }
 
+    public void setDirection(PinDirection direction) {
+        this.direction = direction;
+    }
+
     public PinSlotType getSlotType() {
         return slotType;
     }
 
+    public void setSlotType(PinSlotType slotType) {
+        this.slotType = slotType;
+    }
+
     public PinSubType getSubType() {
         return subType;
+    }
+
+    public void setSubType(PinSubType subType) {
+        this.subType = subType;
     }
 
     public boolean isRemoveAble() {

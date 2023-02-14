@@ -139,7 +139,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
 
     public void refreshPinUI() {
         boolean linked = pin.getLinks().size() > 0;
-        boolean hidePinBox = linked || pin.getDirection() == PinDirection.OUT || pin.getPinClass().isAssignableFrom(PinExecute.class);
+        boolean hidePinBox = linked || pin.getDirection().isOut();
         pinBox.setVisibility(hidePinBox ? GONE : VISIBLE);
         if (pin.getTitle() != null) titleText.setText(String.format(hidePinBox ? "%s" : "%s:", pin.getTitle()));
         else titleText.setVisibility(GONE);

@@ -160,7 +160,7 @@
 
     <string name="action_touch_pos_action_title">点击位置</string>
     <string name="action_touch_pos_action_subtitle_position">位置</string>
-    <string name="action_touch_pos_action_subtitle_time">时长</string>
+    <string name="action_touch_pos_action_subtitle_time">时长(ms)</string>
     <string name="action_touch_pos_action_subtitle_offset">随机偏移</string>
 
     <string name="action_touch_node_action_title">点击控件</string>
@@ -184,6 +184,9 @@
     <string name="action_open_capture_subtitle_state">开启</string>
 
     <string name="action_open_app_action_title">打开应用或界面</string>
+
+    <string name="action_open_url_action_title">打开Url</string>
+    <string name="action_open_url_action_subtitle_url">Url</string>
 
     <!-- 任务 - 转换 -->
     <string name="action_value_convert_string_title">对象转换为文本</string>
@@ -225,6 +228,11 @@
     <string name="action_for_loop_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
+
+    <string name="action_parallel_logic_title">并行执行直到…</string>
+    <string name="action_parallel_logic_subtitle_condition">达到完成数</string>
+    <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
+    <string name="action_parallel_logic_subtitle_complete">达成</string>
 
 
     <!-- 任务 - 加减乘除 -->

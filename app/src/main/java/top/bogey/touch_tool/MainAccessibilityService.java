@@ -216,7 +216,7 @@ public class MainAccessibilityService extends AccessibilityService {
             view.showMe();
         }
 
-        TaskRunnable runnable = new TaskRunnable(task, startAction);
+        TaskRunnable runnable = new TaskRunnable(task.copy(), startAction);
         if (callback != null) runnable.addCallback(callback);
         runnable.addCallback(new TaskRunningCallback() {
             @Override

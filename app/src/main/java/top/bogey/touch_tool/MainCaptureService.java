@@ -101,7 +101,13 @@ public class MainCaptureService extends Service {
         super.onConfigurationChanged(newConfig);
         if (virtualDisplay != null) virtualDisplay.release();
         if (imageReader != null) imageReader.close();
-        setVirtualDisplay();
+
+        if (projection != null) setVirtualDisplay();
+        else {
+            Intent intent = new Intent(this, MainCaptureService.class);
+            intent.putExtra(STOP_CAPTURE, true);
+            startService(intent);
+        }
     }
 
     private void createNotification() {

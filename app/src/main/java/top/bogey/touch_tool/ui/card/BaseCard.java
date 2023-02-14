@@ -90,9 +90,9 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         }
     }
 
-    public void addMorePinView(Pin pin) {
-        action.addPin(action.getPins().size() - 1, pin);
-        addPinView(pin, 1);
+    public void addMorePinView(Pin pin, int offset) {
+        action.addPin(action.getPins().size() - offset, pin);
+        addPinView(pin, pin.getPinClass().isAssignableFrom(PinExecute.class) ? offset - 1 : offset);
     }
 
     public void addPinView(Pin pin, int offset) {
@@ -100,7 +100,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         if (pin.getDirection() == PinDirection.IN) {
             if (pin.getPinClass().isAssignableFrom(PinExecute.class)) {
                 pinBaseView = new PinTopView(getContext(), this, pin);
-                binding.topBox.addView(pinBaseView, binding.topBox.getChildCount());
+                binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
             } else {
                 pinBaseView = new PinInView(getContext(), this, pin);
                 binding.inBox.addView(pinBaseView, binding.inBox.getChildCount() - offset);
@@ -108,7 +108,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         } else if (pin.getDirection() == PinDirection.OUT) {
             if (pin.getPinClass().isAssignableFrom(PinExecute.class)) {
                 pinBaseView = new PinBottomView(getContext(), this, pin);
-                binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount());
+                binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
             } else {
                 pinBaseView = new PinOutView(getContext(), this, pin);
                 binding.outBox.addView(pinBaseView, binding.outBox.getChildCount() - offset);

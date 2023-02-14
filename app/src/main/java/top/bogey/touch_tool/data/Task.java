@@ -2,6 +2,8 @@ package top.bogey.touch_tool.data;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
@@ -24,6 +26,12 @@ public class Task {
     public Task() {
         id = UUID.randomUUID().toString();
         createTime = System.currentTimeMillis();
+    }
+
+    public Task copy() {
+        Gson gson = TaskRepository.getInstance().getGson();
+        String json = gson.toJson(this);
+        return gson.fromJson(json, Task.class);
     }
 
     public BaseAction getActionById(String id) {

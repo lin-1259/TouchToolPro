@@ -51,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     public static final String INTENT_KEY_QUICK_MENU = "INTENT_KEY_QUICK_MENU";
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
 
-    private ActivityMainBinding binding;
-
     private ActivityResultLauncher<Intent> intentLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<String> contentLauncher;
@@ -68,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setAttributes(params);
         }
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolBar);
 
@@ -291,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void handlePlayFloatView(int size) {
-        binding.getRoot().post(() -> {
+        runOnUiThread(() -> {
             PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getCanonicalName());
             if (size == 0) {
                 if (view != null) view.setNeedRemove(true);
@@ -306,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showToast(String msg) {
-        binding.getRoot().post(() -> {
+        runOnUiThread(() -> {
             ToastFloatView view = (ToastFloatView) EasyFloat.getView(ToastFloatView.class.getCanonicalName());
             if (view == null) {
                 view = new ToastFloatView(this);

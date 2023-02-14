@@ -72,7 +72,9 @@ public class TaskRepository {
 
     public Task getOriginTaskById(String id) {
         try {
-            return gson.fromJson(taskMMKV.decodeString(id), Task.class);
+            Task task = gson.fromJson(taskMMKV.decodeString(id), Task.class);
+            if (task != null) task.getActions().remove(null);
+            return task;
         } catch (JsonParseException e) {
             e.printStackTrace();
         }

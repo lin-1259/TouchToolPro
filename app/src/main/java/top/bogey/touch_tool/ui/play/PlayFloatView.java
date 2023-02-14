@@ -69,6 +69,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
             params.height = DisplayUtils.dp2px(getContext(), 24);
         }
         binding.closeButton.setLayoutParams(params);
+        binding.getRoot().setAlpha(expand ? 1 : 0.25f);
         SettingSave.getInstance().setPlayViewExpand(expand);
     }
 

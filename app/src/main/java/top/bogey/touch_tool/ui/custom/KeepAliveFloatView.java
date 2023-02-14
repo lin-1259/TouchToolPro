@@ -28,9 +28,11 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
     }
 
     public void showMe() {
-        binding.getRoot().animate().alpha(0.5f);
-        handler.removeCallbacksAndMessages(null);
-        handler.postDelayed(this::hideMe, 1500);
+        post(() -> {
+            binding.getRoot().animate().alpha(0.5f);
+            handler.removeCallbacksAndMessages(null);
+            handler.postDelayed(this::hideMe, 1500);
+        });
     }
 
     private void hideMe() {

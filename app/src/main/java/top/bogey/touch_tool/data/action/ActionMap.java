@@ -10,6 +10,7 @@ import top.bogey.touch_tool.data.action.action.DelayAction;
 import top.bogey.touch_tool.data.action.action.InputNodeAction;
 import top.bogey.touch_tool.data.action.action.LogAction;
 import top.bogey.touch_tool.data.action.action.OpenAppAction;
+import top.bogey.touch_tool.data.action.action.OpenUrlAction;
 import top.bogey.touch_tool.data.action.action.ScreenAction;
 import top.bogey.touch_tool.data.action.action.SystemAbilityAction;
 import top.bogey.touch_tool.data.action.action.TouchPathAction;
@@ -24,6 +25,7 @@ import top.bogey.touch_tool.data.action.convert.ValueConvertToString;
 import top.bogey.touch_tool.data.action.logic.ConditionLogicAction;
 import top.bogey.touch_tool.data.action.logic.ConditionWhileLogicAction;
 import top.bogey.touch_tool.data.action.logic.ForLoopLogicAction;
+import top.bogey.touch_tool.data.action.logic.ParallelLogicAction;
 import top.bogey.touch_tool.data.action.logic.SequenceLogicAction;
 import top.bogey.touch_tool.data.action.logic.WaitConditionLogicAction;
 import top.bogey.touch_tool.data.action.operator.IntAddAction;
@@ -71,6 +73,7 @@ public class ActionMap {
         logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
         logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
         logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);
+        logicActions.put(ParallelLogicAction.class, R.string.action_parallel_logic_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> normalActions = new LinkedHashMap<>();
         actions.put(ActionType.NORMAL, normalActions);
@@ -83,6 +86,7 @@ public class ActionMap {
         normalActions.put(ScreenAction.class, R.string.action_screen_action_title);
         normalActions.put(CaptureServiceAction.class, R.string.action_open_capture_action_title);
         normalActions.put(OpenAppAction.class, R.string.action_open_app_action_title);
+        normalActions.put(OpenUrlAction.class, R.string.action_open_url_action_title);
         normalActions.put(LogAction.class, R.string.action_log_action_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> stateActions = new LinkedHashMap<>();

@@ -28,7 +28,7 @@ public class PinWidgetAdd extends BindingView<PinWidgetAddBinding> {
 
         binding.addButton.setOnClickListener(v -> {
             Pin copyPin = pinAdd.getPin().copy(true);
-            card.addMorePinView(copyPin);
+            card.addMorePinView(copyPin, pinAdd.getOffset());
         });
     }
 }

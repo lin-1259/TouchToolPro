@@ -219,7 +219,7 @@ public class CardLayoutView extends FrameLayout {
                     PinBaseView<?> pinBaseView = baseCard.getPinById(entry.getKey());
                     if (pinBaseView == null) continue;
                     // 只画输出的线
-                    if (pinBaseView.getPin().getDirection() == PinDirection.OUT) {
+                    if (pinBaseView.getPin().getDirection().isOut()) {
                         linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
                         canvas.drawPath(calculateLinePath(pinBaseView, card.getPinById(pin.getId())), linePaint);
                     }
@@ -331,7 +331,7 @@ public class CardLayoutView extends FrameLayout {
                             dragState = DRAG_PIN;
                             HashMap<String, String> links = pin.getLinks();
                             // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
-                            if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection() == PinDirection.OUT)) {
+                            if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection().isOut())) {
                                 dragLinks.put(pin.getId(), pin.getActionId());
                                 // 目标方向与自身相反
                                 dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
@@ -446,7 +446,7 @@ public class CardLayoutView extends FrameLayout {
                 break;
             }
 
-            if (pin.getDirection() == linkPin.getDirection()) {
+            if (pin.getDirection().isOut() == linkPin.getDirection().isOut()) {
                 flag = false;
                 break;
             }
