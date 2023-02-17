@@ -6,9 +6,8 @@ import android.os.BatteryManager;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StateAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
@@ -27,11 +26,12 @@ public class BatteryChargingStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
 
+        WorldState worldState = WorldState.getInstance();
         int batteryState = worldState.getBatteryState();
-        int chargingState = convertToChargingState(((PinSpinner) getPinValue(worldState, task, chargingStatePin)).getIndex());
+        int chargingState = convertToChargingState(((PinSpinner) getPinValue(actionContext, chargingStatePin)).getIndex());
         value.setValue(chargingState == batteryState);
     }
 

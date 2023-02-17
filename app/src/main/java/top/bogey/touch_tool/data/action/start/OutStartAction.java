@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinString;

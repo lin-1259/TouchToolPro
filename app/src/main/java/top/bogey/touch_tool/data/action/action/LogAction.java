@@ -9,7 +9,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
@@ -32,16 +32,16 @@ public class LogAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), textPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinString pinString = (PinString) getPinValue(actionContext, textPin);
 
         MainAccessibilityService service = MainApplication.getService();
         TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(), pinString.getValue());
 
-        PinBoolean showToast = (PinBoolean) getPinValue(worldState, runnable.getTask(), toastPin);
+        PinBoolean showToast = (PinBoolean) getPinValue(actionContext, toastPin);
         if (showToast.getValue()) {
             service.showToast(pinString.getValue());
         }
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

@@ -9,8 +9,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.UUID;
 
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class Pin {
@@ -96,6 +100,30 @@ public class Pin {
         copy.id = UUID.randomUUID().toString();
         copy.removeAble = removeAble;
         return copy;
+    }
+
+    public Pin getLinkedPin(ActionContext actionContext) {
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseAction action = null;
+            for (BaseAction baseAction : actionContext.getActions()) {
+                if (baseAction.getId().equals(entry.getValue())) {
+                    action = baseAction;
+                    break;
+                }
+            }
+            if (action == null) continue;
+            Pin pin = action.getPinById(entry.getKey());
+            if (pin == null) continue;
+            return pin;
+        }
+        return null;
+    }
+
+    public BaseAction getOwner(ActionContext actionContext) {
+        for (BaseAction action : actionContext.getActions()) {
+            if (action.getId().equals(actionId)) return action;
+        }
+        return null;
     }
 
     public HashMap<String, String> addLink(Pin pin) {

@@ -12,7 +12,7 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.action.start.InnerStartAction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -57,7 +57,7 @@ public class ParallelLogicAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         ArrayList<Pin> pins = getPins();
         ArrayList<Pin> subPins = new ArrayList<>();
         subPins.add(outPin);
@@ -65,8 +65,8 @@ public class ParallelLogicAction extends NormalAction {
             subPins.add(pins.get(i));
         }
 
-        PinInteger condition = (PinInteger) getPinValue(worldState, runnable.getTask(), conditionPin);
-        PinInteger timeout = (PinInteger) getPinValue(worldState, runnable.getTask(), timeOutPin);
+        PinInteger condition = (PinInteger) getPinValue(actionContext, conditionPin);
+        PinInteger timeout = (PinInteger) getPinValue(actionContext, timeOutPin);
 
         MainAccessibilityService service = MainApplication.getService();
         CountDownLatch latch = new CountDownLatch(condition.getValue() > 0 ? condition.getValue() : 1);
@@ -74,9 +74,7 @@ public class ParallelLogicAction extends NormalAction {
         for (Pin subPin : subPins) {
             TaskRunnable taskRunnable = service.runTask(runnable.getTask(), new InnerStartAction(service, subPin), new TaskRunningCallback() {
                 @Override
-                public void onStart(TaskRunnable runnable) {
-
-                }
+                public void onStart(TaskRunnable runnable) {}
 
                 @Override
                 public void onEnd(TaskRunnable runnable) {
@@ -84,9 +82,7 @@ public class ParallelLogicAction extends NormalAction {
                 }
 
                 @Override
-                public void onProgress(TaskRunnable runnable, int progress) {
-
-                }
+                public void onProgress(TaskRunnable runnable, int progress) {}
             });
 
             runnableList.add(taskRunnable);
@@ -94,9 +90,9 @@ public class ParallelLogicAction extends NormalAction {
         try {
             boolean result = latch.await(timeout.getValue(), TimeUnit.MILLISECONDS);
             if (result) {
-                super.doAction(worldState, runnable, completePin);
+                doNextAction(runnable, actionContext, completePin);
             } else {
-                super.doAction(worldState, runnable, falsePin);
+                doNextAction(runnable, actionContext, falsePin);
             }
 
         } catch (InterruptedException e) {

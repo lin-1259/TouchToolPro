@@ -25,15 +25,6 @@ public class PinColor extends PinValue {
         area = new Rect();
     }
 
-    public PinColor(PinColor pinColor) {
-        super();
-        color = new int[]{pinColor.color[0], pinColor.color[1], pinColor.color[2]};
-        screen = pinColor.screen;
-        minSize = pinColor.minSize;
-        maxSize = pinColor.maxSize;
-        area = new Rect(pinColor.area);
-    }
-
     public PinColor(JsonObject jsonObject) {
         super(jsonObject);
         Gson gson = new Gson();

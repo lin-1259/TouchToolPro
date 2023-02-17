@@ -7,7 +7,6 @@ import androidx.annotation.StringRes;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 
 public class CalculateAction extends BaseAction {
@@ -20,10 +19,6 @@ public class CalculateAction extends BaseAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
-    }
-
-    @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
+    protected void doNextAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
     }
 }

@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -37,22 +37,22 @@ public class TouchNodeAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(worldState, runnable.getTask(), nodePin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(actionContext, nodePin);
         AccessibilityNodeInfo nodeInfo = pinNodeInfo.getNodeInfo();
         boolean result = false;
         if (nodeInfo != null) {
             AccessibilityNodeInfo clickAble = getClickAbleParent(nodeInfo);
             if (clickAble != null) {
-                PinBoolean longTouch = (PinBoolean) getPinValue(worldState, runnable.getTask(), longTouchPin);
+                PinBoolean longTouch = (PinBoolean) getPinValue(actionContext, longTouchPin);
                 result = clickAble.performAction(longTouch.getValue() ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
             }
         }
         sleep(100);
         if (result) {
-            super.doAction(worldState, runnable, outPin);
+            doNextAction(runnable, actionContext, outPin);
         } else {
-            super.doAction(worldState, runnable, falsePin);
+            doNextAction(runnable, actionContext, falsePin);
         }
     }
 

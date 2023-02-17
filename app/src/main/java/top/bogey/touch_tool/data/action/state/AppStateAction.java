@@ -10,9 +10,8 @@ import java.util.Map;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StateAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
@@ -32,10 +31,11 @@ public class AppStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         value.setValue(false);
 
+        WorldState worldState = WorldState.getInstance();
         String packageName = worldState.getPackageName();
         if (packageName == null) return;
         String activityName = worldState.getActivityName();
@@ -43,7 +43,7 @@ public class AppStateAction extends StateAction {
         MainAccessibilityService service = MainApplication.getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
-        PinSelectApp helper = (PinSelectApp) getPinValue(worldState, task, appPin);
+        PinSelectApp helper = (PinSelectApp) getPinValue(actionContext, appPin);
         Map<String, ArrayList<String>> packages = helper.getPackages();
 
         // 包含通用且包含当前包，代表排除当前包内的一些东西

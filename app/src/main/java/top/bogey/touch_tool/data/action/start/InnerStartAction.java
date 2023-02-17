@@ -2,9 +2,11 @@ package top.bogey.touch_tool.data.action.start;
 
 import android.content.Context;
 
+import java.util.HashSet;
+
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 
 public class InnerStartAction extends StartAction {
@@ -16,7 +18,7 @@ public class InnerStartAction extends StartAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
-        doAction(worldState, runnable, pin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        doNextAction(runnable, actionContext, this.pin);
     }
 }

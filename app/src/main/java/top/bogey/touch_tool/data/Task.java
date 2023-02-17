@@ -9,14 +9,17 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
 
-public class Task {
+public class Task implements ActionContext {
     private final String id;
     private final HashSet<BaseAction> actions = new HashSet<>();
+    private final HashSet<BaseFunction> functions = new HashSet<>();
 
     private final long createTime;
     private String tag;
@@ -102,6 +105,7 @@ public class Task {
         return id;
     }
 
+    @Override
     public HashSet<BaseAction> getActions() {
         return actions;
     }

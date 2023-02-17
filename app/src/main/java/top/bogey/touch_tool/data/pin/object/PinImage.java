@@ -31,19 +31,6 @@ public class PinImage extends PinValue {
         area = new Rect();
     }
 
-    public PinImage(Context context, Bitmap bitmap, Rect area) {
-        super();
-        this.bitmap = bitmap;
-        if (bitmap != null) {
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            byte[] bytes = stream.toByteArray();
-            image = Base64.encodeToString(bytes, Base64.DEFAULT);
-        }
-        screen = DisplayUtils.getScreen(context);
-        this.area = area;
-    }
-
     public PinImage(JsonObject jsonObject) {
         super(jsonObject);
         screen = jsonObject.get("screen").getAsInt();

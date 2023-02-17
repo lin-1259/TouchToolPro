@@ -11,8 +11,9 @@
         android:orientation="vertical"
         android:padding="8dp">
 
+
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="24dp"
             android:gravity="center_vertical"
             android:textSize="11sp"
@@ -50,6 +51,41 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 app:icon="@drawable/icon_touch" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="24dp"
+                android:layout_weight="1">
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/timeSlider"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:valueFrom="100"
+                    android:valueTo="6000"
+                    android:stepSize="100"
+                    android:value="100"
+                    app:thumbRadius="6dp"
+                    app:trackColorInactive="?attr/colorSurface" />
+
+            </FrameLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playButton"
+                style="@style/Theme.TouchTool.IconButton.Filled"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:icon="@drawable/icon_play" />
 
         </LinearLayout>
 

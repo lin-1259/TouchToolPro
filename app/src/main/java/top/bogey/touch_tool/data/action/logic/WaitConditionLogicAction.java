@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -37,22 +37,22 @@ public class WaitConditionLogicAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinBoolean condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
-        PinInteger timeout = (PinInteger) getPinValue(worldState, runnable.getTask(), timeOutPin);
-        PinInteger periodic = (PinInteger) getPinValue(worldState, runnable.getTask(), periodicPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinBoolean condition = (PinBoolean) getPinValue(actionContext, conditionPin);
+        PinInteger timeout = (PinInteger) getPinValue(actionContext, timeOutPin);
+        PinInteger periodic = (PinInteger) getPinValue(actionContext, periodicPin);
         long startTime = System.currentTimeMillis();
         while (!condition.getValue()) {
             sleep(periodic.getValue());
             if (runnable.isInterrupt()) return;
             if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
-            condition = (PinBoolean) getPinValue(worldState, runnable.getTask(), conditionPin);
+            condition = (PinBoolean) getPinValue(actionContext, conditionPin);
         }
 
         if (condition.getValue()) {
-            super.doAction(worldState, runnable, outPin);
+            doNextAction(runnable, actionContext, outPin);
         } else {
-            super.doAction(worldState, runnable, falsePin);
+            doNextAction(runnable, actionContext, falsePin);
         }
     }
 }

@@ -15,7 +15,7 @@ import java.util.Objects;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 

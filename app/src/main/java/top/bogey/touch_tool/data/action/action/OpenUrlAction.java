@@ -8,7 +8,7 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinString;
@@ -28,12 +28,12 @@ public class OpenUrlAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinString pinString = (PinString) getPinValue(worldState, runnable.getTask(), urlPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinString pinString = (PinString) getPinValue(actionContext, urlPin);
 
         MainAccessibilityService service = MainApplication.getService();
         AppUtils.gotoUrl(service, pinString.getValue());
 
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

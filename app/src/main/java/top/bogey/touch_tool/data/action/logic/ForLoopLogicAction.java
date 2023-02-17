@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -41,19 +41,19 @@ public class ForLoopLogicAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (pin.getId().equals(inPin.getId())) {
             needBreak = false;
-            PinInteger start = (PinInteger) getPinValue(worldState, runnable.getTask(), startPin);
-            PinInteger end = (PinInteger) getPinValue(worldState, runnable.getTask(), endPin);
+            PinInteger start = (PinInteger) getPinValue(actionContext, startPin);
+            PinInteger end = (PinInteger) getPinValue(actionContext, endPin);
             PinInteger current = (PinInteger) currentPin.getValue();
             for (int i = start.getValue(); i <= end.getValue(); i++) {
                 if (runnable.isInterrupt()) return;
                 if (needBreak) break;
                 current.setValue(i);
-                super.doAction(worldState, runnable, outPin);
+                doNextAction(runnable, actionContext, outPin);
             }
-            super.doAction(worldState, runnable, completePin);
+            doNextAction(runnable, actionContext, completePin);
         } else {
             needBreak = true;
         }

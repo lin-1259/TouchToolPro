@@ -5,8 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -30,9 +29,9 @@ public class BoolConvertToNot extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) outConditionPin.getValue();
-        PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, conditionPin);
+        PinBoolean resultPin = (PinBoolean) getPinValue(actionContext, conditionPin);
         value.setValue(!resultPin.getValue());
     }
 }

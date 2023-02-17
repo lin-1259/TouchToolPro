@@ -5,8 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -31,8 +30,8 @@ public class ValueConvertToString extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
-        PinValue value = (PinValue) getPinValue(worldState, task, valuePin);
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+        PinValue value = (PinValue) getPinValue(actionContext, valuePin);
         PinString string = (PinString) stringPin.getValue();
         string.setValue(value.toString());
     }

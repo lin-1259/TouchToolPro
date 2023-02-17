@@ -8,7 +8,7 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
@@ -35,15 +35,15 @@ public class TouchPosAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinPoint pos = (PinPoint) getPinValue(worldState, runnable.getTask(), posPin);
-        PinValueArea timeArea = (PinValueArea) getPinValue(worldState, runnable.getTask(), timePin);
-        PinBoolean offset = (PinBoolean) getPinValue(worldState, runnable.getTask(), offsetPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinPoint pos = (PinPoint) getPinValue(actionContext, posPin);
+        PinValueArea timeArea = (PinValueArea) getPinValue(actionContext, timePin);
+        PinBoolean offset = (PinBoolean) getPinValue(actionContext, offsetPin);
 
         MainAccessibilityService service = MainApplication.getService();
         int randomTime = timeArea.getRandomValue();
         service.runGesture(pos.getX(offset.getValue()), pos.getY(offset.getValue()), randomTime, null);
         sleep(randomTime);
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

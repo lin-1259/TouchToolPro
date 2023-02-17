@@ -3,8 +3,6 @@ package top.bogey.touch_tool.data.action.action;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.widget.Toast;
 
 import com.google.gson.JsonObject;
 
@@ -12,7 +10,7 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
@@ -31,8 +29,8 @@ public class SystemAbilityAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinSpinner ability = (PinSpinner) getPinValue(worldState, runnable.getTask(), abilityPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinSpinner ability = (PinSpinner) getPinValue(actionContext, abilityPin);
         MainAccessibilityService service = MainApplication.getService();
         switch (ability.getIndex()) {
             case 0:
@@ -51,12 +49,10 @@ public class SystemAbilityAction extends NormalAction {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TAKE_SCREENSHOT);
                 } else {
-                    new Handler(service.getMainLooper()).post(() -> {
-                        Toast.makeText(service, R.string.device_not_support_snap, Toast.LENGTH_SHORT).show();
-                    });
+                    service.showToast(service.getString(R.string.device_not_support_snap));
                 }
                 break;
         }
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

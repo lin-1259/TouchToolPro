@@ -7,8 +7,7 @@ import androidx.annotation.StringRes;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -39,12 +38,12 @@ public class IntDivAction extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 
-        PinInteger origin = (PinInteger) getPinValue(worldState, task, originPin);
-        PinInteger second = (PinInteger) getPinValue(worldState, task, secondPin);
+        PinInteger origin = (PinInteger) getPinValue(actionContext, originPin);
+        PinInteger second = (PinInteger) getPinValue(actionContext, secondPin);
         int secondValue = second.getValue();
         if (secondValue == 0) secondValue = 1;
         value.setValue(origin.getValue() / secondValue);

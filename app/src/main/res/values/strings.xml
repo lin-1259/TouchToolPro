@@ -146,7 +146,7 @@
     <string name="action_color_state_subtitle_color">颜色</string>
 
     <string name="action_widget_state_title">界面内存在控件</string>
-    <string name="action_widget_state_subtitle_widget">控件</string>
+    <string name="action_widget_state_subtitle_widget">控件描述</string>
 
     <string name="action_capture_state_title">录屏服务状态</string>
 
@@ -243,6 +243,19 @@
 
     <string name="action_string_add_operator_title">文本拼接</string>
 
+    <!-- 针脚 -->
+    <string name="pin_value">对象</string>
+    <string name="pin_execute">执行</string>
+    <string name="pin_boolean">条件</string>
+    <string name="pin_int">数值</string>
+    <string name="pin_string">文本</string>
+    <string name="pin_value_area">数值区域</string>
+    <string name="pin_image">图片</string>
+    <string name="pin_color">颜色</string>
+    <string name="pin_point">位置</string>
+    <string name="pin_path">手势</string>
+    <string name="pin_widget">控件描述</string>
+    <string name="pin_node_info">控件</string>
 
     <!-- 采集器 -->
     <string name="picker_color_preview_title">选择颜色</string>

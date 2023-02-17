@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action;
+package top.bogey.touch_tool.data.action.start;
 
 import android.content.Context;
 
@@ -7,10 +7,9 @@ import androidx.annotation.StringRes;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.start.RestartType;
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
@@ -38,12 +37,12 @@ public class StartAction extends BaseAction {
     }
 
     @Override
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
-        doAction(worldState, runnable, outPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        doNextAction(runnable, actionContext, outPin);
     }
 
     // 开始动作只做开始检测
-    public boolean checkReady(WorldState worldState, Task task) {
+    public boolean checkReady(ActionContext actionContext) {
         return true;
     }
 

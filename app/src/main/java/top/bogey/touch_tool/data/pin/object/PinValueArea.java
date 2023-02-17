@@ -14,17 +14,17 @@ public class PinValueArea extends PinValue {
     private int currMin;
     private int currMax;
 
+    public PinValueArea() {
+        this(1, 100, 1);
+    }
+
     public PinValueArea(int valueFrom, int valueTo, int step) {
-        super();
-        if ((valueTo - valueFrom) * 1f % step != 0) throw new RuntimeException("步长有问题");
-        this.valueFrom = valueFrom;
-        currMin = valueFrom;
-        this.valueTo = valueTo;
-        currMax = valueTo;
-        this.step = step;
+        this(valueFrom, valueTo, step, valueFrom, valueTo);
     }
 
     public PinValueArea(int valueFrom, int valueTo, int step, int currMin, int currMax) {
+        super();
+        if ((valueTo - valueFrom) * 1f % step != 0) throw new RuntimeException("步长有问题");
         this.valueFrom = valueFrom;
         this.valueTo = valueTo;
         this.step = step;

@@ -8,9 +8,7 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StateAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
@@ -39,7 +37,7 @@ public class ImageStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(statePin.getId())) return;
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
@@ -48,13 +46,13 @@ public class ImageStateAction extends StateAction {
             return;
         }
 
-        PinImage image = (PinImage) getPinValue(worldState, task, imagePin);
+        PinImage image = (PinImage) getPinValue(actionContext, imagePin);
         if (image.getBitmap() == null) {
             value.setValue(false);
             return;
         }
 
-        PinInteger similar = (PinInteger) getPinValue(worldState, task, similarPin);
+        PinInteger similar = (PinInteger) getPinValue(actionContext, similarPin);
         Rect rect = service.binder.matchImage(image.getScaleBitmap(service), similar.getValue(), image.getArea(service));
         if (rect == null) {
             value.setValue(false);

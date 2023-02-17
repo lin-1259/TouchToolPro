@@ -6,6 +6,10 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.material.slider.LabelFormatter;
+import com.google.android.material.slider.Slider;
+
+import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.databinding.FloatPickerTouchPreviewBinding;
@@ -16,6 +20,7 @@ import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 public class TouchPickerFloatPreview extends BasePickerFloatView {
     private final PinPath newPinPath;
 
+    @SuppressLint("DefaultLocale")
     public TouchPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinPath pinPath) {
         super(context, callback);
         newPinPath = (PinPath) pinPath.copy();
@@ -34,6 +39,21 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
                 callback.onComplete();
             }
             dismiss();
+        });
+
+        int[] time = {100};
+        binding.timeSlider.addOnChangeListener((slider, value, fromUser) -> {
+            if (fromUser) {
+                time[0] = (int) value;
+            }
+        });
+        binding.timeSlider.setLabelFormatter(value -> String.format("%dms", (int) value));
+
+        binding.playButton.setOnClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceEnabled()) {
+                service.runGesture(newPinPath.getRealPaths(context, false), time[0], null);
+            }
         });
 
         binding.backButton.setOnClickListener(v -> dismiss());

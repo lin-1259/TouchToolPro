@@ -5,12 +5,9 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
-import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class NormalStartAction extends StartAction {
     private transient final Pin startPin;
@@ -26,8 +23,8 @@ public class NormalStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(WorldState worldState, Task task) {
-        PinBoolean value = (PinBoolean) getPinValue(worldState, task, startPin);
+    public boolean checkReady(ActionContext actionContext) {
+        PinBoolean value = (PinBoolean) getPinValue(actionContext, startPin);
         return value.getValue();
     }
 }

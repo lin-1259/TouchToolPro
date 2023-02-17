@@ -30,16 +30,6 @@ public class PinPath extends PinValue {
         offset = new Point();
     }
 
-    public PinPath(JsonObject jsonObject) {
-        super(jsonObject);
-        Gson gson = new Gson();
-        paths.addAll(gson.fromJson(jsonObject.get("paths"), new TypeToken<ArrayList<TouchPath>>() {
-        }.getType()));
-        screen = jsonObject.get("screen").getAsInt();
-        gravity = FloatGravity.valueOf(jsonObject.get("gravity").getAsString());
-        offset = gson.fromJson(jsonObject.get("offset"), Point.class);
-    }
-
     public ArrayList<Path> getRealPaths(Context context, boolean fixed) {
         ArrayList<Path> paths = new ArrayList<>();
         ArrayList<TouchPath> touchPaths = getPaths(context);

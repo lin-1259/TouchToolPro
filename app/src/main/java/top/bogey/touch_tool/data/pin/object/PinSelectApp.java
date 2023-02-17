@@ -7,10 +7,16 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import top.bogey.touch_tool.ui.app.AppView;
+
 public class PinSelectApp extends PinValue {
 
     private final LinkedHashMap<String, ArrayList<String>> packages = new LinkedHashMap<>();
     private final int mode;
+
+    public PinSelectApp() {
+        this(AppView.MULTI_WITH_ACTIVITY_MODE);
+    }
 
     public PinSelectApp(int mode) {
         super();

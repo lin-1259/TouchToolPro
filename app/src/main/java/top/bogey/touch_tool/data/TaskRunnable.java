@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.Future;
 
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
 public class TaskRunnable implements Runnable {
@@ -39,7 +39,7 @@ public class TaskRunnable implements Runnable {
     public void run() {
         try {
             callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onStart(this));
-            startAction.doAction(WorldState.getInstance(), this);
+            startAction.doAction(this, task, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

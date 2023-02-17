@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.data.action;
+package top.bogey.touch_tool.data.action.state;
 
 import android.content.Context;
 
@@ -7,6 +7,7 @@ import androidx.annotation.StringRes;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;

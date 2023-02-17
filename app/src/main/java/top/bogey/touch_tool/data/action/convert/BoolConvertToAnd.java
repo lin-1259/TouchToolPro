@@ -7,8 +7,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -40,14 +39,14 @@ public class BoolConvertToAnd extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) outConditionPin.getValue();
 
         ArrayList<Pin> pins = getPins();
         int i = pins.indexOf(firstConditionPin);
         for (; i < pins.size() - 1; i++) {
             Pin pinObject = pins.get(i);
-            PinBoolean resultPin = (PinBoolean) getPinValue(worldState, task, pinObject);
+            PinBoolean resultPin = (PinBoolean) getPinValue(actionContext, pinObject);
             if (!resultPin.getValue()) {
                 value.setValue(false);
                 return;

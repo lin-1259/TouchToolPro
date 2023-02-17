@@ -2,10 +2,10 @@ package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -16,12 +16,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
@@ -64,7 +62,7 @@ public class BaseAction {
     }
 
     public BaseAction copy() {
-        Gson gson = new GsonBuilder().registerTypeAdapter(BaseAction.class, new BaseActionDeserialize()).create();
+        Gson gson = TaskRepository.getInstance().getGson();
         String json = gson.toJson(this);
         BaseAction copy = gson.fromJson(json, BaseAction.class);
         copy.setId(UUID.randomUUID().toString());
@@ -78,26 +76,43 @@ public class BaseAction {
         return copy;
     }
 
-    public void doAction(WorldState worldState, TaskRunnable runnable) {
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        doNextAction(runnable, actionContext, pin);
     }
 
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
+    protected void doNextAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (runnable.isInterrupt()) return;
         if (!pin.getDirection().isOut()) throw new RuntimeException("执行针脚不正确");
 
-        for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
-            BaseAction action = runnable.getTask().getActionById(entry.getValue());
-            if (action == null) continue;
-            Pin pinById = action.getPinById(entry.getKey());
-            if (pinById == null) continue;
-            runnable.addProgress();
-            action.doAction(worldState, runnable, pinById);
-            return;
-        }
+        Pin linkedPin = pin.getLinkedPin(actionContext);
+        if (linkedPin == null) return;
+        BaseAction owner = linkedPin.getOwner(actionContext);
+        runnable.addProgress();
+        owner.doAction(runnable, actionContext, linkedPin);
     }
 
     // 获取针脚值之前先计算下针脚
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+    }
+
+    // 获取针脚的值
+    protected PinObject getPinValue(ActionContext actionContext, Pin pin) {
+        // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
+        if (pin.getDirection().isOut()) {
+            calculatePinValue(actionContext, pin);
+            return pin.getValue();
+        }
+
+        // 再看看输入针脚有没有连接，有连接就是连接的值
+        if (pin.getLinks().size() > 0) {
+            Pin linkedPin = pin.getLinkedPin(actionContext);
+            if (linkedPin == null) throw new RuntimeException("针脚没有默认值");
+            BaseAction owner = linkedPin.getOwner(actionContext);
+            return owner.getPinValue(actionContext, linkedPin);
+        } else {
+            // 否则，就是自己的默认值
+            return pin.getValue();
+        }
     }
 
     protected void sleep(long time) {
@@ -138,30 +153,6 @@ public class BaseAction {
             if (pin.getId().equals(id)) return pin;
         }
         return null;
-    }
-
-    // 获取针脚的值
-    protected PinObject getPinValue(WorldState worldState, Task task, Pin pin) {
-        // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
-        if (pin.getDirection().isOut()) {
-            calculatePinValue(worldState, task, pin);
-            return pin.getValue();
-        }
-
-        // 再看看针脚有没有连接，有连接就是连接的值
-        if (pin.getLinks().size() > 0) {
-            for (Map.Entry<String, String> entry : pin.getLinks().entrySet()) {
-                BaseAction action = task.getActionById(entry.getValue());
-                if (action == null) continue;
-                Pin pinById = action.getPinById(entry.getKey());
-                if (pinById == null) continue;
-                return action.getPinValue(worldState, task, pinById);
-            }
-            throw new RuntimeException("针脚没有默认值");
-        } else {
-            // 否则，就是自己的默认值
-            return pin.getValue();
-        }
     }
 
     public String getTitle() {

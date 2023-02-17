@@ -12,9 +12,7 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StateAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
@@ -45,11 +43,11 @@ public class TextStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
 
-        String text = ((PinString) getPinValue(worldState, task, textPin)).getValue();
+        String text = ((PinString) getPinValue(actionContext, textPin)).getValue();
         if (text == null || text.isEmpty()) {
             value.setValue(false);
             return;

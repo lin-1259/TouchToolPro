@@ -11,7 +11,7 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
@@ -31,8 +31,8 @@ public class ScreenAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinBoolean state = (PinBoolean) getPinValue(worldState, runnable.getTask(), screenPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinBoolean state = (PinBoolean) getPinValue(actionContext, screenPin);
         MainAccessibilityService service = MainApplication.getService();
         if (state.getValue()) {
             AppUtils.wakeScreen(service);
@@ -43,6 +43,6 @@ public class ScreenAction extends NormalAction {
                 Toast.makeText(service, R.string.device_not_support_lock, Toast.LENGTH_SHORT).show();
             }
         }
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

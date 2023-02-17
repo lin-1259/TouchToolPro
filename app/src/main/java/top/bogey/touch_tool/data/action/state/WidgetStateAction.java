@@ -9,13 +9,10 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StateAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
-import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
@@ -43,12 +40,12 @@ public class WidgetStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(WorldState worldState, Task task, Pin pin) {
+    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getService();
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
 
-        PinWidget widget = (PinWidget) getPinValue(worldState, task, widgetPin);
+        PinWidget widget = (PinWidget) getPinValue(actionContext, widgetPin);
         AccessibilityNodeInfo node = widget.getNode(root);
         if (node != null) {
             value.setValue(true);

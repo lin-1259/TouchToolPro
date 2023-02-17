@@ -5,9 +5,8 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StartAction;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.state.BatteryChargingStateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
@@ -27,10 +26,11 @@ public class BatteryChargingStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(WorldState worldState, Task task) {
+    public boolean checkReady(ActionContext actionContext) {
+        WorldState worldState = WorldState.getInstance();
         int batteryState = worldState.getBatteryState();
 
-        PinSpinner value = (PinSpinner) getPinValue(worldState, task, statePin);
+        PinSpinner value = (PinSpinner) getPinValue(actionContext, statePin);
         if (BatteryChargingStateAction.convertToChargingState(value.getIndex()) != batteryState)
             return false;
 

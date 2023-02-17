@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -42,16 +42,16 @@ public class InputNodeAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(worldState, runnable.getTask(), nodePin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(actionContext, nodePin);
         AccessibilityNodeInfo nodeInfo = pinNodeInfo.getNodeInfo();
         boolean result;
         if (nodeInfo == null || !nodeInfo.isEditable()) {
             result = false;
         } else {
-            PinString content = (PinString) getPinValue(worldState, runnable.getTask(), contentPin);
+            PinString content = (PinString) getPinValue(actionContext, contentPin);
             String text = content.getValue();
-            PinBoolean append = (PinBoolean) getPinValue(worldState, runnable.getTask(), appendPin);
+            PinBoolean append = (PinBoolean) getPinValue(actionContext, appendPin);
             if (append.getValue() && nodeInfo.getText() != null) {
                 if (text == null) text = nodeInfo.getText().toString();
                 else text = nodeInfo.getText().toString() + text;
@@ -62,9 +62,9 @@ public class InputNodeAction extends NormalAction {
         }
         sleep(100);
         if (result) {
-            super.doAction(worldState, runnable, outPin);
+            doNextAction(runnable, actionContext, outPin);
         } else {
-            super.doAction(worldState, runnable, falsePin);
+            doNextAction(runnable, actionContext, falsePin);
         }
     }
 }

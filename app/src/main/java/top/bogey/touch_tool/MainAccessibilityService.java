@@ -37,8 +37,8 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
-import top.bogey.touch_tool.data.action.StartAction;
 import top.bogey.touch_tool.data.action.start.OutStartAction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
@@ -157,7 +157,7 @@ public class MainAccessibilityService extends AccessibilityService {
         if (isServiceEnabled()) {
             for (Task task : TaskRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
                 for (StartAction startAction : task.getStartActions(TimeStartAction.class)) {
-                    if (startAction.isEnable() && startAction.checkReady(WorldState.getInstance(), task)) {
+                    if (startAction.isEnable() && startAction.checkReady(task)) {
                         addWork(task, (TimeStartAction) startAction);
                     }
                 }
@@ -386,7 +386,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
         // 添加新的定时任务，覆盖之前设置的
         for (StartAction startAction : startActions) {
-            if (startAction.isEnable() && startAction.checkReady(WorldState.getInstance(), task)) {
+            if (startAction.isEnable() && startAction.checkReady(task)) {
                 addWork(task, (TimeStartAction) startAction);
             }
         }
@@ -396,12 +396,11 @@ public class MainAccessibilityService extends AccessibilityService {
         if (!isServiceEnabled()) return;
         if (task == null || startAction == null) return;
         WorkManager workManager = WorkManager.getInstance(this);
-        WorldState worldState = WorldState.getInstance();
 
         long timeMillis = System.currentTimeMillis();
 
-        long startTime = startAction.getStartTime(worldState, task);
-        long periodic = startAction.getPeriodic(worldState, task);
+        long startTime = startAction.getStartTime(task);
+        long periodic = startAction.getPeriodic(task);
 
         if (periodic > 0) {
             long nextStartTime;

@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
@@ -25,9 +25,9 @@ public class DelayAction extends NormalAction {
     }
 
     @Override
-    protected void doAction(WorldState worldState, TaskRunnable runnable, Pin pin) {
-        PinValueArea pinValueArea = (PinValueArea) getPinValue(worldState, runnable.getTask(), delayPin);
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinValueArea pinValueArea = (PinValueArea) getPinValue(actionContext, delayPin);
         sleep(pinValueArea.getRandomValue());
-        super.doAction(worldState, runnable, outPin);
+        doNextAction(runnable, actionContext, outPin);
     }
 }

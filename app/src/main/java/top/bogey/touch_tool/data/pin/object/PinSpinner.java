@@ -7,6 +7,10 @@ public class PinSpinner extends PinValue {
     private final String[] array;
     private int index;
 
+    public PinSpinner() {
+        this(new String[]{});
+    }
+
     public PinSpinner(String[] array) {
         super();
         this.array = array;

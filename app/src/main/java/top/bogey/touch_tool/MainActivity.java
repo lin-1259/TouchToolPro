@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         runFirstTimes();
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     private void copyError(String error) {
