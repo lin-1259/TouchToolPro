@@ -23,12 +23,8 @@ public class TaskRunnable implements Runnable {
     }
 
     public void stop() {
-        if (!interrupt) {
-            future.cancel(true);
-            interrupt = true;
-        } else {
-            callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
-        }
+        future.cancel(true);
+        interrupt = true;
     }
 
     public boolean isInterrupt() {
@@ -38,6 +34,7 @@ public class TaskRunnable implements Runnable {
     @Override
     public void run() {
         try {
+            if (!startAction.checkReady(this, task)) return;
             callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onStart(this));
             startAction.doAction(this, task, null);
         } catch (Exception e) {

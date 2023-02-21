@@ -3,11 +3,14 @@ package top.bogey.touch_tool.ui.picker;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
+import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.action.TouchNodeAction;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetPreviewBinding;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
@@ -38,6 +41,25 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         });
 
         binding.backButton.setOnClickListener(v -> dismiss());
+
+        binding.playButton.setOnClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceEnabled()) {
+                AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
+                AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            }
+        });
+
+        binding.playButton.setOnLongClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getService();
+            if (service != null && service.isServiceEnabled()) {
+                AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
+                AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+            }
+            return true;
+        });
     }
 
     @Override

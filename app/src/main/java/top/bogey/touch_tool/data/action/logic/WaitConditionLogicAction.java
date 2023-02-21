@@ -38,15 +38,15 @@ public class WaitConditionLogicAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinBoolean condition = (PinBoolean) getPinValue(actionContext, conditionPin);
-        PinInteger timeout = (PinInteger) getPinValue(actionContext, timeOutPin);
-        PinInteger periodic = (PinInteger) getPinValue(actionContext, periodicPin);
+        PinBoolean condition = (PinBoolean) getPinValue(runnable, actionContext, conditionPin);
+        PinInteger timeout = (PinInteger) getPinValue(runnable, actionContext, timeOutPin);
+        PinInteger periodic = (PinInteger) getPinValue(runnable, actionContext, periodicPin);
         long startTime = System.currentTimeMillis();
         while (!condition.getValue()) {
             sleep(periodic.getValue());
-            if (runnable.isInterrupt()) return;
+            if (runnable.isInterrupt() || actionContext.isReturned()) return;
             if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
-            condition = (PinBoolean) getPinValue(actionContext, conditionPin);
+            condition = (PinBoolean) getPinValue(runnable, actionContext, conditionPin);
         }
 
         if (condition.getValue()) {

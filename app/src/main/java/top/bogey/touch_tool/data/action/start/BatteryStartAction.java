@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -25,10 +26,10 @@ public class BatteryStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(ActionContext actionContext) {
+    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
         WorldState worldState = WorldState.getInstance();
         int batteryPercent = worldState.getBatteryPercent();
-        PinValueArea valueArea = (PinValueArea) getPinValue(actionContext, areaPin);
+        PinValueArea valueArea = (PinValueArea) getPinValue(runnable, actionContext, areaPin);
         int low = valueArea.getCurrMin();
         int high = valueArea.getCurrMax();
         boolean result = batteryPercent >= low && batteryPercent <= high;

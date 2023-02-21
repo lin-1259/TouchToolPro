@@ -10,6 +10,7 @@ import java.util.Map;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -30,7 +31,7 @@ public class AppStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(ActionContext actionContext) {
+    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
         WorldState worldState = WorldState.getInstance();
         String packageName = worldState.getPackageName();
         if (packageName == null) return false;
@@ -39,7 +40,7 @@ public class AppStartAction extends StartAction {
         MainAccessibilityService service = MainApplication.getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
-        PinSelectApp helper = (PinSelectApp) getPinValue(actionContext, appPin);
+        PinSelectApp helper = (PinSelectApp) getPinValue(runnable, actionContext, appPin);
         Map<String, ArrayList<String>> packages = helper.getPackages();
 
         // 包含通用且包含当前包，代表排除当前包内的一些东西

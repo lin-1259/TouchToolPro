@@ -35,15 +35,15 @@ public class ConditionWhileLogicAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinBoolean condition = (PinBoolean) getPinValue(actionContext, conditionPin);
-        PinInteger timeout = (PinInteger) getPinValue(actionContext, timeOutPin);
+        PinBoolean condition = (PinBoolean) getPinValue(runnable, actionContext, conditionPin);
+        PinInteger timeout = (PinInteger) getPinValue(runnable, actionContext, timeOutPin);
 
         long startTime = System.currentTimeMillis();
         while (condition.getValue()) {
-            if (runnable.isInterrupt()) return;
+            if (runnable.isInterrupt() || actionContext.isReturned()) return;
             doNextAction(runnable, actionContext, outPin);
             if (timeout.getValue() < System.currentTimeMillis() - startTime) break;
-            condition = (PinBoolean) getPinValue(actionContext, conditionPin);
+            condition = (PinBoolean) getPinValue(runnable, actionContext, conditionPin);
         }
         doNextAction(runnable, actionContext, endPin);
     }

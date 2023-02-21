@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -33,8 +34,8 @@ public class PositionConvertToInt extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
-        PinPoint pos = (PinPoint) getPinValue(actionContext, posPin);
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinPoint pos = (PinPoint) getPinValue(runnable, actionContext, posPin);
         PinInteger x = (PinInteger) xPin.getValue();
         PinInteger y = (PinInteger) yPin.getValue();
         x.setValue(pos.getX());

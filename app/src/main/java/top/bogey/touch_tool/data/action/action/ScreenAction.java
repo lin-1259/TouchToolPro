@@ -32,7 +32,7 @@ public class ScreenAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinBoolean state = (PinBoolean) getPinValue(actionContext, screenPin);
+        PinBoolean state = (PinBoolean) getPinValue(runnable, actionContext, screenPin);
         MainAccessibilityService service = MainApplication.getService();
         if (state.getValue()) {
             AppUtils.wakeScreen(service);

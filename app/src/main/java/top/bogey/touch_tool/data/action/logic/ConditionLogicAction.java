@@ -31,7 +31,7 @@ public class ConditionLogicAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinBoolean condition = (PinBoolean) getPinValue(actionContext, conditionPin);
+        PinBoolean condition = (PinBoolean) getPinValue(runnable, actionContext, conditionPin);
         if (condition.getValue()) {
             doNextAction(runnable, actionContext, outPin);
         } else {

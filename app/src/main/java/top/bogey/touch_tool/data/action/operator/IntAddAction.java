@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import java.util.ArrayList;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -39,7 +40,7 @@ public class IntAddAction extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
 
@@ -47,7 +48,7 @@ public class IntAddAction extends CalculateAction {
         int i = pins.indexOf(firstPin);
         for (; i < pins.size() - 1; i++) {
             Pin pinObject = pins.get(i);
-            PinInteger result = (PinInteger) getPinValue(actionContext, pinObject);
+            PinInteger result = (PinInteger) getPinValue(runnable, actionContext, pinObject);
             value.setValue(value.getValue() + result.getValue());
         }
     }

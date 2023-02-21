@@ -33,12 +33,12 @@ public class LogAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinString pinString = (PinString) getPinValue(actionContext, textPin);
+        PinString pinString = (PinString) getPinValue(runnable, actionContext, textPin);
 
         MainAccessibilityService service = MainApplication.getService();
         TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(), pinString.getValue());
 
-        PinBoolean showToast = (PinBoolean) getPinValue(actionContext, toastPin);
+        PinBoolean showToast = (PinBoolean) getPinValue(runnable, actionContext, toastPin);
         if (showToast.getValue()) {
             service.showToast(pinString.getValue());
         }

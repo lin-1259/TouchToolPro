@@ -4,11 +4,9 @@ import android.content.Context;
 
 import com.google.gson.JsonObject;
 
-import java.util.HashSet;
-
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
-import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinLong;
@@ -35,24 +33,21 @@ public class TimeStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(ActionContext actionContext) {
-        long date = ((PinLong) getPinValue(actionContext, datePin)).getValue();
-        long time = ((PinLong) getPinValue(actionContext, timePin)).getValue();
-        long periodic = ((PinLong) getPinValue(actionContext, periodicPin)).getValue();
-        if (periodic > 0) {
+    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
+        if (getPeriodic() > 0) {
             return true;
         } else {
-            return AppUtils.mergeDateTime(date, time) > System.currentTimeMillis();
+            return getStartTime() > System.currentTimeMillis();
         }
     }
 
-    public long getStartTime(ActionContext actionContext) {
-        long date = ((PinLong) getPinValue(actionContext, datePin)).getValue();
-        long time = ((PinLong) getPinValue(actionContext, timePin)).getValue();
+    public long getStartTime() {
+        long date = ((PinLong) datePin.getValue()).getValue();
+        long time = ((PinLong) timePin.getValue()).getValue();
         return AppUtils.mergeDateTime(date, time);
     }
 
-    public long getPeriodic(ActionContext actionContext) {
-        return ((PinLong) getPinValue(actionContext, periodicPin)).getValue();
+    public long getPeriodic() {
+        return ((PinLong) periodicPin.getValue()).getValue();
     }
 }

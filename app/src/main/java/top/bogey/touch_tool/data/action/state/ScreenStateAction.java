@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
@@ -26,10 +27,10 @@ public class ScreenStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         ScreenState state = AppUtils.getScreenState(MainApplication.getService());
-        int screenState = ((PinSpinner) getPinValue(actionContext, screenStatePin)).getIndex();
+        int screenState = ((PinSpinner) getPinValue(runnable, actionContext, screenStatePin)).getIndex();
         value.setValue(state.ordinal() == screenState);
     }
 

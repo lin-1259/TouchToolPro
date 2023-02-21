@@ -36,7 +36,7 @@ public class SequenceLogicAction extends NormalAction {
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         ArrayList<Pin> pins = getPins();
         for (int i = pins.indexOf(outPin); i < pins.size() - 1; i++) {
-            if (runnable.isInterrupt()) return;
+            if (runnable.isInterrupt() || actionContext.isReturned()) return;
             doNextAction(runnable, actionContext, pins.get(i));
         }
     }

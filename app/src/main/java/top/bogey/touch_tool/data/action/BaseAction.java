@@ -2,7 +2,6 @@ package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 
 import com.google.gson.Gson;
@@ -81,7 +80,7 @@ public class BaseAction {
     }
 
     protected void doNextAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        if (runnable.isInterrupt()) return;
+        if (runnable.isInterrupt() || actionContext.isReturned()) return;
         if (!pin.getDirection().isOut()) throw new RuntimeException("执行针脚不正确");
 
         Pin linkedPin = pin.getLinkedPin(actionContext);
@@ -92,14 +91,14 @@ public class BaseAction {
     }
 
     // 获取针脚值之前先计算下针脚
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
     }
 
     // 获取针脚的值
-    protected PinObject getPinValue(ActionContext actionContext, Pin pin) {
+    protected PinObject getPinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         // 先看看自己是不是输出针脚，是的话先计算刷新下值，再返回数据
         if (pin.getDirection().isOut()) {
-            calculatePinValue(actionContext, pin);
+            calculatePinValue(runnable, actionContext, pin);
             return pin.getValue();
         }
 
@@ -108,7 +107,7 @@ public class BaseAction {
             Pin linkedPin = pin.getLinkedPin(actionContext);
             if (linkedPin == null) throw new RuntimeException("针脚没有默认值");
             BaseAction owner = linkedPin.getOwner(actionContext);
-            return owner.getPinValue(actionContext, linkedPin);
+            return owner.getPinValue(runnable, actionContext, linkedPin);
         } else {
             // 否则，就是自己的默认值
             return pin.getValue();

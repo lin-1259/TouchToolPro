@@ -34,7 +34,7 @@ public class OpenAppAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinSelectApp app = (PinSelectApp) getPinValue(actionContext, appPin);
+        PinSelectApp app = (PinSelectApp) getPinValue(runnable, actionContext, appPin);
         MainAccessibilityService service = MainApplication.getService();
         LinkedHashMap<String, ArrayList<String>> packages = app.getPackages();
         for (Map.Entry<String, ArrayList<String>> entry : packages.entrySet()) {

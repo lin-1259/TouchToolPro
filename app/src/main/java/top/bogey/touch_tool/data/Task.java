@@ -110,6 +110,11 @@ public class Task implements ActionContext {
         return actions;
     }
 
+    @Override
+    public boolean isReturned() {
+        return false;
+    }
+
     public long getCreateTime() {
         return createTime;
     }

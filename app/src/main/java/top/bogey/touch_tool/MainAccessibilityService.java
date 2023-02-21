@@ -38,6 +38,7 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.OutStartAction;
+import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
@@ -157,7 +158,7 @@ public class MainAccessibilityService extends AccessibilityService {
         if (isServiceEnabled()) {
             for (Task task : TaskRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
                 for (StartAction startAction : task.getStartActions(TimeStartAction.class)) {
-                    if (startAction.isEnable() && startAction.checkReady(task)) {
+                    if (startAction.isEnable() && startAction.checkReady(null, task)) {
                         addWork(task, (TimeStartAction) startAction);
                     }
                 }
@@ -209,11 +210,13 @@ public class MainAccessibilityService extends AccessibilityService {
         if (task == null || startAction == null) return null;
         if (!isServiceEnabled()) return null;
 
-        if (!stopTaskIfNeed(task, startAction)) return null;
-
-        KeepAliveFloatView view = (KeepAliveFloatView) EasyFloat.getView(KeepAliveFloatView.class.getCanonicalName());
-        if (view != null) {
-            view.showMe();
+        // 放弃重入且有正在运行的任务
+        if (startAction.getRestartType() == RestartType.CANCEL) {
+            for (TaskRunnable runnable : runnableSet) {
+                if (startAction.getId().equals(runnable.getStartAction().getId())) {
+                    return null;
+                }
+            }
         }
 
         TaskRunnable runnable = new TaskRunnable(task.copy(), startAction);
@@ -221,6 +224,18 @@ public class MainAccessibilityService extends AccessibilityService {
         runnable.addCallback(new TaskRunningCallback() {
             @Override
             public void onStart(TaskRunnable runnable) {
+                // 重新开始时需要停止之前的任务
+                if (startAction.getRestartType() == RestartType.RESTART) {
+                    for (TaskRunnable taskRunnable : runnableSet) {
+                        if (startAction.getId().equals(taskRunnable.getStartAction().getId())) {
+                            taskRunnable.stop();
+                        }
+                    }
+                }
+                KeepAliveFloatView view = (KeepAliveFloatView) EasyFloat.getView(KeepAliveFloatView.class.getCanonicalName());
+                if (view != null) {
+                    view.showMe();
+                }
                 runnableSet.add(runnable);
             }
 
@@ -266,34 +281,6 @@ public class MainAccessibilityService extends AccessibilityService {
             if (task.getId().equals(runnable.getTask().getId())) {
                 return true;
             }
-        }
-        return false;
-    }
-
-    public boolean stopTaskIfNeed(Task task, StartAction startAction) {
-        if (task == null || startAction == null) return false;
-        switch (startAction.getRestartType()) {
-            // 需要重新运行
-            case RESTART:
-                for (TaskRunnable runnable : runnableSet) {
-                    if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
-                        stopTask(runnable);
-                    }
-                }
-                return true;
-            // 如果没有运行，则运行；如果正在运行，取消本次运行
-            case CANCEL:
-                boolean flag = true;
-                for (TaskRunnable runnable : runnableSet) {
-                    if (task.getId().equals(runnable.getTask().getId()) && startAction.getId().equals(runnable.getStartAction().getId())) {
-                        flag = false;
-                        break;
-                    }
-                }
-                return flag;
-            // 每次都运行新的
-            case START_NEW:
-                return true;
         }
         return false;
     }
@@ -386,7 +373,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
         // 添加新的定时任务，覆盖之前设置的
         for (StartAction startAction : startActions) {
-            if (startAction.isEnable() && startAction.checkReady(task)) {
+            if (startAction.isEnable() && startAction.checkReady(null, task)) {
                 addWork(task, (TimeStartAction) startAction);
             }
         }
@@ -399,8 +386,8 @@ public class MainAccessibilityService extends AccessibilityService {
 
         long timeMillis = System.currentTimeMillis();
 
-        long startTime = startAction.getStartTime(task);
-        long periodic = startAction.getPeriodic(task);
+        long startTime = startAction.getStartTime();
+        long periodic = startAction.getPeriodic();
 
         if (periodic > 0) {
             long nextStartTime;

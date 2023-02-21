@@ -10,6 +10,7 @@ import java.util.List;
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -35,7 +36,7 @@ public class ColorStateAction extends StateAction {
     }
 
     @Override
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(statePin.getId())) return;
 
         PinBoolean value = (PinBoolean) statePin.getValue();
@@ -45,7 +46,7 @@ public class ColorStateAction extends StateAction {
             return;
         }
 
-        PinColor color = (PinColor) getPinValue(actionContext, colorPin);
+        PinColor color = (PinColor) getPinValue(runnable, actionContext, colorPin);
         if (!color.isValid()) {
             value.setValue(false);
             return;

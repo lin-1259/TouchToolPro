@@ -32,11 +32,11 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public class BaseCard<A extends BaseAction> extends MaterialCardView {
-    private final CardBaseBinding binding;
-    private final Task task;
-    private final A action;
+    protected final CardBaseBinding binding;
+    protected final Task task;
+    protected final A action;
 
-    private final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
+    protected final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
     private boolean needDelete = false;
 

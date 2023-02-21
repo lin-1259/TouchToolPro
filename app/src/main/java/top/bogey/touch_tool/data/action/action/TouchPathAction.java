@@ -36,9 +36,9 @@ public class TouchPathAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinPath pinPath = (PinPath) getPinValue(actionContext, pathPin);
-        PinValueArea valueArea = (PinValueArea) getPinValue(actionContext, timePin);
-        PinBoolean offset = (PinBoolean) getPinValue(actionContext, offsetPin);
+        PinPath pinPath = (PinPath) getPinValue(runnable, actionContext, pathPin);
+        PinValueArea valueArea = (PinValueArea) getPinValue(runnable, actionContext, timePin);
+        PinBoolean offset = (PinBoolean) getPinValue(runnable, actionContext, offsetPin);
 
         MainAccessibilityService service = MainApplication.getService();
         int randomTime = valueArea.getRandomValue();

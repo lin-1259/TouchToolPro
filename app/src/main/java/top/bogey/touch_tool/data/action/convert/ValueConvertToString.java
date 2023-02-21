@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -30,8 +31,8 @@ public class ValueConvertToString extends CalculateAction {
     }
 
     @Override
-    protected void calculatePinValue(ActionContext actionContext, Pin pin) {
-        PinValue value = (PinValue) getPinValue(actionContext, valuePin);
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinValue value = (PinValue) getPinValue(runnable, actionContext, valuePin);
         PinString string = (PinString) stringPin.getValue();
         string.setValue(value.toString());
     }

@@ -43,15 +43,15 @@ public class InputNodeAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(actionContext, nodePin);
+        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(runnable, actionContext, nodePin);
         AccessibilityNodeInfo nodeInfo = pinNodeInfo.getNodeInfo();
         boolean result;
         if (nodeInfo == null || !nodeInfo.isEditable()) {
             result = false;
         } else {
-            PinString content = (PinString) getPinValue(actionContext, contentPin);
+            PinString content = (PinString) getPinValue(runnable, actionContext, contentPin);
             String text = content.getValue();
-            PinBoolean append = (PinBoolean) getPinValue(actionContext, appendPin);
+            PinBoolean append = (PinBoolean) getPinValue(runnable, actionContext, appendPin);
             if (append.getValue() && nodeInfo.getText() != null) {
                 if (text == null) text = nodeInfo.getText().toString();
                 else text = nodeInfo.getText().toString() + text;

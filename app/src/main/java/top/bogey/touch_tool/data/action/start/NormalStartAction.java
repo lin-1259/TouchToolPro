@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
@@ -23,8 +24,8 @@ public class NormalStartAction extends StartAction {
     }
 
     @Override
-    public boolean checkReady(ActionContext actionContext) {
-        PinBoolean value = (PinBoolean) getPinValue(actionContext, startPin);
+    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
+        PinBoolean value = (PinBoolean) getPinValue(runnable, actionContext, startPin);
         return value.getValue();
     }
 }

@@ -44,11 +44,11 @@ public class ForLoopLogicAction extends NormalAction {
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (pin.getId().equals(inPin.getId())) {
             needBreak = false;
-            PinInteger start = (PinInteger) getPinValue(actionContext, startPin);
-            PinInteger end = (PinInteger) getPinValue(actionContext, endPin);
+            PinInteger start = (PinInteger) getPinValue(runnable, actionContext, startPin);
+            PinInteger end = (PinInteger) getPinValue(runnable, actionContext, endPin);
             PinInteger current = (PinInteger) currentPin.getValue();
             for (int i = start.getValue(); i <= end.getValue(); i++) {
-                if (runnable.isInterrupt()) return;
+                if (runnable.isInterrupt() || actionContext.isReturned()) return;
                 if (needBreak) break;
                 current.setValue(i);
                 doNextAction(runnable, actionContext, outPin);

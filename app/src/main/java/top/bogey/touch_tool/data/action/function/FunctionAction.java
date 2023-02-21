@@ -6,17 +6,17 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
-import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
-public class FunctionAction extends BaseAction {
+public class FunctionAction extends NormalAction {
     private final BaseFunction.FUNCTION_TAG tag;
 
     private transient BaseFunction baseFunction;
 
     public FunctionAction(Context context, BaseFunction.FUNCTION_TAG tag) {
-        super(context);
+        super(context, 0);
         this.tag = tag;
     }
 
@@ -28,19 +28,27 @@ public class FunctionAction extends BaseAction {
         }
     }
 
-    public void setBaseFunction(BaseFunction baseFunction) {
-        this.baseFunction = baseFunction;
+    @Override
+    public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        if (tag.isStart()) super.doAction(runnable, actionContext, pin);
+        else {
+            ((BaseFunction) actionContext).setEndFunctionAction(this);
+        }
     }
 
     @Override
-    protected void doNextAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        if (tag.isStart()) super.doNextAction(runnable, actionContext, pin);
-        else baseFunction.doNextAction(runnable, actionContext, pin);
+    protected PinObject getPinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        if (tag.isStart()) return ((BaseFunction) actionContext).getPinValue(runnable, pin);
+        else return super.getPinValue(runnable, actionContext, pin);
     }
 
     @Override
-    protected PinObject getPinValue(ActionContext actionContext, Pin pin) {
-        if (tag.isStart()) return baseFunction.getPinValue(actionContext, pin);
-        else return super.getPinValue(actionContext, pin);
+    public String getTitle() {
+        if (tag.isStart()) return baseFunction.getDes();
+        else return null;
+    }
+
+    public BaseFunction.FUNCTION_TAG getTag() {
+        return tag;
     }
 }

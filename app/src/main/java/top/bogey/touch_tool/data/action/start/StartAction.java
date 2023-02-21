@@ -42,7 +42,7 @@ public class StartAction extends BaseAction {
     }
 
     // 开始动作只做开始检测
-    public boolean checkReady(ActionContext actionContext) {
+    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
         return true;
     }
 

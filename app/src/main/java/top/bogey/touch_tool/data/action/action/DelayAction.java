@@ -26,7 +26,7 @@ public class DelayAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinValueArea pinValueArea = (PinValueArea) getPinValue(actionContext, delayPin);
+        PinValueArea pinValueArea = (PinValueArea) getPinValue(runnable, actionContext, delayPin);
         sleep(pinValueArea.getRandomValue());
         doNextAction(runnable, actionContext, outPin);
     }

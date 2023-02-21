@@ -18,13 +18,13 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryChargingStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
+import top.bogey.touch_tool.data.action.start.StartAction;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -124,8 +124,7 @@ public class WorldState {
         ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(actionType)) {
-                if (startAction.isEnable() && startAction.checkReady(task))
-                    service.runTask(task, startAction);
+                if (startAction.isEnable()) service.runTask(task, startAction);
             }
         }
 
@@ -133,8 +132,7 @@ public class WorldState {
         tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(NormalStartAction.class)) {
-                if (startAction.isEnable() && startAction.checkReady(task))
-                    service.runTask(task, startAction);
+                if (startAction.isEnable()) service.runTask(task, startAction);
             }
         }
     }
@@ -148,9 +146,7 @@ public class WorldState {
             ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(ManualStartAction.class);
             for (Task task : tasks) {
                 for (StartAction startAction : task.getStartActions(ManualStartAction.class)) {
-                    if (startAction.isEnable() && startAction.checkReady(task)) {
-                        manualStartActions.put((ManualStartAction) startAction, task);
-                    }
+                    if (startAction.isEnable()) manualStartActions.put((ManualStartAction) startAction, task);
                 }
             }
         }

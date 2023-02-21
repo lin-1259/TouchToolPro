@@ -38,13 +38,13 @@ public class TouchNodeAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(actionContext, nodePin);
+        PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(runnable, actionContext, nodePin);
         AccessibilityNodeInfo nodeInfo = pinNodeInfo.getNodeInfo();
         boolean result = false;
         if (nodeInfo != null) {
             AccessibilityNodeInfo clickAble = getClickAbleParent(nodeInfo);
             if (clickAble != null) {
-                PinBoolean longTouch = (PinBoolean) getPinValue(actionContext, longTouchPin);
+                PinBoolean longTouch = (PinBoolean) getPinValue(runnable, actionContext, longTouchPin);
                 result = clickAble.performAction(longTouch.getValue() ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
             }
         }
@@ -56,7 +56,7 @@ public class TouchNodeAction extends NormalAction {
         }
     }
 
-    private AccessibilityNodeInfo getClickAbleParent(AccessibilityNodeInfo nodeInfo) {
+    public static AccessibilityNodeInfo getClickAbleParent(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo == null) return null;
         if (nodeInfo.isClickable() || nodeInfo.isEditable() || nodeInfo.isCheckable() || nodeInfo.isLongClickable()) return nodeInfo;
         return getClickAbleParent(nodeInfo.getParent());

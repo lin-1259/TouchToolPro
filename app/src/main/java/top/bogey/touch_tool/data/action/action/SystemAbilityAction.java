@@ -30,7 +30,7 @@ public class SystemAbilityAction extends NormalAction {
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinSpinner ability = (PinSpinner) getPinValue(actionContext, abilityPin);
+        PinSpinner ability = (PinSpinner) getPinValue(runnable, actionContext, abilityPin);
         MainAccessibilityService service = MainApplication.getService();
         switch (ability.getIndex()) {
             case 0:
