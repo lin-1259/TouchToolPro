@@ -76,9 +76,16 @@
     <string name="export_task_tips">导出任务配置并发送</string>
     <string name="move_task">移动</string>
 
+    <string name="task_title">任务</string>
     <string name="task_add">添加任务</string>
     <string name="task_change_title">修改标题</string>
 
+    <string name="function_title">自定义卡片</string>
+    <string name="function_add">添加自定义卡片</string>
+    <string name="function_start">自定义开始</string>
+    <string name="function_end">自定义结束</string>
+    <string name="function_just_call">仅获取状态</string>
+    <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
@@ -256,6 +263,7 @@
     <string name="pin_path">手势</string>
     <string name="pin_widget">控件描述</string>
     <string name="pin_node_info">控件</string>
+    <string name="pin_app">应用</string>
 
     <!-- 采集器 -->
     <string name="picker_color_preview_title">选择颜色</string>

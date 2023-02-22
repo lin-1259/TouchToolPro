@@ -7,14 +7,30 @@
     android:layout_marginVertical="4dp"
     app:cardBackgroundColor="?attr/colorSecondaryContainer">
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginHorizontal="16dp"
-        android:ellipsize="end"
-        android:singleLine="true"
-        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+        android:gravity="center_vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/addButton"
+            style="@style/Theme.TouchTool.IconButton.Filled"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:visibility="visible"
+            app:icon="@drawable/icon_add" />
+
+    </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>

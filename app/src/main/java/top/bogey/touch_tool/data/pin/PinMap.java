@@ -5,13 +5,13 @@ import android.util.ArrayMap;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinColor;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinImage;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
+import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinValue;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
@@ -22,7 +22,6 @@ public class PinMap {
     private final ArrayMap<Class<? extends PinObject>, Integer> map = new ArrayMap<>();
 
     private PinMap() {
-        map.put(PinExecute.class, R.string.pin_execute);
         map.put(PinBoolean.class, R.string.pin_boolean);
         map.put(PinInteger.class, R.string.pin_int);
         map.put(PinString.class, R.string.pin_string);
@@ -33,6 +32,7 @@ public class PinMap {
         map.put(PinPath.class, R.string.pin_path);
         map.put(PinWidget.class, R.string.pin_widget);
         map.put(PinNodeInfo.class, R.string.pin_node_info);
+        map.put(PinSelectApp.class, R.string.pin_app);
         map.put(PinValue.class, R.string.pin_value);
     }
 

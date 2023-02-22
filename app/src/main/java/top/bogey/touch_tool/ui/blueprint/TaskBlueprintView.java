@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.ui.task_blueprint;
+package top.bogey.touch_tool.ui.blueprint;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +34,7 @@ public class TaskBlueprintView extends Fragment {
 
         String taskId = getArguments().getString("taskId");
         Task task = TaskRepository.getInstance().getTaskById(taskId);
-        binding.cardLayout.setTask(task);
+        binding.cardLayout.setActionContext(task);
 
         binding.addButton.setOnClickListener(v -> {
             ActionSideSheetDialog dialog = new ActionSideSheetDialog(requireContext(), binding.cardLayout);
@@ -67,6 +69,13 @@ public class TaskBlueprintView extends Fragment {
                 return true;
             }
         }, getViewLifecycleOwner());
+
+
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.task_title);
+            actionBar.setSubtitle(task.getTitle());
+        }
 
         return binding.getRoot();
     }

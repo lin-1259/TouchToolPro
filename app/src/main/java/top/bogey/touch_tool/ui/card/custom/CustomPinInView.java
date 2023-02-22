@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.Editable;
 import android.util.ArrayMap;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
@@ -14,20 +13,18 @@ import androidx.annotation.NonNull;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinMap;
-import top.bogey.touch_tool.data.pin.PinSlotType;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.databinding.ViewCardCustomInBinding;
-import top.bogey.touch_tool.ui.custom.BindingView;
+import top.bogey.touch_tool.databinding.PinCustomInBinding;
+import top.bogey.touch_tool.ui.card.pin.PinBaseView;
+import top.bogey.touch_tool.utils.TextChangedListener;
 
 @SuppressLint("ViewConstructor")
-public class CustomCardInItem extends BindingView<ViewCardCustomInBinding> {
+public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
     private PinObject pinObject;
 
-    public CustomCardInItem(@NonNull Context context, ViewGroup parent, Pin pin) {
-        super(context, ViewCardCustomInBinding.class);
-
-        binding.removeButton.setOnClickListener(v -> parent.removeView(this));
+    public CustomPinInView(@NonNull Context context, CustomCard card, Pin pin) {
+        super(context, PinCustomInBinding.class, card, pin);
+        pinObject = pin.getValue();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         ArrayMap<Class<? extends PinObject>, Integer> map = PinMap.getInstance().getMap();
@@ -35,15 +32,18 @@ public class CustomCardInItem extends BindingView<ViewCardCustomInBinding> {
             adapter.add(context.getString(id));
         }
         binding.spinner.setAdapter(adapter);
+        binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Class<? extends PinObject> aClass = map.keyAt(position);
                 // 类型一样，直接返回
                 if (pinObject != null && aClass.equals(pinObject.getClass())) return;
+
                 try {
                     pinObject = aClass.newInstance();
-                    binding.pinSlot.setStrokeColor(pinObject.getPinColor(context));
+                    card.getAction().setPinValue(pin, pinObject);
+                    refreshPinUI();
                 } catch (IllegalAccessException | InstantiationException e) {
                     throw new RuntimeException(e);
                 }
@@ -54,20 +54,33 @@ public class CustomCardInItem extends BindingView<ViewCardCustomInBinding> {
 
             }
         });
-        if (pin != null) {
-            pinObject = pin.getValue();
-            binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
-            binding.pinSlot.setStrokeColor(pinObject.getPinColor(context));
-            binding.editText.setText(pin.getTitle());
-        } else {
-            binding.spinner.setSelection(0);
-        }
+
+        binding.editText.setText(pin.getTitle());
+        binding.editText.addTextChangedListener(new TextChangedListener(){
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s != null) card.getAction().setPinTitle(pin, s.toString());
+            }
+        });
     }
 
-    public Pin getValue() {
-        String title = "";
-        Editable text = binding.editText.getText();
-        if (text != null) title = text.toString();
-        return new Pin(pinObject, title, pinObject.getClass().equals(PinExecute.class) ? PinSlotType.MULTI : PinSlotType.SINGLE);
+    @Override
+    protected void setValueView() {
+
+    }
+
+    @Override
+    public void refreshPinUI() {
+        super.refreshPinUI();
+        pinBox.setVisibility(VISIBLE);
+        pinSlot.setStrokeColor(getPinColor());
+    }
+
+    @Override
+    public int[] getSlotLocationOnScreen(float scale) {
+        int[] location = new int[2];
+        pinSlot.getLocationOnScreen(location);
+        location[1] += (pinSlot.getHeight() * scale / 2);
+        return location;
     }
 }

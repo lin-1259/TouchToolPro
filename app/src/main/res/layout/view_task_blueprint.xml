@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.task_blueprint.TaskBlueprintView">
+    tools:context=".ui.blueprint.TaskBlueprintView">
 
-    <top.bogey.touch_tool.ui.task_blueprint.CardLayoutView
+    <top.bogey.touch_tool.ui.blueprint.CardLayoutView
         android:id="@+id/cardLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

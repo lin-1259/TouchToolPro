@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.pin;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -9,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,10 +16,8 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class Pin {
     private String id;
-
-    private final String title;
-
-    private final PinObject value;
+    private String title;
+    private PinObject value;
 
     private PinDirection direction;
     private PinSlotType slotType;
@@ -43,6 +38,10 @@ public class Pin {
 
     public Pin(PinObject value, PinSlotType slotType) {
         this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
+    }
+
+    public Pin(PinObject value, PinSlotType slotType, boolean removeAble) {
+        this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, removeAble);
     }
 
     public Pin(PinObject value, String title, PinDirection direction) {
@@ -126,24 +125,58 @@ public class Pin {
         return null;
     }
 
-    public HashMap<String, String> addLink(Pin pin) {
-        HashMap<String, String> removedLinks = new HashMap<>();
+    public boolean addLink(ActionContext context, Pin pin) {
+        // 不能连的直接返回
+        if (slotType == PinSlotType.EMPTY) return false;
         // 单针脚，需要先移除之前的连接
         if (slotType == PinSlotType.SINGLE) {
-            removedLinks.putAll(links);
-            links.clear();
+            removeLinks(context);
         }
         links.put(pin.getId(), pin.getActionId());
-        return removedLinks;
+        return true;
     }
 
     public void removeLink(Pin pin) {
         links.remove(pin.getId());
     }
 
-    public int getPinColor(Context context) {
-        if (value == null) throw new RuntimeException("针脚的值为空");
-        return value.getPinColor(context);
+    public HashMap<String, String> addLinks(ActionContext context, HashMap<String, String> links) {
+        HashMap<String, String> addedLinks = new HashMap<>();
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseAction action = context.getActionById(entry.getValue());
+            if (action == null) continue;
+            Pin pinById = action.getPinById(entry.getKey());
+            // 插槽不匹配不能连
+            if (!getPinClass().isAssignableFrom(pinById.getPinClass())) continue;
+
+            // 方向相同不能连
+            if (getDirection().equals(pinById.getDirection())) continue;
+
+            // 自己不能首尾连
+            if (getActionId().equals(pinById.getActionId())) continue;
+
+            // 两边都连上了才行，有一个没连上都要回退
+            if (!(pinById.addLink(context, this) && addLink(context, pinById))) {
+                pinById.removeLink(this);
+                removeLink(pinById);
+            } else {
+                addedLinks.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return addedLinks;
+    }
+
+    public HashMap<String, String> removeLinks(ActionContext context) {
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseAction action = context.getActionById(entry.getValue());
+            if (action == null) continue;
+            Pin pinById = action.getPinById(entry.getKey());
+            if (pinById == null) continue;
+            pinById.removeLink(this);
+        }
+        HashMap<String, String> removedLinks = new HashMap<>(links);
+        links.clear();
+        return removedLinks;
     }
 
     public Class<?> getPinClass() {
@@ -163,9 +196,18 @@ public class Pin {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public PinObject getValue() {
         if (value == null) throw new RuntimeException("针脚的值为空");
         return value;
+    }
+
+    public void setValue(PinObject value) {
+        if (value == null) throw new RuntimeException("针脚的值为空");
+        this.value = value;
     }
 
     public PinDirection getDirection() {
@@ -197,7 +239,7 @@ public class Pin {
     }
 
     public HashMap<String, String> getLinks() {
-        return links;
+        return new HashMap<>(links);
     }
 
     public String getActionId() {

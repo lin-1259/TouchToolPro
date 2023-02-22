@@ -37,12 +37,6 @@ public class Task implements ActionContext {
         return gson.fromJson(json, Task.class);
     }
 
-    public BaseAction getActionById(String id) {
-        for (BaseAction action : actions) {
-            if (action.getId().equals(id)) return action;
-        }
-        return null;
-    }
 
     public ArrayList<StartAction> getStartActions(Class<? extends StartAction> startActionClass) {
         ArrayList<StartAction> startActions = new ArrayList<>();
@@ -54,6 +48,30 @@ public class Task implements ActionContext {
         return startActions;
     }
 
+    @Override
+    public void addAction(BaseAction action) {
+        actions.add(action);
+    }
+
+    @Override
+    public void removeAction(BaseAction action) {
+        for (BaseAction baseAction : actions) {
+            if (baseAction.getId().equals(action.getId())) {
+                actions.remove(baseAction);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public BaseAction getActionById(String id) {
+        for (BaseAction action : actions) {
+            if (action.getId().equals(id)) return action;
+        }
+        return null;
+    }
+
+    @Override
     public ArrayList<BaseAction> getActionsByClass(Class<? extends BaseAction> actionClass) {
         ArrayList<BaseAction> actions = new ArrayList<>();
         for (BaseAction action : this.actions) {
@@ -62,19 +80,6 @@ public class Task implements ActionContext {
             }
         }
         return actions;
-    }
-
-    public void addAction(BaseAction action) {
-        actions.add(action);
-    }
-
-    public void removeAction(BaseAction action) {
-        for (BaseAction baseAction : actions) {
-            if (baseAction.getId().equals(action.getId())) {
-                actions.remove(baseAction);
-                break;
-            }
-        }
     }
 
     public String getTaskDes(Context context) {

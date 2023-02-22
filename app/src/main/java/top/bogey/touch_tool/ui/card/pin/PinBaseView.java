@@ -3,7 +3,7 @@ package top.bogey.touch_tool.ui.card.pin;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
@@ -11,6 +11,7 @@ import androidx.viewbinding.ViewBinding;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.HashMap;
@@ -51,22 +52,24 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
     protected final LinearLayout pinSlotBox;
     protected final MaterialCardView pinSlot;
-    protected final FrameLayout pinBox;
+    protected final ViewGroup pinBox;
     protected final MaterialTextView titleText;
     protected final MaterialButton removeButton;
 
+    protected final BaseCard<?> card;
     protected final BaseAction action;
     protected final Pin pin;
 
     public PinBaseView(@NonNull Context context, Class<V> tClass, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, null, tClass);
+        this.card = card;
         action = card.getAction();
         this.pin = pin;
 
         try {
             pinSlotBox = (LinearLayout) tClass.getField("pinSlotBox").get(binding);
             pinSlot = (MaterialCardView) tClass.getField("pinSlot").get(binding);
-            pinBox = (FrameLayout) tClass.getField("pinBox").get(binding);
+            pinBox = (ViewGroup) tClass.getField("pinBox").get(binding);
             titleText = (MaterialTextView) tClass.getField("title").get(binding);
             removeButton = (MaterialButton) tClass.getField("removeButton").get(binding);
             if (pinSlot == null || pinBox == null || titleText == null || removeButton == null)
@@ -75,14 +78,20 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
             throw new RuntimeException(e);
         }
         if (pin == null) return;
-        pinSlot.setCardBackgroundColor(pin.getPinColor(context));
+        pinSlot.setCardBackgroundColor(getPinColor());
         pinSlot.setStrokeWidth(DisplayUtils.dp2px(context, 1.1f));
-        pinSlot.setStrokeColor(pin.getPinColor(context));
+        pinSlot.setStrokeColor(getPinColor());
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
         removeButton.setOnClickListener(v -> card.removeMorePinView(this));
 
+        setValueView();
+    }
+
+    protected void setValueView() {
+        pinBox.removeAllViews();
+        Context context = getContext();
         Class<?> aClass = pin.getPinClass();
         if (PinSelectApp.class.equals(aClass)) {
             pinBox.addView(new PinWidgetAppPicker(context, (PinSelectApp) pin.getValue()));
@@ -120,19 +129,12 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         }
     }
 
-    public Pin getPin() {
-        return pin;
+    public int getPinColor() {
+        return pin.getValue().getPinColor(getContext());
     }
 
-    public HashMap<String, String> addLink(Pin pin) {
-        HashMap<String, String> removedLinkMap = this.pin.addLink(pin);
-        refreshPinUI();
-        return removedLinkMap;
-    }
-
-    public void removeLink(Pin pin) {
-        this.pin.removeLink(pin);
-        refreshPinUI();
+    public ShapeAppearanceModel getPinStyle() {
+        return pin.getValue().getPinStyle(getContext());
     }
 
     public void refreshPinUI() {
@@ -142,8 +144,8 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         if (pin.getTitle() != null) titleText.setText(String.format(hidePinBox ? "%s" : "%s:", pin.getTitle()));
         else titleText.setVisibility(GONE);
 
-        pinSlot.setCardBackgroundColor(linked ? pin.getPinColor(getContext()) : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
-        pinSlot.setShapeAppearanceModel(pin.getValue().getPinStyle(getContext()));
+        pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
+        pinSlot.setShapeAppearanceModel(getPinStyle());
     }
 
     public int[] getSlotLocationOnScreen(float scale) {
@@ -156,5 +158,9 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
 
     public BaseAction getAction() {
         return action;
+    }
+
+    public Pin getPin() {
+        return pin;
     }
 }

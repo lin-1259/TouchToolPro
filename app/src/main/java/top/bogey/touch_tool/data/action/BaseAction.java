@@ -25,7 +25,7 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class BaseAction {
     private String id;
     private final String cls;
-    private final String title;
+    private String title;
     private String des;
 
     private final ArrayList<Pin> pins = new ArrayList<>();
@@ -49,9 +49,10 @@ public class BaseAction {
     public BaseAction(JsonObject jsonObject) {
         cls = getClass().getName();
         id = jsonObject.get("id").getAsString();
-        title = jsonObject.get("title").getAsString();
-        JsonElement element = jsonObject.get("des");
-        if (element != null) des = element.getAsString();
+        JsonElement titleElement = jsonObject.get("title");
+        if (titleElement != null) title = titleElement.getAsString();
+        JsonElement desElement = jsonObject.get("des");
+        if (desElement != null) des = desElement.getAsString();
         x = jsonObject.get("x").getAsInt();
         y = jsonObject.get("y").getAsInt();
         for (JsonElement jsonElement : jsonObject.get("pins").getAsJsonArray()) {
@@ -154,8 +155,16 @@ public class BaseAction {
         return null;
     }
 
+    public ArrayList<Pin> getShowPins() {
+        return new ArrayList<>(pins);
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getId() {

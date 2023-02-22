@@ -129,7 +129,7 @@ public class ActionMap {
     }
 
     public enum ActionType {
-        START, LOGIC, NORMAL, STATE, CONVERT, OPERATE;
+        START, LOGIC, NORMAL, STATE, CONVERT, OPERATE, CUSTOM;
 
         public String getTitle(Context context) {
             String[] strings = context.getResources().getStringArray(R.array.action_type);

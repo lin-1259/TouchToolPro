@@ -15,10 +15,20 @@
 
     <fragment
         android:id="@+id/taskBlueprint"
-        android:name="top.bogey.touch_tool.ui.task_blueprint.TaskBlueprintView"
+        android:name="top.bogey.touch_tool.ui.blueprint.TaskBlueprintView"
         tools:layout="@layout/view_task_blueprint">
         <argument
             android:name="taskId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_taskBlueprint_to_functionBlueprintView"
+            app:destination="@id/functionBlueprintView" />
+    </fragment>
+    <fragment
+        android:id="@+id/functionBlueprintView"
+        android:name="top.bogey.touch_tool.ui.blueprint.FunctionBlueprintView"
+        android:label="FunctionBlueprintView" >
+        <argument android:name="functionId"
             app:argType="string" />
     </fragment>
 

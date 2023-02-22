@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
@@ -26,25 +26,25 @@ import top.bogey.touch_tool.ui.card.pin.PinBottomView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;
 import top.bogey.touch_tool.ui.card.pin.PinOutView;
 import top.bogey.touch_tool.ui.card.pin.PinTopView;
-import top.bogey.touch_tool.ui.task_blueprint.CardLayoutView;
+import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public class BaseCard<A extends BaseAction> extends MaterialCardView {
     protected final CardBaseBinding binding;
-    protected final Task task;
+    protected final ActionContext actionContext;
     protected final A action;
 
     protected final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
-    private boolean needDelete = false;
+    protected boolean needDelete = false;
 
     @SuppressLint("ClickableViewAccessibility")
-    public BaseCard(@NonNull Context context, Task task, A action) {
+    public BaseCard(@NonNull Context context, ActionContext actionContext, A action) {
         super(context, null);
         if (action == null) throw new RuntimeException("无效的动作");
-        this.task = task;
+        this.actionContext = actionContext;
         this.action = action;
 
         setCardElevation(DisplayUtils.dp2px(context, 5));
@@ -85,7 +85,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             binding.des.setVisibility((result == null || result.length() == 0) ? GONE : VISIBLE);
         }));
 
-        for (Pin pin : action.getPins()) {
+        for (Pin pin : action.getShowPins()) {
             addPinView(pin, 0);
         }
     }
@@ -121,12 +121,12 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         Pin pin = pinBaseView.getPin();
         Pin removePin = action.removePin(pin);
         if (removePin == null) return;
-        ((CardLayoutView) getParent()).linksRemovePin(removePin.getLinks(), pinBaseView);
+        removePin.removeLinks(actionContext);
         ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
     }
 
-    public Task getTask() {
-        return task;
+    public ActionContext getActionContext() {
+        return actionContext;
     }
 
     public A getAction() {

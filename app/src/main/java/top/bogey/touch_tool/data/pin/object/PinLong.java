@@ -5,10 +5,6 @@ import com.google.gson.JsonObject;
 public class PinLong extends PinValue {
     private long value;
 
-    public PinLong() {
-        super();
-    }
-
     public PinLong(long value) {
         super();
         this.value = value;

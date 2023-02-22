@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -15,6 +16,7 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
 /* BaseFunction只是一个包装，所有针脚都是重定向到startAction和endAction去执行。
@@ -31,10 +33,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     public BaseFunction(Context context) {
         super(context, 0);
-        FunctionAction startAction = new FunctionAction(context, FUNCTION_TAG.START);
+        FunctionAction startAction = new FunctionAction(context, FUNCTION_TAG.START, this);
         startActionId = startAction.getId();
         actions.add(startAction);
-        actions.add(new FunctionAction(context, FUNCTION_TAG.END));
+        actions.add(new FunctionAction(context, FUNCTION_TAG.END, this));
     }
 
     public BaseFunction(JsonObject jsonObject) {
@@ -45,6 +47,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
         Gson gson = TaskRepository.getInstance().getGson();
         actions.addAll(gson.fromJson(jsonObject.get("actions"), new TypeToken<HashSet<BaseAction>>() {}.getType()));
+        for (BaseAction action : actions) {
+            if (action instanceof FunctionAction) ((FunctionAction) action).setBaseFunction(this);
+        }
+
         pinIdMap.putAll(gson.fromJson(jsonObject.get("pinIdMap"), new TypeToken<HashMap<String, String>>() {}.getType()));
 
         for (Pin pin : tmpPins) {
@@ -58,7 +64,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
         for (BaseAction action : actions) {
             if (action.getId().equals(startActionId)) {
                 outContext = actionContext;
-                action.doAction(runnable, this, ((FunctionAction) action).getInPin());
+                action.doAction(runnable, this, ((FunctionAction) action).getExecutePin());
                 break;
             }
         }
@@ -93,14 +99,56 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
     }
 
-    public PinObject getPinValue(TaskRunnable runnable, Pin innerPin) {
+    @Override
+    public ArrayList<Pin> getShowPins() {
+        ArrayList<Pin> pins = new ArrayList<>(getPins());
+        if (justCall) {
+            pins.remove(inPin);
+            pins.remove(outPin);
+        }
+        return pins;
+    }
+
+    public PinObject getInnerPinValue(TaskRunnable runnable, Pin innerPin) {
         String pinId = pinIdMap.get(innerPin.getId());
         Pin pinById = getPinById(pinId);
         return getPinValue(runnable, outContext, pinById);
     }
 
+    public void addInnerPin(Pin innerPin) {
+        Pin copy = innerPin.copy(false);
+        copy.setDirection(copy.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN);
+        Pin addPin = super.addPin(copy);
+        pinIdMap.put(innerPin.getId(), addPin.getId());
+    }
+
+    public void removeInnerPin(Pin innerPin) {
+        String remove = pinIdMap.remove(innerPin.getId());
+        super.removePin(getPinById(remove));
+    }
+
+    public void setInnerPinValue(Pin innerPin) {
+        String pinId = pinIdMap.get(innerPin.getId());
+        Pin pinById = getPinById(pinId);
+        pinById.setValue(innerPin.getValue().copy());
+    }
+
+    public void setInnerPinTitle(Pin innerPin) {
+        String pinId = pinIdMap.get(innerPin.getId());
+        Pin pinById = getPinById(pinId);
+        pinById.setTitle(innerPin.getTitle());
+    }
+
     public void setEndFunctionAction(FunctionAction endFunctionAction) {
         this.endFunctionAction = endFunctionAction;
+    }
+
+    public boolean isJustCall() {
+        return justCall;
+    }
+
+    public void setJustCall(boolean justCall) {
+        this.justCall = justCall;
     }
 
     @Override
@@ -109,11 +157,43 @@ public class BaseFunction extends NormalAction implements ActionContext {
     }
 
     @Override
+    public void addAction(BaseAction action) {
+        actions.add(action);
+    }
+
+    @Override
+    public void removeAction(BaseAction action) {
+        for (BaseAction baseAction : actions) {
+            if (baseAction.getId().equals(action.getId())) {
+                actions.remove(baseAction);
+                break;
+            }
+        }
+    }
+
+    @Override
+    public BaseAction getActionById(String id) {
+        for (BaseAction action : actions) {
+            if (action.getId().equals(id)) return action;
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<BaseAction> getActionsByClass(Class<? extends BaseAction> actionClass) {
+        ArrayList<BaseAction> actions = new ArrayList<>();
+        for (BaseAction action : this.actions) {
+            if (actionClass.isInstance(action)) {
+                actions.add(action);
+            }
+        }
+        return actions;
+    }
+
+    @Override
     public boolean isReturned() {
         return endFunctionAction != null;
     }
-
-
 
 
     public enum FUNCTION_TAG {

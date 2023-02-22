@@ -63,7 +63,7 @@ public class MainAccessibilityService extends AccessibilityService {
     private ServiceConnection connection = null;
     private ResultCallback captureResultCallback;
 
-    public final ExecutorService taskService = new TaskThreadPoolExecutor(3, 30, 30L, TimeUnit.SECONDS, new TaskQueue<>(20));
+    public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 5L, TimeUnit.MINUTES, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningCallback> callbacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
 

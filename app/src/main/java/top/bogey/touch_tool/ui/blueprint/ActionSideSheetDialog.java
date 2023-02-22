@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.ui.task_blueprint;
+package top.bogey.touch_tool.ui.blueprint;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -17,7 +17,7 @@ public class ActionSideSheetDialog extends SideSheetDialog {
         ViewCardListBinding binding = ViewCardListBinding.inflate(LayoutInflater.from(context));
         setContentView(binding.getRoot());
 
-        ActionTreeAdapter adapter = new ActionTreeAdapter(cardLayoutView, new TreeNodeManager());
+        ActionTreeAdapter adapter = new ActionTreeAdapter(this, cardLayoutView, new TreeNodeManager());
         binding.actionBox.setAdapter(adapter);
     }
 }

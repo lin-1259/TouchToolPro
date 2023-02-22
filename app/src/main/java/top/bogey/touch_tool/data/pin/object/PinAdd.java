@@ -12,10 +12,6 @@ public class PinAdd extends PinObject {
     private final Pin pin;
     private final int offset;
 
-    public PinAdd() {
-        this(new Pin(new PinObject()));
-    }
-
     public PinAdd(Pin pin) {
         super();
         this.pin = pin;

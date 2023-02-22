@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
@@ -98,6 +100,12 @@ public class HomeView extends Fragment {
                 return true;
             }
         }, getViewLifecycleOwner());
+
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.app_name);
+            actionBar.setSubtitle(null);
+        }
 
         binding = ViewHomeBinding.inflate(inflater, container, false);
 

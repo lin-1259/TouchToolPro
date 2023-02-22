@@ -88,6 +88,8 @@
             android:layout_weight="1"
             android:orientation="vertical" />
 
+        <Space android:layout_width="8dp" android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:id="@+id/outBox"
             android:layout_width="wrap_content"

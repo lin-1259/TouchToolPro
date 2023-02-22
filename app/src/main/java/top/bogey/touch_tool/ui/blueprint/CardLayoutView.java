@@ -1,4 +1,4 @@
-package top.bogey.touch_tool.ui.task_blueprint;
+package top.bogey.touch_tool.ui.blueprint;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,12 +23,16 @@ import java.util.Map;
 
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
+import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.ui.card.BaseCard;
+import top.bogey.touch_tool.ui.card.custom.CustomCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -46,7 +50,7 @@ public class CardLayoutView extends FrameLayout {
 
     private final HashMap<String, BaseCard<?>> cardMap = new LinkedHashMap<>();
 
-    private Task task;
+    private ActionContext actionContext;
 
     private int dragState = DRAG_NONE;
     private final HashMap<String, String> dragLinks = new HashMap<>();
@@ -112,12 +116,19 @@ public class CardLayoutView extends FrameLayout {
         });
     }
 
-    public void setTask(Task task) {
-        this.task = task;
+    public BaseCard<?> newCard(ActionContext actionContext, BaseAction action) {
+        if (action instanceof FunctionAction) {
+            return new CustomCard(getContext(), (BaseFunction) actionContext, (FunctionAction) action);
+        }
+        return new BaseCard<>(getContext(), actionContext, action);
+    }
+
+    public void setActionContext(ActionContext actionContext) {
+        this.actionContext = actionContext;
         cardMap.clear();
         removeAllViews();
-        for (BaseAction action : task.getActions()) {
-            BaseCard<?> card = new BaseCard<>(getContext(), task, action);
+        for (BaseAction action : actionContext.getActions()) {
+            BaseCard<?> card = newCard(actionContext, action);
             setCardPosition(card);
             addView(card);
             cardMap.put(action.getId(), card);
@@ -125,8 +136,8 @@ public class CardLayoutView extends FrameLayout {
     }
 
     public void addAction(BaseAction action) {
-        task.addAction(action);
-        BaseCard<?> card = new BaseCard<>(getContext(), task, action);
+        actionContext.addAction(action);
+        BaseCard<?> card = newCard(actionContext, action);
         setCardPosition(card);
         addView(card);
         cardMap.put(action.getId(), card);
@@ -144,12 +155,22 @@ public class CardLayoutView extends FrameLayout {
         }
     }
 
+    public void addAction(String functionId) {
+        BaseFunction function = TaskRepository.getInstance().getFunctionById(functionId);
+        if (function != null) {
+            function = (BaseFunction) function.copy();
+            function.x = (int) (-offsetX / getScaleGridSize()) + 1;
+            function.y = (int) (-offsetY / getScaleGridSize()) + 1;
+            addAction(function);
+        }
+    }
+
     public void removeAction(BaseAction action) {
-        task.removeAction(action);
+        actionContext.removeAction(action);
         BaseCard<?> card = cardMap.remove(action.getId());
         if (card == null) return;
         for (Pin pin : action.getPins()) {
-            linksRemovePin(pin.getLinks(), card.getPinById(pin.getId()));
+            pinRemoveLinks(card.getPinById(pin.getId()));
         }
 
         removeView(card);
@@ -189,7 +210,7 @@ public class CardLayoutView extends FrameLayout {
         float startY = offsetY - ofY;
         for (int i = 0; i < gridRow; i++) {
             if (startY == i * gridScaleSize) {
-                gridPaint.setStrokeWidth(5);
+                gridPaint.setStrokeWidth(4);
             } else {
                 float v = (startY - i * gridScaleSize) % bigGridSize;
                 gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
@@ -200,7 +221,7 @@ public class CardLayoutView extends FrameLayout {
         float startX = offsetX - ofX;
         for (int i = 0; i < gridCol; i++) {
             if (offsetX == i * gridScaleSize + ofX) {
-                gridPaint.setStrokeWidth(5);
+                gridPaint.setStrokeWidth(4);
             } else {
                 float v = (startX - i * gridScaleSize) % bigGridSize;
                 gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
@@ -220,7 +241,7 @@ public class CardLayoutView extends FrameLayout {
                     if (pinBaseView == null) continue;
                     // 只画输出的线
                     if (pinBaseView.getPin().getDirection().isOut()) {
-                        linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
+                        linePaint.setColor(pinBaseView.getPinColor());
                         canvas.drawPath(calculateLinePath(pinBaseView, card.getPinById(pin.getId())), linePaint);
                     }
                 }
@@ -233,7 +254,7 @@ public class CardLayoutView extends FrameLayout {
                 if (card == null) continue;
                 PinBaseView<?> pinBaseView = card.getPinById(entry.getKey());
                 if (pinBaseView == null) continue;
-                linePaint.setColor(pinBaseView.getPin().getPinColor(getContext()));
+                linePaint.setColor(pinBaseView.getPinColor());
                 canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
             }
         }
@@ -340,9 +361,7 @@ public class CardLayoutView extends FrameLayout {
                                 // 否则就是挪线
                                 dragLinks.putAll(links);
                                 dragDirection = pin.getDirection();
-                                linksRemovePin(links, pinBaseView);
-                                links.clear();
-                                pinBaseView.refreshPinUI();
+                                pinRemoveLinks(pinBaseView);
                             }
                         }
                     }
@@ -376,10 +395,7 @@ public class CardLayoutView extends FrameLayout {
                 if (flag && Math.abs(rawX - dragX) * Math.abs(rawY - dragY) <= 81) {
                     // 无效的拖动且没怎么拖动，相当于点击了这个针脚，点击针脚是断开这个针脚
                     if (dragPin != null) {
-                        HashMap<String, String> links = dragPin.getPin().getLinks();
-                        linksRemovePin(links, dragPin);
-                        links.clear();
-                        dragPin.refreshPinUI();
+                        pinRemoveLinks(dragPin);
                     }
                 }
             }
@@ -435,46 +451,33 @@ public class CardLayoutView extends FrameLayout {
 
     private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
         Pin pin = pinBaseView.getPin();
-        boolean flag = true;
-        // 先判断一下针脚是否匹配
-        for (Map.Entry<String, String> entry : links.entrySet()) {
-            BaseAction action = task.getActionById(entry.getValue());
-            if (action == null) continue;
-            Pin linkPin = action.getPinById(entry.getKey());
-            if (!pin.getPinClass().isAssignableFrom(linkPin.getPinClass())) {
-                flag = false;
-                break;
-            }
-
-            if (pin.getDirection().isOut() == linkPin.getDirection().isOut()) {
-                flag = false;
-                break;
-            }
-        }
-
-        if (flag) {
-            for (Map.Entry<String, String> entry : links.entrySet()) {
+        HashMap<String, String> addedLinks = pin.addLinks(actionContext, links);
+        if (addedLinks.size() > 0) {
+            pinBaseView.refreshPinUI();
+            for (Map.Entry<String, String> entry : addedLinks.entrySet()) {
                 BaseCard<?> card = cardMap.get(entry.getValue());
                 if (card == null) continue;
-                PinBaseView<?> cardPin = card.getPinById(entry.getKey());
-                if (cardPin == null) continue;
-                // 不能自己首尾相连
-                if (pin.getActionId().equals(cardPin.getPin().getActionId())) continue;
-
-                linksRemovePin(cardPin.addLink(pin), cardPin);
-                linksRemovePin(pinBaseView.addLink(cardPin.getPin()), pinBaseView);
+                PinBaseView<?> pinById = card.getPinById(entry.getKey());
+                if (pinById == null) continue;
+                pinById.refreshPinUI();
             }
+            return true;
         }
-        return flag;
+        return false;
     }
 
-    public void linksRemovePin(HashMap<String, String> links, PinBaseView<?> pinBaseView) {
-        for (Map.Entry<String, String> entry : links.entrySet()) {
-            BaseCard<?> card = cardMap.get(entry.getValue());
-            if (card == null) continue;
-            PinBaseView<?> cardPin = card.getPinById(entry.getKey());
-            if (cardPin == null) continue;
-            cardPin.removeLink(pinBaseView.getPin());
+    private void pinRemoveLinks(PinBaseView<?> pinBaseView) {
+        Pin pin = pinBaseView.getPin();
+        HashMap<String, String> removedLinks = pin.removeLinks(actionContext);
+        if (removedLinks.size() > 0) {
+            pinBaseView.refreshPinUI();
+            for (Map.Entry<String, String> entry : removedLinks.entrySet()) {
+                BaseCard<?> card = cardMap.get(entry.getValue());
+                if (card == null) continue;
+                PinBaseView<?> pinById = card.getPinById(entry.getKey());
+                if (pinById == null) continue;
+                pinById.refreshPinUI();
+            }
         }
     }
 
@@ -489,6 +492,14 @@ public class CardLayoutView extends FrameLayout {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        TaskRepository.getInstance().saveTask(task);
+        if (actionContext instanceof Task) {
+            TaskRepository.getInstance().saveTask((Task) actionContext);
+        } else if (actionContext instanceof BaseFunction) {
+            TaskRepository.getInstance().saveFunction((BaseFunction) actionContext);
+        }
+    }
+
+    public ActionContext getActionContext() {
+        return actionContext;
     }
 }
