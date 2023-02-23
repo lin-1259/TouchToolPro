@@ -167,8 +167,8 @@ public class TaskRepository {
     }
 
     public void saveFunction(BaseFunction function) {
-        functionMMKV.encode(function.getId(), gson.toJson(function));
-        functions.put(function.getId(), function);
+        functionMMKV.encode(function.getFunctionId(), gson.toJson(function));
+        functions.put(function.getFunctionId(), function);
     }
 
     public void removeFunction(String id) {

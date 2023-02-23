@@ -69,7 +69,7 @@ public class BaseAction {
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());
             pin.setActionId(copy.getId());
-            pin.getLinks().clear();
+            pin.cleanLinks();
         });
         copy.x = x + 1;
         copy.y = y + 1;

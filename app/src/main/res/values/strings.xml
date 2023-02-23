@@ -84,6 +84,7 @@
     <string name="function_add">添加自定义卡片</string>
     <string name="function_start">自定义开始</string>
     <string name="function_end">自定义结束</string>
+    <string name="function_pin_hint">针脚名</string>
     <string name="function_just_call">仅获取状态</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 

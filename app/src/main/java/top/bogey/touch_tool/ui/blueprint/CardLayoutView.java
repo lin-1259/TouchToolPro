@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -169,7 +170,7 @@ public class CardLayoutView extends FrameLayout {
         actionContext.removeAction(action);
         BaseCard<?> card = cardMap.remove(action.getId());
         if (card == null) return;
-        for (Pin pin : action.getPins()) {
+        for (Pin pin : action.getShowPins()) {
             pinRemoveLinks(card.getPinById(pin.getId()));
         }
 
@@ -497,6 +498,11 @@ public class CardLayoutView extends FrameLayout {
         } else if (actionContext instanceof BaseFunction) {
             TaskRepository.getInstance().saveFunction((BaseFunction) actionContext);
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        super.onRestoreInstanceState(state);
     }
 
     public ActionContext getActionContext() {

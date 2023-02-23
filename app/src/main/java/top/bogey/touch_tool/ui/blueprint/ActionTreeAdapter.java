@@ -117,7 +117,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                     BaseFunction function = new BaseFunction(context);
                     function.setTitle(result.toString());
                     TaskRepository.getInstance().saveFunction(function);
-                    TreeNodeInfo treeNodeInfo = new TreeNodeInfo(function.getId(), function.getTitle());
+                    TreeNodeInfo treeNodeInfo = new TreeNodeInfo(function.getFunctionId(), function.getTitle());
                     TreeNode node = new TreeNode(treeNodeInfo, R.layout.view_card_list_item);
                     functionTreeNode.addChild(node);
                     notifyDataSetChanged();

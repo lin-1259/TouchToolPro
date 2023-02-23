@@ -3,28 +3,26 @@ package top.bogey.touch_tool.ui.card.custom;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 
-import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
-import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.CardCustomBinding;
+import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.ui.card.pin.PinBottomView;
 import top.bogey.touch_tool.ui.card.pin.PinTopView;
-import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
-import top.bogey.touch_tool.utils.AppUtils;
 
 @SuppressLint("ViewConstructor")
 public class CustomCard extends BaseCard<FunctionAction> {
@@ -58,14 +56,40 @@ public class CustomCard extends BaseCard<FunctionAction> {
             }
         });
 
+        action.setCallback(new FunctionAction.FunctionChangedCallback() {
+
+            @Override
+            public void onPinAdded(Pin pin) {
+                addPinView(pin, 0);
+            }
+
+            @Override
+            public void onPinRemoved(Pin pin) {
+                PinBaseView<?> pinBaseView = getPinById(pin.getId());
+                pin.removeLinks(actionContext);
+                ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
+            }
+
+            @Override
+            public void onPinValueChanged(Pin pin) {
+                PinBaseView<?> pinBaseView = getPinById(pin.getId());
+                pinBaseView.refreshPinUI();
+            }
+
+            @Override
+            public void onPinTitleChanged(Pin pin) {
+                PinBaseView<?> pinBaseView = getPinById(pin.getId());
+                pinBaseView.refreshPinUI();
+            }
+        });
+
         CardCustomBinding cardBinding = CardCustomBinding.inflate(LayoutInflater.from(context), action.getTag().isStart() ? binding.topBox : binding.bottomBox, true);
-        cardBinding.addButton.setOnClickListener(v -> {
+        cardBinding.addPinButton.setOnClickListener(v -> {
             Pin pin;
-            // 结束动作需要添加进入针脚
-            if (!action.getTag().isStart()) pin = new Pin(new PinString(), PinSlotType.SINGLE, true);
-            // 开始动作需要添加输出针脚
-            else pin = new Pin(new PinString(), null, PinDirection.OUT, PinSlotType.MULTI, PinSubType.NORMAL, true);
-            addPinView(action.addPin(pin), 0);
+            // 这个pin是添加到BaseFunction的，所以方向与动作方向一致，与动作内针脚方向相反
+            if (action.getTag().isStart()) pin = new Pin(new PinString(), PinSlotType.SINGLE);
+            else pin = new Pin(new PinString(), PinDirection.OUT, PinSlotType.MULTI);
+            baseFunction.addPin(pin);
         });
 
         cardBinding.enableSwitch.setChecked(baseFunction.isJustCall());
@@ -76,6 +100,13 @@ public class CustomCard extends BaseCard<FunctionAction> {
     @Override
     public void addMorePinView(Pin pin, int offset) {
         addPinView(pin, offset);
+    }
+
+    @Override
+    public void removeMorePinView(PinBaseView<?> pinBaseView) {
+        Pin pin = pinBaseView.getPin();
+        String pinId = ((FunctionAction) action).getPinIdMap().get(pin.getId());
+        ((BaseFunction) actionContext).removePin(((BaseFunction) actionContext).getPinById(pinId));
     }
 
     @Override

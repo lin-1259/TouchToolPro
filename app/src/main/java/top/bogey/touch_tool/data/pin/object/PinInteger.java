@@ -13,6 +13,7 @@ public class PinInteger extends PinValue {
 
     public PinInteger() {
         super();
+        value = 0;
     }
 
     public PinInteger(int value) {

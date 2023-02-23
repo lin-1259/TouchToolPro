@@ -43,6 +43,7 @@ public class IntAddAction extends CalculateAction {
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
+        value.setValue(0);
 
         ArrayList<Pin> pins = getPins();
         int i = pins.indexOf(firstPin);

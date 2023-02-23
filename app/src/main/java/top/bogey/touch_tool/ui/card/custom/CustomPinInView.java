@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinMap;
 import top.bogey.touch_tool.data.pin.object.PinObject;
@@ -21,18 +22,17 @@ import top.bogey.touch_tool.utils.TextChangedListener;
 @SuppressLint("ViewConstructor")
 public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
     private PinObject pinObject;
+    private final ArrayMap<Class<? extends PinObject>, Integer> map = PinMap.getInstance().getMap();
 
     public CustomPinInView(@NonNull Context context, CustomCard card, Pin pin) {
         super(context, PinCustomInBinding.class, card, pin);
         pinObject = pin.getValue();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
-        ArrayMap<Class<? extends PinObject>, Integer> map = PinMap.getInstance().getMap();
         for (Integer id : map.values()) {
             adapter.add(context.getString(id));
         }
         binding.spinner.setAdapter(adapter);
-        binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -42,7 +42,8 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
 
                 try {
                     pinObject = aClass.newInstance();
-                    card.getAction().setPinValue(pin, pinObject);
+                    ((BaseFunction) card.getActionContext()).setPinValue(card.getAction(), pin, pinObject);
+                    setValueView();
                     refreshPinUI();
                 } catch (IllegalAccessException | InstantiationException e) {
                     throw new RuntimeException(e);
@@ -55,18 +56,17 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
             }
         });
 
-        binding.editText.setText(pin.getTitle());
         binding.editText.addTextChangedListener(new TextChangedListener(){
             @Override
             public void afterTextChanged(Editable s) {
-                if (s != null) card.getAction().setPinTitle(pin, s.toString());
+                if (s != null && s.length() > 0) {
+                    if (s.toString().equals(pin.getTitle())) return;
+                    ((BaseFunction) card.getActionContext()).setPinTitle(card.getAction(), pin, s.toString());
+                }
             }
         });
-    }
 
-    @Override
-    protected void setValueView() {
-
+        refreshPinUI();
     }
 
     @Override
@@ -74,6 +74,12 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
         super.refreshPinUI();
         pinBox.setVisibility(VISIBLE);
         pinSlot.setStrokeColor(getPinColor());
+        titleText.setVisibility(GONE);
+
+        if (map != null) {
+            binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
+            binding.editText.setText(pin.getTitle());
+        }
     }
 
     @Override

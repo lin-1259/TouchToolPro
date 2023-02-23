@@ -42,6 +42,7 @@ public class IntDivAction extends CalculateAction {
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(outValuePin.getId())) return;
         PinInteger value = (PinInteger) outValuePin.getValue();
+        value.setValue(0);
 
         PinInteger origin = (PinInteger) getPinValue(runnable, actionContext, originPin);
         PinInteger second = (PinInteger) getPinValue(runnable, actionContext, secondPin);

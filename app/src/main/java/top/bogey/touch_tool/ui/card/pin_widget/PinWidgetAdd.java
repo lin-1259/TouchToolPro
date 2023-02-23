@@ -26,7 +26,7 @@ public class PinWidgetAdd extends BindingView<PinWidgetAddBinding> {
         super(context, attrs, PinWidgetAddBinding.class);
         if (pinAdd == null) throw new RuntimeException("不是有效的引用");
 
-        binding.addButton.setOnClickListener(v -> {
+        binding.addPinButton.setOnClickListener(v -> {
             Pin copyPin = pinAdd.getPin().copy(true);
             card.addMorePinView(copyPin, pinAdd.getOffset());
         });

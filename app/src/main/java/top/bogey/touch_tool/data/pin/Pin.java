@@ -40,10 +40,6 @@ public class Pin {
         this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
     }
 
-    public Pin(PinObject value, PinSlotType slotType, boolean removeAble) {
-        this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, removeAble);
-    }
-
     public Pin(PinObject value, String title, PinDirection direction) {
         this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
@@ -177,6 +173,10 @@ public class Pin {
         HashMap<String, String> removedLinks = new HashMap<>(links);
         links.clear();
         return removedLinks;
+    }
+
+    public void cleanLinks() {
+        links.clear();
     }
 
     public Class<?> getPinClass() {

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:minHeight="24dp">
+        android:minHeight="16dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/pinSlot"
