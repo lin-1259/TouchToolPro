@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.datepicker.CalendarConstraints;
 import com.google.android.material.datepicker.DateValidatorPointForward;
@@ -15,7 +16,6 @@ import com.google.android.material.timepicker.TimeFormat;
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinLong;
@@ -52,7 +52,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBindin
                         .setCalendarConstraints(calendarConstraints)
                         .build();
 
-                picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);
+                picker.show(((AppCompatActivity) context).getSupportFragmentManager(), null);
 
                 picker.addOnPositiveButtonClickListener(selection -> {
                     pinLong.setValue(selection);
@@ -73,7 +73,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBindin
                         .setMinute(calendar.get(Calendar.MINUTE))
                         .build();
 
-                picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);
+                picker.show(((AppCompatActivity) context).getSupportFragmentManager(), null);
 
                 picker.addOnPositiveButtonClickListener(view -> {
                     calendar.set(Calendar.HOUR_OF_DAY, picker.getHour());
@@ -95,7 +95,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBindin
                         .setTitleText(R.string.action_time_start_tips)
                         .build();
 
-                picker.show(MainApplication.getActivity().getSupportFragmentManager(), null);
+                picker.show(((AppCompatActivity) context).getSupportFragmentManager(), null);
 
                 picker.addOnPositiveButtonClickListener(view -> {
                     pinLong.setValue(TimeUnit.HOURS.toMillis(picker.getHour()) + TimeUnit.MINUTES.toMillis(picker.getMinute()));

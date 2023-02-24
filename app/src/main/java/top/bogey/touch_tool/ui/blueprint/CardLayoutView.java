@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -50,7 +49,6 @@ public class CardLayoutView extends FrameLayout {
     private final int[] location = new int[2];
 
     private final HashMap<String, BaseCard<?>> cardMap = new LinkedHashMap<>();
-
     private ActionContext actionContext;
 
     private int dragState = DRAG_NONE;
@@ -498,11 +496,6 @@ public class CardLayoutView extends FrameLayout {
         } else if (actionContext instanceof BaseFunction) {
             TaskRepository.getInstance().saveFunction((BaseFunction) actionContext);
         }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        super.onRestoreInstanceState(state);
     }
 
     public ActionContext getActionContext() {

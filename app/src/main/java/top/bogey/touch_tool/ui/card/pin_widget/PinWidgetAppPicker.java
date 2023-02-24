@@ -13,11 +13,11 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.List;
 import java.util.Set;
 
-import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
@@ -43,7 +43,7 @@ public class PinWidgetAppPicker extends BindingView<PinWidgetAppPickerBinding> {
         if (helper == null) throw new RuntimeException("不是有效的引用");
         this.helper = helper;
 
-        binding.selectAppButton.setOnClickListener(v -> new AppView(helper.getPackages(), helper.getMode(), result -> refreshPackages()).show(MainApplication.getActivity().getSupportFragmentManager(), null));
+        binding.selectAppButton.setOnClickListener(v -> new AppView(helper.getPackages(), helper.getMode(), result -> refreshPackages()).show(((AppCompatActivity) context).getSupportFragmentManager(), null));
 
         refreshPackages();
     }

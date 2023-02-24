@@ -43,6 +43,7 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
+import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
@@ -115,8 +116,8 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            boolean startCaptureService = intent.getBooleanExtra(MainActivity.INTENT_KEY_START_CAPTURE, false);
-            boolean isBackground = intent.getBooleanExtra(MainActivity.INTENT_KEY_BACKGROUND, false);
+            boolean startCaptureService = intent.getBooleanExtra(HomeActivity.INTENT_KEY_START_CAPTURE, false);
+            boolean isBackground = intent.getBooleanExtra(HomeActivity.INTENT_KEY_BACKGROUND, false);
             if (startCaptureService) startCaptureService(isBackground, captureResultCallback);
         }
         return super.onStartCommand(intent, flags, startId);
@@ -287,7 +288,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public void startCaptureService(boolean moveBack, ResultCallback callback) {
         if (binder == null) {
-            MainActivity activity = MainApplication.getActivity();
+            HomeActivity activity = MainApplication.getActivity();
             if (activity != null) {
                 activity.launchNotification((notifyCode, notifyIntent) -> {
                     if (notifyCode == Activity.RESULT_OK) {
@@ -321,9 +322,9 @@ public class MainAccessibilityService extends AccessibilityService {
                 });
             } else {
                 captureResultCallback = callback;
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
-                intent.putExtra(MainActivity.INTENT_KEY_START_CAPTURE, true);
+                Intent intent = new Intent(this, HomeActivity.class);
+                intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
+                intent.putExtra(HomeActivity.INTENT_KEY_START_CAPTURE, true);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -464,11 +465,11 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showToast(String msg) {
-        MainActivity activity = MainApplication.getActivity();
+        HomeActivity activity = MainApplication.getActivity();
         if (activity == null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
-            intent.putExtra(MainActivity.INTENT_KEY_SHOW_TOAST, msg);
+            Intent intent = new Intent(this, HomeActivity.class);
+            intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
+            intent.putExtra(HomeActivity.INTENT_KEY_SHOW_TOAST, msg);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {

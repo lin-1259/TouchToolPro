@@ -4,7 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.view.MotionEvent;
 
-import top.bogey.touch_tool.MainActivity;
+import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool.utils.easy_float.FloatCallback;
@@ -18,7 +18,7 @@ public class FloatBaseCallback implements FloatCallback {
     @Override
     public void onShow(String tag) {
         EasyFloat.hideAll(tag);
-        MainActivity activity = MainApplication.getActivity();
+        HomeActivity activity = MainApplication.getActivity();
         if (activity != null) {
             activity.moveTaskToBack(true);
         }
@@ -32,7 +32,7 @@ public class FloatBaseCallback implements FloatCallback {
     @Override
     public void onDismiss() {
         if (!EasyFloat.showLast()) {
-            MainActivity activity = MainApplication.getActivity();
+            HomeActivity activity = MainApplication.getActivity();
             if (activity != null) {
                 ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
                 manager.moveTaskToFront(activity.getTaskId(), ActivityManager.MOVE_TASK_WITH_HOME);

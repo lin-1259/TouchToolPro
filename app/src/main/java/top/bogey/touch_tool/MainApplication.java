@@ -11,10 +11,11 @@ import com.tencent.mmkv.MMKV;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
-    private static MainActivity activity;
+    private static HomeActivity activity;
     private static MainAccessibilityService service;
 
     private Thread.UncaughtExceptionHandler handler;
@@ -30,11 +31,11 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
-    public static MainActivity getActivity() {
+    public static HomeActivity getActivity() {
         return activity;
     }
 
-    public static void setActivity(MainActivity activity) {
+    public static void setActivity(HomeActivity activity) {
         MainApplication.activity = activity;
     }
 

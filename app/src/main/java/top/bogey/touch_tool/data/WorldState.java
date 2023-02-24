@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
-import top.bogey.touch_tool.MainActivity;
+import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
@@ -151,11 +151,11 @@ public class WorldState {
             }
         }
 
-        MainActivity activity = MainApplication.getActivity();
+        HomeActivity activity = MainApplication.getActivity();
         if (activity == null) {
-            Intent intent = new Intent(service, MainActivity.class);
-            intent.putExtra(MainActivity.INTENT_KEY_BACKGROUND, true);
-            intent.putExtra(MainActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
+            Intent intent = new Intent(service, HomeActivity.class);
+            intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
+            intent.putExtra(HomeActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             service.startActivity(intent);
         } else {

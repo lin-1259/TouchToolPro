@@ -11,21 +11,21 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.databinding.ViewTaskTabBinding;
+import top.bogey.touch_tool.databinding.ActivityHomeTaskTabBinding;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class TagView extends BottomSheetDialogFragment {
-    private final HomeView parent;
+    private final HomeActivity parent;
 
-    public TagView(HomeView parent) {
+    public TagView(HomeActivity parent) {
         this.parent = parent;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        ViewTaskTabBinding binding = ViewTaskTabBinding.inflate(inflater, container, false);
+        ActivityHomeTaskTabBinding binding = ActivityHomeTaskTabBinding.inflate(inflater, container, false);
 
         TagRecyclerViewAdapter adapter = new TagRecyclerViewAdapter(parent);
         binding.tagBox.setAdapter(adapter);

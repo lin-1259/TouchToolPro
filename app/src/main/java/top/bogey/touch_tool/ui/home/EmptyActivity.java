@@ -1,4 +1,4 @@
-package top.bogey.touch_tool;
+package top.bogey.touch_tool.ui.home;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,7 +7,10 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-public class DoOutActionActivity extends Activity {
+import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainApplication;
+
+public class EmptyActivity extends Activity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

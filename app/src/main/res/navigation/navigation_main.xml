@@ -15,8 +15,8 @@
 
     <fragment
         android:id="@+id/taskBlueprint"
-        android:name="top.bogey.touch_tool.ui.blueprint.TaskBlueprintView"
-        tools:layout="@layout/view_task_blueprint">
+        android:name="top.bogey.touch_tool.ui.blueprint.TaskBlueprintActivity"
+        tools:layout="@layout/activity_blueprint">
         <argument
             android:name="taskId"
             app:argType="string" />
@@ -26,7 +26,7 @@
     </fragment>
     <fragment
         android:id="@+id/functionBlueprintView"
-        android:name="top.bogey.touch_tool.ui.blueprint.FunctionBlueprintView"
+        android:name="top.bogey.touch_tool.ui.blueprint.FunctionBlueprintActivity"
         android:label="FunctionBlueprintView" >
         <argument android:name="functionId"
             app:argType="string" />

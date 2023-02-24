@@ -12,19 +12,19 @@ import java.util.List;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
-import top.bogey.touch_tool.databinding.ViewTaskTabItemBinding;
+import top.bogey.touch_tool.databinding.ActivityHomeTaskTabItemBinding;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class TagRecyclerViewAdapter extends RecyclerView.Adapter<TagRecyclerViewAdapter.ViewHolder> {
 
-    private final HomeView parent;
+    private final HomeActivity parent;
     private final List<String> tags;
     private final String ALL;
     private final String NO;
 
-    public TagRecyclerViewAdapter(HomeView taskView) {
+    public TagRecyclerViewAdapter(HomeActivity taskView) {
         parent = taskView;
-        tags = SettingSave.getInstance().getTags(taskView.requireContext());
+        tags = SettingSave.getInstance().getTags(taskView);
         ALL = parent.getString(R.string.tag_all);
         NO = parent.getString(R.string.tag_no);
     }
@@ -32,7 +32,7 @@ public class TagRecyclerViewAdapter extends RecyclerView.Adapter<TagRecyclerView
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(ViewTaskTabItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(ActivityHomeTaskTabItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -52,18 +52,18 @@ public class TagRecyclerViewAdapter extends RecyclerView.Adapter<TagRecyclerView
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private final ViewTaskTabItemBinding binding;
+        private final ActivityHomeTaskTabItemBinding binding;
         private final Context context;
 
-        public ViewHolder(ViewTaskTabItemBinding binding) {
+        public ViewHolder(ActivityHomeTaskTabItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             context = binding.getRoot().getContext();
 
-            binding.getRoot().setOnClickListener(v -> parent.selectTab(getAdapterPosition()));
+            binding.getRoot().setOnClickListener(v -> parent.selectTab(getBindingAdapterPosition()));
 
             binding.deleteButton.setOnClickListener(v -> {
-                int index = getAdapterPosition();
+                int index = getBindingAdapterPosition();
                 TaskRepository.getInstance().removeTag(tags.remove(index));
                 parent.removeTab(index);
                 notifyItemRemoved(index);

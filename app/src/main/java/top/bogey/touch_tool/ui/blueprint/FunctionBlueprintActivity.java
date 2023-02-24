@@ -1,45 +1,45 @@
 package top.bogey.touch_tool.ui.blueprint;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
-import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
+import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
 
-public class FunctionBlueprintView extends Fragment {
+public class FunctionBlueprintActivity extends AppCompatActivity {
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (getArguments() == null) throw new IllegalArgumentException();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        ViewTaskBlueprintBinding binding = ViewTaskBlueprintBinding.inflate(inflater, container, false);
+        Intent intent = getIntent();
+        if (intent == null) throw new IllegalArgumentException();
 
-        String functionId = getArguments().getString("functionId");
+        String functionId = intent.getStringExtra("functionId");
         BaseFunction function = TaskRepository.getInstance().getFunctionById(functionId);
+
+        ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         binding.cardLayout.setActionContext(function);
 
         binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(requireContext(), binding.cardLayout);
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
             dialog.show();
         });
 
-        requireActivity().addMenuProvider(new MenuProvider() {
+        addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.menu_function, menu);
@@ -53,14 +53,9 @@ public class FunctionBlueprintView extends Fragment {
                 }
                 return true;
             }
-        }, getViewLifecycleOwner());
+        });
 
-        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.function_title);
-            actionBar.setSubtitle(function.getTitle());
-        }
-
-        return binding.getRoot();
+        binding.toolBar.setTitle(R.string.function_title);
+        binding.toolBar.setSubtitle(function.getTitle());
     }
 }

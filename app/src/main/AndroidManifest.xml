@@ -22,7 +22,7 @@
         android:theme="@style/Theme.TouchTool">
 
         <activity
-            android:name=".DoOutActionActivity"
+            android:name=".ui.home.EmptyActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.TouchTool.Transparent">
@@ -39,7 +39,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.home.HomeActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:exported="true"
             android:launchMode="singleTask"
@@ -61,6 +61,20 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".ui.blueprint.TaskBlueprintActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity
+            android:name=".ui.blueprint.FunctionBlueprintActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
             android:name=".MainAccessibilityService"

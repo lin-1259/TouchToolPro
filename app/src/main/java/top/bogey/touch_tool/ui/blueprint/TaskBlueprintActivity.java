@@ -1,47 +1,47 @@
 package top.bogey.touch_tool.ui.blueprint;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
-import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
-import top.bogey.touch_tool.databinding.ViewTaskBlueprintBinding;
+import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
 
-public class TaskBlueprintView extends Fragment {
+public class TaskBlueprintActivity extends AppCompatActivity {
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (getArguments() == null) throw new IllegalArgumentException();
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        ViewTaskBlueprintBinding binding = ViewTaskBlueprintBinding.inflate(inflater, container, false);
+        Intent intent = getIntent();
+        if (intent == null) throw new IllegalArgumentException();
 
-        String taskId = getArguments().getString("taskId");
+        String taskId = intent.getStringExtra("taskId");
         Task task = TaskRepository.getInstance().getTaskById(taskId);
+
+        ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         binding.cardLayout.setActionContext(task);
 
         binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(requireContext(), binding.cardLayout);
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
             dialog.show();
         });
 
-        requireActivity().addMenuProvider(new MenuProvider() {
+        addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.menu_task, menu);
@@ -55,9 +55,9 @@ public class TaskBlueprintView extends Fragment {
                         TaskRepository.getInstance().saveTask(task);
                         break;
                     case R.id.showLog:
-                        new MaterialAlertDialogBuilder(requireContext())
+                        new MaterialAlertDialogBuilder(TaskBlueprintActivity.this)
                                 .setTitle(R.string.task_running_log)
-                                .setMessage(TaskRepository.getInstance().getLogs(requireContext(), task))
+                                .setMessage(TaskRepository.getInstance().getLogs(TaskBlueprintActivity.this, task))
                                 .setPositiveButton(R.string.close, (dialog, which) -> dialog.dismiss())
                                 .setNegativeButton(R.string.task_running_log_clear, (dialog, which) -> {
                                     dialog.dismiss();
@@ -68,15 +68,9 @@ public class TaskBlueprintView extends Fragment {
                 }
                 return true;
             }
-        }, getViewLifecycleOwner());
+        });
 
-
-        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.task_title);
-            actionBar.setSubtitle(task.getTitle());
-        }
-
-        return binding.getRoot();
+        binding.toolBar.setTitle(R.string.task_title);
+        binding.toolBar.setSubtitle(task.getTitle());
     }
 }

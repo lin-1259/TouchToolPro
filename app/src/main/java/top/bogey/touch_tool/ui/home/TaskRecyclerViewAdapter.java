@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
@@ -28,14 +26,15 @@ import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.start.StartAction;
-import top.bogey.touch_tool.databinding.ViewTaskItemBinding;
+import top.bogey.touch_tool.databinding.ActivityHomeTaskItemBinding;
+import top.bogey.touch_tool.ui.blueprint.TaskBlueprintActivity;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
 public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder> implements TaskChangedCallback, TaskRunningCallback {
     private final ArrayList<Task> tasks = new ArrayList<>();
-    private final HomeView parent;
+    private final HomeActivity parent;
     private final String ALL;
     private final String NO;
 
@@ -44,14 +43,14 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     private final Map<String, Task> selectTasks = new HashMap<>();
 
-    public TaskRecyclerViewAdapter(HomeView parent) {
+    public TaskRecyclerViewAdapter(HomeActivity parent) {
         this.parent = parent;
         ALL = parent.getString(R.string.tag_all);
         NO = parent.getString(R.string.tag_no);
 
         showTasksByTag(ALL);
 
-        MainAccessibilityService.serviceEnabled.observe(parent.getViewLifecycleOwner(), aBoolean -> {
+        MainAccessibilityService.serviceEnabled.observe(parent, aBoolean -> {
             MainAccessibilityService service = MainApplication.getService();
             if (service == null) return;
             if (aBoolean) {
@@ -77,7 +76,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(ViewTaskItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+        return new ViewHolder(ActivityHomeTaskItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
     @Override
@@ -235,7 +234,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     public void exportSelectTasks() {
         if (selectTasks.size() == 0) return;
-        Context context = parent.requireContext();
+        Context context = parent;
         String name = context.getString(R.string.app_name);
         ArrayList<Task> tasks = new ArrayList<>(selectTasks.values());
         if (tasks.size() == 1) {
@@ -270,10 +269,10 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
-        private final ViewTaskItemBinding binding;
+        private final ActivityHomeTaskItemBinding binding;
         private final Context context;
 
-        public ViewHolder(ViewTaskItemBinding binding) {
+        public ViewHolder(ActivityHomeTaskItemBinding binding) {
             super(binding.getRoot());
             this.binding = binding;
             context = binding.getRoot().getContext();
@@ -297,8 +296,9 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                         }
                     }
 
-                    NavController controller = Navigation.findNavController(MainApplication.getActivity(), R.id.conView);
-                    controller.navigate(HomeViewDirections.actionHomeToTaskBlueprint(task.getId()));
+                    Intent intent = new Intent(parent, TaskBlueprintActivity.class);
+                    intent.putExtra("taskId", task.getId());
+                    parent.startActivity(intent);
                 }
             });
 

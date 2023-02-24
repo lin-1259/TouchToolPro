@@ -2,13 +2,12 @@ package top.bogey.touch_tool.ui.blueprint;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.amrdeveloper.treeview.TreeNode;
 import com.amrdeveloper.treeview.TreeNodeManager;
@@ -19,7 +18,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionMap;
@@ -147,8 +145,10 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                 int index = getBindingAdapterPosition();
                 TreeNode treeNode = manager.get(index);
                 TreeNodeInfo treeNodeInfo = (TreeNodeInfo) treeNode.getValue();
-                NavController controller = Navigation.findNavController(MainApplication.getActivity(), R.id.conView);
-                controller.navigate(TaskBlueprintViewDirections.actionTaskBlueprintToFunctionBlueprintView(treeNodeInfo.getId()));
+
+                Intent intent = new Intent(context.getApplicationContext(), FunctionBlueprintActivity.class);
+                intent.putExtra("functionId", treeNodeInfo.getId());
+                context.startActivity(intent);
                 parent.dismiss();
             });
         }
