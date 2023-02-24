@@ -40,7 +40,7 @@ public class TouchPosAction extends NormalAction {
         PinValueArea timeArea = (PinValueArea) getPinValue(runnable, actionContext, timePin);
         PinBoolean offset = (PinBoolean) getPinValue(runnable, actionContext, offsetPin);
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         int randomTime = timeArea.getRandomValue();
         service.runGesture(pos.getX(offset.getValue()), pos.getY(offset.getValue()), randomTime, null);
         sleep(randomTime);

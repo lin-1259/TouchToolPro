@@ -1,8 +1,11 @@
 package top.bogey.touch_tool;
 
+import android.app.Activity;
 import android.app.Application;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.material.color.DynamicColors;
@@ -10,41 +13,49 @@ import com.tencent.mmkv.MMKV;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.ref.WeakReference;
 
-import top.bogey.touch_tool.ui.home.HomeActivity;
+import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.utils.SettingSave;
 
-public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
-    private static HomeActivity activity;
-    private static MainAccessibilityService service;
+public class MainApplication extends Application implements Thread.UncaughtExceptionHandler, Application.ActivityLifecycleCallbacks {
+    private static MainApplication application;
+
+    private WeakReference<BaseActivity> activity = new WeakReference<>(null);
+    private WeakReference<MainAccessibilityService> service = new WeakReference<>(null);
 
     private Thread.UncaughtExceptionHandler handler;
+
+    public static MainApplication getInstance() {
+        return application;
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        application = this;
+
         MMKV.initialize(this);
+        SettingSave.getInstance().addRunTimes();
+
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         DynamicColors.applyToActivitiesIfAvailable(this);
 
         handler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
+        registerActivityLifecycleCallbacks(this);
     }
 
-    public static HomeActivity getActivity() {
-        return activity;
+    public BaseActivity getActivity() {
+        return activity.get();
     }
 
-    public static void setActivity(HomeActivity activity) {
-        MainApplication.activity = activity;
+    public MainAccessibilityService getService() {
+        return service.get();
     }
 
-    public static MainAccessibilityService getService() {
-        return service;
-    }
-
-    public static void setService(MainAccessibilityService service) {
-        MainApplication.service = service;
+    public void setService(MainAccessibilityService service) {
+        this.service = new WeakReference<>(service);
     }
 
     @Override
@@ -59,5 +70,40 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         }
         SettingSave.getInstance().setRunningError(errorInfo);
         handler.uncaughtException(t, e);
+    }
+
+    @Override
+    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void onActivityStarted(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityResumed(@NonNull Activity activity) {
+        this.activity = new WeakReference<>((BaseActivity) activity);
+    }
+
+    @Override
+    public void onActivityPaused(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivityStopped(@NonNull Activity activity) {
+
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
+
+    }
+
+    @Override
+    public void onActivityDestroyed(@NonNull Activity activity) {
+
     }
 }

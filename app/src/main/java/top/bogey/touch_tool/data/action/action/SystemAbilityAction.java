@@ -31,7 +31,7 @@ public class SystemAbilityAction extends NormalAction {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinSpinner ability = (PinSpinner) getPinValue(runnable, actionContext, abilityPin);
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         switch (ability.getIndex()) {
             case 0:
                 service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);

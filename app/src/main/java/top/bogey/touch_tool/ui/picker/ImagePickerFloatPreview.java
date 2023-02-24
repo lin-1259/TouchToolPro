@@ -70,7 +70,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
 
     @Override
     public void show() {
-        EasyFloat.with(MainApplication.getService())
+        EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setTag(tag)
                 .setDragEnable(true)

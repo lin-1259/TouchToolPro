@@ -40,7 +40,7 @@ public class TouchPathAction extends NormalAction {
         PinValueArea valueArea = (PinValueArea) getPinValue(runnable, actionContext, timePin);
         PinBoolean offset = (PinBoolean) getPinValue(runnable, actionContext, offsetPin);
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         int randomTime = valueArea.getRandomValue();
         service.runGesture(pinPath.getRealPaths(service, offset.getValue()), randomTime, null);
         sleep(randomTime);

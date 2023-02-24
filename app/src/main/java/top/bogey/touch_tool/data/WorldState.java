@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
-import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
@@ -25,6 +24,8 @@ import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.EmptyActivity;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -117,7 +118,7 @@ public class WorldState {
     }
 
     private void checkAutoStartAction(Class<? extends StartAction> actionType) {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceEnabled()) return;
 
         // 特有的开始项
@@ -138,7 +139,7 @@ public class WorldState {
     }
 
     private void showManualActionDialog(boolean show) {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceEnabled()) return;
 
         manualStartActions.clear();
@@ -146,16 +147,16 @@ public class WorldState {
             ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(ManualStartAction.class);
             for (Task task : tasks) {
                 for (StartAction startAction : task.getStartActions(ManualStartAction.class)) {
-                    if (startAction.isEnable()) manualStartActions.put((ManualStartAction) startAction, task);
+                    if (startAction.isEnable() && startAction.checkReady(null, task))
+                        manualStartActions.put((ManualStartAction) startAction, task);
                 }
             }
         }
 
-        HomeActivity activity = MainApplication.getActivity();
+        BaseActivity activity = MainApplication.getInstance().getActivity();
         if (activity == null) {
-            Intent intent = new Intent(service, HomeActivity.class);
-            intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
-            intent.putExtra(HomeActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
+            Intent intent = new Intent(service, EmptyActivity.class);
+            intent.putExtra(EmptyActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             service.startActivity(intent);
         } else {

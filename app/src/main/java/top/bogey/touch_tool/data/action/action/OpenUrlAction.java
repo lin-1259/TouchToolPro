@@ -31,7 +31,7 @@ public class OpenUrlAction extends NormalAction {
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinString pinString = (PinString) getPinValue(runnable, actionContext, urlPin);
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         AppUtils.gotoUrl(service, pinString.getValue());
 
         doNextAction(runnable, actionContext, outPin);

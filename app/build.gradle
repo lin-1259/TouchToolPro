@@ -1,19 +1,19 @@
 plugins {
     id 'com.android.application'
-    id 'androidx.navigation.safeargs'
 }
 
 android {
     namespace 'top.bogey.touch_tool'
     compileSdk 33
     ndkVersion '25.2.9519653'
+    buildToolsVersion '34.0.0 rc1'
 
     defaultConfig {
         applicationId "top.bogey.touch_tool_pro"
         minSdk 24
         targetSdk 33
-        versionCode 12
-        versionName "0.0.12"
+        versionCode 13
+        versionName "0.0.13"
 
         externalNativeBuild {
             cmake {
@@ -72,8 +72,6 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
-    implementation 'androidx.navigation:navigation-fragment:2.5.3'
-    implementation 'androidx.navigation:navigation-ui:2.5.3'
     implementation 'androidx.work:work-runtime:2.8.0'
 
     //noinspection GradleDependency

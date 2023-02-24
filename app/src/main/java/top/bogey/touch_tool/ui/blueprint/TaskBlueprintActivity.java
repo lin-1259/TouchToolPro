@@ -9,7 +9,6 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -18,8 +17,9 @@ import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
+import top.bogey.touch_tool.ui.BaseActivity;
 
-public class TaskBlueprintActivity extends AppCompatActivity {
+public class TaskBlueprintActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,14 +33,7 @@ public class TaskBlueprintActivity extends AppCompatActivity {
 
         ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        binding.cardLayout.setActionContext(task);
-
-        binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
-            dialog.show();
-        });
-
+        setSupportActionBar(binding.toolBar);
         addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -70,6 +63,12 @@ public class TaskBlueprintActivity extends AppCompatActivity {
             }
         });
 
+        binding.cardLayout.setActionContext(task);
+
+        binding.addButton.setOnClickListener(v -> {
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
+            dialog.show();
+        });
         binding.toolBar.setTitle(R.string.task_title);
         binding.toolBar.setSubtitle(task.getTitle());
     }

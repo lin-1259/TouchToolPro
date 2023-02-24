@@ -49,7 +49,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
         binding.percent.setText(this.title);
 
         binding.playButton.setOnClickListener(v -> {
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             // 录屏服务没开启，需要检查涉及图片或颜色的动作
             if (service != null && !service.isCaptureEnabled()) {
                 if (task.needCaptureService()) {
@@ -67,7 +67,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
     }
 
     private void startPlay() {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceConnected()) {
             if (playing) {
                 if (runnable != null) {

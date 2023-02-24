@@ -47,7 +47,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         gridPaint.setColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0));
 
         binding = FloatPickerWidgetBinding.inflate(LayoutInflater.from(context), this, true);
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         rootNode = service.getRootInActiveWindow();
 
         binding.saveButton.setOnClickListener(v -> {

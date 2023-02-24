@@ -30,7 +30,7 @@ public class ToastFloatView extends FrameLayout implements FloatViewInterface {
     }
 
     public void showToast(String msg) {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceConnected()) {
             Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
             return;
@@ -43,7 +43,7 @@ public class ToastFloatView extends FrameLayout implements FloatViewInterface {
 
     @Override
     public void show() {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceConnected()) {
             return;
         }

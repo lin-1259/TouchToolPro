@@ -9,15 +9,15 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.MenuProvider;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
+import top.bogey.touch_tool.ui.BaseActivity;
 
-public class FunctionBlueprintActivity extends AppCompatActivity {
+public class FunctionBlueprintActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,14 +31,7 @@ public class FunctionBlueprintActivity extends AppCompatActivity {
 
         ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        binding.cardLayout.setActionContext(function);
-
-        binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
-            dialog.show();
-        });
-
+        setSupportActionBar(binding.toolBar);
         addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -53,6 +46,13 @@ public class FunctionBlueprintActivity extends AppCompatActivity {
                 }
                 return true;
             }
+        });
+
+        binding.cardLayout.setActionContext(function);
+
+        binding.addButton.setOnClickListener(v -> {
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
+            dialog.show();
         });
 
         binding.toolBar.setTitle(R.string.function_title);

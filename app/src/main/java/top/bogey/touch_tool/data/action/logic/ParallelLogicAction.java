@@ -68,7 +68,7 @@ public class ParallelLogicAction extends NormalAction {
         PinInteger condition = (PinInteger) getPinValue(runnable, actionContext, conditionPin);
         PinInteger timeout = (PinInteger) getPinValue(runnable, actionContext, timeOutPin);
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         CountDownLatch latch = new CountDownLatch(condition.getValue() > 0 ? condition.getValue() : 1);
         ArrayList<TaskRunnable> runnableList = new ArrayList<>();
         for (Pin subPin : subPins) {

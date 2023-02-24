@@ -75,7 +75,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
     @Override
     public void show() {
-        EasyFloat.with(MainApplication.getService())
+        EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setSidePattern(SidePattern.HORIZONTAL)
                 .setGravity(FloatGravity.RIGHT_CENTER, 0, 0)

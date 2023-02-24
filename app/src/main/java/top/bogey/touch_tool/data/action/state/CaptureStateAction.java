@@ -25,7 +25,7 @@ public class CaptureStateAction extends StateAction {
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         value.setValue(service.isCaptureEnabled());
     }
 }

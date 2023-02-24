@@ -29,7 +29,7 @@ public class CaptureServiceAction extends NormalAction {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean state = (PinBoolean) statePin.getValue();
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (state.getValue()) {
             service.startCaptureService(true, null);
         } else {

@@ -7,8 +7,6 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -19,7 +17,6 @@ import androidx.annotation.StringRes;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.List;
 
@@ -62,7 +59,8 @@ public class AppUtils {
 
         new MaterialAlertDialogBuilder(context)
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
-                    if (callback != null && editText.getText() != null) callback.onResult(editText.getText().toString());
+                    if (callback != null && editText.getText() != null)
+                        callback.onResult(editText.getText().toString());
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> {
@@ -112,11 +110,6 @@ public class AppUtils {
         }
     }
 
-    public static boolean isIgnoredBattery(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
-    }
-
     public static void gotoBatterySetting(Context context) {
         try {
             Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
@@ -127,13 +120,9 @@ public class AppUtils {
         }
     }
 
-    public static boolean checkFloatPermission(Context context) {
-        try {
-            Method canDrawOverlays = Settings.class.getDeclaredMethod("canDrawOverlays", Context.class);
-            return Boolean.TRUE.equals(canDrawOverlays.invoke(null, context));
-        } catch (Exception ignored) {
-        }
-        return false;
+    public static boolean isIgnoredBattery(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isIgnoringBatteryOptimizations(context.getPackageName());
     }
 
     public static ScreenStateAction.ScreenState getScreenState(Context context) {
@@ -156,19 +145,6 @@ public class AppUtils {
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.FULL_WAKE_LOCK, context.getString(R.string.common_package_name));
         wakeLock.acquire(100);
         wakeLock.release();
-    }
-
-    public static <T extends Parcelable> T copy(T input) {
-        if (input == null) return null;
-        Parcel parcel = null;
-        try {
-            parcel = Parcel.obtain();
-            parcel.writeParcelable(input, 0);
-            parcel.setDataPosition(0);
-            return parcel.readParcelable(input.getClass().getClassLoader());
-        } finally {
-            if (parcel != null) parcel.recycle();
-        }
     }
 
     public static String formatDateLocalDate(Context context, long dateTime) {

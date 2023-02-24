@@ -23,7 +23,7 @@ public class TaskWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null) {
             Data inputData = getInputData();
             Task task = TaskRepository.getInstance().getTaskById(inputData.getString(TASK));

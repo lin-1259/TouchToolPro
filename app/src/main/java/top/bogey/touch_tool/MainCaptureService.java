@@ -87,7 +87,7 @@ public class MainCaptureService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             if (intent.getBooleanExtra(STOP_CAPTURE, false)) {
-                MainAccessibilityService service = MainApplication.getService();
+                MainAccessibilityService service = MainApplication.getInstance().getService();
                 if (service != null) {
                     service.stopCaptureService();
                 }

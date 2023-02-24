@@ -22,7 +22,7 @@
         android:theme="@style/Theme.TouchTool">
 
         <activity
-            android:name=".ui.home.EmptyActivity"
+            android:name=".ui.EmptyActivity"
             android:exported="true"
             android:launchMode="singleTask"
             android:theme="@style/Theme.TouchTool.Transparent">

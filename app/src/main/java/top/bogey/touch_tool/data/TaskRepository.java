@@ -140,7 +140,7 @@ public class TaskRepository {
     }
 
     public void saveTask(Task task) {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
             service.replaceWork(task);
         }
@@ -161,7 +161,7 @@ public class TaskRepository {
             callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onRemoved(removedTask));
             removeLog(removedTask);
 
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null) service.stopTask(removedTask);
         }
     }

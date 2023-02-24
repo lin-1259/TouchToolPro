@@ -42,8 +42,9 @@ import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
+import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.EmptyActivity;
 import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
-import top.bogey.touch_tool.ui.home.HomeActivity;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
@@ -116,9 +117,8 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
-            boolean startCaptureService = intent.getBooleanExtra(HomeActivity.INTENT_KEY_START_CAPTURE, false);
-            boolean isBackground = intent.getBooleanExtra(HomeActivity.INTENT_KEY_BACKGROUND, false);
-            if (startCaptureService) startCaptureService(isBackground, captureResultCallback);
+            boolean startCaptureService = intent.getBooleanExtra(EmptyActivity.INTENT_KEY_START_CAPTURE, false);
+            if (startCaptureService) startCaptureService(true, captureResultCallback);
         }
         return super.onStartCommand(intent, flags, startId);
     }
@@ -127,7 +127,7 @@ public class MainAccessibilityService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
-        MainApplication.setService(this);
+        MainApplication.getInstance().setService(this);
         batteryReceiver = new BatteryReceiver();
         registerReceiver(batteryReceiver, batteryReceiver.getFilter());
     }
@@ -141,7 +141,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
         serviceConnected.setValue(false);
         serviceEnabled.setValue(false);
-        MainApplication.setService(null);
+        MainApplication.getInstance().setService(null);
     }
 
     public boolean isServiceEnabled() {
@@ -288,7 +288,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public void startCaptureService(boolean moveBack, ResultCallback callback) {
         if (binder == null) {
-            HomeActivity activity = MainApplication.getActivity();
+            BaseActivity activity = MainApplication.getInstance().getActivity();
             if (activity != null) {
                 activity.launchNotification((notifyCode, notifyIntent) -> {
                     if (notifyCode == Activity.RESULT_OK) {
@@ -322,9 +322,8 @@ public class MainAccessibilityService extends AccessibilityService {
                 });
             } else {
                 captureResultCallback = callback;
-                Intent intent = new Intent(this, HomeActivity.class);
-                intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
-                intent.putExtra(HomeActivity.INTENT_KEY_START_CAPTURE, true);
+                Intent intent = new Intent(this, EmptyActivity.class);
+                intent.putExtra(EmptyActivity.INTENT_KEY_START_CAPTURE, true);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
@@ -465,11 +464,10 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showToast(String msg) {
-        HomeActivity activity = MainApplication.getActivity();
+        BaseActivity activity = MainApplication.getInstance().getActivity();
         if (activity == null) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            intent.putExtra(HomeActivity.INTENT_KEY_BACKGROUND, true);
-            intent.putExtra(HomeActivity.INTENT_KEY_SHOW_TOAST, msg);
+            Intent intent = new Intent(this, EmptyActivity.class);
+            intent.putExtra(EmptyActivity.INTENT_KEY_SHOW_TOAST, msg);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {

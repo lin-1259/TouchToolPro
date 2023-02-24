@@ -50,7 +50,7 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
         binding.timeSlider.setLabelFormatter(value -> String.format("%dms", (int) value));
 
         binding.playButton.setOnClickListener(v -> {
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 service.runGesture(newPinPath.getRealPaths(context, false), time[0], null);
             }
@@ -61,7 +61,7 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
 
     @Override
     public void show() {
-        EasyFloat.with(MainApplication.getService())
+        EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setTag(tag)
                 .setDragEnable(true)

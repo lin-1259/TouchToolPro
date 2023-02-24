@@ -111,7 +111,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     }
 
     public void onShow() {
-        service = MainApplication.getService();
+        service = MainApplication.getInstance().getService();
         if (service != null) {
             if (!service.isCaptureEnabled()) {
                 Toast.makeText(getContext(), R.string.capture_service_on_tips, Toast.LENGTH_SHORT).show();

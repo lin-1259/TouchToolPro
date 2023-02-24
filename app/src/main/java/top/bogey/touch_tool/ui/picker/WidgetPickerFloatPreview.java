@@ -43,7 +43,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.backButton.setOnClickListener(v -> dismiss());
 
         binding.playButton.setOnClickListener(v -> {
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
@@ -52,7 +52,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         });
 
         binding.playButton.setOnLongClickListener(v -> {
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
@@ -64,7 +64,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
 
     @Override
     public void show() {
-        EasyFloat.with(MainApplication.getService())
+        EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setTag(tag)
                 .setDragEnable(true)

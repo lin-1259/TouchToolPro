@@ -52,7 +52,7 @@ public class NotificationStartAction extends StartAction {
 
         if (!result) return false;
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
         PinSelectApp helper = (PinSelectApp) getPinValue(runnable, actionContext, appPin);

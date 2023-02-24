@@ -41,7 +41,7 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
 
     @Override
     public void show() {
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceConnected()) {
             return;
         }

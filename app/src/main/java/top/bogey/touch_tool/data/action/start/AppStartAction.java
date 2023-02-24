@@ -37,7 +37,7 @@ public class AppStartAction extends StartAction {
         if (packageName == null) return false;
         String activityName = worldState.getActivityName();
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
         PinSelectApp helper = (PinSelectApp) getPinValue(runnable, actionContext, appPin);

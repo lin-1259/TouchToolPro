@@ -51,7 +51,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         showTasksByTag(ALL);
 
         MainAccessibilityService.serviceEnabled.observe(parent, aBoolean -> {
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service == null) return;
             if (aBoolean) {
                 service.addRunningCallback(this);
@@ -289,7 +289,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                     notifyItemChanged(index);
                 } else {
                     if (!AppUtils.isDebug(context)) {
-                        MainAccessibilityService service = MainApplication.getService();
+                        MainAccessibilityService service = MainApplication.getInstance().getService();
                         if (service == null || !service.isServiceConnected()) {
                             Toast.makeText(context, R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
                             return;
@@ -340,7 +340,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             binding.stopButton.setOnClickListener(v -> {
                 int index = getBindingAdapterPosition();
                 Task task = tasks.get(index);
-                MainAccessibilityService service = MainApplication.getService();
+                MainAccessibilityService service = MainApplication.getInstance().getService();
                 if (service != null) service.stopTask(task);
             });
         }
@@ -352,7 +352,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             binding.taskTag.setText(task.getTag());
             binding.enableSwitch.setChecked(isAllStartActionEnable(task));
 
-            MainAccessibilityService service = MainApplication.getService();
+            MainAccessibilityService service = MainApplication.getInstance().getService();
             binding.stopButton.setVisibility(service != null && service.isTaskRunning(task) ? View.VISIBLE : View.GONE);
 
             binding.getRoot().setChecked(selectTasks.containsKey(task.getId()));

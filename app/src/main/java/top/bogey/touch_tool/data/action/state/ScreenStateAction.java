@@ -29,7 +29,7 @@ public class ScreenStateAction extends StateAction {
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
-        ScreenState state = AppUtils.getScreenState(MainApplication.getService());
+        ScreenState state = AppUtils.getScreenState(MainApplication.getInstance().getService());
         int screenState = ((PinSpinner) getPinValue(runnable, actionContext, screenStatePin)).getIndex();
         value.setValue(state.ordinal() == screenState);
     }

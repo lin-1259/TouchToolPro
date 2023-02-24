@@ -6,29 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.view.Display;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import java.util.List;
 
 public class DisplayUtils {
-    public static boolean isDefaultPortrait = true;
-
-    public static void initParams(Context context) {
-        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = manager.getDefaultDisplay();
-        Point point = new Point();
-        display.getRealSize(point);
-        if (display.getRotation() % 2 == Surface.ROTATION_0) {
-            isDefaultPortrait = point.x < point.y;
-        } else {
-            isDefaultPortrait = point.x > point.y;
-        }
-    }
-
     public static int getAttrColor(Context context, int id, int defValue) {
         int[] attrs = {id};
         TypedArray typedArray = context.getTheme().obtainStyledAttributes(attrs);
@@ -46,15 +30,6 @@ public class DisplayUtils {
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Point point = new Point();
         manager.getDefaultDisplay().getRealSize(point);
-        // 为了解决有些手机横竖屏切换时，后台应用获得的屏幕大小不变这个问题。
-        if (isDefaultPortrait) {
-            // 适用于竖屏手机
-            if (isPortrait(context)) {
-                if (point.x > point.y) return new Point(point.y, point.x);
-            } else {
-                if (point.y > point.x) return new Point(point.y, point.x);
-            }
-        }
         return point;
     }
 
@@ -121,17 +96,5 @@ public class DisplayUtils {
             }
         }
         return area;
-    }
-
-    public static Point getRelativePosition(View target, View self) {
-        float x = self.getX();
-        float y = self.getY();
-        ViewGroup parent = (ViewGroup) self.getParent();
-        if (parent != null && !parent.equals(target)) {
-            Point position = getRelativePosition(target, parent);
-            x += position.x;
-            y += position.y;
-        }
-        return new Point((int) x, (int) y);
     }
 }

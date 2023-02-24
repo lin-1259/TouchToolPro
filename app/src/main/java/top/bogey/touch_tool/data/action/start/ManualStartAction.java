@@ -36,10 +36,10 @@ public class ManualStartAction extends StartAction {
         String packageName = worldState.getPackageName();
         if (packageName == null) return false;
 
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         String commonPackageName = service.getString(R.string.common_package_name);
 
-        PinSelectApp helper = (PinSelectApp) getPinValue(runnable, actionContext, appPin);
+        PinSelectApp helper = (PinSelectApp) appPin.getValue();
         Map<String, ArrayList<String>> packages = helper.getPackages();
 
         // 包含通用且包含当前包，代表排除当前包

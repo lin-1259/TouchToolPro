@@ -46,7 +46,7 @@ public class TextStateAction extends StateAction {
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
 
         String text = ((PinString) getPinValue(runnable, actionContext, textPin)).getValue();
         if (text == null || text.isEmpty()) {

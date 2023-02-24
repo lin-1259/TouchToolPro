@@ -40,7 +40,7 @@ public class ColorStateAction extends StateAction {
         if (!pin.getId().equals(statePin.getId())) return;
 
         PinBoolean value = (PinBoolean) statePin.getValue();
-        MainAccessibilityService service = MainApplication.getService();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
         if (!service.isCaptureEnabled()) {
             value.setValue(false);
             return;
