@@ -47,7 +47,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
             if (service != null && service.isServiceEnabled()) {
                 AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
-                clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             }
         });
 
@@ -56,7 +56,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
             if (service != null && service.isServiceEnabled()) {
                 AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
-                clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
             }
             return true;
         });

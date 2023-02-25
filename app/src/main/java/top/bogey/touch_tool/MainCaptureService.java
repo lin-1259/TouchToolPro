@@ -1,6 +1,5 @@
 package top.bogey.touch_tool;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -11,7 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.PixelFormat;
+import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -55,6 +54,12 @@ public class MainCaptureService extends Service {
             MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
             Intent data = intent.getParcelableExtra(DATA);
             projection = manager.getMediaProjection(Activity.RESULT_OK, data);
+            projection.registerCallback(new MediaProjection.Callback() {
+                @Override
+                public void onStop() {
+                    stopService();
+                }
+            }, null);
             setVirtualDisplay();
         }
         return new CaptureServiceBinder();
@@ -87,10 +92,7 @@ public class MainCaptureService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null) {
             if (intent.getBooleanExtra(STOP_CAPTURE, false)) {
-                MainAccessibilityService service = MainApplication.getInstance().getService();
-                if (service != null) {
-                    service.stopCaptureService();
-                }
+                stopService();
             }
         }
         return super.onStartCommand(intent, flags, startId);
@@ -103,10 +105,15 @@ public class MainCaptureService extends Service {
         if (imageReader != null) imageReader.close();
 
         if (projection != null) setVirtualDisplay();
-        else {
-            Intent intent = new Intent(this, MainCaptureService.class);
-            intent.putExtra(STOP_CAPTURE, true);
-            startService(intent);
+        else stopService();
+    }
+
+    private void stopService() {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) {
+            service.stopCaptureService();
+        } else {
+            stopSelf();
         }
     }
 
@@ -146,12 +153,11 @@ public class MainCaptureService extends Service {
         }
     }
 
-    @SuppressLint("WrongConstant")
     private void setVirtualDisplay() {
         WindowManager manager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getRealMetrics(metrics);
-        imageReader = ImageReader.newInstance(metrics.widthPixels, metrics.heightPixels, PixelFormat.RGBA_8888, 2);
+        imageReader = ImageReader.newInstance(metrics.widthPixels, metrics.heightPixels, ImageFormat.JPEG, 2);
         virtualDisplay = projection.createVirtualDisplay("CaptureService", metrics.widthPixels, metrics.heightPixels, metrics.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, imageReader.getSurface(), null, null);
     }
 

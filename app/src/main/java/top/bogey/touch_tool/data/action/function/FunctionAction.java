@@ -45,7 +45,8 @@ public class FunctionAction extends BaseAction {
         super(jsonObject);
         Gson gson = new Gson();
         tag = BaseFunction.FUNCTION_TAG.valueOf(jsonObject.get("tag").getAsString());
-        pinIdMap.putAll(gson.fromJson(jsonObject.get("pinIdMap"), new TypeToken<HashMap<String, String>>() {}.getType()));
+        pinIdMap.putAll(gson.fromJson(jsonObject.get("pinIdMap"), new TypeToken<HashMap<String, String>>() {
+        }.getType()));
 
         executePin = super.addPin(tmpPins.remove(0));
         for (Pin pin : tmpPins) {
@@ -62,7 +63,8 @@ public class FunctionAction extends BaseAction {
         copy.getPins().forEach(pin -> {
             // 动作复制需要更新内部索引
             String pinId = UUID.randomUUID().toString();
-            copy.pinIdMap.put(pinId, copy.pinIdMap.remove(pin.getId()));
+            String remove = copy.pinIdMap.remove(pin.getId());
+            if (remove != null) copy.pinIdMap.put(pinId, remove);
             pin.setId(pinId);
             pin.setActionId(copy.getId());
             pin.cleanLinks();
@@ -85,7 +87,8 @@ public class FunctionAction extends BaseAction {
 
     @Override
     protected PinObject getPinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        if (tag.isStart()) return ((BaseFunction) actionContext).getPinValue(runnable, pinIdMap.get(pin.getId()));
+        if (tag.isStart())
+            return ((BaseFunction) actionContext).getPinValue(runnable, pinIdMap.get(pin.getId()));
         else return super.getPinValue(runnable, actionContext, pin);
     }
 
@@ -106,8 +109,9 @@ public class FunctionAction extends BaseAction {
         copy.setDirection(copy.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN);
         copy.setSlotType(copy.getSlotType() == PinSlotType.MULTI ? PinSlotType.SINGLE : PinSlotType.MULTI);
         pinIdMap.put(copy.getId(), outerPin.getId());
+        super.addPin(copy);
         if (callback != null) callback.onPinAdded(copy);
-        return super.addPin(copy);
+        return copy;
     }
 
     @Override

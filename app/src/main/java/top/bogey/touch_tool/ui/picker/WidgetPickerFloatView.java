@@ -13,8 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +43,6 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         gridPaint.setStrokeCap(Paint.Cap.ROUND);
         gridPaint.setStrokeJoin(Paint.Join.ROUND);
         gridPaint.setStyle(Paint.Style.STROKE);
-        gridPaint.setColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0));
 
         binding = FloatPickerWidgetBinding.inflate(LayoutInflater.from(context), this, true);
         MainAccessibilityService service = MainApplication.getInstance().getService();
@@ -115,10 +113,24 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         Rect bounds = new Rect();
         nodeInfo.getBoundsInScreen(bounds);
         bounds.offset(-location[0], -location[1]);
-        canvas.drawRect(bounds, gridPaint);
+
+        boolean touchAble = nodeInfo.isClickable() || nodeInfo.isEditable() || nodeInfo.isCheckable() || nodeInfo.isLongClickable();
+
+        if (!touchAble && nodeInfo.isVisibleToUser()) {
+            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimary, 0));
+            canvas.drawRect(bounds, gridPaint);
+        }
 
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             drawNode(canvas, nodeInfo.getChild(i));
+        }
+
+        if (touchAble && nodeInfo.isVisibleToUser()) {
+            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
+            bounds.offset(2, 2);
+            bounds.right -= 4;
+            bounds.bottom -= 4;
+            canvas.drawRect(bounds, gridPaint);
         }
     }
 
@@ -171,32 +183,32 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
     @Nullable
     private AccessibilityNodeInfo getNodeIn(int x, int y) {
         if (rootNode == null) return null;
-        Map<Integer, AccessibilityNodeInfo> deepNodeInfo = new HashMap<>();
-        findNodeIn(deepNodeInfo, 1, rootNode, x, y);
-        int max = 0;
+        HashSet<AccessibilityNodeInfo> infoHashSet = new HashSet<>();
+        findNodeIn(infoHashSet, rootNode, x, y);
+        int max = Integer.MAX_VALUE;
         AccessibilityNodeInfo node = null;
-        for (Map.Entry<Integer, AccessibilityNodeInfo> entry : deepNodeInfo.entrySet()) {
-            if (max == 0 || entry.getKey() > max) {
-                max = entry.getKey();
-                node = entry.getValue();
+        Rect bounds = new Rect();
+        for (AccessibilityNodeInfo nodeInfo : infoHashSet) {
+            nodeInfo.getBoundsInScreen(bounds);
+            int size = bounds.width() * bounds.height();
+            if (size < max) {
+                max = size;
+                node = nodeInfo;
             }
         }
         return node;
     }
-    /*
 
-    */
-
-    private void findNodeIn(Map<Integer, AccessibilityNodeInfo> deepNodeInfo, int deep, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
+    private void findNodeIn(HashSet<AccessibilityNodeInfo> infoHashSet, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
         if (nodeInfo.getChildCount() == 0) return;
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);
             if (child != null) {
                 Rect rect = new Rect();
                 child.getBoundsInScreen(rect);
-                if (rect.contains(x, y)) {
-                    deepNodeInfo.put(deep, child);
-                    findNodeIn(deepNodeInfo, deep + 1, child, x, y);
+                if (rect.contains(x, y) && child.isVisibleToUser()) {
+                    infoHashSet.add(child);
+                    findNodeIn(infoHashSet, child, x, y);
                 }
             }
         }

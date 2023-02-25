@@ -63,7 +63,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
     public MainCaptureService.CaptureServiceBinder binder = null;
     private ServiceConnection connection = null;
-    private ResultCallback captureResultCallback;
+    public ResultCallback captureResultCallback;
 
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 5L, TimeUnit.MINUTES, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -112,15 +112,6 @@ public class MainAccessibilityService extends AccessibilityService {
     public boolean onUnbind(Intent intent) {
         serviceConnected.setValue(false);
         return super.onUnbind(intent);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent != null) {
-            boolean startCaptureService = intent.getBooleanExtra(EmptyActivity.INTENT_KEY_START_CAPTURE, false);
-            if (startCaptureService) startCaptureService(true, captureResultCallback);
-        }
-        return super.onStartCommand(intent, flags, startId);
     }
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -294,12 +285,12 @@ public class MainAccessibilityService extends AccessibilityService {
                     if (notifyCode == Activity.RESULT_OK) {
                         activity.launchCapture(((code, data) -> {
                             if (code == Activity.RESULT_OK) {
+                                if (moveBack) activity.moveTaskToBack(true);
                                 connection = new ServiceConnection() {
                                     @Override
                                     public void onServiceConnected(ComponentName name, IBinder service) {
                                         binder = (MainCaptureService.CaptureServiceBinder) service;
                                         captureEnabled.setValue(true);
-                                        if (moveBack) activity.moveTaskToBack(true);
                                         if (callback != null) callback.onResult(true);
                                     }
 

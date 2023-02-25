@@ -2,9 +2,6 @@ package top.bogey.touch_tool.ui;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
-
-import androidx.annotation.Nullable;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
@@ -17,12 +14,11 @@ public class EmptyActivity extends BaseActivity {
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onResume() {
+        super.onResume();
 
         Intent intent = getIntent();
         if (intent == null) {
-            finish();
             return;
         }
 
@@ -53,13 +49,10 @@ public class EmptyActivity extends BaseActivity {
         if (startCaptureService) {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceConnected()) {
-                Intent serviceIntent = new Intent(this, MainAccessibilityService.class);
-                serviceIntent.putExtra(INTENT_KEY_START_CAPTURE, true);
-                startService(serviceIntent);
+                service.startCaptureService(true, service.captureResultCallback);
             }
         }
 
         moveTaskToBack(true);
-        finish();
     }
 }

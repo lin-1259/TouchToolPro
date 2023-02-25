@@ -194,6 +194,7 @@ public class HomeActivity extends BaseActivity {
                         } else {
                             selectTab(binding.tabBox.getSelectedTabPosition() - 1);
                         }
+                        return true;
                     }
                     break;
             }
