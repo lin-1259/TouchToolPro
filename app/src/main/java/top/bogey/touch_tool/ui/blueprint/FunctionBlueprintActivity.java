@@ -55,6 +55,12 @@ public class FunctionBlueprintActivity extends BaseActivity {
             dialog.show();
         });
 
+        binding.lockButton.setOnClickListener(v -> {
+            boolean editMode = binding.cardLayout.isEditMode();
+            binding.cardLayout.setEditMode(!editMode);
+            binding.lockButton.setImageResource(editMode ? R.drawable.icon_hand : R.drawable.icon_edit);
+        });
+
         binding.toolBar.setTitle(R.string.function_title);
         binding.toolBar.setSubtitle(function.getTitle());
     }

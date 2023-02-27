@@ -1,5 +1,6 @@
 package top.bogey.touch_tool;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -10,7 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.ImageFormat;
+import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
 import android.hardware.display.VirtualDisplay;
@@ -22,6 +23,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
@@ -30,6 +32,8 @@ import androidx.core.app.NotificationCompat;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.MatchResult;
@@ -46,6 +50,7 @@ public class MainCaptureService extends Service {
     private MediaProjection projection;
     private ImageReader imageReader;
     private VirtualDisplay virtualDisplay;
+    private Timer timer;
 
     @Nullable
     @Override
@@ -74,11 +79,24 @@ public class MainCaptureService extends Service {
     public void onCreate() {
         super.onCreate();
         createNotification();
+
+        // 每分钟获取一张图，防止有些系统自动关闭录制
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (imageReader != null) {
+                    Image image = imageReader.acquireNextImage();
+                    if (image != null) image.close();
+                }
+            }
+        }, 0, 60 * 1000);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (timer != null) timer.cancel();
         if (virtualDisplay != null) virtualDisplay.release();
         if (imageReader != null) imageReader.close();
         if (projection != null) projection.stop();
@@ -153,11 +171,13 @@ public class MainCaptureService extends Service {
         }
     }
 
+    @SuppressLint("WrongConstant")
     private void setVirtualDisplay() {
         WindowManager manager = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics metrics = new DisplayMetrics();
         manager.getDefaultDisplay().getRealMetrics(metrics);
-        imageReader = ImageReader.newInstance(metrics.widthPixels, metrics.heightPixels, ImageFormat.JPEG, 2);
+        imageReader = ImageReader.newInstance(metrics.widthPixels, metrics.heightPixels, PixelFormat.RGBA_8888, 2);
+        imageReader.setOnImageAvailableListener(reader -> Log.d("TAG", "OnImageAvailable"), null);
         virtualDisplay = projection.createVirtualDisplay("CaptureService", metrics.widthPixels, metrics.heightPixels, metrics.densityDpi, DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR, imageReader.getSurface(), null, null);
     }
 

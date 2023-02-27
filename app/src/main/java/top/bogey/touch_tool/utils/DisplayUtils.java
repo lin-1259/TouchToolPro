@@ -67,6 +67,7 @@ public class DisplayUtils {
     }
 
     public static int[] getHsvColor(Bitmap bitmap, int x, int y) {
+        if (bitmap == null) return new int[]{0, 0, 0};
         int pixel = bitmap.getPixel(x, y);
         int red = (pixel & 0x00ff0000) >> 16;
         int green = (pixel & 0x0000ff00) >> 8;

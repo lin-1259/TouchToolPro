@@ -82,13 +82,16 @@ public class ParallelLogicAction extends NormalAction {
                 }
 
                 @Override
-                public void onProgress(TaskRunnable runnable, int progress) {}
+                public void onProgress(TaskRunnable run, int progress) {
+                    if (runnable.isInterrupt()) throw new RuntimeException("并行中断");
+                }
             });
 
             runnableList.add(taskRunnable);
         }
         try {
             boolean result = latch.await(timeout.getValue(), TimeUnit.MILLISECONDS);
+            runnableList.forEach(TaskRunnable::stop);
             if (result) {
                 doNextAction(runnable, actionContext, completePin);
             } else {
@@ -97,8 +100,6 @@ public class ParallelLogicAction extends NormalAction {
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        } finally {
-            runnableList.forEach(TaskRunnable::stop);
         }
     }
 }

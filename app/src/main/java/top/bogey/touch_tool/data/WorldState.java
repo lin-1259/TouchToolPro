@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -30,6 +32,7 @@ import top.bogey.touch_tool.ui.EmptyActivity;
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
     private static WorldState helper;
+    private final static ExecutorService services = Executors.newSingleThreadExecutor();
 
     private final LinkedHashMap<String, PackageInfo> appMap = new LinkedHashMap<>();
 
@@ -51,14 +54,16 @@ public class WorldState {
 
     @SuppressLint("QueryPermissionsNeeded")
     public void resetAppMap(Context context) {
-        appMap.clear();
-        PackageManager manager = context.getPackageManager();
-        List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
-        for (PackageInfo packageInfo : packages) {
-            if (packageInfo.activities != null && packageInfo.activities.length > 0) {
-                appMap.put(packageInfo.packageName, packageInfo);
+        services.submit(() -> {
+            appMap.clear();
+            PackageManager manager = context.getPackageManager();
+            List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+            for (PackageInfo packageInfo : packages) {
+                if (packageInfo.activities != null && packageInfo.activities.length > 0) {
+                    appMap.put(packageInfo.packageName, packageInfo);
+                }
             }
-        }
+        });
     }
 
     public boolean isActivityClass(String packageName, String className) {

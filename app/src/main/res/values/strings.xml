@@ -236,6 +236,7 @@
     <string name="action_for_loop_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
+    <string name="action_random_logic_title">随机执行</string>
 
     <string name="action_parallel_logic_title">并行执行直到…</string>
     <string name="action_parallel_logic_subtitle_condition">达到完成数</string>
@@ -248,6 +249,9 @@
     <string name="action_int_reduce_operator_title">数值相减 －</string>
     <string name="action_int_multi_operator_title">数值相乘 ×</string>
     <string name="action_int_div_operator_title">数值相除 ÷</string>
+    <string name="action_int_equal_operator_title">数值相等 =</string>
+    <string name="action_int_large_operator_title">数值比较 &gt;</string>
+    <string name="action_int_small_operator_title">数值比较 &lt;</string>
 
     <string name="action_string_add_operator_title">文本拼接</string>
 

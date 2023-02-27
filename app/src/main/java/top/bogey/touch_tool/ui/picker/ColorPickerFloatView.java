@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -238,12 +239,22 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         params.height = matchArea.height();
         binding.areaBox.setLayoutParams(params);
 
+        ImageView[] images = new ImageView[] {binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
+        int px = DisplayUtils.dp2px(getContext(), 24);
+        Point size = DisplayUtils.getScreenSize(getContext());
+        px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);
+        for (ImageView image : images) {
+            ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) image.getLayoutParams();
+            layoutParams.setMargins(px, px, px, px);
+        }
+
         postInvalidate();
     }
 
     private void matchColor(int[] color) {
         if (!service.isCaptureEnabled() || service.binder == null) return;
         this.color = color;
+        if (color == null || color.length != 3) return;
 
         markArea = service.binder.matchColor(showBitmap, color, matchArea);
         if (markArea != null && markArea.size() > 0) {

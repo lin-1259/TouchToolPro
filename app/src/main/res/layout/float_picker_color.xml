@@ -16,6 +16,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="start|center_vertical"
+            android:layout_margin="24dp"
             app:srcCompat="@drawable/icon_drag_left" />
 
         <ImageView
@@ -23,6 +24,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="top|center_horizontal"
+            android:layout_margin="24dp"
             app:srcCompat="@drawable/icon_drag_top" />
 
         <ImageView
@@ -30,6 +32,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="end|center_vertical"
+            android:layout_margin="24dp"
             app:srcCompat="@drawable/icon_drag_right" />
 
         <ImageView
@@ -37,6 +40,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_gravity="bottom|center_horizontal"
+            android:layout_margin="24dp"
             app:srcCompat="@drawable/icon_drag_bottom" />
 
     </FrameLayout>

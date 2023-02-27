@@ -157,6 +157,7 @@ public class MainAccessibilityService extends AccessibilityService {
             }
         } else {
             WorkManager.getInstance(this).cancelAllWork();
+            stopAllTask();
         }
     }
 

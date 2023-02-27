@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -274,6 +277,15 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         params.width = matchArea.width();
         params.height = matchArea.height();
         binding.areaBox.setLayoutParams(params);
+
+        ImageView[] images = new ImageView[] {binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
+        int px = DisplayUtils.dp2px(getContext(), 24);
+        Point size = DisplayUtils.getScreenSize(getContext());
+        px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);
+        for (ImageView image : images) {
+            ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) image.getLayoutParams();
+            layoutParams.setMargins(px, px, px, px);
+        }
 
         postInvalidate();
     }

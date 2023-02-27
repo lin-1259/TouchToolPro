@@ -26,14 +26,19 @@ import top.bogey.touch_tool.data.action.logic.ConditionLogicAction;
 import top.bogey.touch_tool.data.action.logic.ConditionWhileLogicAction;
 import top.bogey.touch_tool.data.action.logic.ForLoopLogicAction;
 import top.bogey.touch_tool.data.action.logic.ParallelLogicAction;
+import top.bogey.touch_tool.data.action.logic.RandomLogicAction;
 import top.bogey.touch_tool.data.action.logic.SequenceLogicAction;
 import top.bogey.touch_tool.data.action.logic.WaitConditionLogicAction;
 import top.bogey.touch_tool.data.action.operator.IntAddAction;
 import top.bogey.touch_tool.data.action.operator.IntDivAction;
+import top.bogey.touch_tool.data.action.operator.IntEqualAction;
+import top.bogey.touch_tool.data.action.operator.IntLargeAction;
 import top.bogey.touch_tool.data.action.operator.IntMultiAction;
 import top.bogey.touch_tool.data.action.operator.IntReduceAction;
+import top.bogey.touch_tool.data.action.operator.IntSmallAction;
 import top.bogey.touch_tool.data.action.operator.StringAddAction;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
+import top.bogey.touch_tool.data.action.start.BatteryChargingStartAction;
 import top.bogey.touch_tool.data.action.start.BatteryStartAction;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
@@ -62,7 +67,7 @@ public class ActionMap {
         startActions.put(AppStartAction.class, R.string.action_app_start_title);
         startActions.put(TimeStartAction.class, R.string.action_time_start_title);
         startActions.put(BatteryStartAction.class, R.string.action_battery_start_title);
-        startActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_start_title);
+        startActions.put(BatteryChargingStartAction.class, R.string.action_battery_charging_start_title);
         startActions.put(NotificationStartAction.class, R.string.action_notification_start_title);
         startActions.put(OutStartAction.class, R.string.action_out_start_title);
 
@@ -73,6 +78,7 @@ public class ActionMap {
         logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
         logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
         logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);
+        logicActions.put(RandomLogicAction.class, R.string.action_random_logic_title);
         logicActions.put(ParallelLogicAction.class, R.string.action_parallel_logic_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> normalActions = new LinkedHashMap<>();
@@ -116,6 +122,9 @@ public class ActionMap {
         operateActions.put(IntReduceAction.class, R.string.action_int_reduce_operator_title);
         operateActions.put(IntMultiAction.class, R.string.action_int_multi_operator_title);
         operateActions.put(IntDivAction.class, R.string.action_int_div_operator_title);
+        operateActions.put(IntEqualAction.class, R.string.action_int_equal_operator_title);
+        operateActions.put(IntLargeAction.class, R.string.action_int_large_operator_title);
+        operateActions.put(IntSmallAction.class, R.string.action_int_small_operator_title);
         operateActions.put(StringAddAction.class, R.string.action_string_add_operator_title);
     }
 

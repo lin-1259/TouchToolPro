@@ -14,8 +14,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.android.material.textview.MaterialTextView;
 
-import java.util.HashMap;
-
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinSubType;
@@ -78,6 +76,9 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
             throw new RuntimeException(e);
         }
         if (pin == null) return;
+
+        pin.setListener(() -> post(this::refreshPinUI));
+
         pinSlot.setCardBackgroundColor(getPinColor());
         pinSlot.setStrokeWidth(DisplayUtils.dp2px(context, 1.1f));
         pinSlot.setStrokeColor(getPinColor());
@@ -146,6 +147,12 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
 
         pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
         pinSlot.setShapeAppearanceModel(getPinStyle());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        pin.setListener(null);
     }
 
     public int[] getSlotLocationOnScreen(float scale) {

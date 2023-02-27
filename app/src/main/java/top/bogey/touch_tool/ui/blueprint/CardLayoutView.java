@@ -57,6 +57,8 @@ public class CardLayoutView extends FrameLayout {
     private PinBaseView<?> dragPin = null;
     private float dragX = 0;
     private float dragY = 0;
+    private float startX = 0;
+    private float startY = 0;
     private PinDirection dragDirection;
 
     private float offsetX = 0;
@@ -64,6 +66,8 @@ public class CardLayoutView extends FrameLayout {
 
     private float scale = 1f;
     private final ScaleGestureDetector detector;
+
+    private boolean editMode = false;
 
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -113,6 +117,14 @@ public class CardLayoutView extends FrameLayout {
                 return true;
             }
         });
+    }
+
+    public boolean isEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 
     public BaseCard<?> newCard(ActionContext actionContext, BaseAction action) {
@@ -336,37 +348,41 @@ public class CardLayoutView extends FrameLayout {
         float rawY = event.getRawY();
         int actionMasked = event.getActionMasked();
         if (actionMasked == MotionEvent.ACTION_DOWN) {
-            ArrayList<BaseCard<?>> baseCards = new ArrayList<>(cardMap.values());
-            for (int i = baseCards.size() - 1; i >= 0; i--) {
-                BaseCard<?> card = baseCards.get(i);
-                int[] location = new int[2];
-                card.getLocationOnScreen(location);
-                if (new Rect(location[0], location[1], location[0] + (int) (card.getWidth() * scale), location[1] + (int) (card.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
-                    dragState = DRAG_CARD;
-                    dragCard = card;
-                    PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
-                    if (pinBaseView != null) {
-                        Pin pin = pinBaseView.getPin();
-                        if (pin.getSlotType() != PinSlotType.EMPTY) {
-                            dragState = DRAG_PIN;
-                            HashMap<String, String> links = pin.getLinks();
-                            // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
-                            if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection().isOut())) {
-                                dragLinks.put(pin.getId(), pin.getActionId());
-                                // 目标方向与自身相反
-                                dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
-                                dragPin = pinBaseView;
-                            } else {
-                                // 否则就是挪线
-                                dragLinks.putAll(links);
-                                dragDirection = pin.getDirection();
-                                pinRemoveLinks(pinBaseView);
+            startX = rawX;
+            startY = rawY;
+            if (editMode) {
+                ArrayList<BaseCard<?>> baseCards = new ArrayList<>(cardMap.values());
+                for (int i = baseCards.size() - 1; i >= 0; i--) {
+                    BaseCard<?> card = baseCards.get(i);
+                    int[] location = new int[2];
+                    card.getLocationOnScreen(location);
+                    if (new Rect(location[0], location[1], location[0] + (int) (card.getWidth() * scale), location[1] + (int) (card.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
+                        dragState = DRAG_CARD;
+                        dragCard = card;
+                        PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
+                        if (pinBaseView != null) {
+                            Pin pin = pinBaseView.getPin();
+                            if (pin.getSlotType() != PinSlotType.EMPTY) {
+                                dragState = DRAG_PIN;
+                                HashMap<String, String> links = pin.getLinks();
+                                // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
+                                if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection().isOut())) {
+                                    dragLinks.put(pin.getId(), pin.getActionId());
+                                    // 目标方向与自身相反
+                                    dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
+                                    dragPin = pinBaseView;
+                                } else {
+                                    // 否则就是挪线
+                                    dragLinks.putAll(links);
+                                    dragDirection = pin.getDirection();
+                                    pinRemoveLinks(pinBaseView);
+                                }
                             }
                         }
+                        dragX = rawX;
+                        dragY = rawY;
+                        break;
                     }
-                    dragX = rawX;
-                    dragY = rawY;
-                    break;
                 }
             }
             if (dragState == DRAG_NONE) {
@@ -382,7 +398,6 @@ public class CardLayoutView extends FrameLayout {
                     int[] location = new int[2];
                     baseCard.getLocationOnScreen(location);
                     if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
-
                         PinBaseView<?> pinBaseView = baseCard.getPinByPosition(rawX, rawY);
                         if (pinBaseView == null) continue;
                         if (pinAddLinks(pinBaseView, dragLinks)) {
@@ -391,7 +406,7 @@ public class CardLayoutView extends FrameLayout {
                         }
                     }
                 }
-                if (flag && Math.abs(rawX - dragX) * Math.abs(rawY - dragY) <= 81) {
+                if (flag && Math.abs(rawX - startX) * Math.abs(rawY - startY) <= 81) {
                     // 无效的拖动且没怎么拖动，相当于点击了这个针脚，点击针脚是断开这个针脚
                     if (dragPin != null) {
                         pinRemoveLinks(dragPin);
@@ -451,33 +466,12 @@ public class CardLayoutView extends FrameLayout {
     private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
         Pin pin = pinBaseView.getPin();
         HashMap<String, String> addedLinks = pin.addLinks(actionContext, links);
-        if (addedLinks.size() > 0) {
-            pinBaseView.refreshPinUI();
-            for (Map.Entry<String, String> entry : addedLinks.entrySet()) {
-                BaseCard<?> card = cardMap.get(entry.getValue());
-                if (card == null) continue;
-                PinBaseView<?> pinById = card.getPinById(entry.getKey());
-                if (pinById == null) continue;
-                pinById.refreshPinUI();
-            }
-            return true;
-        }
-        return false;
+        return addedLinks.size() > 0;
     }
 
     private void pinRemoveLinks(PinBaseView<?> pinBaseView) {
         Pin pin = pinBaseView.getPin();
-        HashMap<String, String> removedLinks = pin.removeLinks(actionContext);
-        if (removedLinks.size() > 0) {
-            pinBaseView.refreshPinUI();
-            for (Map.Entry<String, String> entry : removedLinks.entrySet()) {
-                BaseCard<?> card = cardMap.get(entry.getValue());
-                if (card == null) continue;
-                PinBaseView<?> pinById = card.getPinById(entry.getKey());
-                if (pinById == null) continue;
-                pinById.refreshPinUI();
-            }
-        }
+        pin.removeLinks(actionContext);
     }
 
     @Override

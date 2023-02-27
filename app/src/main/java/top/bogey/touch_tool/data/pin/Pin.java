@@ -27,6 +27,7 @@ public class Pin {
     private final HashMap<String, String> links = new HashMap<>();
 
     private transient String actionId;
+    private transient LinkListener listener;
 
     public Pin(PinObject value) {
         this(value, null, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
@@ -129,11 +130,13 @@ public class Pin {
             removeLinks(context);
         }
         links.put(pin.getId(), pin.getActionId());
+        if (listener != null) listener.onChanged();
         return true;
     }
 
     public void removeLink(Pin pin) {
         links.remove(pin.getId());
+        if (listener != null) listener.onChanged();
     }
 
     public HashMap<String, String> addLinks(ActionContext context, HashMap<String, String> links) {
@@ -172,6 +175,7 @@ public class Pin {
         }
         HashMap<String, String> removedLinks = new HashMap<>(links);
         links.clear();
+        if (listener != null) listener.onChanged();
         return removedLinks;
     }
 
@@ -248,5 +252,13 @@ public class Pin {
 
     public void setActionId(String actionId) {
         this.actionId = actionId;
+    }
+
+    public void setListener(LinkListener listener) {
+        this.listener = listener;
+    }
+
+    public interface LinkListener {
+        void onChanged();
     }
 }
