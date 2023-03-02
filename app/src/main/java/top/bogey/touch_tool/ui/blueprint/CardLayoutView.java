@@ -67,7 +67,7 @@ public class CardLayoutView extends FrameLayout {
     private float scale = 1f;
     private final ScaleGestureDetector detector;
 
-    private boolean editMode = false;
+    private boolean editMode = true;
 
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);

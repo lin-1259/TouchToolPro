@@ -62,23 +62,29 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void launchCapture(PermissionResultCallback callback) {
+        if (intentLauncher == null) {
+            if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+        }
         resultCallback = callback;
         MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         intentLauncher.launch(manager.createScreenCaptureIntent());
     }
 
     public void launchNotification(PermissionResultCallback callback) {
+        if (permissionLauncher == null) {
+            if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             String permission = Manifest.permission.POST_NOTIFICATIONS;
             if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
-                callback.onResult(Activity.RESULT_OK, null);
+                if (callback != null) callback.onResult(Activity.RESULT_OK, null);
             } else if (shouldShowRequestPermissionRationale(permission)) {
                 AppUtils.showDialog(this, R.string.notification_on_tips, result -> {
                     if (result) {
                         resultCallback = callback;
                         permissionLauncher.launch(permission);
                     } else {
-                        callback.onResult(Activity.RESULT_CANCELED, null);
+                        if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
                     }
                 });
             } else {
@@ -86,11 +92,14 @@ public class BaseActivity extends AppCompatActivity {
                 permissionLauncher.launch(permission);
             }
         } else {
-            callback.onResult(Activity.RESULT_OK, null);
+            if (callback != null) callback.onResult(Activity.RESULT_OK, null);
         }
     }
 
     public void launcherContent(PermissionResultCallback callback) {
+        if (contentLauncher == null) {
+            if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+        }
         resultCallback = callback;
         contentLauncher.launch("application/octet-stream");
     }

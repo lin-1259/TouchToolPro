@@ -44,7 +44,7 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="96dp"
-            android:src="@drawable/icon_hand" />
+            android:src="@drawable/icon_edit" />
 
     </FrameLayout>
 

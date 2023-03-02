@@ -78,7 +78,7 @@ public class CustomPinOutView extends PinBaseView<PinCustomOutBinding> {
 
         if (map != null) {
             binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
-            if (pin.getTitle() != null) binding.editText.setText(pin.getTitle());
+            if (pin.getTitle() != null) binding.editText.setTextKeepState(pin.getTitle());
         }
     }
 

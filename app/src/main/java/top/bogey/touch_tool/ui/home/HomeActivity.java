@@ -78,7 +78,7 @@ public class HomeActivity extends BaseActivity {
                         }
                         break;
                     case R.id.tutorial:
-                        AppUtils.gotoUrl(HomeActivity.this, "https://docs.qq.com/doc/p/0f4de9e03534db3780876b90965e9373e4af93f0");
+                        AppUtils.gotoUrl(HomeActivity.this, "https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0");
                         break;
                     case R.id.importTask:
                         launcherContent((code, intent) -> {
@@ -249,6 +249,8 @@ public class HomeActivity extends BaseActivity {
             if (result != null && result.length() > 0) {
                 Task task = new Task();
                 task.setTitle(result.toString());
+                TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
+                if (tab != null && tab.getText() != null) task.setTag(tab.getText().toString());
                 TaskRepository.getInstance().saveTask(task);
             }
         }));
