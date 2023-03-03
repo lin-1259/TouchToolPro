@@ -103,19 +103,6 @@ public class WorldState {
                 if (value.packageName.equalsIgnoreCase(title.toString())) continue;
                 if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(value.packageName.toLowerCase()).find()) {
                     packages.add(value);
-                    continue;
-                }
-                // 包含活动
-                if (value.activities != null) {
-                    for (ActivityInfo activityInfo : value.activities) {
-                        if (single && !activityInfo.exported) {
-                            continue;
-                        }
-                        if (pattern.matcher(activityInfo.name.toLowerCase()).find()) {
-                            packages.add(value);
-                            break;
-                        }
-                    }
                 }
             }
         }

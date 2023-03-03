@@ -70,10 +70,10 @@ public class TaskBlueprintActivity extends BaseActivity {
             dialog.show();
         });
 
-        binding.lockButton.setOnClickListener(v -> {
+        binding.lockEditButton.setOnClickListener(v -> {
             boolean editMode = binding.cardLayout.isEditMode();
             binding.cardLayout.setEditMode(!editMode);
-            binding.lockButton.setImageResource(editMode ? R.drawable.icon_hand : R.drawable.icon_edit);
+            binding.lockEditButton.setImageResource(editMode ? R.drawable.icon_hand : R.drawable.icon_edit);
         });
 
         binding.toolBar.setTitle(R.string.task_title);

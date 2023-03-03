@@ -5,23 +5,18 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.databinding.ViewAppItemBinding;
@@ -37,7 +32,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
     private final boolean single;
 
     private boolean showMore = true;
-    private CharSequence searchText;
 
     public AppRecyclerViewAdapter(Map<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single) {
         this.selectedActivities = selectedActivities;
@@ -62,8 +56,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         return apps.size();
     }
 
-    public void refreshApps(ArrayList<PackageInfo> newApps, CharSequence searchText) {
-        this.searchText = searchText;
+    public void refreshApps(ArrayList<PackageInfo> newApps) {
         if (newApps == null || newApps.size() == 0) {
             int size = apps.size();
             apps.clear();
@@ -155,93 +148,36 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 callback.onResult(true);
             });
 
-            binding.selectAppButton.setOnClickListener(v -> {
-                filterActivities(null);
-                showSelectDialog();
-            });
-
-            binding.searchActivityButton.setOnClickListener(v -> {
-                filterActivities(searchText);
-                showSelectDialog();
-            });
+            binding.selectAppButton.setOnClickListener(v -> showSelectDialog());
         }
 
         private void showSelectDialog() {
-            ArrayList<String> strings = selectedActivities.get(info.packageName);
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(context).setTitle(R.string.picker_app_title_select_activity).setNegativeButton(R.string.cancel, null);
-            if (single) {
-                int index = 0;
-                if (strings != null) {
-                    for (int i = 0; i < activities.size(); i++) {
-                        String choice = activities.get(i);
-                        if (strings.contains(choice)) {
-                            index = i;
-                            break;
-                        }
-                    }
-                }
-                String[] activitiesArray = new String[activities.size()];
-                builder.setSingleChoiceItems(activities.toArray(activitiesArray), index, null).setPositiveButton(R.string.enter, (dialog, which) -> {
-                    if (activities.size() == 0) return;
-                    int checkedItemPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                    if (checkedItemPosition != AdapterView.INVALID_POSITION) {
-                        selectedActivities.clear();
-                        selectedActivities.put(info.packageName, new ArrayList<>(Collections.singletonList(activities.get(checkedItemPosition))));
+            ArrayList<String> activityNameList = new ArrayList<>();
+            ArrayList<String> list = selectedActivities.get(info.packageName);
+            if (list != null) activityNameList.addAll(list);
+            SelectActivityDialog view = new SelectActivityDialog(context, activities, single, activityNameList);
+            new MaterialAlertDialogBuilder(context)
+                    .setTitle(R.string.picker_app_title_select_activity)
+                    .setNegativeButton(R.string.cancel, null)
+                    .setView(view)
+                    .setPositiveButton(R.string.enter, (dialog, which) -> {
+                        selectedActivities.put(info.packageName, activityNameList);
                         notifyItemChanged(getBindingAdapterPosition());
-                        callback.onResult(true);
-                    }
-                });
-            } else {
-                if (strings == null) strings = new ArrayList<>();
-                boolean[] choicesInitial = new boolean[activities.size()];
-                for (int i = 0; i < activities.size(); i++) {
-                    String choice = activities.get(i);
-                    choicesInitial[i] = strings.contains(choice);
-                }
-
-                String[] activitiesArray = new String[activities.size()];
-                builder.setMultiChoiceItems(activities.toArray(activitiesArray), choicesInitial, null).setPositiveButton(R.string.enter, (dialog, which) -> {
-                    SparseBooleanArray checkedItemPositions = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
-                    ArrayList<String> result = selectedActivities.get(info.packageName);
-                    if (result == null) result = new ArrayList<>();
-                    for (int i = 0; i < activities.size(); i++) {
-                        if (checkedItemPositions.get(i) && !result.contains(activities.get(i))) {
-                            result.add(activities.get(i));
-                        }
-                    }
-                    selectedActivities.put(info.packageName, result);
-                    notifyItemChanged(getBindingAdapterPosition());
-                    callback.onResult(true);
-                });
-            }
-
-            builder.show();
-        }
-
-        private void filterActivities(CharSequence searchText) {
-            activities.clear();
-            if (info.activities != null) {
-                Pattern pattern = null;
-                if (!(searchText == null || searchText.length() == 0)) {
-                    pattern = Pattern.compile(searchText.toString().toLowerCase());
-                }
-                for (ActivityInfo activityInfo : info.activities) {
-                    if (!single || activityInfo.exported) {
-                        if (pattern != null) {
-                            if (pattern.matcher(activityInfo.name.toLowerCase()).find()) {
-                                activities.add(activityInfo.name);
-                            }
-                        } else {
-                            activities.add(activityInfo.name);
-                        }
-                    }
-                }
-            }
+                    })
+                    .show();
         }
 
         public void refreshView(PackageInfo packageInfo) {
             info = packageInfo;
-            filterActivities(null);
+            activities.clear();
+
+            if (info.activities != null) {
+                for (ActivityInfo activityInfo : info.activities) {
+                    if (!single || activityInfo.exported) {
+                        activities.add(activityInfo.name);
+                    }
+                }
+            }
 
             PackageManager manager = context.getPackageManager();
             binding.pkgName.setText(packageInfo.packageName);
@@ -277,7 +213,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 binding.selectAppButton.setIcon(null);
             }
             binding.selectAppButton.setVisibility(((!showMore) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
-            binding.searchActivityButton.setVisibility(((!showMore) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
         }
     }
 }

@@ -53,19 +53,19 @@ public class AppView extends BottomSheetDialogFragment {
             }
         }, single);
         binding.appIconBox.setAdapter(adapter);
-        adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single), searchText);
+        adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
         adapter.setShowMore(mode == SINGLE_WITH_ACTIVITY_MODE || mode == MULTI_WITH_ACTIVITY_MODE);
 
         binding.exchangeButton.setOnClickListener(v -> {
             showSystem = !showSystem;
-            adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single), searchText);
+            adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
         });
 
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 searchText = s;
-                adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single), s);
+                adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
             }
         });
 

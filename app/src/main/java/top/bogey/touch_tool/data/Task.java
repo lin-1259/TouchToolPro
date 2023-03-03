@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -15,11 +16,14 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class Task implements ActionContext {
     private final String id;
     private final HashSet<BaseAction> actions = new HashSet<>();
+
     private final HashSet<BaseFunction> functions = new HashSet<>();
+    private final HashMap<String, PinObject> attrs = new HashMap<>();
 
     private final long createTime;
     private String tag;
@@ -36,7 +40,6 @@ public class Task implements ActionContext {
         String json = gson.toJson(this);
         return gson.fromJson(json, Task.class);
     }
-
 
     public ArrayList<StartAction> getStartActions(Class<? extends StartAction> startActionClass) {
         ArrayList<StartAction> startActions = new ArrayList<>();

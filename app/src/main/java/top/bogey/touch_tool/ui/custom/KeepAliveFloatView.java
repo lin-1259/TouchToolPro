@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
-import top.bogey.touch_tool.databinding.ViewKeepAliveBinding;
+import top.bogey.touch_tool.databinding.FloatKeepAliveBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
@@ -18,12 +18,12 @@ import top.bogey.touch_tool.utils.easy_float.FloatViewInterface;
 
 @SuppressLint("ViewConstructor")
 public class KeepAliveFloatView extends FrameLayout implements FloatViewInterface {
-    private final ViewKeepAliveBinding binding;
+    private final FloatKeepAliveBinding binding;
     private final Handler handler;
 
     public KeepAliveFloatView(@NonNull Context context) {
         super(context);
-        binding = ViewKeepAliveBinding.inflate(LayoutInflater.from(context), this, true);
+        binding = FloatKeepAliveBinding.inflate(LayoutInflater.from(context), this, true);
         handler = new Handler();
     }
 

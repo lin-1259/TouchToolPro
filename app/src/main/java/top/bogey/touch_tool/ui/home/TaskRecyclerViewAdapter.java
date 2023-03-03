@@ -141,6 +141,11 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         return isCheck;
     }
 
+    public String getTag() {
+        if (ALL.equals(tag) || NO.equals(tag)) return null;
+        return tag;
+    }
+
     public void showTasksByTag(String tag) {
         this.tag = tag;
         ArrayList<Task> newTasks;

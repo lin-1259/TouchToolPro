@@ -249,8 +249,7 @@ public class HomeActivity extends BaseActivity {
             if (result != null && result.length() > 0) {
                 Task task = new Task();
                 task.setTitle(result.toString());
-                TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
-                if (tab != null && tab.getText() != null) task.setTag(tab.getText().toString());
+                task.setTag(adapter.getTag());
                 TaskRepository.getInstance().saveTask(task);
             }
         }));

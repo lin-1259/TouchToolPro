@@ -63,19 +63,4 @@
         app:icon="@drawable/icon_more"
         app:iconSize="16dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/searchActivityButton"
-        style="@style/Theme.TouchTool.IconButton.Outlined"
-        app:strokeWidth="2dp"
-        app:strokeColor="?attr/colorPrimary"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="start|top"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="42dp"
-        android:textScaleX="1"
-        android:textSize="11sp"
-        app:icon="@drawable/icon_search"
-        app:iconSize="16dp"/>
-
 </com.google.android.material.card.MaterialCardView>

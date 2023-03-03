@@ -53,7 +53,7 @@ public class AppUtils {
     }
 
     public static void showEditDialog(Context context, @StringRes int title, CharSequence defaultValue, EditCallback callback) {
-        View view = LayoutInflater.from(context).inflate(R.layout.widget_text_input, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_text_input, null);
         TextInputEditText editText = view.findViewById(R.id.title_edit);
         editText.setText(defaultValue);
 
