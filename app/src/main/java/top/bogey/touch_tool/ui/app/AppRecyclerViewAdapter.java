@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.ViewAppItemBinding;
 import top.bogey.touch_tool.utils.ResultCallback;
 
@@ -28,7 +27,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
     private final ArrayList<PackageInfo> apps = new ArrayList<>();
 
-    private final Map<String, Drawable> icons = new HashMap<>();
     private final boolean single;
 
     private boolean showMore = true;
@@ -187,16 +185,11 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 binding.appName.setText(packageInfo.applicationInfo.loadLabel(manager));
             }
 
-            Drawable drawable = icons.get(packageInfo.packageName);
-            if (drawable == null) {
-                if (packageInfo.packageName.equals(context.getString(R.string.common_package_name))) {
-                    drawable = context.getApplicationInfo().loadIcon(manager);
-                } else {
-                    drawable = packageInfo.applicationInfo.loadIcon(manager);
-                }
-                icons.put(packageInfo.packageName, drawable);
+            if (packageInfo.packageName.equals(context.getString(R.string.common_package_name))) {
+                binding.icon.setImageDrawable(context.getApplicationInfo().loadIcon(manager));
+            } else {
+                binding.icon.setImageDrawable(WorldState.getInstance().getAppIcon(packageInfo.packageName));
             }
-            binding.icon.setImageDrawable(drawable);
 
             boolean containsKey = selectedActivities.containsKey(commonPkgName);
             boolean isCommon = packageInfo.packageName.equals(commonPkgName);

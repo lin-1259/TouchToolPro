@@ -12,7 +12,7 @@ import java.util.UUID;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
-import top.bogey.touch_tool.data.action.function.BaseFunction;
+import top.bogey.touch_tool.data.action.action.CaptureServiceAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
@@ -21,8 +21,6 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class Task implements ActionContext {
     private final String id;
     private final HashSet<BaseAction> actions = new HashSet<>();
-
-    private final HashSet<BaseFunction> functions = new HashSet<>();
     private final HashMap<String, PinObject> attrs = new HashMap<>();
 
     private final long createTime;
@@ -85,6 +83,26 @@ public class Task implements ActionContext {
         return actions;
     }
 
+    @Override
+    public HashMap<String, PinObject> getAttrs() {
+        return attrs;
+    }
+
+    @Override
+    public void addAttr(String key, PinObject value) {
+        attrs.put(key, value);
+    }
+
+    @Override
+    public void removeAttr(String key) {
+        attrs.remove(key);
+    }
+
+    @Override
+    public PinObject getAttr(String key) {
+        return attrs.get(key);
+    }
+
     public String getTaskDes(Context context) {
         StringBuilder builder = new StringBuilder();
         for (StartAction startAction : getStartActions(StartAction.class)) {
@@ -104,6 +122,8 @@ public class Task implements ActionContext {
     }
 
     public boolean needCaptureService() {
+        ArrayList<BaseAction> captureActions = getActionsByClass(CaptureServiceAction.class);
+        if (captureActions.size() > 0) return false;
         ArrayList<BaseAction> imageActions = getActionsByClass(ImageStateAction.class);
         ArrayList<BaseAction> colorActions = getActionsByClass(ColorStateAction.class);
         return imageActions.size() + colorActions.size() > 0;

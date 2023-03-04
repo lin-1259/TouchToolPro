@@ -3,10 +3,12 @@ package top.bogey.touch_tool.data.action.function;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -23,6 +25,7 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 public class BaseFunction extends NormalAction implements ActionContext {
     private final String functionId;
     private final HashSet<BaseAction> actions = new HashSet<>();
+    private final HashMap<String, PinObject> attrs = new HashMap<>();
     private boolean justCall = false;
 
     private transient ActionContext outContext;
@@ -63,6 +66,9 @@ public class BaseFunction extends NormalAction implements ActionContext {
                 } else endFunctions.add(function);
             }
         }
+
+        JsonElement attrsElement = jsonObject.get("attrs");
+        if (attrsElement != null) attrs.putAll(gson.fromJson(attrsElement, new TypeToken<HashMap<String, PinObject>>() {}.getType()));
 
         for (Pin pin : tmpPins) {
             // 不能直接调用自身的添加
@@ -248,6 +254,26 @@ public class BaseFunction extends NormalAction implements ActionContext {
             }
         }
         return actions;
+    }
+
+    @Override
+    public HashMap<String, PinObject> getAttrs() {
+        return attrs;
+    }
+
+    @Override
+    public void addAttr(String key, PinObject value) {
+        attrs.put(key, value);
+    }
+
+    @Override
+    public void removeAttr(String key) {
+        attrs.remove(key);
+    }
+
+    @Override
+    public PinObject getAttr(String key) {
+        return attrs.get(key);
     }
 
     @Override

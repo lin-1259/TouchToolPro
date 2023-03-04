@@ -20,6 +20,7 @@ import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
 import top.bogey.touch_tool.ui.BaseActivity;
 
 public class TaskBlueprintActivity extends BaseActivity {
+    private Task task;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,7 +30,8 @@ public class TaskBlueprintActivity extends BaseActivity {
         if (intent == null) throw new IllegalArgumentException();
 
         String taskId = intent.getStringExtra("taskId");
-        Task task = TaskRepository.getInstance().getTaskById(taskId);
+        task = TaskRepository.getInstance().getTaskById(taskId);
+        if (task == null) throw new IllegalArgumentException();
 
         ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -78,5 +80,11 @@ public class TaskBlueprintActivity extends BaseActivity {
 
         binding.toolBar.setTitle(R.string.task_title);
         binding.toolBar.setSubtitle(task.getTitle());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (task != null) TaskRepository.getInstance().saveTask(task);
     }
 }

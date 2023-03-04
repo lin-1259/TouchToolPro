@@ -9,8 +9,11 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -30,8 +33,15 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     private final FloatPlayBinding binding;
     private boolean clickFirst = false;
 
+    private LinkedHashMap<ManualStartAction, Task> manualStartActions;
+    private final String ALL;
+    private final ArrayList<String> tags = new ArrayList<>();
+    private String currTag;
+
     public PlayFloatView(@NonNull Context context) {
         super(context);
+        ALL = context.getString(R.string.tag_all);
+
         binding = FloatPlayBinding.inflate(LayoutInflater.from(context), this, true);
         binding.closeButton.setOnClickListener(v -> {
             if (clickFirst) dismiss();
@@ -54,6 +64,8 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
             }
         });
 
+        binding.nextButton.setOnClickListener(v -> showActions(getActionsByNextTag()));
+
         refreshExpandState(SettingSave.getInstance().isPlayViewExpand());
     }
 
@@ -61,16 +73,43 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         ViewGroup.LayoutParams params = binding.closeButton.getLayoutParams();
         if (!expand) {
             binding.buttonBox.setVisibility(GONE);
+            binding.nextButton.setVisibility(GONE);
             binding.closeButton.setIconResource(R.drawable.icon_down);
             params.height = DisplayUtils.dp2px(getContext(), 32);
         } else {
             binding.buttonBox.setVisibility(VISIBLE);
+            binding.nextButton.setVisibility(tags.size() > 1 ? VISIBLE : GONE);
             binding.closeButton.setIconResource(R.drawable.icon_up);
             params.height = DisplayUtils.dp2px(getContext(), 24);
         }
         binding.closeButton.setLayoutParams(params);
-        binding.getRoot().setAlpha(expand ? 1 : 0.25f);
+        binding.getRoot().setAlpha(expand ? 1 : 0.4f);
         SettingSave.getInstance().setPlayViewExpand(expand);
+    }
+
+    private void calculateTags(Collection<Task> tasks) {
+        tags.clear();
+        if (tasks != null) {
+            for (Task task : tasks) {
+                String tag = ALL;
+                if (task.getTag() != null) tag = task.getTag();
+                if (!tags.contains(tag)) tags.add(tag);
+            }
+        }
+        binding.nextButton.setVisibility(tags.size() > 1 ? VISIBLE : GONE);
+    }
+
+    private LinkedHashMap<ManualStartAction, Task> getActionsByNextTag() {
+        int index = tags.indexOf(currTag);
+        currTag = tags.get((index + 1) % tags.size());
+
+        LinkedHashMap<ManualStartAction, Task> actions = new LinkedHashMap<>();
+        for (Map.Entry<ManualStartAction, Task> entry : manualStartActions.entrySet()) {
+            String tag = ALL;
+            if (entry.getValue().getTag() != null) tag = entry.getValue().getTag();
+            if (tag.equals(currTag)) actions.put(entry.getKey(), entry.getValue());
+        }
+        return actions;
     }
 
     @Override
@@ -104,12 +143,22 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     }
 
     public void onNewActions() {
-        LinkedHashMap<ManualStartAction, Task> manualStartActions = WorldState.getInstance().getManualStartActions();
+        manualStartActions = WorldState.getInstance().getManualStartActions();
+        if (manualStartActions.size() > 4) {
+            calculateTags(manualStartActions.values());
+            showActions(getActionsByNextTag());
+        } else {
+            calculateTags(null);
+            showActions(manualStartActions);
+        }
+    }
+
+    public void showActions(LinkedHashMap<ManualStartAction, Task> actions) {
         HashSet<ManualStartAction> alreadyManualStartActions = new HashSet<>();
 
         for (int i = binding.buttonBox.getChildCount() - 1; i >= 0; i--) {
             PlayFloatViewItem view = (PlayFloatViewItem) binding.buttonBox.getChildAt(i);
-            if (manualStartActions.containsKey(view.getStartAction())) {
+            if (actions.containsKey(view.getStartAction())) {
                 // 已经在显示了，不移除
                 view.setNeedRemove(false);
                 alreadyManualStartActions.add(view.getStartAction());
@@ -120,7 +169,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
             }
         }
 
-        manualStartActions.forEach((startAction, task) -> {
+        actions.forEach((startAction, task) -> {
             if (!alreadyManualStartActions.contains(startAction)) {
                 binding.buttonBox.addView(new PlayFloatViewItem(getContext(), task, startAction));
             }

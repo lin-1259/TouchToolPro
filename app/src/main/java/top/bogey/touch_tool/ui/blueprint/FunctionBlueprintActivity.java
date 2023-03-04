@@ -18,6 +18,7 @@ import top.bogey.touch_tool.databinding.ActivityBlueprintBinding;
 import top.bogey.touch_tool.ui.BaseActivity;
 
 public class FunctionBlueprintActivity extends BaseActivity {
+    private BaseFunction function;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,7 +28,9 @@ public class FunctionBlueprintActivity extends BaseActivity {
         if (intent == null) throw new IllegalArgumentException();
 
         String functionId = intent.getStringExtra("functionId");
-        BaseFunction function = TaskRepository.getInstance().getFunctionById(functionId);
+        function = TaskRepository.getInstance().getFunctionById(functionId);
+        if (function == null) throw new IllegalArgumentException();
+
 
         ActivityBlueprintBinding binding = ActivityBlueprintBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -63,5 +66,11 @@ public class FunctionBlueprintActivity extends BaseActivity {
 
         binding.toolBar.setTitle(R.string.function_title);
         binding.toolBar.setSubtitle(function.getTitle());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (function != null) TaskRepository.getInstance().saveFunction(function);
     }
 }

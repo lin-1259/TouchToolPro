@@ -482,16 +482,6 @@ public class CardLayoutView extends FrameLayout {
         }
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (actionContext instanceof Task) {
-            TaskRepository.getInstance().saveTask((Task) actionContext);
-        } else if (actionContext instanceof BaseFunction) {
-            TaskRepository.getInstance().saveFunction((BaseFunction) actionContext);
-        }
-    }
-
     public ActionContext getActionContext() {
         return actionContext;
     }

@@ -7,9 +7,11 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -35,6 +37,7 @@ public class WorldState {
     private final static ExecutorService services = Executors.newSingleThreadExecutor();
 
     private final LinkedHashMap<String, PackageInfo> appMap = new LinkedHashMap<>();
+    private final HashMap<String, Drawable> appIconMap = new HashMap<>();
 
     private String packageName;
     private String activityName;
@@ -61,6 +64,7 @@ public class WorldState {
             for (PackageInfo packageInfo : packages) {
                 if (packageInfo.activities != null && packageInfo.activities.length > 0) {
                     appMap.put(packageInfo.packageName, packageInfo);
+                    if (!appIconMap.containsKey(packageInfo.packageName)) appIconMap.put(packageInfo.packageName, packageInfo.applicationInfo.loadIcon(manager));
                 }
             }
         });
@@ -107,6 +111,10 @@ public class WorldState {
             }
         }
         return packages;
+    }
+
+    public Drawable getAppIcon(String pkgName) {
+        return appIconMap.get(pkgName);
     }
 
     private void checkAutoStartAction(Class<? extends StartAction> actionType) {

@@ -25,6 +25,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/nextButton"
+            style="@style/Theme.TouchTool.IconButton"
+            android:layout_width="32dp"
+            android:layout_height="24dp"
+            app:icon="@drawable/icon_down"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
