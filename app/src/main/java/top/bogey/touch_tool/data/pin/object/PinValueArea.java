@@ -15,7 +15,7 @@ public class PinValueArea extends PinValue {
     private int currMax;
 
     public PinValueArea() {
-        this(1, 100, 1);
+        this(1, 60000, 1);
     }
 
     public PinValueArea(int valueFrom, int valueTo, int step) {

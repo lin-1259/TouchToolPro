@@ -42,7 +42,12 @@ public class PinWidgetValueArea extends BindingView<PinWidgetValueAreaBinding> {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null && s.length() > 0)
-                    pinValueArea.setCurrMin(Integer.parseInt(s.toString()));
+                    try {
+                        pinValueArea.setCurrMin(Integer.parseInt(s.toString()));
+                    } catch (NumberFormatException ignored) {
+                        pinValueArea.setCurrMin(pinValueArea.getValueFrom());
+                        binding.minEdit.setTextKeepState(String.valueOf(pinValueArea.getValueFrom()));
+                    }
                 else pinValueArea.setCurrMin(pinValueArea.getValueFrom());
 
                 if (binding.lockButton.isChecked()) {
@@ -54,8 +59,14 @@ public class PinWidgetValueArea extends BindingView<PinWidgetValueAreaBinding> {
         binding.maxEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
-                if (s != null && s.length() > 0)
-                    pinValueArea.setCurrMax(Integer.parseInt(s.toString()));
+                if (s != null && s.length() > 0){
+                    try {
+                        pinValueArea.setCurrMax(Integer.parseInt(s.toString()));
+                    } catch (NumberFormatException ignored) {
+                        pinValueArea.setCurrMax(pinValueArea.getValueTo());
+                        binding.maxEdit.setTextKeepState(String.valueOf(pinValueArea.getValueTo()));
+                    }
+                }
                 else pinValueArea.setCurrMax(pinValueArea.getValueTo());
             }
         });

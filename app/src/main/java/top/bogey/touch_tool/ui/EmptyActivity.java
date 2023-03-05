@@ -18,9 +18,20 @@ public class EmptyActivity extends BaseActivity {
         super.onResume();
 
         Intent intent = getIntent();
-        if (intent == null) {
-            return;
-        }
+        handleIntent(intent);
+        setIntent(null);
+        moveTaskToBack(true);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+        setIntent(null);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (intent == null) return;
 
         String scheme = intent.getScheme();
         if (scheme != null) {
@@ -52,7 +63,5 @@ public class EmptyActivity extends BaseActivity {
                 service.startCaptureService(true, service.captureResultCallback);
             }
         }
-
-        moveTaskToBack(true);
     }
 }

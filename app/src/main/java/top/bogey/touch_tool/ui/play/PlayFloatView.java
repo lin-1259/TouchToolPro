@@ -96,7 +96,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
                 if (!tags.contains(tag)) tags.add(tag);
             }
         }
-        binding.nextButton.setVisibility(tags.size() > 1 ? VISIBLE : GONE);
+        binding.nextButton.setVisibility(tags.size() > 1 && SettingSave.getInstance().isPlayViewExpand() ? VISIBLE : GONE);
     }
 
     private LinkedHashMap<ManualStartAction, Task> getActionsByNextTag() {

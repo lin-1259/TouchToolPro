@@ -58,15 +58,17 @@ public class WorldState {
     @SuppressLint("QueryPermissionsNeeded")
     public void resetAppMap(Context context) {
         services.submit(() -> {
-            appMap.clear();
+            LinkedHashMap<String, PackageInfo> map = new LinkedHashMap<>();
             PackageManager manager = context.getPackageManager();
             List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
             for (PackageInfo packageInfo : packages) {
                 if (packageInfo.activities != null && packageInfo.activities.length > 0) {
-                    appMap.put(packageInfo.packageName, packageInfo);
+                    map.put(packageInfo.packageName, packageInfo);
                     if (!appIconMap.containsKey(packageInfo.packageName)) appIconMap.put(packageInfo.packageName, packageInfo.applicationInfo.loadIcon(manager));
                 }
             }
+            appMap.clear();
+            appMap.putAll(map);
         });
     }
 

@@ -35,7 +35,12 @@ public class PinWidgetInteger extends BindingView<PinWidgetInputBinding> {
                     pinInteger.setValue(0);
                     return;
                 }
-                pinInteger.setValue(Integer.parseInt(s.toString()));
+                try {
+                    pinInteger.setValue(Integer.parseInt(s.toString()));
+                } catch (NumberFormatException ignored) {
+                    pinInteger.setValue(pinInteger.getValue());
+                    binding.editText.setTextKeepState(String.valueOf(pinInteger.getValue()));
+                }
             }
         });
         binding.editText.setText(String.valueOf(pinInteger.getValue()));
