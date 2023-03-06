@@ -98,7 +98,7 @@ public class FunctionAction extends BaseAction {
     }
 
     @Override
-    public void setTitle(String des) {
+    public void setDes(String des) {
         if (tag.isStart()) baseFunction.setTitle(des);
     }
 

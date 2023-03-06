@@ -14,20 +14,31 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStartAction extends StartAction {
     private transient final Pin appPin;
+    private transient final Pin breakPin;
+
+    private transient String currPackage;
+    private transient String currActivity;
 
     public AppStartAction(Context context) {
         super(context, R.string.action_app_start_title);
         appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
+        breakPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_app_start_subtitle_break)));
     }
 
     public AppStartAction(JsonObject jsonObject) {
         super(jsonObject);
         appPin = addPin(tmpPins.remove(0));
+        if (tmpPins.size() > 0) {
+            breakPin = addPin(tmpPins.remove(0));
+        } else {
+            breakPin = null;
+        }
     }
 
     @Override
@@ -63,6 +74,24 @@ public class AppStartAction extends StartAction {
 
             // 活动为空表示只包含应用就行，或者包含对应活动才行
             return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkStop(TaskRunnable runnable, ActionContext actionContext) {
+        if (breakPin == null) return false;
+        PinBoolean needBreak = (PinBoolean) getPinValue(runnable, actionContext, breakPin);
+        if (needBreak.getValue()) {
+            String packageName = WorldState.getInstance().getPackageName();
+            String activityName = WorldState.getInstance().getActivityName();
+            if (currPackage != null && currActivity != null && currPackage.equals(packageName) && currActivity.equals(activityName)) return false;
+            if (checkReady(runnable, actionContext)) {
+                currPackage = packageName;
+                currActivity = activityName;
+                return false;
+            }
+            return true;
         }
         return false;
     }

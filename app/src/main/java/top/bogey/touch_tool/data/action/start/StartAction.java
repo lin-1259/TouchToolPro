@@ -46,6 +46,8 @@ public class StartAction extends BaseAction {
         return true;
     }
 
+    public boolean checkStop(TaskRunnable runnable, ActionContext actionContext) {return false;}
+
     public boolean isEnable() {
         return ((PinBoolean) enablePin.getValue()).getValue();
     }

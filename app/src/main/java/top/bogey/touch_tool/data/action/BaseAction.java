@@ -86,8 +86,8 @@ public class BaseAction {
 
         Pin linkedPin = pin.getLinkedPin(actionContext);
         if (linkedPin == null) return;
+        if (!runnable.addProgress()) return;
         BaseAction owner = linkedPin.getOwner(actionContext);
-        runnable.addProgress();
         owner.doAction(runnable, actionContext, linkedPin);
     }
 

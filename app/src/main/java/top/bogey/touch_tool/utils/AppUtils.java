@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.utils;
 
+import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -86,7 +87,10 @@ public class AppUtils {
         try {
             PackageManager manager = context.getPackageManager();
             Intent intent = manager.getLaunchIntentForPackage(pkgName);
-            if (intent != null) context.startActivity(intent);
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                context.startActivity(intent);
+            }
         } catch (Exception ignored) {
         }
     }
@@ -95,7 +99,7 @@ public class AppUtils {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setClassName(pkgName, activity);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             context.startActivity(intent);
         } catch (Exception ignored) {
         }
@@ -112,7 +116,7 @@ public class AppUtils {
 
     public static void gotoBatterySetting(Context context) {
         try {
-            Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+            @SuppressLint("BatteryLife") Intent intent = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + context.getPackageName()));
             context.startActivity(intent);

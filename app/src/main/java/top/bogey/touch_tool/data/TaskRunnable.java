@@ -47,9 +47,14 @@ public class TaskRunnable implements Runnable {
         callbacks.add(callback);
     }
 
-    public void addProgress() {
+    public boolean addProgress() {
         progress++;
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onProgress(this, progress));
+        if (startAction.checkStop(this, task)) {
+            stop();
+            return false;
+        }
+        return true;
     }
 
     public Task getTask() {

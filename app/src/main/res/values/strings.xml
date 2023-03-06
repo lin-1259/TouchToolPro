@@ -108,6 +108,7 @@
 
     <string name="action_manual_start_title">手动执行</string>
     <string name="action_app_start_title">进应用或界面时执行</string>
+    <string name="action_app_start_subtitle_break">退应用或界面时中断</string>
 
     <string name="action_time_start_title">定时执行</string>
     <string name="action_time_start_subtitle_date">日期</string>

@@ -73,6 +73,11 @@ public class BaseFunction extends NormalAction implements ActionContext {
         for (Pin pin : tmpPins) {
             // 不能直接调用自身的添加
             super.addPin(pin);
+            // 自身的输入针脚的值需要使用开始动作的输出针脚的值
+            if (!pin.getDirection().isOut()) {
+                Pin innerPin = startFunction.getPinById(startFunction.getMappingPinId(pin.getId()));
+                pin.setValue(innerPin.getValue());
+            }
         }
     }
 

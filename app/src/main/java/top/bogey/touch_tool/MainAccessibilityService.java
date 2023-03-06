@@ -331,7 +331,7 @@ public class MainAccessibilityService extends AccessibilityService {
             stopService(new Intent(this, MainCaptureService.class));
         }
         binder = null;
-        captureEnabled.setValue(false);
+        captureEnabled.postValue(false);
     }
 
     public boolean isCaptureEnabled() {
