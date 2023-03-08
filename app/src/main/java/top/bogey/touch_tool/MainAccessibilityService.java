@@ -24,6 +24,7 @@ import androidx.work.WorkManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -41,6 +42,7 @@ import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.EmptyActivity;
@@ -169,7 +171,7 @@ public class MainAccessibilityService extends AccessibilityService {
         callbacks.remove(callback);
     }
 
-    public void doOutAction(String actionId) {
+    public void doOutAction(String actionId, HashMap<String, String> params) {
         if (!isServiceEnabled()) return;
         if (actionId != null) {
             for (Task task : TaskRepository.getInstance().getAllTasks()) {
@@ -177,7 +179,15 @@ public class MainAccessibilityService extends AccessibilityService {
                 for (StartAction startAction : task.getStartActions(OutStartAction.class)) {
                     if (startAction.isEnable() && startAction.getId().equals(actionId)) {
                         flag = true;
-                        if (task.needCaptureService()) {
+                        Task copyTask = task.copy();
+                        if (params != null) {
+                            params.forEach((key, value) -> {
+                                PinObject attr = copyTask.getAttr(key);
+                                if (attr != null) attr.setParamValue(value);
+                            });
+                        }
+
+                        if (copyTask.needCaptureService()) {
                             showToast(getString(R.string.capture_service_on_tips));
                             startCaptureService(true, result -> {
                                 if (result) {
@@ -185,7 +195,7 @@ public class MainAccessibilityService extends AccessibilityService {
                                 }
                             });
                         } else {
-                            runTask(task, startAction);
+                            runTask(copyTask, startAction);
                         }
                         break;
                     }

@@ -232,7 +232,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     public void setSelectTasksTag(String tag) {
         selectTasks.forEach((id, task) -> {
             task.setTag(ALL.equals(tag) || NO.equals(tag) ? null : tag);
-            TaskRepository.getInstance().saveTask(task);
+            task.save();
         });
         unSelectAll();
     }
@@ -326,7 +326,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                     if (result != null && result.length() > 0) {
                         task.setTitle(result.toString());
                         binding.taskName.setText(result);
-                        TaskRepository.getInstance().saveTask(task);
+                        task.save();
                     }
                 });
             });
@@ -339,7 +339,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                 for (StartAction startAction : task.getStartActions(StartAction.class)) {
                     startAction.setEnable(isChecked);
                 }
-                TaskRepository.getInstance().saveTask(task);
+                task.save();
             });
 
             binding.stopButton.setOnClickListener(v -> {

@@ -28,6 +28,11 @@ public class PinString extends PinValue {
     }
 
     @Override
+    public void setParamValue(String value) {
+        this.value = value;
+    }
+
+    @Override
     public int getPinColor(Context context) {
         return context.getResources().getColor(R.color.StringPinColor, null);
     }

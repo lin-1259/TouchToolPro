@@ -185,14 +185,14 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         if (rootNode == null) return null;
         HashSet<AccessibilityNodeInfo> infoHashSet = new HashSet<>();
         findNodeIn(infoHashSet, rootNode, x, y);
-        int max = Integer.MAX_VALUE;
+        int min = Integer.MAX_VALUE;
         AccessibilityNodeInfo node = null;
         Rect bounds = new Rect();
         for (AccessibilityNodeInfo nodeInfo : infoHashSet) {
             nodeInfo.getBoundsInScreen(bounds);
             int size = bounds.width() * bounds.height();
-            if (size < max) {
-                max = size;
+            if (size < min) {
+                min = size;
                 node = nodeInfo;
             }
         }
@@ -208,8 +208,8 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
                 child.getBoundsInScreen(rect);
                 if (rect.contains(x, y) && child.isVisibleToUser()) {
                     infoHashSet.add(child);
-                    findNodeIn(infoHashSet, child, x, y);
                 }
+                findNodeIn(infoHashSet, child, x, y);
             }
         }
     }

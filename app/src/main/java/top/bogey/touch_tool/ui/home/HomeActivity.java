@@ -250,7 +250,7 @@ public class HomeActivity extends BaseActivity {
                 Task task = new Task();
                 task.setTitle(result.toString());
                 task.setTag(adapter.getTag());
-                TaskRepository.getInstance().saveTask(task);
+                task.save();
             }
         }));
 
@@ -294,6 +294,7 @@ public class HomeActivity extends BaseActivity {
 
     private void runFirstTimes() {
         if (SettingSave.getInstance().getRunTimes() == 1) {
+            SettingSave.getInstance().addRunTimes();
             try (InputStream inputStream = getAssets().open("default")) {
                 byte[] bytes = new byte[inputStream.available()];
                 if (inputStream.read(bytes) > 0) saveTasks(bytes);
@@ -394,7 +395,10 @@ public class HomeActivity extends BaseActivity {
 
         if (tasks != null) {
             for (Task task : tasks) {
-                TaskRepository.getInstance().saveTask(task);
+                if (TaskRepository.getInstance().getTaskById(task.getId()) != null) {
+                    task.setId(null);
+                }
+                task.save();
             }
         }
     }

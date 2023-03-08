@@ -3,8 +3,13 @@ package top.bogey.touch_tool.ui;
 import android.content.Intent;
 import android.net.Uri;
 
+import java.util.HashMap;
+import java.util.Set;
+import java.util.UUID;
+
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.ui.home.HomeActivity;
 
 public class EmptyActivity extends BaseActivity {
 
@@ -19,6 +24,13 @@ public class EmptyActivity extends BaseActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
+
+        if (intent == null) {
+            intent = new Intent(this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+
         setIntent(null);
         moveTaskToBack(true);
     }
@@ -38,7 +50,21 @@ public class EmptyActivity extends BaseActivity {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             Uri uri = intent.getData();
             if (service != null && service.isServiceEnabled() && "do_action".equals(uri.getHost()) && uri.getQuery() != null) {
-                service.doOutAction(uri.getQuery());
+                String actionId = null;
+                HashMap<String, String> params = new HashMap<>();
+                Set<String> names = uri.getQueryParameterNames();
+                for (String name : names) {
+                    UUID uuid = null;
+                    try {
+                        uuid = UUID.fromString(name);
+                        actionId = uuid.toString();
+                    } catch (IllegalArgumentException ignored) {
+                    }
+                    if (uuid == null) {
+                        params.put(name, uri.getQueryParameter(name));
+                    }
+                }
+                service.doOutAction(actionId, params);
             }
         }
 

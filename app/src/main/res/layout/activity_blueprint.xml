@@ -37,13 +37,22 @@
             android:src="@drawable/icon_add" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/attrButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="104dp"
+            android:src="@drawable/icon_more" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             style="?attr/floatingActionButtonSmallPrimaryStyle"
             android:id="@+id/lockEditButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="32dp"
-            android:layout_marginBottom="96dp"
+            android:layout_marginBottom="172dp"
             android:src="@drawable/icon_edit" />
 
     </FrameLayout>

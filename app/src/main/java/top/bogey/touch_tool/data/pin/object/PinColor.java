@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinColor extends PinValue {
@@ -27,7 +28,7 @@ public class PinColor extends PinValue {
 
     public PinColor(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = new Gson();
+        Gson gson = TaskRepository.getInstance().getGson();
         color = gson.fromJson(jsonObject.get("color"), int[].class);
         screen = jsonObject.get("screen").getAsInt();
         minSize = jsonObject.get("minSize").getAsInt();

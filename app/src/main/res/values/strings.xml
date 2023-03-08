@@ -88,6 +88,12 @@
     <string name="function_just_call">仅获取状态</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
+    <string name="attribute_title">变量</string>
+    <string name="attribute_hint">变量名</string>
+    <string name="attribute_add">添加变量</string>
+    <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>
+    <string name="delete_attribute_tips">当前变量正在使用中，删除变量会删除变量相关卡片，确认要删除吗？</string>
+
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
     <string name="action_subtitle_add_des">修改备注</string>
@@ -196,6 +202,9 @@
 
     <string name="action_open_url_action_title">打开Url</string>
     <string name="action_open_url_action_subtitle_url">Url</string>
+
+    <string name="action_set_value_action_title">设置变量值</string>
+    <string name="action_get_value_action_title">获取变量值</string>
 
     <!-- 任务 - 转换 -->
     <string name="action_value_convert_string_title">对象转换为文本</string>

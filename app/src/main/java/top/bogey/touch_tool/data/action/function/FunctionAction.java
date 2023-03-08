@@ -43,7 +43,7 @@ public class FunctionAction extends BaseAction {
 
     public FunctionAction(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = new Gson();
+        Gson gson = TaskRepository.getInstance().getGson();
         tag = BaseFunction.FUNCTION_TAG.valueOf(jsonObject.get("tag").getAsString());
         pinIdMap.putAll(gson.fromJson(jsonObject.get("pinIdMap"), new TypeToken<HashMap<String, String>>() {
         }.getType()));

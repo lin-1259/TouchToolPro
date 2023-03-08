@@ -3,6 +3,8 @@ package top.bogey.touch_tool.data.pin.object;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.data.TaskRepository;
+
 public class PinSpinner extends PinValue {
     private final String[] array;
     private int index;
@@ -14,7 +16,8 @@ public class PinSpinner extends PinValue {
 
     public PinSpinner(JsonObject jsonObject) {
         super(jsonObject);
-        array = new Gson().fromJson(jsonObject.get("array"), String[].class);
+        Gson gson = TaskRepository.getInstance().getGson();
+        array = gson.fromJson(jsonObject.get("array"), String[].class);
         index = jsonObject.get("index").getAsInt();
     }
 

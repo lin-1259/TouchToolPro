@@ -14,6 +14,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
@@ -32,7 +33,7 @@ public class PinPath extends PinValue {
 
     public PinPath(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = new Gson();
+        Gson gson = TaskRepository.getInstance().getGson();
         paths.addAll(gson.fromJson(jsonObject.get("paths"), new TypeToken<ArrayList<TouchPath>>() {
         }.getType()));
         screen = jsonObject.get("screen").getAsInt();

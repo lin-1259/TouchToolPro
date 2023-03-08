@@ -13,6 +13,7 @@ import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinImage extends PinValue {
@@ -33,10 +34,11 @@ public class PinImage extends PinValue {
 
     public PinImage(JsonObject jsonObject) {
         super(jsonObject);
+        Gson gson = TaskRepository.getInstance().getGson();
         screen = jsonObject.get("screen").getAsInt();
         JsonElement element = jsonObject.get("image");
         if (element != null) image = element.getAsString();
-        area = new Gson().fromJson(jsonObject.get("area"), Rect.class);
+        area = gson.fromJson(jsonObject.get("area"), Rect.class);
     }
 
     public Bitmap getBitmap() {

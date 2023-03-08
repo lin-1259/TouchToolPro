@@ -19,7 +19,7 @@ import top.bogey.touch_tool.data.pin.object.PinWidget;
 
 public class PinMap {
     private static PinMap pinMap;
-    private final ArrayMap<Class<? extends PinObject>, Integer> map = new ArrayMap<>();
+    private final ArrayMap<Class<? extends PinObject>, Integer> map = new ArrayMap<>(30);
 
     private PinMap() {
         map.put(PinBoolean.class, R.string.pin_boolean);

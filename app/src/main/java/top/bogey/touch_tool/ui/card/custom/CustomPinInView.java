@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
+import java.util.LinkedHashMap;
+
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.pin.Pin;

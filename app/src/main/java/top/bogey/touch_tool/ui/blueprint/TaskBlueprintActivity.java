@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 
+import com.amrdeveloper.treeview.TreeNodeManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import top.bogey.touch_tool.R;
@@ -47,7 +48,7 @@ public class TaskBlueprintActivity extends BaseActivity {
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.saveTask:
-                        TaskRepository.getInstance().saveTask(task);
+                        task.save();
                         break;
                     case R.id.showLog:
                         new MaterialAlertDialogBuilder(TaskBlueprintActivity.this)
@@ -68,7 +69,14 @@ public class TaskBlueprintActivity extends BaseActivity {
         binding.cardLayout.setActionContext(task);
 
         binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
+            ActionTreeAdapter adapter = new ActionTreeAdapter(binding.cardLayout, new TreeNodeManager());
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, adapter);
+            dialog.show();
+        });
+
+        binding.attrButton.setOnClickListener(v -> {
+            AttrTreeAdapter adapter = new AttrTreeAdapter(binding.cardLayout, new TreeNodeManager());
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, adapter);
             dialog.show();
         });
 
@@ -85,6 +93,6 @@ public class TaskBlueprintActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (task != null) TaskRepository.getInstance().saveTask(task);
+        task.save();
     }
 }

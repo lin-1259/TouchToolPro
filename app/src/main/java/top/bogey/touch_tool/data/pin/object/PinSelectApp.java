@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class PinSelectApp extends PinValue {
@@ -25,7 +26,8 @@ public class PinSelectApp extends PinValue {
 
     public PinSelectApp(JsonObject jsonObject) {
         super(jsonObject);
-        packages.putAll(new Gson().fromJson(jsonObject.get("packages"), new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
+        Gson gson = TaskRepository.getInstance().getGson();
+        packages.putAll(gson.fromJson(jsonObject.get("packages"), new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
         }.getType()));
         mode = jsonObject.get("mode").getAsInt();
     }

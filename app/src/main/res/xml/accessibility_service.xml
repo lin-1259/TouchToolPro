@@ -5,4 +5,4 @@
     android:canPerformGestures="true"
     android:canRetrieveWindowContent="true"
     android:description="@string/service_des"
-    android:notificationTimeout="100" />
+    android:notificationTimeout="50" />

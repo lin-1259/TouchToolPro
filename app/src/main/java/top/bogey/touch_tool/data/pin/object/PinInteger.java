@@ -27,6 +27,13 @@ public class PinInteger extends PinValue {
     }
 
     @Override
+    public void setParamValue(String value) {
+        try {
+            this.value = Integer.parseInt(value);
+        } catch (NumberFormatException ignored) {}
+    }
+
+    @Override
     public int getPinColor(Context context) {
         return context.getResources().getColor(R.color.IntegerPinColor, null);
     }

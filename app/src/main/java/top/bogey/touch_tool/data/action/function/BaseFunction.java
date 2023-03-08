@@ -286,6 +286,11 @@ public class BaseFunction extends NormalAction implements ActionContext {
         return endFunction != null;
     }
 
+    @Override
+    public void save() {
+        TaskRepository.getInstance().saveFunction(this);
+    }
+
     public enum FUNCTION_TAG {
         START, END;
 

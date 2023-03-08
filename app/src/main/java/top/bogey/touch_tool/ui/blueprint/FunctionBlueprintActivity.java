@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
 
+import com.amrdeveloper.treeview.TreeNodeManager;
+
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
@@ -45,7 +47,7 @@ public class FunctionBlueprintActivity extends BaseActivity {
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.saveTask) {
-                    TaskRepository.getInstance().saveFunction(function);
+                    function.save();
                 }
                 return true;
             }
@@ -54,7 +56,14 @@ public class FunctionBlueprintActivity extends BaseActivity {
         binding.cardLayout.setActionContext(function);
 
         binding.addButton.setOnClickListener(v -> {
-            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, binding.cardLayout);
+            ActionTreeAdapter adapter = new ActionTreeAdapter(binding.cardLayout, new TreeNodeManager());
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, adapter);
+            dialog.show();
+        });
+
+        binding.attrButton.setOnClickListener(v -> {
+            AttrTreeAdapter adapter = new AttrTreeAdapter(binding.cardLayout, new TreeNodeManager());
+            ActionSideSheetDialog dialog = new ActionSideSheetDialog(this, adapter);
             dialog.show();
         });
 
@@ -71,6 +80,6 @@ public class FunctionBlueprintActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (function != null) TaskRepository.getInstance().saveFunction(function);
+        function.save();
     }
 }

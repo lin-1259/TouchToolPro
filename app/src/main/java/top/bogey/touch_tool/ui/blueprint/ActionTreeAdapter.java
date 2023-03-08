@@ -29,14 +29,12 @@ import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class ActionTreeAdapter extends TreeViewAdapter {
-    private final ActionSideSheetDialog parent;
     private final TreeNodeManager manager;
     private final TreeNode functionTreeNode;
     private BaseFunction excludeFunction;
 
-    public ActionTreeAdapter(ActionSideSheetDialog parent, CardLayoutView cardLayoutView, TreeNodeManager manager) {
+    public ActionTreeAdapter(CardLayoutView cardLayoutView, TreeNodeManager manager) {
         super(null, manager);
-        this.parent = parent;
         this.manager = manager;
 
         setTreeNodeClickListener((treeNode, view) -> {
@@ -114,7 +112,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                 if (result != null && result.length() > 0) {
                     BaseFunction function = new BaseFunction(context);
                     function.setTitle(result.toString());
-                    TaskRepository.getInstance().saveFunction(function);
+                    function.save();
                     TreeNodeInfo treeNodeInfo = new TreeNodeInfo(function.getFunctionId(), function.getTitle());
                     TreeNode node = new TreeNode(treeNodeInfo, R.layout.view_card_list_item);
                     functionTreeNode.addChild(node);
@@ -149,7 +147,6 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                 Intent intent = new Intent(context.getApplicationContext(), FunctionBlueprintActivity.class);
                 intent.putExtra("functionId", treeNodeInfo.getId());
                 context.startActivity(intent);
-                parent.dismiss();
             });
         }
 

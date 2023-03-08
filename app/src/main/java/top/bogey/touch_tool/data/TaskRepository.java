@@ -17,6 +17,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.start.StartAction;
+import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 
@@ -40,6 +41,7 @@ public class TaskRepository {
     public TaskRepository() {
         gson = new GsonBuilder()
                 .registerTypeAdapter(BaseAction.class, new BaseAction.BaseActionDeserialize())
+                .registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer())
                 .create();
     }
 

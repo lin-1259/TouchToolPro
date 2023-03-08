@@ -77,11 +77,20 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         }
         if (pin == null) return;
 
-        pin.setListener(() -> post(this::refreshPinUI));
+        pin.setListener(new Pin.LinkListener() {
+            @Override
+            public void onAdded(Pin pin) {
+                post(() -> refreshPinUI());
+            }
+
+            @Override
+            public void onRemoved(Pin pin) {
+                post(() -> refreshPinUI());
+            }
+        });
 
         pinSlot.setCardBackgroundColor(getPinColor());
         pinSlot.setStrokeWidth(DisplayUtils.dp2px(context, 1.1f));
-        pinSlot.setStrokeColor(getPinColor());
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
@@ -90,7 +99,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         setValueView();
     }
 
-    protected void setValueView() {
+    public void setValueView() {
         pinBox.removeAllViews();
         Context context = getContext();
         Class<?> aClass = pin.getPinClass();
@@ -145,6 +154,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         if (pin.getTitle() != null) titleText.setText(String.format(hidePinBox ? "%s" : "%s:", pin.getTitle()));
         else titleText.setVisibility(GONE);
 
+        pinSlot.setStrokeColor(getPinColor());
         pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
         pinSlot.setShapeAppearanceModel(getPinStyle());
     }

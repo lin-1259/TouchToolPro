@@ -7,9 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
@@ -21,7 +23,7 @@ public class Pin {
 
     private PinDirection direction;
     private PinSlotType slotType;
-    private PinSubType subType;
+    private final PinSubType subType;
 
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
@@ -39,6 +41,10 @@ public class Pin {
 
     public Pin(PinObject value, PinSlotType slotType) {
         this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
+    }
+
+    public Pin(PinObject value, PinDirection direction) {
+        this(value, null, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
     }
 
     public Pin(PinObject value, String title, PinDirection direction) {
@@ -83,14 +89,14 @@ public class Pin {
         slotType = PinSlotType.valueOf(jsonObject.get("slotType").getAsString());
         subType = PinSubType.valueOf(jsonObject.get("subType").getAsString());
         removeAble = jsonObject.get("removeAble").getAsBoolean();
-        links.putAll(new Gson().fromJson(jsonObject.get("links"), new TypeToken<HashMap<String, String>>() {
+        Gson gson = TaskRepository.getInstance().getGson();
+        links.putAll(gson.fromJson(jsonObject.get("links"), new TypeToken<HashMap<String, String>>() {
         }.getType()));
-        PinObject.PinObjectDeserializer pinObjectDeserializer = new PinObject.PinObjectDeserializer();
-        value = pinObjectDeserializer.deserialize(jsonObject.get("value"), null, null);
+        value = gson.fromJson(jsonObject.get("value"), PinObject.class);
     }
 
     public Pin copy(boolean removeAble) {
-        Gson gson = new GsonBuilder().registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer()).create();
+        Gson gson = TaskRepository.getInstance().getGson();
         String json = gson.toJson(this);
         Pin copy = gson.fromJson(json, Pin.class);
         copy.id = UUID.randomUUID().toString();
@@ -130,17 +136,18 @@ public class Pin {
             removeLinks(context);
         }
         links.put(pin.getId(), pin.getActionId());
-        if (listener != null) listener.onChanged();
+        if (listener != null) listener.onAdded(pin);
         return true;
     }
 
     public void removeLink(Pin pin) {
-        links.remove(pin.getId());
-        if (listener != null) listener.onChanged();
+        if (links.remove(pin.getId()) != null) {
+            if (listener != null) listener.onRemoved(pin);
+        }
     }
 
-    public HashMap<String, String> addLinks(ActionContext context, HashMap<String, String> links) {
-        HashMap<String, String> addedLinks = new HashMap<>();
+    public boolean addLinks(ActionContext context, HashMap<String, String> links) {
+        boolean flag = false;
         for (Map.Entry<String, String> entry : links.entrySet()) {
             BaseAction action = context.getActionById(entry.getValue());
             if (action == null) continue;
@@ -159,24 +166,24 @@ public class Pin {
                 pinById.removeLink(this);
                 removeLink(pinById);
             } else {
-                addedLinks.put(entry.getKey(), entry.getValue());
+                flag = true;
             }
         }
-        return addedLinks;
+        return flag;
     }
 
-    public HashMap<String, String> removeLinks(ActionContext context) {
-        for (Map.Entry<String, String> entry : links.entrySet()) {
-            BaseAction action = context.getActionById(entry.getValue());
-            if (action == null) continue;
-            Pin pinById = action.getPinById(entry.getKey());
-            if (pinById == null) continue;
+    public void removeLinks(ActionContext context) {
+        HashMap<String, String> map = new HashMap<>(links);
+        map.forEach((pinId, actionId) -> {
+            BaseAction action = context.getActionById(actionId);
+            if (action == null) return;
+            Pin pinById = action.getPinById(pinId);
+            if (pinById == null) return;
             pinById.removeLink(this);
-        }
-        HashMap<String, String> removedLinks = new HashMap<>(links);
+            links.remove(pinId);
+            if (listener != null) listener.onRemoved(pinById);
+        });
         links.clear();
-        if (listener != null) listener.onChanged();
-        return removedLinks;
     }
 
     public void cleanLinks() {
@@ -234,10 +241,6 @@ public class Pin {
         return subType;
     }
 
-    public void setSubType(PinSubType subType) {
-        this.subType = subType;
-    }
-
     public boolean isRemoveAble() {
         return removeAble;
     }
@@ -259,6 +262,8 @@ public class Pin {
     }
 
     public interface LinkListener {
-        void onChanged();
+        void onAdded(Pin pin);
+
+        void onRemoved(Pin pin);
     }
 }

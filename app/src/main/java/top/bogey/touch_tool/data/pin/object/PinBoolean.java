@@ -25,6 +25,13 @@ public class PinBoolean extends PinValue {
         value = jsonObject.get("value").getAsBoolean();
     }
 
+    @Override
+    public void setParamValue(String value) {
+        if (Boolean.toString(true).equals(value)) this.value = true;
+        else if (Boolean.toString(false).equals(value)) this.value = false;
+        else this.value = !"0".equals(value);
+    }
+
     public boolean getValue() {
         return value;
     }

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -31,6 +30,8 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
+import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinValue;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.custom.CustomCard;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
@@ -55,6 +56,8 @@ public class CardLayoutView extends FrameLayout {
     private final HashMap<String, String> dragLinks = new HashMap<>();
     private BaseCard<?> dragCard = null;
     private PinBaseView<?> dragPin = null;
+    private PinBaseView<?> matchedPin = null;
+
     private float dragX = 0;
     private float dragY = 0;
     private float startX = 0;
@@ -166,6 +169,18 @@ public class CardLayoutView extends FrameLayout {
         }
     }
 
+    public void addAction(Class<?> actionClass, String key, PinObject value) {
+        try {
+            Constructor<?> constructor = actionClass.getConstructor(Context.class, String.class, PinObject.class);
+            BaseAction action = (BaseAction) constructor.newInstance(getContext(), key, value);
+            action.x = (int) (-offsetX / getScaleGridSize()) + 1;
+            action.y = (int) (-offsetY / getScaleGridSize()) + 1;
+            addAction(action);
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void addAction(String functionId) {
         BaseFunction function = TaskRepository.getInstance().getFunctionById(functionId);
         if (function != null) {
@@ -265,7 +280,8 @@ public class CardLayoutView extends FrameLayout {
                 if (card == null) continue;
                 PinBaseView<?> pinBaseView = card.getPinById(entry.getKey());
                 if (pinBaseView == null) continue;
-                linePaint.setColor(pinBaseView.getPinColor());
+                if (matchedPin != null) linePaint.setColor(matchedPin.getPinColor());
+                else linePaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
                 canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
             }
         }
@@ -451,6 +467,18 @@ public class CardLayoutView extends FrameLayout {
                     offsetY -= offset;
                 }
                 setCardsPosition();
+
+                matchedPin = null;
+                for (BaseCard<?> baseCard : cardMap.values()) {
+                    int[] location = new int[2];
+                    baseCard.getLocationOnScreen(location);
+                    if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
+                        PinBaseView<?> pinBaseView = baseCard.getPinByPosition(rawX, rawY);
+                        if (pinBaseView == null) continue;
+                        matchedPin = pinBaseView;
+                        break;
+                    }
+                }
             } else if (dragState == DRAG_SELF) {
                 offsetX += (rawX - dragX);
                 offsetY += (rawY - dragY);
@@ -465,13 +493,26 @@ public class CardLayoutView extends FrameLayout {
 
     private boolean pinAddLinks(PinBaseView<?> pinBaseView, HashMap<String, String> links) {
         Pin pin = pinBaseView.getPin();
-        HashMap<String, String> addedLinks = pin.addLinks(actionContext, links);
-        return addedLinks.size() > 0;
+        return pin.addLinks(actionContext, links);
     }
 
     private void pinRemoveLinks(PinBaseView<?> pinBaseView) {
         Pin pin = pinBaseView.getPin();
         pin.removeLinks(actionContext);
+    }
+
+    public void refreshValueActionPins(BaseAction action) {
+        BaseCard<?> baseCard = cardMap.get(action.getId());
+        if (baseCard == null) return;
+        for (Pin pin : action.getPins()) {
+            if (pin.getValue() instanceof PinValue) {
+                pin.removeLinks(actionContext);
+                PinBaseView<?> pinById = baseCard.getPinById(pin.getId());
+                pinById.setValueView();
+                pinById.refreshPinUI();
+            }
+        }
+        postInvalidate();
     }
 
     @Override

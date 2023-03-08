@@ -19,7 +19,7 @@ import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class Task implements ActionContext {
-    private final String id;
+    private String id;
     private final HashSet<BaseAction> actions = new HashSet<>();
     private final HashMap<String, PinObject> attrs = new HashMap<>();
 
@@ -133,6 +133,11 @@ public class Task implements ActionContext {
         return id;
     }
 
+    public void setId(String id) {
+        if (id == null) id = UUID.randomUUID().toString();
+        this.id = id;
+    }
+
     @Override
     public HashSet<BaseAction> getActions() {
         return actions;
@@ -141,6 +146,11 @@ public class Task implements ActionContext {
     @Override
     public boolean isReturned() {
         return false;
+    }
+
+    @Override
+    public void save() {
+        TaskRepository.getInstance().saveTask(this);
     }
 
     public long getCreateTime() {
