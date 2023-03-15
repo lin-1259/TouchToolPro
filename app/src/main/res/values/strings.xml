@@ -184,6 +184,7 @@
     <string name="action_input_node_action_title">输入框输入</string>
     <string name="action_input_node_action_subtitle_content">内容</string>
     <string name="action_input_node_action_subtitle_append">附加</string>
+    <string name="action_input_node_action_subtitle_enter">模拟回车</string>
 
     <string name="action_touch_path_action_title">执行手势</string>
     <string name="action_touch_path_action_subtitle_path">手势</string>
@@ -246,7 +247,10 @@
     <string name="action_for_loop_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
+
     <string name="action_random_logic_title">随机执行</string>
+    <string name="action_random_logic_subtitle_times">随机条数</string>
+    <string name="action_random_logic_subtitle_complete">完成</string>
 
     <string name="action_parallel_logic_title">并行执行直到…</string>
     <string name="action_parallel_logic_subtitle_condition">达到完成数</string>
@@ -262,6 +266,7 @@
     <string name="action_int_equal_operator_title">数值相等 =</string>
     <string name="action_int_large_operator_title">数值比较 &gt;</string>
     <string name="action_int_small_operator_title">数值比较 &lt;</string>
+    <string name="action_int_random_operator_title">随机数值</string>
 
     <string name="action_string_add_operator_title">文本拼接</string>
 

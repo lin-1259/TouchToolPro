@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.data.action.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.JsonObject;
 
@@ -34,6 +35,8 @@ public class LogAction extends NormalAction {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinString pinString = (PinString) getPinValue(runnable, actionContext, textPin);
+
+        Log.d("TAG", "LogAction: " + pinString.getValue());
 
         MainAccessibilityService service = MainApplication.getInstance().getService();
         TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(), pinString.getValue());

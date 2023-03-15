@@ -64,6 +64,7 @@ public class BaseActivity extends AppCompatActivity {
     public void launchCapture(PermissionResultCallback callback) {
         if (intentLauncher == null) {
             if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+            return;
         }
         resultCallback = callback;
         MediaProjectionManager manager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
@@ -73,6 +74,7 @@ public class BaseActivity extends AppCompatActivity {
     public void launchNotification(PermissionResultCallback callback) {
         if (permissionLauncher == null) {
             if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+            return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             String permission = Manifest.permission.POST_NOTIFICATIONS;
@@ -99,6 +101,7 @@ public class BaseActivity extends AppCompatActivity {
     public void launcherContent(PermissionResultCallback callback) {
         if (contentLauncher == null) {
             if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+            return;
         }
         resultCallback = callback;
         contentLauncher.launch("application/octet-stream");

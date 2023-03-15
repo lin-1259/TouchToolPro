@@ -23,7 +23,7 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 /* BaseFunction只是一个包装，所有针脚都是重定向到startAction和endAction去执行。
  */
 public class BaseFunction extends NormalAction implements ActionContext {
-    private final String functionId;
+    private String functionId;
     private final HashSet<BaseAction> actions = new HashSet<>();
     private final HashMap<String, PinObject> attrs = new HashMap<>();
     private boolean justCall = false;
@@ -207,6 +207,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     public String getFunctionId() {
         return functionId;
+    }
+
+    public void setFunctionId(String functionId) {
+        this.functionId = functionId;
     }
 
     @Override

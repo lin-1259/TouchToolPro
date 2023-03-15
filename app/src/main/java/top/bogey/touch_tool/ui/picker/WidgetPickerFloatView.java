@@ -13,7 +13,9 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +61,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
 
         binding.markBox.setOnClickListener(v -> showWordView(null));
 
-        selectNode = pinWidget.getNode(rootNode);
+        selectNode = pinWidget.getNode(DisplayUtils.getScreenArea(service), rootNode);
         showWordView(selectNode);
     }
 
@@ -183,23 +185,27 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
     @Nullable
     private AccessibilityNodeInfo getNodeIn(int x, int y) {
         if (rootNode == null) return null;
-        HashSet<AccessibilityNodeInfo> infoHashSet = new HashSet<>();
-        findNodeIn(infoHashSet, rootNode, x, y);
+        HashMap<AccessibilityNodeInfo, Integer> infoMap = new HashMap<>();
+        findNodeIn(infoMap, 0, rootNode, x, y);
+
         int min = Integer.MAX_VALUE;
+        int deep = 0;
         AccessibilityNodeInfo node = null;
         Rect bounds = new Rect();
-        for (AccessibilityNodeInfo nodeInfo : infoHashSet) {
-            nodeInfo.getBoundsInScreen(bounds);
+        for (Map.Entry<AccessibilityNodeInfo, Integer> entry : infoMap.entrySet()) {
+            entry.getKey().getBoundsInScreen(bounds);
             int size = bounds.width() * bounds.height();
-            if (size < min) {
+            // 范围最小或者深度最深
+            if (size < min || (size == min && deep < entry.getValue())) {
                 min = size;
-                node = nodeInfo;
+                deep = entry.getValue();
+                node = entry.getKey();
             }
         }
         return node;
     }
 
-    private void findNodeIn(HashSet<AccessibilityNodeInfo> infoHashSet, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
+    private void findNodeIn(HashMap<AccessibilityNodeInfo, Integer> infoHashSet, int deep, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
         if (nodeInfo.getChildCount() == 0) return;
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);
@@ -207,9 +213,9 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
                 Rect rect = new Rect();
                 child.getBoundsInScreen(rect);
                 if (rect.contains(x, y) && child.isVisibleToUser()) {
-                    infoHashSet.add(child);
+                    infoHashSet.put(child, deep);
                 }
-                findNodeIn(infoHashSet, child, x, y);
+                findNodeIn(infoHashSet, deep + 1, child, x, y);
             }
         }
     }

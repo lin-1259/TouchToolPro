@@ -6,14 +6,14 @@ android {
     namespace 'top.bogey.touch_tool'
     compileSdk 33
     ndkVersion '25.2.9519653'
-    buildToolsVersion '34.0.0 rc1'
+    buildToolsVersion '34.0.0 rc2'
 
     defaultConfig {
         applicationId "top.bogey.touch_tool_pro"
         minSdk 24
         targetSdk 33
-        versionCode 19
-        versionName "0.0.19"
+        versionCode 20
+        versionName "0.0.20"
 
         externalNativeBuild {
             cmake {

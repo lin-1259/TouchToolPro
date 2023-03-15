@@ -13,6 +13,7 @@ import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.action.TouchNodeAction;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetPreviewBinding;
+import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
@@ -45,7 +46,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
+                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                 if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             }
@@ -54,7 +55,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnLongClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(service.getRootInActiveWindow());
+                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow());
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                 if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
             }

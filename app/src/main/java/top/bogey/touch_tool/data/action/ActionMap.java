@@ -34,6 +34,7 @@ import top.bogey.touch_tool.data.action.operator.IntDivAction;
 import top.bogey.touch_tool.data.action.operator.IntEqualAction;
 import top.bogey.touch_tool.data.action.operator.IntLargeAction;
 import top.bogey.touch_tool.data.action.operator.IntMultiAction;
+import top.bogey.touch_tool.data.action.operator.IntRandomAction;
 import top.bogey.touch_tool.data.action.operator.IntReduceAction;
 import top.bogey.touch_tool.data.action.operator.IntSmallAction;
 import top.bogey.touch_tool.data.action.operator.StringAddAction;
@@ -125,6 +126,7 @@ public class ActionMap {
         operateActions.put(IntEqualAction.class, R.string.action_int_equal_operator_title);
         operateActions.put(IntLargeAction.class, R.string.action_int_large_operator_title);
         operateActions.put(IntSmallAction.class, R.string.action_int_small_operator_title);
+        operateActions.put(IntRandomAction.class, R.string.action_int_random_operator_title);
         operateActions.put(StringAddAction.class, R.string.action_string_add_operator_title);
     }
 

@@ -17,6 +17,7 @@ import com.amrdeveloper.treeview.TreeViewHolder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
@@ -116,6 +117,10 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                     TreeNodeInfo treeNodeInfo = new TreeNodeInfo(function.getFunctionId(), function.getTitle());
                     TreeNode node = new TreeNode(treeNodeInfo, R.layout.view_card_list_item);
                     functionTreeNode.addChild(node);
+                    if (functionTreeNode.isExpanded()) {
+                        manager.collapseNode(functionTreeNode);
+                    }
+                    manager.expandNode(functionTreeNode);
                     notifyDataSetChanged();
                 }
             }));
@@ -138,6 +143,23 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                     TaskRepository.getInstance().removeFunction(treeNodeInfo.getId());
                 }
             }));
+
+            binding.copyButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                TreeNode treeNode = manager.get(index);
+                TreeNodeInfo treeNodeInfo = (TreeNodeInfo) treeNode.getValue();
+                BaseFunction function = TaskRepository.getInstance().getFunctionById(treeNodeInfo.getId());
+                BaseFunction copy = (BaseFunction) function.copy();
+                copy.setFunctionId(UUID.randomUUID().toString());
+                copy.save();
+
+                TreeNodeInfo treeNodeInfoCopy = new TreeNodeInfo(copy.getFunctionId(), copy.getTitle());
+                TreeNode node = new TreeNode(treeNodeInfoCopy, R.layout.view_card_list_item);
+                functionTreeNode.addChild(node);
+                manager.collapseNode(functionTreeNode);
+                manager.expandNode(functionTreeNode);
+                notifyDataSetChanged();
+            });
 
             binding.editButton.setOnClickListener(v -> {
                 int index = getBindingAdapterPosition();

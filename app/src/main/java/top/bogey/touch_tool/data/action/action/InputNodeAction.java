@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.data.action.action;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -22,6 +23,7 @@ public class InputNodeAction extends NormalAction {
     private transient final Pin contentPin;
     private transient final Pin appendPin;
     private transient final Pin falsePin;
+    private transient final Pin enterPin;
 
     public InputNodeAction(Context context) {
         super(context, R.string.action_input_node_action_title);
@@ -29,6 +31,7 @@ public class InputNodeAction extends NormalAction {
         contentPin = addPin(new Pin(new PinString(), context.getString(R.string.action_input_node_action_subtitle_content)));
         appendPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_input_node_action_subtitle_append)));
         falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
+        enterPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_input_node_action_subtitle_enter)));
     }
 
     public InputNodeAction(JsonObject jsonObject) {
@@ -39,6 +42,9 @@ public class InputNodeAction extends NormalAction {
         if (tmpPins.size() > 0) {
             falsePin = addPin(tmpPins.remove(0));
         } else falsePin = null;
+        if (tmpPins.size() > 0) {
+            enterPin = addPin(tmpPins.remove(0));
+        } else enterPin = null;
     }
 
     @Override
@@ -59,6 +65,12 @@ public class InputNodeAction extends NormalAction {
             Bundle bundle = new Bundle();
             bundle.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
             result = nodeInfo.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle);
+
+            boolean enter = false;
+            if (enterPin != null) enter = ((PinBoolean) getPinValue(runnable, actionContext, enterPin)).getValue();
+            if (result && enter && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                nodeInfo.performAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_IME_ENTER.getId());
+            }
         }
         sleep(100);
         if (result) {

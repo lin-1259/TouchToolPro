@@ -21,6 +21,7 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinString;
+import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class TextStateAction extends StateAction {
     private transient final Pin textPin;
@@ -55,7 +56,7 @@ public class TextStateAction extends StateAction {
         }
 
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
-        AccessibilityNodeInfo searchNode = searchNode(root, Pattern.compile(text));
+        AccessibilityNodeInfo searchNode = searchNode(DisplayUtils.getScreenArea(service), root, Pattern.compile(text));
         if (searchNode == null) value.setValue(false);
         else {
             value.setValue(true);
@@ -72,17 +73,20 @@ public class TextStateAction extends StateAction {
         }
     }
 
-    private AccessibilityNodeInfo searchNode(AccessibilityNodeInfo nodeInfo, Pattern pattern) {
+    private AccessibilityNodeInfo searchNode(Rect screenSize, AccessibilityNodeInfo nodeInfo, Pattern pattern) {
         if (nodeInfo == null) return null;
+        Rect rect = new Rect();
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);
             if (child != null) {
+                child.getBoundsInScreen(rect);
+                if (!Rect.intersects(screenSize, rect)) continue;
                 CharSequence text = child.getText();
                 if (text != null && text.length() > 0) {
                     Matcher matcher = pattern.matcher(text);
                     if (matcher.find()) return child;
                 }
-                AccessibilityNodeInfo node = searchNode(child, pattern);
+                AccessibilityNodeInfo node = searchNode(screenSize, child, pattern);
                 if (node != null) return node;
             }
         }

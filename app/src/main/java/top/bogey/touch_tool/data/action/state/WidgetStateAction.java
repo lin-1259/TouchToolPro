@@ -18,6 +18,7 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
+import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class WidgetStateAction extends StateAction {
     private transient final Pin widgetPin;
@@ -47,7 +48,7 @@ public class WidgetStateAction extends StateAction {
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
 
         PinWidget widget = (PinWidget) getPinValue(runnable, actionContext, widgetPin);
-        AccessibilityNodeInfo node = widget.getNode(root);
+        AccessibilityNodeInfo node = widget.getNode(DisplayUtils.getScreenArea(service), root);
         if (node != null) {
             value.setValue(true);
             PinPoint point = (PinPoint) posPin.getValue();
