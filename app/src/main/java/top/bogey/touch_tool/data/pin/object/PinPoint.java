@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinPoint extends PinValue {
     private int x;
@@ -25,8 +26,8 @@ public class PinPoint extends PinValue {
 
     public PinPoint(JsonObject jsonObject) {
         super(jsonObject);
-        x = jsonObject.get("x").getAsInt();
-        y = jsonObject.get("y").getAsInt();
+        x = GsonUtils.getAsInt(jsonObject, "x", 0);
+        y = GsonUtils.getAsInt(jsonObject, "y", 0);
     }
 
     public int getX(boolean offset) {

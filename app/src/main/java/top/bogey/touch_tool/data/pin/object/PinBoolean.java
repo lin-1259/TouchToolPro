@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinBoolean extends PinValue {
     private boolean value;
@@ -22,7 +23,7 @@ public class PinBoolean extends PinValue {
 
     public PinBoolean(JsonObject jsonObject) {
         super(jsonObject);
-        value = jsonObject.get("value").getAsBoolean();
+        value = GsonUtils.getAsBoolean(jsonObject, "value", false);
     }
 
     @Override

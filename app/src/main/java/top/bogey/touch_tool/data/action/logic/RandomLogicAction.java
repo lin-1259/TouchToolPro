@@ -60,10 +60,10 @@ public class RandomLogicAction extends NormalAction {
             int times = ((PinInteger) getPinValue(runnable, actionContext, timesPin)).getValue();
             times = Math.min(times, pins.size());
             for (int i = 0; i < times; i++) {
+                if (runnable.isInterrupt() || actionContext.isReturned()) return;
                 int round = (int) Math.round(Math.random() * (pins.size() - 1));
                 Pin executePin = pins.get(round);
                 doNextAction(runnable, actionContext, executePin);
-                if (runnable.isInterrupt() || actionContext.isReturned()) return;
                 pins.remove(round);
             }
             doNextAction(runnable, actionContext, completePin);

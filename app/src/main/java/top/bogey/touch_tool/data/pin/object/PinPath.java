@@ -7,25 +7,25 @@ import android.graphics.Point;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 
 public class PinPath extends PinValue {
-    private final ArrayList<TouchPath> paths = new ArrayList<>();
+    private final ArrayList<TouchPath> paths;
     private int screen;
     private FloatGravity gravity;
     private Point offset;
 
     public PinPath() {
         super();
+        paths = new ArrayList<>();
         screen = 1080;
         gravity = FloatGravity.TOP_LEFT;
         offset = new Point();
@@ -33,12 +33,10 @@ public class PinPath extends PinValue {
 
     public PinPath(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = TaskRepository.getInstance().getGson();
-        paths.addAll(gson.fromJson(jsonObject.get("paths"), new TypeToken<ArrayList<TouchPath>>() {
-        }.getType()));
-        screen = jsonObject.get("screen").getAsInt();
-        gravity = FloatGravity.valueOf(jsonObject.get("gravity").getAsString());
-        offset = gson.fromJson(jsonObject.get("offset"), Point.class);
+        paths = GsonUtils.getAsType(jsonObject, "paths", new TypeToken<ArrayList<TouchPath>>() {}.getType(), new ArrayList<>());
+        screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
+        gravity = FloatGravity.valueOf(GsonUtils.getAsString(jsonObject, "gravity", FloatGravity.TOP_LEFT.name()));
+        offset = GsonUtils.getAsClass(jsonObject, "offset", Point.class, new Point());
     }
 
     public ArrayList<Path> getRealPaths(Context context, boolean fixed) {

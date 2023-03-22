@@ -3,10 +3,11 @@ package top.bogey.touch_tool.data.pin.object;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinWidget extends PinValue {
     private String id;
@@ -24,10 +25,8 @@ public class PinWidget extends PinValue {
 
     public PinWidget(JsonObject jsonObject) {
         super(jsonObject);
-        JsonElement idElement = jsonObject.get("id");
-        if (idElement != null) id = idElement.getAsString();
-        JsonElement levelElement = jsonObject.get("level");
-        if (levelElement != null) level = levelElement.getAsString();
+        id = GsonUtils.getAsString(jsonObject, "id", null);
+        level = GsonUtils.getAsString(jsonObject, "level", null);
     }
 
     public AccessibilityNodeInfo getNode(Rect screenSize, AccessibilityNodeInfo root) {

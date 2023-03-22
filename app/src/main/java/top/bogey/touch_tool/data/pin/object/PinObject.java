@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -18,6 +17,7 @@ import java.lang.reflect.Type;
 
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinObject {
     private final String cls;
@@ -27,13 +27,11 @@ public class PinObject {
     }
 
     public PinObject(JsonObject jsonObject) {
-        cls = jsonObject.get("cls").getAsString();
+        cls = GsonUtils.getAsString(jsonObject, "cls", getClass().getName());
     }
 
     public PinObject copy() {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        return gson.fromJson(json, PinObject.class);
+        return GsonUtils.copy(this, PinObject.class);
     }
 
     public void setParamValue(String value) {

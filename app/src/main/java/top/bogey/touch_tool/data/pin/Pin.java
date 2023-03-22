@@ -1,20 +1,16 @@
 package top.bogey.touch_tool.data.pin;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class Pin {
     private String id;
@@ -23,7 +19,7 @@ public class Pin {
 
     private PinDirection direction;
     private PinSlotType slotType;
-    private final PinSubType subType;
+    private PinSubType subType;
 
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
@@ -81,24 +77,21 @@ public class Pin {
     }
 
     public Pin(JsonObject jsonObject) {
-        id = jsonObject.get("id").getAsString();
-        JsonElement element = jsonObject.get("title");
-        if (element != null) title = element.getAsString();
-        else title = null;
-        direction = PinDirection.valueOf(jsonObject.get("direction").getAsString());
-        slotType = PinSlotType.valueOf(jsonObject.get("slotType").getAsString());
-        subType = PinSubType.valueOf(jsonObject.get("subType").getAsString());
-        removeAble = jsonObject.get("removeAble").getAsBoolean();
-        Gson gson = TaskRepository.getInstance().getGson();
-        links.putAll(gson.fromJson(jsonObject.get("links"), new TypeToken<HashMap<String, String>>() {
-        }.getType()));
-        value = gson.fromJson(jsonObject.get("value"), PinObject.class);
+        if (jsonObject == null) return;
+        id = GsonUtils.getAsString(jsonObject, "id", UUID.randomUUID().toString());
+        title = GsonUtils.getAsString(jsonObject, "title", null);
+
+        direction = PinDirection.valueOf(GsonUtils.getAsString(jsonObject, "direction", null));
+        slotType = PinSlotType.valueOf(GsonUtils.getAsString(jsonObject, "slotType", null));
+        subType = PinSubType.valueOf(GsonUtils.getAsString(jsonObject, "subType", null));
+
+        removeAble = GsonUtils.getAsBoolean(jsonObject, "removeAble", false);
+        links.putAll(GsonUtils.getAsType(jsonObject, "links", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
+        value = GsonUtils.getAsClass(jsonObject, "value", PinObject.class, null);
     }
 
     public Pin copy(boolean removeAble) {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        Pin copy = gson.fromJson(json, Pin.class);
+        Pin copy = GsonUtils.copy(this, Pin.class);
         copy.id = UUID.randomUUID().toString();
         copy.removeAble = removeAble;
         return copy;

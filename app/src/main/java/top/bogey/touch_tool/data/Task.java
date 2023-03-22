@@ -2,8 +2,6 @@ package top.bogey.touch_tool.data;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,6 +15,7 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class Task implements ActionContext {
     private String id;
@@ -34,9 +33,7 @@ public class Task implements ActionContext {
     }
 
     public Task copy() {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        return gson.fromJson(json, Task.class);
+        return GsonUtils.copy(this, Task.class);
     }
 
     public ArrayList<StartAction> getStartActions(Class<? extends StartAction> startActionClass) {

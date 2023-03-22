@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinInteger extends PinValue {
     private int value;
@@ -23,7 +24,7 @@ public class PinInteger extends PinValue {
 
     public PinInteger(JsonObject jsonObject) {
         super(jsonObject);
-        value = jsonObject.get("value").getAsInt();
+        value = GsonUtils.getAsInt(jsonObject, "value", 0);
     }
 
     @Override

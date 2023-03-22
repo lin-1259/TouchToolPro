@@ -3,11 +3,10 @@ package top.bogey.touch_tool.data.pin.object;
 import android.content.Context;
 import android.graphics.Rect;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinColor extends PinValue {
     private int screen;
@@ -28,12 +27,11 @@ public class PinColor extends PinValue {
 
     public PinColor(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = TaskRepository.getInstance().getGson();
-        color = gson.fromJson(jsonObject.get("color"), int[].class);
-        screen = jsonObject.get("screen").getAsInt();
-        minSize = jsonObject.get("minSize").getAsInt();
-        maxSize = jsonObject.get("maxSize").getAsInt();
-        area = gson.fromJson(jsonObject.get("area"), Rect.class);
+        color = GsonUtils.getAsClass(jsonObject, "color", int[].class, new int[]{-1, -1, -1});
+        screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
+        minSize = GsonUtils.getAsInt(jsonObject, "minSize", 0);
+        maxSize = GsonUtils.getAsInt(jsonObject, "maxSize", 0);
+        area = GsonUtils.getAsClass(jsonObject, "area", Rect.class, new Rect());
     }
 
     public boolean isValid() {

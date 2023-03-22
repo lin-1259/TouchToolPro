@@ -15,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinImage extends PinValue {
     private transient Bitmap bitmap;
@@ -34,11 +35,9 @@ public class PinImage extends PinValue {
 
     public PinImage(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = TaskRepository.getInstance().getGson();
-        screen = jsonObject.get("screen").getAsInt();
-        JsonElement element = jsonObject.get("image");
-        if (element != null) image = element.getAsString();
-        area = gson.fromJson(jsonObject.get("area"), Rect.class);
+        screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
+        image = GsonUtils.getAsString(jsonObject, "image", null);
+        area = GsonUtils.getAsClass(jsonObject, "area", Rect.class, new Rect());
     }
 
     public Bitmap getBitmap() {

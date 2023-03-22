@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.utils.GsonUtils;
+
 public class PinValueArea extends PinValue {
     private final int valueFrom;
     private final int valueTo;
@@ -34,11 +36,11 @@ public class PinValueArea extends PinValue {
 
     public PinValueArea(JsonObject jsonObject) {
         super(jsonObject);
-        valueFrom = jsonObject.get("valueFrom").getAsInt();
-        valueTo = jsonObject.get("valueTo").getAsInt();
-        step = jsonObject.get("step").getAsInt();
-        currMin = jsonObject.get("currMin").getAsInt();
-        currMax = jsonObject.get("currMax").getAsInt();
+        valueFrom = GsonUtils.getAsInt(jsonObject, "valueFrom", 1);
+        valueTo = GsonUtils.getAsInt(jsonObject, "valueTo", 60000);
+        step = GsonUtils.getAsInt(jsonObject, "step", 1);
+        currMin = GsonUtils.getAsInt(jsonObject, "currMin", 1);
+        currMax = GsonUtils.getAsInt(jsonObject, "currMax", 60000);
     }
 
     public int getRandomValue() {

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -17,10 +16,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class BaseAction {
     private String id;
@@ -62,9 +61,7 @@ public class BaseAction {
     }
 
     public BaseAction copy() {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        BaseAction copy = gson.fromJson(json, BaseAction.class);
+        BaseAction copy = GsonUtils.copy(this, BaseAction.class);
         copy.setId(UUID.randomUUID().toString());
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());

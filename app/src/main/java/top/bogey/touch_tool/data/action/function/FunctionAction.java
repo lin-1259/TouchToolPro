@@ -2,7 +2,6 @@ package top.bogey.touch_tool.data.action.function;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
@@ -20,6 +18,7 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class FunctionAction extends BaseAction {
     private final BaseFunction.FUNCTION_TAG tag;
@@ -43,10 +42,8 @@ public class FunctionAction extends BaseAction {
 
     public FunctionAction(JsonObject jsonObject) {
         super(jsonObject);
-        Gson gson = TaskRepository.getInstance().getGson();
-        tag = BaseFunction.FUNCTION_TAG.valueOf(jsonObject.get("tag").getAsString());
-        pinIdMap.putAll(gson.fromJson(jsonObject.get("pinIdMap"), new TypeToken<HashMap<String, String>>() {
-        }.getType()));
+        tag = BaseFunction.FUNCTION_TAG.valueOf(GsonUtils.getAsString(jsonObject, "tag", BaseFunction.FUNCTION_TAG.START.name()));
+        pinIdMap.putAll(GsonUtils.getAsType(jsonObject, "pinIdMap", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
 
         executePin = super.addPin(tmpPins.remove(0));
         for (Pin pin : tmpPins) {
@@ -56,9 +53,7 @@ public class FunctionAction extends BaseAction {
 
     @Override
     public BaseAction copy() {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        FunctionAction copy = (FunctionAction) gson.fromJson(json, BaseAction.class);
+        FunctionAction copy = (FunctionAction) GsonUtils.copy(this, BaseAction.class);
         copy.setId(UUID.randomUUID().toString());
         copy.getPins().forEach(pin -> {
             // 动作复制需要更新内部索引

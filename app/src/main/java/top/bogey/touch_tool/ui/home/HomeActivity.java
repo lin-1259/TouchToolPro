@@ -38,6 +38,7 @@ import top.bogey.touch_tool.databinding.ActivityHomeBinding;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
@@ -385,14 +386,7 @@ public class HomeActivity extends BaseActivity {
     public void saveTasks(byte[] bytes) {
         if (bytes == null || bytes.length == 0) return;
 
-        ArrayList<Task> tasks = new ArrayList<>();
-        try {
-            tasks = TaskRepository.getInstance().getGson().fromJson(new String(bytes), new TypeToken<ArrayList<Task>>() {
-            }.getType());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        ArrayList<Task> tasks = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<Task>>() {}.getType(), new ArrayList<>());
         if (tasks != null) {
             for (Task task : tasks) {
                 if (TaskRepository.getInstance().getTaskById(task.getId()) != null) {

@@ -3,7 +3,6 @@ package top.bogey.touch_tool.data.action.function;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -19,6 +18,7 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 /* BaseFunction只是一个包装，所有针脚都是重定向到startAction和endAction去执行。
  */
@@ -50,11 +50,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     public BaseFunction(JsonObject jsonObject) {
         super(jsonObject);
-        functionId = jsonObject.get("functionId").getAsString();
-        justCall = jsonObject.get("justCall").getAsBoolean();
+        functionId = GsonUtils.getAsString(jsonObject, "functionId", UUID.randomUUID().toString());
+        justCall = GsonUtils.getAsBoolean(jsonObject, "justCall", false);
 
-        Gson gson = TaskRepository.getInstance().getGson();
-        actions.addAll(gson.fromJson(jsonObject.get("actions"), new TypeToken<HashSet<BaseAction>>() {}.getType()));
+        actions.addAll(GsonUtils.getAsType(jsonObject, "actions", new TypeToken<HashSet<BaseAction>>() {}.getType(), new HashSet<>()));
         for (BaseAction action : actions) {
             if (action instanceof FunctionAction) {
                 FunctionAction function = (FunctionAction) action;
@@ -67,8 +66,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
             }
         }
 
-        JsonElement attrsElement = jsonObject.get("attrs");
-        if (attrsElement != null) attrs.putAll(gson.fromJson(attrsElement, new TypeToken<HashMap<String, PinObject>>() {}.getType()));
+        attrs.putAll(GsonUtils.getAsType(jsonObject, "attrs", new TypeToken<HashMap<String, PinObject>>() {}.getType(), new HashMap<>()));
 
         for (Pin pin : tmpPins) {
             // 不能直接调用自身的添加
@@ -83,9 +81,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     @Override
     public BaseAction copy() {
-        Gson gson = TaskRepository.getInstance().getGson();
-        String json = gson.toJson(this);
-        BaseFunction copy = (BaseFunction) gson.fromJson(json, BaseAction.class);
+        BaseFunction copy = (BaseFunction) GsonUtils.copy(this, BaseAction.class);
         copy.setId(UUID.randomUUID().toString());
 
         copy.getPins().forEach(pin -> {

@@ -29,6 +29,7 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.databinding.ActivityHomeTaskItemBinding;
 import top.bogey.touch_tool.ui.blueprint.TaskBlueprintActivity;
 import top.bogey.touch_tool.utils.AppUtils;
+import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
@@ -249,7 +250,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         String fileName = String.format("%s_%s %s.ttp", name, AppUtils.formatDateLocalDate(context, System.currentTimeMillis()), AppUtils.formatDateLocalTime(context, System.currentTimeMillis()));
 
         try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
-            String json = TaskRepository.getInstance().getGson().toJson(tasks);
+            String json = GsonUtils.gson.toJson(tasks);
             fileOutputStream.write(json.getBytes());
         } catch (IOException e) {
             e.printStackTrace();

@@ -2,9 +2,6 @@ package top.bogey.touch_tool.data;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
@@ -17,7 +14,7 @@ import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.start.StartAction;
-import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 
@@ -31,19 +28,11 @@ public class TaskRepository {
 
     private final static String LOG_DB = "LOG_DB";
     private final static MMKV loggerMMKV = MMKV.mmkvWithID(LOG_DB, MMKV.SINGLE_PROCESS_MODE);
-    private final Gson gson;
 
     private final LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
     private final HashSet<TaskChangedCallback> callbacks = new HashSet<>();
 
     private final LinkedHashMap<String, BaseFunction> functions = new LinkedHashMap<>();
-
-    public TaskRepository() {
-        gson = new GsonBuilder()
-                .registerTypeAdapter(BaseAction.class, new BaseAction.BaseActionDeserialize())
-                .registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer())
-                .create();
-    }
 
     public static TaskRepository getInstance() {
         if (repository == null) {
@@ -99,14 +88,9 @@ public class TaskRepository {
     }
 
     public Task getOriginTaskById(String id) {
-        try {
-            Task task = gson.fromJson(taskMMKV.decodeString(id), Task.class);
-            if (task != null) task.getActions().remove(null);
-            return task;
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Task task = GsonUtils.getAsClass(taskMMKV.decodeString(id), Task.class, null);
+        if (task != null) task.getActions().remove(null);
+        return task;
     }
 
     public ArrayList<Task> getTasksByStart(Class<? extends StartAction> startActionClass) {
@@ -129,10 +113,6 @@ public class TaskRepository {
         return taskArrayList;
     }
 
-    public Gson getGson() {
-        return gson;
-    }
-
     public void addCallback(TaskChangedCallback callback) {
         callbacks.add(callback);
     }
@@ -147,7 +127,7 @@ public class TaskRepository {
             service.replaceWork(task);
         }
 
-        taskMMKV.encode(task.getId(), gson.toJson(task));
+        taskMMKV.encode(task.getId(), GsonUtils.toJson(task));
         Task lastTask = tasks.put(task.getId(), task);
         if (lastTask == null) {
             callbacks.stream().filter(Objects::nonNull).forEach(callback -> callback.onCreated(task));
@@ -169,7 +149,7 @@ public class TaskRepository {
     }
 
     public void saveFunction(BaseFunction function) {
-        functionMMKV.encode(function.getFunctionId(), gson.toJson(function));
+        functionMMKV.encode(function.getFunctionId(), GsonUtils.toJson(function));
         functions.put(function.getFunctionId(), function);
     }
 
@@ -183,14 +163,9 @@ public class TaskRepository {
     }
 
     public BaseFunction getOriginFunctionById(String id) {
-        try {
-            BaseFunction function = (BaseFunction) gson.fromJson(functionMMKV.decodeString(id), BaseAction.class);
-            if (function != null) function.getActions().remove(null);
-            return function;
-        } catch (JsonParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+        BaseFunction function = (BaseFunction) GsonUtils.getAsClass(functionMMKV.decodeString(id), BaseAction.class, null);
+        if (function != null) function.getActions().remove(null);
+        return function;
     }
 
     public LinkedHashMap<String, BaseFunction> getFunctions() {
@@ -211,18 +186,14 @@ public class TaskRepository {
 
     public void addLog(Task task, String action, String log) {
         LogInfo logInfo = new LogInfo(task.getId(), action + ":" + log);
-        loggerMMKV.encode(logInfo.getId(), gson.toJson(logInfo));
+        loggerMMKV.encode(logInfo.getId(), GsonUtils.toJson(logInfo));
     }
 
     public void removeLog(Task task) {
         String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = null;
-                try {
-                    logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
-                } catch (JsonParseException ignored) {
-                }
+                LogInfo logInfo = GsonUtils.getAsClass(loggerMMKV.decodeString(key), LogInfo.class, null);
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
                     loggerMMKV.remove(key);
                 }
@@ -235,11 +206,7 @@ public class TaskRepository {
         String[] keys = loggerMMKV.allKeys();
         if (keys != null) {
             for (String key : keys) {
-                LogInfo logInfo = null;
-                try {
-                    logInfo = gson.fromJson(loggerMMKV.decodeString(key), LogInfo.class);
-                } catch (JsonParseException ignored) {
-                }
+                LogInfo logInfo = GsonUtils.getAsClass(loggerMMKV.decodeString(key), LogInfo.class, null);
                 if (logInfo != null && task.getId().equals(logInfo.getTaskId())) {
                     infoList.add(logInfo);
                 }
