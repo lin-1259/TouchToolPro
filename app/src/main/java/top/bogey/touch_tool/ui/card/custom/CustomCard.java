@@ -14,7 +14,6 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.CardCustomBinding;
@@ -87,8 +86,8 @@ public class CustomCard extends BaseCard<FunctionAction> {
         cardBinding.addPinButton.setOnClickListener(v -> {
             Pin pin;
             // 这个pin是添加到BaseFunction的，所以方向与动作方向一致，与动作内针脚方向相反
-            if (action.getTag().isStart()) pin = new Pin(new PinString(), PinSlotType.SINGLE);
-            else pin = new Pin(new PinString(), PinDirection.OUT, PinSlotType.MULTI);
+            if (action.getTag().isStart()) pin = new Pin(new PinString());
+            else pin = new Pin(new PinString(), PinDirection.OUT);
             baseFunction.addPin(pin);
         });
 
@@ -103,9 +102,8 @@ public class CustomCard extends BaseCard<FunctionAction> {
     }
 
     @Override
-    public void removeMorePinView(PinBaseView<?> pinBaseView) {
-        Pin pin = pinBaseView.getPin();
-        String pinId = ((FunctionAction) action).getPinIdMap().get(pin.getId());
+    public void removeMorePinView(Pin pin) {
+        String pinId = action.getPinIdMap().get(pin.getId());
         ((BaseFunction) actionContext).removePin(((BaseFunction) actionContext).getPinById(pinId));
     }
 

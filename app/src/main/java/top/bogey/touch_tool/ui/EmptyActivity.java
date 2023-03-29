@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
-import top.bogey.touch_tool.ui.home.HomeActivity;
 
 public class EmptyActivity extends BaseActivity {
 
@@ -26,7 +25,7 @@ public class EmptyActivity extends BaseActivity {
         handleIntent(intent);
 
         if (intent == null) {
-            intent = new Intent(this, HomeActivity.class);
+            intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }

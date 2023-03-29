@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -17,19 +16,19 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class LogAction extends NormalAction {
-    private transient final Pin textPin;
-    private transient final Pin toastPin;
+    private transient Pin textPin = new Pin(new PinString(), R.string.action_log_action_subtitle_tips);
+    private transient Pin toastPin = new Pin(new PinBoolean(true), R.string.action_log_action_subtitle_toast);
 
-    public LogAction(Context context) {
-        super(context, R.string.action_log_action_title);
-        textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_log_action_subtitle_tips)));
-        toastPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_log_action_subtitle_toast)));
+    public LogAction() {
+        super(R.string.action_log_action_title);
+        textPin = addPin(textPin);
+        toastPin = addPin(toastPin);
     }
 
     public LogAction(JsonObject jsonObject) {
-        super(jsonObject);
-        textPin = addPin(tmpPins.remove(0));
-        toastPin = addPin(tmpPins.remove(0));
+        super(R.string.action_log_action_title, jsonObject);
+        textPin = reAddPin(textPin);
+        toastPin = reAddPin(toastPin);
     }
 
     @Override
@@ -39,7 +38,7 @@ public class LogAction extends NormalAction {
         Log.d("TAG", "LogAction: " + pinString.getValue());
 
         MainAccessibilityService service = MainApplication.getInstance().getService();
-        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(), pinString.getValue());
+        TaskRepository.getInstance().addLog(runnable.getTask(), runnable.getStartAction().getTitle(service), pinString.getValue());
 
         PinBoolean showToast = (PinBoolean) getPinValue(runnable, actionContext, toastPin);
         if (showToast.getValue()) {

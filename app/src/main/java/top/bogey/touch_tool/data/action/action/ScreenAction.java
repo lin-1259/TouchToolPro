@@ -1,7 +1,6 @@
 package top.bogey.touch_tool.data.action.action;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.Context;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -18,16 +17,16 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class ScreenAction extends NormalAction {
-    private transient final Pin screenPin;
+    private transient Pin screenPin = new Pin(new PinBoolean(true), R.string.action_screen_action_subtitle_state);
 
-    public ScreenAction(Context context) {
-        super(context, R.string.action_screen_action_title);
-        screenPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_screen_action_subtitle_state)));
+    public ScreenAction() {
+        super(R.string.action_screen_action_title);
+        screenPin = addPin(screenPin);
     }
 
     public ScreenAction(JsonObject jsonObject) {
-        super(jsonObject);
-        screenPin = addPin(tmpPins.remove(0));
+        super(R.string.action_screen_action_title, jsonObject);
+        screenPin = reAddPin(screenPin);
     }
 
     @Override

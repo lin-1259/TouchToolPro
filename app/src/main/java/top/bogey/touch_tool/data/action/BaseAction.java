@@ -9,6 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -19,11 +20,12 @@ import java.util.UUID;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class BaseAction {
-    private String id;
     private final String cls;
+    private String id;
     private String title;
     private String des;
 
@@ -31,38 +33,40 @@ public class BaseAction {
 
     public int x;
     public int y;
+    public boolean showDetail = true;
 
-    protected transient final ArrayList<Pin> tmpPins = new ArrayList<>();
+    private transient int titleId;
+    protected final transient ArrayList<Pin> pinsTmp = new ArrayList<>();
 
-    public BaseAction(Context context) {
-        this(context, 0);
+    public BaseAction() {
+        this(0);
     }
 
-    public BaseAction(Context context, @StringRes int titleId) {
+    public BaseAction(@StringRes int titleId) {
         id = UUID.randomUUID().toString();
         cls = getClass().getName();
-        if (titleId == 0) title = null;
-        else title = context.getString(titleId);
+
+        this.titleId = titleId;
     }
 
-    public BaseAction(JsonObject jsonObject) {
-        cls = getClass().getName();
-        id = jsonObject.get("id").getAsString();
-        JsonElement titleElement = jsonObject.get("title");
-        if (titleElement != null) title = titleElement.getAsString();
-        JsonElement desElement = jsonObject.get("des");
-        if (desElement != null) des = desElement.getAsString();
-        x = jsonObject.get("x").getAsInt();
-        y = jsonObject.get("y").getAsInt();
-        for (JsonElement jsonElement : jsonObject.get("pins").getAsJsonArray()) {
-            Pin pin = new Pin(jsonElement.getAsJsonObject());
-            tmpPins.add(pin);
-        }
+    public BaseAction(@StringRes int titleId, JsonObject jsonObject) {
+        cls = GsonUtils.getAsString(jsonObject, "cls", getClass().getName());
+        id = GsonUtils.getAsString(jsonObject, "id", UUID.randomUUID().toString());
+        des = GsonUtils.getAsString(jsonObject, "des", null);
+
+        x = GsonUtils.getAsInt(jsonObject, "x", 0);
+        y = GsonUtils.getAsInt(jsonObject, "y", 0);
+        showDetail = GsonUtils.getAsBoolean(jsonObject, "showDetail", true);
+
+        this.titleId = titleId;
+        pinsTmp.addAll(GsonUtils.getAsType(jsonObject, "pins", new TypeToken<ArrayList<Pin>>() {}.getType(), new ArrayList<>()));
     }
 
     public BaseAction copy() {
         BaseAction copy = GsonUtils.copy(this, BaseAction.class);
+
         copy.setId(UUID.randomUUID().toString());
+        copy.titleId = titleId;
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());
             pin.setActionId(copy.getId());
@@ -70,6 +74,7 @@ public class BaseAction {
         });
         copy.x = x + 1;
         copy.y = y + 1;
+
         return copy;
     }
 
@@ -134,6 +139,38 @@ public class BaseAction {
         return pin;
     }
 
+    public Pin reAddPin(Pin defaultValue) {
+        Pin pin = null;
+        if (pinsTmp.size() > 0) {
+            Pin tmp = pinsTmp.get(0);
+            if (tmp.getPinClass().equals(defaultValue.getPinClass())) {
+                pin = pinsTmp.remove(0);
+            }
+        }
+        if (pin == null) {
+            return addPin(defaultValue);
+        } else {
+            addPin(pins.size(), pin);
+            pin.setTitleId(defaultValue.getTitleId());
+
+            if (defaultValue.getValue() instanceof PinSpinner) {
+                PinSpinner spinner = (PinSpinner) pin.getValue();
+                PinSpinner defaultSpinner = (PinSpinner) defaultValue.getValue();
+                spinner.setArray(defaultSpinner.getArray());
+            }
+
+            return pin;
+        }
+    }
+
+    public void reAddPin(Pin defaultValue, int lastCount) {
+        int count = 0;
+        while (pinsTmp.size() > lastCount && count < 50) {
+            reAddPin(defaultValue);
+            count++;
+        }
+    }
+
     public Pin removePin(Pin pin) {
         if (pin == null) return null;
         for (Pin oldPin : pins) {
@@ -152,16 +189,17 @@ public class BaseAction {
         return null;
     }
 
-    public ArrayList<Pin> getShowPins() {
-        return new ArrayList<>(pins);
-    }
-
-    public String getTitle() {
-        return title;
+    public String getTitle(Context context) {
+        if (titleId == 0) return title;
+        return context.getString(titleId);
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public void setTitleId(int titleId) {
+        this.titleId = titleId;
     }
 
     public String getId() {
@@ -182,6 +220,10 @@ public class BaseAction {
 
     public ArrayList<Pin> getPins() {
         return pins;
+    }
+
+    public ArrayList<Pin> getShowPins() {
+        return new ArrayList<>(pins);
     }
 
     public static class BaseActionDeserialize implements JsonDeserializer<BaseAction> {

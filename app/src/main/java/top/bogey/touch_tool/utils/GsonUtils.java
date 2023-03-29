@@ -8,12 +8,16 @@ import com.google.gson.JsonObject;
 import java.lang.reflect.Type;
 
 import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
+import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 
 public class GsonUtils {
 
     public static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(BaseFunction.class, new BaseAction.BaseActionDeserialize())
             .registerTypeAdapter(BaseAction.class, new BaseAction.BaseActionDeserialize())
+            .registerTypeAdapter(Pin.class, new Pin.PinDeserialize())
             .registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer())
             .create();
 

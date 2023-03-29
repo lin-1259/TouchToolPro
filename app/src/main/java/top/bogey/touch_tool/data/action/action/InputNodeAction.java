@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -19,32 +18,28 @@ import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class InputNodeAction extends NormalAction {
-    private transient final Pin nodePin;
-    private transient final Pin contentPin;
-    private transient final Pin appendPin;
-    private transient final Pin falsePin;
-    private transient final Pin enterPin;
+    private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info);
+    private transient Pin contentPin = new Pin(new PinString(), R.string.action_input_node_action_subtitle_content);
+    private transient Pin appendPin = new Pin(new PinBoolean(false), R.string.action_input_node_action_subtitle_append);
+    private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, PinDirection.OUT);
+    private transient Pin enterPin = new Pin(new PinBoolean(false), R.string.action_input_node_action_subtitle_enter);
 
-    public InputNodeAction(Context context) {
-        super(context, R.string.action_input_node_action_title);
-        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info)));
-        contentPin = addPin(new Pin(new PinString(), context.getString(R.string.action_input_node_action_subtitle_content)));
-        appendPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_input_node_action_subtitle_append)));
-        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
-        enterPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_input_node_action_subtitle_enter)));
+    public InputNodeAction() {
+        super(R.string.action_input_node_action_title);
+        nodePin = addPin(nodePin);
+        contentPin = addPin(contentPin);
+        appendPin = addPin(appendPin);
+        falsePin = addPin(falsePin);
+        enterPin = addPin(enterPin);
     }
 
     public InputNodeAction(JsonObject jsonObject) {
-        super(jsonObject);
-        nodePin = addPin(tmpPins.remove(0));
-        contentPin = addPin(tmpPins.remove(0));
-        appendPin = addPin(tmpPins.remove(0));
-        if (tmpPins.size() > 0) {
-            falsePin = addPin(tmpPins.remove(0));
-        } else falsePin = null;
-        if (tmpPins.size() > 0) {
-            enterPin = addPin(tmpPins.remove(0));
-        } else enterPin = null;
+        super(R.string.action_input_node_action_title, jsonObject);
+        nodePin = reAddPin(nodePin);
+        contentPin = reAddPin(contentPin);
+        appendPin = reAddPin(appendPin);
+        falsePin = reAddPin(falsePin);
+        enterPin = reAddPin(enterPin);
     }
 
     @Override

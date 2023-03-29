@@ -23,4 +23,9 @@ public class PinTopView extends PinBaseView<PinTopBinding> {
         location[0] += (pinSlot.getWidth() * scale / 2);
         return location;
     }
+
+    @Override
+    public void setValueView() {
+
+    }
 }

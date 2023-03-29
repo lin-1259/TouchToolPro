@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action;
 
-import android.content.Context;
-
 import androidx.annotation.StringRes;
 
 import com.google.gson.JsonObject;
@@ -10,12 +8,12 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.pin.Pin;
 
 public class CalculateAction extends BaseAction {
-    public CalculateAction(Context context, @StringRes int titleId) {
-        super(context, titleId);
+    public CalculateAction(@StringRes int titleId) {
+        super(titleId);
     }
 
-    public CalculateAction(JsonObject jsonObject) {
-        super(jsonObject);
+    public CalculateAction(@StringRes int titleId, JsonObject jsonObject) {
+        super(titleId, jsonObject);
     }
 
     @Override

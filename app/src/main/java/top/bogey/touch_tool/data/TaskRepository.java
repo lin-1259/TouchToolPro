@@ -168,8 +168,8 @@ public class TaskRepository {
         return function;
     }
 
-    public LinkedHashMap<String, BaseFunction> getFunctions() {
-        return functions;
+    public ArrayList<BaseFunction> getFunctions() {
+        return new ArrayList<>(functions.values());
     }
 
     public void removeTag(String tag) {

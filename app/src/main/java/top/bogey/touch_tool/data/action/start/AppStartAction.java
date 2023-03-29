@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -19,26 +17,22 @@ import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStartAction extends StartAction {
-    private transient final Pin appPin;
-    private transient final Pin breakPin;
+    private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE));
+    private transient Pin breakPin = new Pin(new PinBoolean(true), R.string.action_app_start_subtitle_break);
 
     private transient String currPackage;
     private transient String currActivity;
 
-    public AppStartAction(Context context) {
-        super(context, R.string.action_app_start_title);
-        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
-        breakPin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_app_start_subtitle_break)));
+    public AppStartAction() {
+        super(R.string.action_app_start_title);
+        appPin = addPin(appPin);
+        breakPin = addPin(breakPin);
     }
 
     public AppStartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        appPin = addPin(tmpPins.remove(0));
-        if (tmpPins.size() > 0) {
-            breakPin = addPin(tmpPins.remove(0));
-        } else {
-            breakPin = null;
-        }
+        super(R.string.action_app_start_title, jsonObject);
+        appPin = reAddPin(appPin);
+        breakPin = reAddPin(breakPin);
     }
 
     @Override

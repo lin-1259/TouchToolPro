@@ -33,6 +33,13 @@
     <string name="capture_service_notification_title">录屏服务 正在运行</string>
     <string name="capture_service_notification_text">点按即可关闭服务和通知</string>
 
+
+
+    <string name="home">主页</string>
+    <string name="task">任务</string>
+    <string name="blueprint">蓝图</string>
+    <string name="setting">设置</string>
+
     <!-- 主页 -->
     <string name="accessibility_service_on">无障碍服务已开启</string>
     <string name="accessibility_service_off">无障碍服务已关闭</string>
@@ -57,15 +64,18 @@
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
 
-    <string name="setting">设置</string>
+    <string name="lock_background">稳定后台</string>
+    <string name="open_auto_start">去开启自启动</string>
+    <string name="auto_start_tips">本应用需要长时间在后台驻留，而一些系统会很激进的杀死在后台运行的任务，如果应用被授予自启动权限，相当于加入的系统白名单，就不会那么容易被系统杀死了。</string>
+    <string name="goto_lock_background">去锁定后台</string>
+    <string name="lock_background_tips">锁定后台使本应用在后台稳定运行，也可以防止清理后台任务时意外中止本应用。</string>
+
+    <string name="tutorial">教程</string>
+    <string name="goto_tutorial">查看教程</string>
+    <string name="tutorial_tips">当你不知道怎么使用本应用的时候，请点击这里查看教程。</string>
+
     <string name="import_task">导入任务</string>
 
-    <string name="open_auto_start_app">去开启自启动</string>
-    <string name="goto_lock_on_background">去锁定后台</string>
-    <string name="goto_tutorial">查看教程</string>
-    <string name="open_pop_on_background">后台弹出界面权限</string>
-
-    <string name="tag_all">全部</string>
     <string name="tag_no">未分类</string>
     <string name="tag_add">添加新的分类</string>
 
@@ -80,7 +90,8 @@
     <string name="task_add">添加任务</string>
     <string name="task_change_title">修改标题</string>
 
-    <string name="function_title">自定义卡片</string>
+    <string name="function_title_common">通用自定义卡片</string>
+    <string name="function_title">任务内自定义卡片</string>
     <string name="function_add">添加自定义卡片</string>
     <string name="function_start">自定义开始</string>
     <string name="function_end">自定义结束</string>
@@ -88,7 +99,8 @@
     <string name="function_just_call">仅获取状态</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
-    <string name="attribute_title">变量</string>
+    <string name="attribute_title">任务内变量</string>
+    <string name="attribute_title_function">卡片内变量</string>
     <string name="attribute_hint">变量名</string>
     <string name="attribute_add">添加变量</string>
     <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>

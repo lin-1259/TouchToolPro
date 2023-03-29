@@ -28,7 +28,6 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinValue;
@@ -67,7 +66,7 @@ public class CardLayoutView extends FrameLayout {
     private float offsetX = 0;
     private float offsetY = 0;
 
-    private float scale = 1f;
+    private float scale = 0.9f;
     private final ScaleGestureDetector detector;
 
     private boolean editMode = true;
@@ -106,7 +105,7 @@ public class CardLayoutView extends FrameLayout {
             public boolean onScale(@NonNull ScaleGestureDetector detector) {
                 float oldScale = scale;
                 scale *= detector.getScaleFactor();
-                scale = Math.max(0.5f, Math.min(scale, 1.5f));
+                scale = Math.max(0.3f, Math.min(scale, 1.5f));
 
                 // 设置居中缩放偏移
                 float v = 1 - scale / oldScale;
@@ -139,6 +138,9 @@ public class CardLayoutView extends FrameLayout {
 
     public void setActionContext(ActionContext actionContext) {
         this.actionContext = actionContext;
+        offsetX = 0;
+        offsetY = 0;
+        scale = 0.9f;
         cardMap.clear();
         removeAllViews();
         for (BaseAction action : actionContext.getActions()) {
@@ -159,25 +161,25 @@ public class CardLayoutView extends FrameLayout {
 
     public void addAction(Class<?> actionClass) {
         try {
-            Constructor<?> constructor = actionClass.getConstructor(Context.class);
-            BaseAction action = (BaseAction) constructor.newInstance(getContext());
+            Constructor<?> constructor = actionClass.getConstructor();
+            BaseAction action = (BaseAction) constructor.newInstance();
             action.x = (int) (-offsetX / getScaleGridSize()) + 1;
             action.y = (int) (-offsetY / getScaleGridSize()) + 1;
             addAction(action);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
     public void addAction(Class<?> actionClass, String key, PinObject value) {
         try {
-            Constructor<?> constructor = actionClass.getConstructor(Context.class, String.class, PinObject.class);
-            BaseAction action = (BaseAction) constructor.newInstance(getContext(), key, value);
+            Constructor<?> constructor = actionClass.getConstructor(String.class, PinObject.class);
+            BaseAction action = (BaseAction) constructor.newInstance(key, value);
             action.x = (int) (-offsetX / getScaleGridSize()) + 1;
             action.y = (int) (-offsetY / getScaleGridSize()) + 1;
             addAction(action);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -298,22 +300,13 @@ public class CardLayoutView extends FrameLayout {
         int[] inLocation = inPin.getSlotLocationOnScreen(scale);
         float scaleGridSize = getScaleGridSize();
 
-        // 执行是上下的
-        if (outPin.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
             float offset = inLocation[1] - outLocation[1];
             offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
             float y1 = outLocation[1] + offset;
             float y2 = inLocation[1] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
-        } else {
-            float offset = inLocation[0] - outLocation[0];
-            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
-            float x1 = outLocation[0] + offset;
-            float x2 = inLocation[0] - offset;
-            path.moveTo(outLocation[0], outLocation[1]);
-            path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
-        }
+
         path.offset(-location[0] - getX(), -location[1] - getY());
 
         return path;
@@ -334,22 +327,13 @@ public class CardLayoutView extends FrameLayout {
         }
 
         float scaleGridSize = getScaleGridSize();
-        // 执行是上下的
-        if (pinBaseView.getPin().getPinClass().isAssignableFrom(PinExecute.class)) {
             float offset = inLocation[1] - outLocation[1];
             offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
             float y1 = outLocation[1] + offset;
             float y2 = inLocation[1] - offset;
             path.moveTo(outLocation[0], outLocation[1]);
             path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
-        } else {
-            float offset = inLocation[0] - outLocation[0];
-            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
-            float x1 = outLocation[0] + offset;
-            float x2 = inLocation[0] - offset;
-            path.moveTo(outLocation[0], outLocation[1]);
-            path.cubicTo(x1, outLocation[1], x2, inLocation[1], inLocation[0], inLocation[1]);
-        }
+
         path.offset(-location[0] - getX(), -location[1] - getY());
         return path;
     }
@@ -378,21 +362,19 @@ public class CardLayoutView extends FrameLayout {
                         PinBaseView<?> pinBaseView = card.getPinByPosition(rawX, rawY);
                         if (pinBaseView != null) {
                             Pin pin = pinBaseView.getPin();
-                            if (pin.getSlotType() != PinSlotType.EMPTY) {
-                                dragState = DRAG_PIN;
-                                HashMap<String, String> links = pin.getLinks();
-                                // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
-                                if (links.size() == 0 || (pin.getSlotType() == PinSlotType.MULTI && pin.getDirection().isOut())) {
-                                    dragLinks.put(pin.getId(), pin.getActionId());
-                                    // 目标方向与自身相反
-                                    dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
-                                    dragPin = pinBaseView;
-                                } else {
-                                    // 否则就是挪线
-                                    dragLinks.putAll(links);
-                                    dragDirection = pin.getDirection();
-                                    pinRemoveLinks(pinBaseView);
-                                }
+                            dragState = DRAG_PIN;
+                            HashMap<String, String> links = pin.getLinks();
+                            // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
+                            if (links.size() == 0 || (!pin.isSingle() && pin.getDirection().isOut())) {
+                                dragLinks.put(pin.getId(), pin.getActionId());
+                                // 目标方向与自身相反
+                                dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
+                                dragPin = pinBaseView;
+                            } else {
+                                // 否则就是挪线
+                                dragLinks.putAll(links);
+                                dragDirection = pin.getDirection();
+                                pinRemoveLinks(pinBaseView);
                             }
                         }
                         dragX = rawX;
@@ -501,7 +483,7 @@ public class CardLayoutView extends FrameLayout {
         pin.removeLinks(actionContext);
     }
 
-    public void refreshValueActionPins(BaseAction action) {
+    public void refreshActionPins(BaseAction action) {
         BaseCard<?> baseCard = cardMap.get(action.getId());
         if (baseCard == null) return;
         for (Pin pin : action.getPins()) {

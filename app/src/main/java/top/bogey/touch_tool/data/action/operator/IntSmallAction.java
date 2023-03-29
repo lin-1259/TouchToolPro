@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.operator;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -13,12 +11,12 @@ import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class IntSmallAction extends IntEqualAction {
 
-    public IntSmallAction(Context context) {
-        super(context, R.string.action_int_small_operator_title);
+    public IntSmallAction() {
+        super(R.string.action_int_small_operator_title);
     }
 
     public IntSmallAction(JsonObject jsonObject) {
-        super(jsonObject);
+        super(R.string.action_int_small_operator_title, jsonObject);
     }
 
     @Override

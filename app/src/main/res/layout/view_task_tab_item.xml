@@ -24,7 +24,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/deleteButton"
-            style="@style/Theme.TouchTool.IconButton.Outlined"
+            style="@style/Theme.TouchTool.IconButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"

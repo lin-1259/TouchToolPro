@@ -21,14 +21,14 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:singleLine="true"
-            android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/addButton"
             style="@style/Theme.TouchTool.IconButton.Filled"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:icon="@drawable/icon_add" />
 
     </LinearLayout>

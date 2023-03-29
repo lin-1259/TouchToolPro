@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -18,16 +16,16 @@ import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class ManualStartAction extends StartAction {
-    private transient final Pin appPin;
+    private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_MODE));
 
-    public ManualStartAction(Context context) {
-        super(context, R.string.action_manual_start_title);
-        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_MODE)));
+    public ManualStartAction() {
+        super(R.string.action_manual_start_title);
+        appPin = addPin(appPin);
     }
 
     public ManualStartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        appPin = addPin(tmpPins.remove(0));
+        super(R.string.action_manual_start_title, jsonObject);
+        appPin = reAddPin(appPin);
     }
 
     @Override

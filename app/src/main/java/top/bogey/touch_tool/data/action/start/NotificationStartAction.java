@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -20,19 +18,19 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class NotificationStartAction extends StartAction {
-    private transient final Pin appPin;
-    private transient final Pin textPin;
+    private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_MODE));
+    private transient Pin textPin = new Pin(new PinString(), R.string.action_notification_start_subtitle_text);
 
-    public NotificationStartAction(Context context) {
-        super(context, R.string.action_notification_start_title);
-        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_MODE)));
-        textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_notification_start_subtitle_text)));
+    public NotificationStartAction() {
+        super(R.string.action_notification_start_title);
+        appPin = addPin(appPin);
+        textPin = addPin(textPin);
     }
 
     public NotificationStartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        appPin = addPin(tmpPins.remove(0));
-        textPin = addPin(tmpPins.remove(0));
+        super(R.string.action_notification_start_title, jsonObject);
+        appPin = reAddPin(appPin);
+        textPin = reAddPin(textPin);
     }
 
     @Override

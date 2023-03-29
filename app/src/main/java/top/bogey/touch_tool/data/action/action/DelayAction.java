@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -12,16 +10,16 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class DelayAction extends NormalAction {
-    private transient final Pin delayPin;
+    private transient Pin delayPin = new Pin(new PinValueArea(100, 60000, 100, 300, 300));
 
-    public DelayAction(Context context) {
-        super(context, R.string.action_delay_action_title);
-        delayPin = addPin(new Pin(new PinValueArea(100, 60000, 100, 300, 300)));
+    public DelayAction() {
+        super(R.string.action_delay_action_title);
+        delayPin = addPin(delayPin);
     }
 
     public DelayAction(JsonObject jsonObject) {
-        super(jsonObject);
-        delayPin = addPin(tmpPins.remove(0));
+        super(R.string.action_delay_action_title, jsonObject);
+        delayPin = reAddPin(delayPin);
     }
 
     @Override

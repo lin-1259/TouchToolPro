@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.logic;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -10,34 +8,34 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.NormalAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class ForLoopLogicAction extends NormalAction {
-    private transient final Pin startPin;
-    private transient final Pin endPin;
-    private transient final Pin currentPin;
-    private transient final Pin completePin;
+    private transient Pin startPin = new Pin(new PinInteger(1), R.string.action_for_loop_logic_subtitle_start);
+    private transient Pin endPin = new Pin(new PinInteger(5), R.string.action_for_loop_logic_subtitle_end);
+    private transient Pin currentPin = new Pin(new PinInteger(), R.string.action_for_loop_logic_subtitle_curr, PinDirection.OUT);
+    private transient Pin completePin = new Pin(new PinExecute(), R.string.action_for_loop_logic_subtitle_complete, PinDirection.OUT);
+    private transient Pin breakPin = new Pin(new PinExecute(), R.string.action_for_loop_logic_subtitle_break);
 
     private transient boolean needBreak = false;
 
-    public ForLoopLogicAction(Context context) {
-        super(context, R.string.action_for_loop_logic_title);
-        startPin = addPin(new Pin(new PinInteger(1), context.getString(R.string.action_for_loop_logic_subtitle_start)));
-        endPin = addPin(new Pin(new PinInteger(5), context.getString(R.string.action_for_loop_logic_subtitle_end)));
-        currentPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_for_loop_logic_subtitle_curr), PinDirection.OUT, PinSlotType.MULTI));
-        completePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_complete), PinDirection.OUT));
-        addPin(new Pin(new PinExecute(), context.getString(R.string.action_for_loop_logic_subtitle_break)));
+    public ForLoopLogicAction() {
+        super(R.string.action_for_loop_logic_title);
+        startPin = addPin(startPin);
+        endPin = addPin(endPin);
+        currentPin = addPin(currentPin);
+        completePin = addPin(completePin);
+        breakPin = addPin(breakPin);
     }
 
     public ForLoopLogicAction(JsonObject jsonObject) {
-        super(jsonObject);
-        startPin = addPin(tmpPins.remove(0));
-        endPin = addPin(tmpPins.remove(0));
-        currentPin = addPin(tmpPins.remove(0));
-        completePin = addPin(tmpPins.remove(0));
-        addPin(tmpPins.remove(0));
+        super(R.string.action_for_loop_logic_title, jsonObject);
+        startPin = reAddPin(startPin);
+        endPin = reAddPin(endPin);
+        currentPin = reAddPin(currentPin);
+        completePin = reAddPin(completePin);
+        breakPin = reAddPin(breakPin);
     }
 
     @Override

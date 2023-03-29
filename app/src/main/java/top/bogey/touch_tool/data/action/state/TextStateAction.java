@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -16,7 +15,6 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
@@ -24,24 +22,22 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class TextStateAction extends StateAction {
-    private transient final Pin textPin;
-    private transient final Pin posPin;
-    private transient final Pin nodePin;
+    private transient Pin textPin = new Pin(new PinString(), R.string.action_text_state_subtitle_text);
+    private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
+    private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info, PinDirection.OUT);
 
-    public TextStateAction(Context context) {
-        super(context, R.string.action_text_state_title);
-        textPin = addPin(new Pin(new PinString(), context.getString(R.string.action_text_state_subtitle_text)));
-        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
-        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info), PinDirection.OUT, PinSlotType.MULTI));
+    public TextStateAction() {
+        super(R.string.action_text_state_title);
+        textPin = addPin(textPin);
+        posPin = addPin(posPin);
+        nodePin = addPin(nodePin);
     }
 
     public TextStateAction(JsonObject jsonObject) {
-        super(jsonObject);
-        textPin = addPin(tmpPins.remove(0));
-        posPin = addPin(tmpPins.remove(0));
-        if (tmpPins.size() != 0) {
-            nodePin = addPin(tmpPins.remove(0));
-        } else nodePin = null;
+        super(R.string.action_text_state_title, jsonObject);
+        textPin = reAddPin(textPin);
+        posPin = reAddPin(posPin);
+        nodePin = reAddPin(nodePin);
     }
 
     @Override

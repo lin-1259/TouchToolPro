@@ -77,7 +77,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         }
         if (pin == null) return;
 
-        pin.setListener(new Pin.LinkListener() {
+        pin.addListener(new Pin.LinkListener() {
             @Override
             public void onAdded(Pin pin) {
                 post(() -> refreshPinUI());
@@ -87,6 +87,11 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
             public void onRemoved(Pin pin) {
                 post(() -> refreshPinUI());
             }
+
+            @Override
+            public void onChanged() {
+                post(() -> setValueView());
+            }
         });
 
         pinSlot.setCardBackgroundColor(getPinColor());
@@ -94,7 +99,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
 
         refreshPinUI();
         removeButton.setVisibility(pin.isRemoveAble() ? VISIBLE : GONE);
-        removeButton.setOnClickListener(v -> card.removeMorePinView(this));
+        removeButton.setOnClickListener(v -> card.removeMorePinView(pin));
 
         setValueView();
     }
@@ -151,8 +156,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
         boolean linked = pin.getLinks().size() > 0;
         boolean hidePinBox = linked || pin.getDirection().isOut();
         pinBox.setVisibility(hidePinBox ? GONE : VISIBLE);
-        if (pin.getTitle() != null) titleText.setText(String.format(hidePinBox ? "%s" : "%s:", pin.getTitle()));
-        else titleText.setVisibility(GONE);
+        titleText.setText(pin.getTitle(getContext()));
 
         pinSlot.setStrokeColor(getPinColor());
         pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
@@ -162,7 +166,7 @@ public class PinBaseView<V extends ViewBinding> extends BindingView<V> {
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        pin.setListener(null);
+        pin.addListener(null);
     }
 
     public int[] getSlotLocationOnScreen(float scale) {

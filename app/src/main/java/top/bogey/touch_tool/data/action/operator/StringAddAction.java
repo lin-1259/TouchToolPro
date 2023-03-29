@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.operator;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -12,31 +10,31 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinString;
 
 public class StringAddAction extends CalculateAction {
-    private transient final Pin outValuePin;
-    private transient final Pin firstPin;
+    private transient Pin outValuePin = new Pin(new PinString(), PinDirection.OUT);
+    private transient Pin firstPin = new Pin(new PinString());
+    private transient Pin secondPin = new Pin(new PinString());
+    private final transient Pin executePin = new Pin(new PinString());
+    private transient Pin addPin = new Pin(new PinAdd(executePin), R.string.action_subtitle_add_pin);
 
-    public StringAddAction(Context context) {
-        super(context, R.string.action_string_add_operator_title);
-        outValuePin = addPin(new Pin(new PinString(), PinDirection.OUT, PinSlotType.MULTI));
-        firstPin = addPin(new Pin(new PinString()));
-        addPin(new Pin(new PinString()));
-        Pin executePin = new Pin(new PinString());
-        addPin(new Pin(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
+    public StringAddAction() {
+        super(R.string.action_string_add_operator_title);
+        outValuePin = addPin(outValuePin);
+        firstPin = addPin(firstPin);
+        secondPin = addPin(secondPin);
+        addPin = addPin(addPin);
     }
 
     public StringAddAction(JsonObject jsonObject) {
-        super(jsonObject);
-        outValuePin = addPin(tmpPins.remove(0));
-        firstPin = addPin(tmpPins.remove(0));
-        for (Pin pin : tmpPins) {
-            addPin(pin);
-        }
-        tmpPins.clear();
+        super(R.string.action_string_add_operator_title, jsonObject);
+        outValuePin = reAddPin(outValuePin);
+        firstPin = reAddPin(firstPin);
+        secondPin = reAddPin(secondPin);
+        reAddPin(executePin, 1);
+        addPin = reAddPin(addPin);
     }
 
     @Override

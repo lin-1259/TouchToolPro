@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -15,16 +13,16 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class OpenUrlAction extends NormalAction {
-    private transient final Pin urlPin;
+    private transient Pin urlPin = new Pin(new PinString(), R.string.action_open_url_action_subtitle_url);
 
-    public OpenUrlAction(Context context) {
-        super(context, R.string.action_open_url_action_title);
-        urlPin = addPin(new Pin(new PinString(), context.getString(R.string.action_open_url_action_subtitle_url)));
+    public OpenUrlAction() {
+        super(R.string.action_open_url_action_title);
+        urlPin = addPin(urlPin);
     }
 
     public OpenUrlAction(JsonObject jsonObject) {
-        super(jsonObject);
-        urlPin = addPin(tmpPins.remove(0));
+        super(R.string.action_open_url_action_title, jsonObject);
+        urlPin = reAddPin(urlPin);
     }
 
     @Override

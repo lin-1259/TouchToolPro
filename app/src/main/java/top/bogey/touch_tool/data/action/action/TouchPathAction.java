@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -16,22 +14,22 @@ import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class TouchPathAction extends NormalAction {
-    private transient final Pin pathPin;
-    private transient final Pin timePin;
-    private transient final Pin offsetPin;
+    private transient Pin pathPin = new Pin(new PinPath(), R.string.action_touch_path_action_subtitle_path);
+    private transient Pin timePin = new Pin(new PinValueArea(100, 60000, 100, 300, 300), R.string.action_touch_path_action_subtitle_time);
+    private transient Pin offsetPin = new Pin(new PinBoolean(), R.string.action_touch_path_action_subtitle_offset);
 
-    public TouchPathAction(Context context) {
-        super(context, R.string.action_touch_path_action_title);
-        pathPin = addPin(new Pin(new PinPath(), context.getString(R.string.action_touch_path_action_subtitle_path)));
-        timePin = addPin(new Pin(new PinValueArea(100, 60000, 100, 300, 300), context.getString(R.string.action_touch_path_action_subtitle_time)));
-        offsetPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_touch_path_action_subtitle_offset)));
+    public TouchPathAction() {
+        super(R.string.action_touch_path_action_title);
+        pathPin = addPin(pathPin);
+        timePin = addPin(timePin);
+        offsetPin = addPin(offsetPin);
     }
 
     public TouchPathAction(JsonObject jsonObject) {
-        super(jsonObject);
-        pathPin = addPin(tmpPins.remove(0));
-        timePin = addPin(tmpPins.remove(0));
-        offsetPin = addPin(tmpPins.remove(0));
+        super(R.string.action_touch_path_action_title, jsonObject);
+        pathPin = reAddPin(pathPin);
+        timePin = reAddPin(timePin);
+        offsetPin = reAddPin(offsetPin);
     }
 
     @Override

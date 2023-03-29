@@ -1,14 +1,26 @@
 package top.bogey.touch_tool.data.pin;
 
+import android.content.Context;
+
+import androidx.annotation.StringRes;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -18,59 +30,49 @@ public class Pin {
     private PinObject value;
 
     private PinDirection direction;
-    private PinSlotType slotType;
     private PinSubType subType;
 
     private boolean removeAble;
     private final HashMap<String, String> links = new HashMap<>();
 
     private transient String actionId;
-    private transient LinkListener listener;
+    private transient int titleId;
+    private transient final HashSet<LinkListener> listeners = new HashSet<>();
 
     public Pin(PinObject value) {
-        this(value, null, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
+        this(value, 0, PinDirection.IN, PinSubType.NORMAL, false);
     }
 
-    public Pin(PinObject value, String title) {
-        this(value, title, PinDirection.IN, PinSlotType.SINGLE, PinSubType.NORMAL, false);
-    }
-
-    public Pin(PinObject value, PinSlotType slotType) {
-        this(value, null, PinDirection.IN, slotType, PinSubType.NORMAL, false);
+    public Pin(PinObject value, @StringRes int titleId) {
+        this(value, titleId, PinDirection.IN, PinSubType.NORMAL, false);
     }
 
     public Pin(PinObject value, PinDirection direction) {
-        this(value, null, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
+        this(value, 0, direction, PinSubType.NORMAL, false);
+    }
+
+    public Pin(PinObject value, @StringRes int titleId, PinDirection direction) {
+        this(value, titleId, direction, PinSubType.NORMAL, false);
     }
 
     public Pin(PinObject value, String title, PinDirection direction) {
-        this(value, title, direction, PinSlotType.SINGLE, PinSubType.NORMAL, false);
-    }
-
-    public Pin(PinObject value, String title, PinSubType subType) {
-        this(value, title, PinDirection.IN, PinSlotType.SINGLE, subType, false);
-    }
-
-    public Pin(PinObject value, String title, PinSlotType slotType) {
-        this(value, title, PinDirection.IN, slotType, PinSubType.NORMAL, false);
-    }
-
-    public Pin(PinObject value, PinDirection direction, PinSlotType slotType) {
-        this(value, null, direction, slotType, PinSubType.NORMAL, false);
-    }
-
-    public Pin(PinObject value, String title, PinDirection direction, PinSlotType slotType) {
-        this(value, title, direction, slotType, PinSubType.NORMAL, false);
-    }
-
-    public Pin(PinObject value, String title, PinDirection direction, PinSlotType slotType, PinSubType subType, boolean removeAble) {
-        this.id = UUID.randomUUID().toString();
+        this(value, 0, direction, PinSubType.NORMAL, false);
         this.title = title;
+    }
+
+    public Pin(PinObject value, @StringRes int titleId, PinSubType subType) {
+        this(value, titleId, PinDirection.IN, subType, false);
+    }
+
+    public Pin(PinObject value, @StringRes int titleId, PinDirection direction, PinSubType subType, boolean removeAble) {
+        if (value == null) throw new RuntimeException("针脚的值为空");
+
+        this.id = UUID.randomUUID().toString();
+        this.titleId = titleId;
 
         this.value = value;
 
         this.direction = direction;
-        this.slotType = slotType;
         this.subType = subType;
 
         this.removeAble = removeAble;
@@ -81,9 +83,8 @@ public class Pin {
         id = GsonUtils.getAsString(jsonObject, "id", UUID.randomUUID().toString());
         title = GsonUtils.getAsString(jsonObject, "title", null);
 
-        direction = PinDirection.valueOf(GsonUtils.getAsString(jsonObject, "direction", null));
-        slotType = PinSlotType.valueOf(GsonUtils.getAsString(jsonObject, "slotType", null));
-        subType = PinSubType.valueOf(GsonUtils.getAsString(jsonObject, "subType", null));
+        direction = PinDirection.valueOf(GsonUtils.getAsString(jsonObject, "direction", PinDirection.IN.toString()));
+        subType = PinSubType.valueOf(GsonUtils.getAsString(jsonObject, "subType", PinSubType.NORMAL.toString()));
 
         removeAble = GsonUtils.getAsBoolean(jsonObject, "removeAble", false);
         links.putAll(GsonUtils.getAsType(jsonObject, "links", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
@@ -122,20 +123,18 @@ public class Pin {
     }
 
     public boolean addLink(ActionContext context, Pin pin) {
-        // 不能连的直接返回
-        if (slotType == PinSlotType.EMPTY) return false;
         // 单针脚，需要先移除之前的连接
-        if (slotType == PinSlotType.SINGLE) {
+        if (isSingle()) {
             removeLinks(context);
         }
         links.put(pin.getId(), pin.getActionId());
-        if (listener != null) listener.onAdded(pin);
+        if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onAdded(pin));
         return true;
     }
 
     public void removeLink(Pin pin) {
         if (links.remove(pin.getId()) != null) {
-            if (listener != null) listener.onRemoved(pin);
+            if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onRemoved(pin));
         }
     }
 
@@ -174,7 +173,7 @@ public class Pin {
             if (pinById == null) return;
             pinById.removeLink(this);
             links.remove(pinId);
-            if (listener != null) listener.onRemoved(pinById);
+            if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onRemoved(pinById));
         });
         links.clear();
     }
@@ -184,8 +183,12 @@ public class Pin {
     }
 
     public Class<?> getPinClass() {
-        if (value == null) throw new RuntimeException("针脚的值为空");
         return value.getClass();
+    }
+
+    public boolean isSingle() {
+        if (value instanceof PinExecute) return direction.isOut();
+        else return !direction.isOut();
     }
 
     public String getId() {
@@ -196,8 +199,9 @@ public class Pin {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getTitle(Context context) {
+        if (titleId == 0) return title;
+        else return context.getString(titleId);
     }
 
     public void setTitle(String title) {
@@ -205,12 +209,16 @@ public class Pin {
     }
 
     public PinObject getValue() {
-        if (value == null) throw new RuntimeException("针脚的值为空");
         return value;
     }
 
+    // todo: 需要context
     public void setValue(PinObject value) {
         if (value == null) throw new RuntimeException("针脚的值为空");
+
+        if (!value.getClass().equals(getPinClass())) {
+            if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(LinkListener::onChanged);
+        }
         this.value = value;
     }
 
@@ -220,14 +228,6 @@ public class Pin {
 
     public void setDirection(PinDirection direction) {
         this.direction = direction;
-    }
-
-    public PinSlotType getSlotType() {
-        return slotType;
-    }
-
-    public void setSlotType(PinSlotType slotType) {
-        this.slotType = slotType;
     }
 
     public PinSubType getSubType() {
@@ -250,13 +250,34 @@ public class Pin {
         this.actionId = actionId;
     }
 
-    public void setListener(LinkListener listener) {
-        this.listener = listener;
+    public int getTitleId() {
+        return titleId;
+    }
+
+    public void setTitleId(int titleId) {
+        this.titleId = titleId;
+    }
+
+    public void addListener(LinkListener listener) {
+        listeners.add(listener);
     }
 
     public interface LinkListener {
+        // 连线了
         void onAdded(Pin pin);
 
+        // 断开连线了
         void onRemoved(Pin pin);
+
+        // 针脚值变更了
+        void onChanged();
+    }
+
+    public static class PinDeserialize implements JsonDeserializer<Pin> {
+        @Override
+        public Pin deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            return new Pin(jsonObject);
+        }
     }
 }

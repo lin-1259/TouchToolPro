@@ -6,6 +6,7 @@ import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import top.bogey.touch_tool.R;
 
@@ -14,6 +15,8 @@ public class SettingSave {
     private final static String RUNNING_ERROR = "RUNNING_ERROR";
 
     private static final String SERVICE_ENABLED = "SERVICE_ENABLED";
+    private static final String SERVICE_ENABLED_TIP = "SERVICE_ENABLED_TIP";
+    private static final String CAPTURE_SERVICE_ENABLED_TIP = "CAPTURE_SERVICE_ENABLED_TIP";
 
     private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
 
@@ -60,9 +63,25 @@ public class SettingSave {
         settingMMKV.encode(SERVICE_ENABLED, enabled);
     }
 
+    public boolean isServiceEnabledTip() {
+        return settingMMKV.decodeBool(SERVICE_ENABLED_TIP, false);
+    }
+
+    public void setServiceEnabledTip(boolean enabled) {
+        settingMMKV.encode(SERVICE_ENABLED_TIP, enabled);
+    }
+
+    public boolean isCaptureServiceEnabledTip() {
+        return settingMMKV.decodeBool(CAPTURE_SERVICE_ENABLED_TIP, false);
+    }
+
+    public void setCaptureServiceEnabledTip(boolean enabled) {
+        settingMMKV.encode(CAPTURE_SERVICE_ENABLED_TIP, enabled);
+    }
+
     public ArrayList<String> getTags(Context context) {
         String[] keys = tagsMMKV.allKeys();
-        ArrayList<String> tags = new ArrayList<>(Arrays.asList(context.getString(R.string.tag_all), context.getString(R.string.tag_no)));
+        ArrayList<String> tags = new ArrayList<>(Collections.singletonList(context.getString(R.string.tag_no)));
         if (keys != null) {
             for (int i = keys.length - 1; i >= 0; i--) {
                 String key = keys[i];

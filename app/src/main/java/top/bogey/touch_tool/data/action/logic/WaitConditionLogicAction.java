@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.logic;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -15,25 +13,25 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class WaitConditionLogicAction extends NormalAction {
-    private transient final Pin conditionPin;
-    private transient final Pin timeOutPin;
-    private transient final Pin periodicPin;
-    private transient final Pin falsePin;
+    private transient Pin conditionPin = new Pin(new PinBoolean(false), R.string.action_condition_logic_subtitle_condition);
+    private transient Pin timeOutPin = new Pin(new PinInteger(1000), R.string.action_wait_condition_logic_subtitle_timeout);
+    private transient Pin periodicPin = new Pin(new PinInteger(100), R.string.action_wait_condition_logic_subtitle_periodic);
+    private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, PinDirection.OUT);
 
-    public WaitConditionLogicAction(Context context) {
-        super(context, R.string.action_wait_condition_logic_title);
-        conditionPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_condition_logic_subtitle_condition)));
-        timeOutPin = addPin(new Pin(new PinInteger(1000), context.getString(R.string.action_wait_condition_logic_subtitle_timeout)));
-        periodicPin = addPin(new Pin(new PinInteger(100), context.getString(R.string.action_wait_condition_logic_subtitle_periodic)));
-        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
+    public WaitConditionLogicAction() {
+        super(R.string.action_wait_condition_logic_title);
+        conditionPin = addPin(conditionPin);
+        timeOutPin = addPin(timeOutPin);
+        periodicPin = addPin(periodicPin);
+        falsePin = addPin(falsePin);
     }
 
     public WaitConditionLogicAction(JsonObject jsonObject) {
-        super(jsonObject);
-        conditionPin = addPin(tmpPins.remove(0));
-        timeOutPin = addPin(tmpPins.remove(0));
-        periodicPin = addPin(tmpPins.remove(0));
-        falsePin = addPin(tmpPins.remove(0));
+        super(R.string.action_wait_condition_logic_title, jsonObject);
+        conditionPin = reAddPin(conditionPin);
+        timeOutPin = reAddPin(timeOutPin);
+        periodicPin = reAddPin(periodicPin);
+        falsePin = reAddPin(falsePin);
     }
 
     @Override

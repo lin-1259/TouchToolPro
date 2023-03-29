@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/activity_home_task_tab_item" />
+                tools:listitem="@layout/view_task_tab_item" />
 
         </androidx.core.widget.NestedScrollView>
 

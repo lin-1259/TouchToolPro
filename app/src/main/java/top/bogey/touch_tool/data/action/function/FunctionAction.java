@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.function;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -9,13 +7,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.GsonUtils;
@@ -29,24 +28,26 @@ public class FunctionAction extends BaseAction {
     private transient final Pin executePin;
     private transient FunctionChangedCallback callback;
 
-    public FunctionAction(Context context, BaseFunction.FUNCTION_TAG tag, BaseFunction baseFunction) {
-        super(context, tag.isStart() ? R.string.function_start : R.string.function_end);
+    public FunctionAction(BaseFunction.FUNCTION_TAG tag, BaseFunction baseFunction) {
+        super(tag.isStart() ? R.string.function_start : R.string.function_end);
         this.tag = tag;
         if (tag.isStart()) {
-            executePin = super.addPin(new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
+            executePin = super.addPin(new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT));
         } else {
-            executePin = super.addPin(new Pin(new PinExecute(), PinSlotType.MULTI));
+            executePin = super.addPin(new Pin(new PinExecute()));
         }
         this.baseFunction = baseFunction;
     }
 
     public FunctionAction(JsonObject jsonObject) {
-        super(jsonObject);
+        super(0, jsonObject);
         tag = BaseFunction.FUNCTION_TAG.valueOf(GsonUtils.getAsString(jsonObject, "tag", BaseFunction.FUNCTION_TAG.START.name()));
+        setTitleId(tag.isStart() ? R.string.function_start : R.string.function_end);
+
         pinIdMap.putAll(GsonUtils.getAsType(jsonObject, "pinIdMap", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
 
-        executePin = super.addPin(tmpPins.remove(0));
-        for (Pin pin : tmpPins) {
+        executePin = super.addPin(pinsTmp.remove(0));
+        for (Pin pin : pinsTmp) {
             super.addPin(pin);
         }
     }
@@ -89,7 +90,9 @@ public class FunctionAction extends BaseAction {
 
     @Override
     public String getDes() {
-        return baseFunction.getTitle();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service == null) return null;
+        return baseFunction.getTitle(service);
     }
 
     @Override
@@ -102,7 +105,6 @@ public class FunctionAction extends BaseAction {
         Pin copy = outerPin.copy(true);
         // 针脚方向需要与外部的相反
         copy.setDirection(copy.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN);
-        copy.setSlotType(copy.getSlotType() == PinSlotType.MULTI ? PinSlotType.SINGLE : PinSlotType.MULTI);
         pinIdMap.put(copy.getId(), outerPin.getId());
         super.addPin(copy);
         if (callback != null) callback.onPinAdded(copy);

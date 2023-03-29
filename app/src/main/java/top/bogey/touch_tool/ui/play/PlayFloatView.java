@@ -34,13 +34,13 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     private boolean clickFirst = false;
 
     private LinkedHashMap<ManualStartAction, Task> manualStartActions;
-    private final String ALL;
+    private final String NO;
     private final ArrayList<String> tags = new ArrayList<>();
     private String currTag;
 
     public PlayFloatView(@NonNull Context context) {
         super(context);
-        ALL = context.getString(R.string.tag_all);
+        NO = context.getString(R.string.tag_no);
 
         binding = FloatPlayBinding.inflate(LayoutInflater.from(context), this, true);
         binding.closeButton.setOnClickListener(v -> {
@@ -91,7 +91,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         tags.clear();
         if (tasks != null) {
             for (Task task : tasks) {
-                String tag = ALL;
+                String tag = NO;
                 if (task.getTag() != null) tag = task.getTag();
                 if (!tags.contains(tag)) tags.add(tag);
             }
@@ -105,7 +105,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
         LinkedHashMap<ManualStartAction, Task> actions = new LinkedHashMap<>();
         for (Map.Entry<ManualStartAction, Task> entry : manualStartActions.entrySet()) {
-            String tag = ALL;
+            String tag = NO;
             if (entry.getValue().getTag() != null) tag = entry.getValue().getTag();
             if (tag.equals(currTag)) actions.put(entry.getKey(), entry.getValue());
         }

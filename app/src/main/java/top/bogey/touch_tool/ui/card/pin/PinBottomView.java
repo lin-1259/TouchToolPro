@@ -32,4 +32,9 @@ public class PinBottomView extends PinBaseView<PinBottomBinding> {
         location[1] += (pinSlot.getHeight() * scale);
         return location;
     }
+
+    @Override
+    public void setValueView() {
+
+    }
 }

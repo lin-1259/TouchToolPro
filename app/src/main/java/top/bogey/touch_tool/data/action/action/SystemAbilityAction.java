@@ -1,7 +1,6 @@
 package top.bogey.touch_tool.data.action.action;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.Context;
 import android.os.Build;
 
 import com.google.gson.JsonObject;
@@ -16,16 +15,16 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class SystemAbilityAction extends NormalAction {
-    private transient final Pin abilityPin;
+    private transient Pin abilityPin = new Pin(new PinSpinner(R.array.system_ability));
 
-    public SystemAbilityAction(Context context) {
-        super(context, R.string.action_system_ability_action_title);
-        abilityPin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.system_ability))));
+    public SystemAbilityAction() {
+        super(R.string.action_system_ability_action_title);
+        abilityPin = addPin(abilityPin);
     }
 
     public SystemAbilityAction(JsonObject jsonObject) {
-        super(jsonObject);
-        abilityPin = addPin(tmpPins.remove(0));
+        super(R.string.action_system_ability_action_title, jsonObject);
+        abilityPin = reAddPin(abilityPin);
     }
 
     @Override

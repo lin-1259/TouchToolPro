@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import androidx.annotation.StringRes;
 
 import com.google.gson.JsonObject;
@@ -12,28 +10,27 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class StartAction extends BaseAction {
-    protected transient final Pin outPin;
-    protected transient final Pin enablePin;
-    protected transient final Pin restartPin;
+    protected transient Pin outPin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
+    protected transient Pin enablePin = new Pin(new PinBoolean(true), R.string.action_start_subtitle_enable);
+    protected transient Pin restartPin = new Pin(new PinSpinner(R.array.restart_type), R.string.action_start_subtitle_restart);
 
-    public StartAction(Context context, @StringRes int titleId) {
-        super(context, titleId);
-        outPin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_subtitle_execute), PinDirection.OUT, PinSlotType.SINGLE));
-        enablePin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_start_subtitle_enable)));
-        restartPin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.restart_type)), context.getString(R.string.action_start_subtitle_restart)));
+    public StartAction(@StringRes int titleId) {
+        super(titleId);
+        outPin = addPin(outPin);
+        enablePin = addPin(enablePin);
+        restartPin = addPin(restartPin);
     }
 
-    public StartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        outPin = addPin(tmpPins.remove(0));
-        enablePin = addPin(tmpPins.remove(0));
-        restartPin = addPin(tmpPins.remove(0));
+    public StartAction(@StringRes int titleId, JsonObject jsonObject) {
+        super(titleId, jsonObject);
+        outPin = reAddPin(outPin);
+        enablePin = reAddPin(enablePin);
+        restartPin = reAddPin(restartPin);
     }
 
     @Override

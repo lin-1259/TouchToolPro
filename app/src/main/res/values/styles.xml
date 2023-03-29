@@ -69,4 +69,8 @@
         <item name="android:textSize">5sp</item>
     </style>
 
+    <style name="Theme.TouchTool.SideSheet" parent="ThemeOverlay.Material3.SideSheetDialog">
+        <item name="sideSheetModalStyle">@style/Widget.Material3.SideSheet.Modal.Detached</item>
+    </style>
+
 </resources>

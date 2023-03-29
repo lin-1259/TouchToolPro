@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -14,16 +12,16 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class CaptureServiceAction extends NormalAction {
-    private transient final Pin statePin;
+    private transient Pin statePin = new Pin(new PinBoolean(true), R.string.action_open_capture_subtitle_state);
 
-    public CaptureServiceAction(Context context) {
-        super(context, R.string.action_open_capture_action_title);
-        statePin = addPin(new Pin(new PinBoolean(true), context.getString(R.string.action_open_capture_subtitle_state)));
+    public CaptureServiceAction() {
+        super(R.string.action_open_capture_action_title);
+        statePin = addPin(statePin);
     }
 
     public CaptureServiceAction(JsonObject jsonObject) {
-        super(jsonObject);
-        statePin = addPin(tmpPins.remove(0));
+        super(R.string.action_open_capture_action_title, jsonObject);
+        statePin = reAddPin(statePin);
     }
 
     @Override

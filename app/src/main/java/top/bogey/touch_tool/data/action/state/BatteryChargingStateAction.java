@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
 import android.os.BatteryManager;
 
 import com.google.gson.JsonObject;
@@ -14,16 +13,16 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 
 public class BatteryChargingStateAction extends StateAction {
-    private transient final Pin chargingStatePin;
+    private transient Pin chargingStatePin = new Pin(new PinSpinner(R.array.charging_state), R.string.action_battery_charging_state_subtitle_state);
 
-    public BatteryChargingStateAction(Context context) {
-        super(context, R.string.action_battery_charging_state_title);
-        chargingStatePin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.charging_state)), context.getString(R.string.action_battery_charging_state_subtitle_state)));
+    public BatteryChargingStateAction() {
+        super(R.string.action_battery_charging_state_title);
+        chargingStatePin = addPin(chargingStatePin);
     }
 
     public BatteryChargingStateAction(JsonObject jsonObject) {
-        super(jsonObject);
-        chargingStatePin = addPin(tmpPins.remove(0));
+        super(R.string.action_battery_charging_state_title, jsonObject);
+        chargingStatePin = reAddPin(chargingStatePin);
     }
 
     @Override

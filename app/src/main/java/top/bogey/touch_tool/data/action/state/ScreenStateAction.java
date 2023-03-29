@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainApplication;
@@ -14,16 +12,16 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.utils.AppUtils;
 
 public class ScreenStateAction extends StateAction {
-    private transient final Pin screenStatePin;
+    private transient Pin screenStatePin = new Pin(new PinSpinner(R.array.screen_state), R.string.action_screen_state_subtitle_state);
 
-    public ScreenStateAction(Context context) {
-        super(context, R.string.action_screen_state_title);
-        screenStatePin = addPin(new Pin(new PinSpinner(context.getResources().getStringArray(R.array.screen_state)), context.getString(R.string.action_screen_state_subtitle_state)));
+    public ScreenStateAction() {
+        super(R.string.action_screen_state_title);
+        screenStatePin = addPin(screenStatePin);
     }
 
     public ScreenStateAction(JsonObject jsonObject) {
-        super(jsonObject);
-        screenStatePin = addPin(tmpPins.remove(0));
+        super(R.string.action_screen_state_title, jsonObject);
+        screenStatePin = reAddPin(screenStatePin);
     }
 
     @Override

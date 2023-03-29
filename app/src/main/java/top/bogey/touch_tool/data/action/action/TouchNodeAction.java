@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.action;
 
-import android.content.Context;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.google.gson.JsonObject;
@@ -16,24 +15,22 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 
 public class TouchNodeAction extends NormalAction {
-    private transient final Pin nodePin;
-    private transient final Pin longTouchPin;
-    private transient final Pin falsePin;
+    private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info);
+    private transient Pin longTouchPin = new Pin(new PinBoolean(false), R.string.action_touch_node_action_subtitle_long_touch);
+    private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, PinDirection.OUT);
 
-    public TouchNodeAction(Context context) {
-        super(context, R.string.action_touch_node_action_title);
-        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info)));
-        longTouchPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_touch_node_action_subtitle_long_touch)));
-        falsePin = addPin(new Pin(new PinExecute(), context.getString(R.string.action_logic_subtitle_false), PinDirection.OUT));
+    public TouchNodeAction() {
+        super(R.string.action_touch_node_action_title);
+        nodePin = addPin(nodePin);
+        longTouchPin = addPin(longTouchPin);
+        falsePin = addPin(falsePin);
     }
 
     public TouchNodeAction(JsonObject jsonObject) {
-        super(jsonObject);
-        nodePin = addPin(tmpPins.remove(0));
-        longTouchPin = addPin(tmpPins.remove(0));
-        if (tmpPins.size() > 0) {
-            falsePin = addPin(tmpPins.remove(0));
-        } else falsePin = null;
+        super(R.string.action_touch_node_action_title, jsonObject);
+        nodePin = reAddPin(nodePin);
+        longTouchPin = reAddPin(longTouchPin);
+        falsePin = reAddPin(falsePin);
     }
 
     @Override

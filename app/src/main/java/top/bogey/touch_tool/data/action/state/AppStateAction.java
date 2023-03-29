@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -19,16 +17,16 @@ import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.ui.app.AppView;
 
 public class AppStateAction extends StateAction {
-    private transient final Pin appPin;
+    private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE));
 
-    public AppStateAction(Context context) {
-        super(context, R.string.action_app_state_title);
-        appPin = addPin(new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE)));
+    public AppStateAction() {
+        super(R.string.action_app_state_title);
+        appPin = addPin(appPin);
     }
 
     public AppStateAction(JsonObject jsonObject) {
-        super(jsonObject);
-        appPin = addPin(tmpPins.remove(0));
+        super(R.string.action_app_state_title, jsonObject);
+        appPin = reAddPin(appPin);
     }
 
     @Override

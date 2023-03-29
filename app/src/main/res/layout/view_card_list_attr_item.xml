@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
-    android:layout_height="56dp"
+    android:layout_height="32dp"
     android:layout_marginHorizontal="4dp"
     android:layout_marginVertical="2dp">
 
@@ -11,70 +11,54 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingHorizontal="16dp">
+        android:layout_marginHorizontal="8dp"
+        android:gravity="center_vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Material3.BodyMedium" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/shape_spinner"
+            android:dropDownWidth="wrap_content"
+            android:gravity="center_horizontal"
+            android:popupBackground="@drawable/shape_spinner_background"
+            android:spinnerMode="dropdown" />
 
-            <Spinner
-                android:id="@+id/spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:background="@drawable/shape_spinner"
-                android:dropDownWidth="wrap_content"
-                android:popupBackground="@drawable/shape_spinner_background"
-                android:gravity="center_horizontal"
-                android:spinnerMode="dropdown" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/getAttrButton"
+            style="@style/Theme.TouchTool.IconButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            app:icon="@drawable/icon_export"
+            app:iconTint="?attr/colorOutline" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/removeButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="4dp"
-                android:visibility="visible"
-                app:icon="@drawable/icon_delete"
-                app:iconTint="?attr/colorOutline" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/setAttrButton"
+            style="@style/Theme.TouchTool.IconButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            app:icon="@drawable/icon_menu_import"
+            app:iconTint="?attr/colorOutline" />
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/getAttrButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:text="@string/action_get_value_action_title"
-                android:textSize="11sp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/setAttrButton"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:text="@string/action_set_value_action_title"
-                android:textSize="11sp" />
-
-        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/removeButton"
+            style="@style/Theme.TouchTool.IconButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            app:icon="@drawable/icon_delete"
+            app:iconTint="?attr/colorOutline" />
 
     </LinearLayout>
 

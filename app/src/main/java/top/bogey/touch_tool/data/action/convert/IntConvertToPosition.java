@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.convert;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -10,27 +8,26 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 
 public class IntConvertToPosition extends CalculateAction {
-    private transient final Pin xPin;
-    private transient final Pin yPin;
-    private transient final Pin posPin;
+    private transient Pin xPin = new Pin(new PinInteger(), R.string.action_int_convert_position_subtitle_x);
+    private transient Pin yPin = new Pin(new PinInteger(), R.string.action_int_convert_position_subtitle_y);
+    private transient Pin posPin = new Pin(new PinPoint(), R.string.action_int_convert_position_subtitle_position, PinDirection.OUT);
 
-    public IntConvertToPosition(Context context) {
-        super(context, R.string.action_int_convert_position_title);
-        xPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_x)));
-        yPin = addPin(new Pin(new PinInteger(), context.getString(R.string.action_int_convert_position_subtitle_y)));
-        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_int_convert_position_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
+    public IntConvertToPosition() {
+        super(R.string.action_int_convert_position_title);
+        xPin = addPin(xPin);
+        yPin = addPin(yPin);
+        posPin = addPin(posPin);
     }
 
     public IntConvertToPosition(JsonObject jsonObject) {
-        super(jsonObject);
-        xPin = addPin(tmpPins.remove(0));
-        yPin = addPin(tmpPins.remove(0));
-        posPin = addPin(tmpPins.remove(0));
+        super(R.string.action_int_convert_position_title, jsonObject);
+        xPin = reAddPin(xPin);
+        yPin = reAddPin(yPin);
+        posPin = reAddPin(posPin);
     }
 
     @Override

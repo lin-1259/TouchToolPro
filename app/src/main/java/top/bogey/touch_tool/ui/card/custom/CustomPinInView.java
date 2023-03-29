@@ -62,7 +62,7 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null) {
-                    if (s.toString().equals(pin.getTitle())) return;
+                    if (s.toString().equals(pin.getTitle(context))) return;
                     ((BaseFunction) card.getActionContext()).setPinTitle(card.getAction(), pin, s.toString());
                 }
             }
@@ -80,7 +80,7 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
 
         if (map != null) {
             binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
-            if (pin.getTitle() != null) binding.editText.setTextKeepState(pin.getTitle());
+            if (pin.getTitle(getContext()) != null) binding.editText.setTextKeepState(pin.getTitle(getContext()));
         }
     }
 

@@ -21,7 +21,7 @@ public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
     }
 
     public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, new PinSpinner(new String[0]));
+        this(context, attrs, new PinSpinner(0));
     }
 
     public PinWidgetSpinner(@NonNull Context context, @Nullable AttributeSet attrs, PinSpinner helper) {
@@ -29,7 +29,7 @@ public class PinWidgetSpinner extends BindingView<PinWidgetSpinnerBinding> {
         if (helper == null) throw new RuntimeException("不是有效的引用");
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
-        adapter.addAll(helper.getArrays());
+        adapter.addAll(helper.getArrays(context));
         binding.spinner.setAdapter(adapter);
         binding.spinner.setSelection(helper.getIndex());
         binding.spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

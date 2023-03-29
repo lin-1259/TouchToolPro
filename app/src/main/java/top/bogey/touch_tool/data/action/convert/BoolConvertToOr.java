@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.convert;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -11,32 +9,31 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
-import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class BoolConvertToOr extends CalculateAction {
-    private transient final Pin outConditionPin;
-    private transient final Pin firstConditionPin;
+    private transient Pin outConditionPin;
+    private transient Pin firstConditionPin;
+    private transient Pin secondConditionPin = new Pin(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition);
+    private final transient Pin conditionPin = new Pin(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition);
+    private transient Pin addPin = new Pin(new PinAdd(conditionPin), R.string.action_subtitle_add_pin);
 
-    public BoolConvertToOr(Context context) {
-        super(context, R.string.action_bool_convert_or_title);
-        outConditionPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_state_subtitle_state), PinDirection.OUT, PinSlotType.MULTI));
-        firstConditionPin = addPin(new Pin(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
-        addPin(new Pin(new PinBoolean(), context.getString(R.string.action_bool_convert_and_subtitle_condition)));
-        Pin executePin = new Pin(new PinBoolean(false), context.getString(R.string.action_bool_convert_and_subtitle_condition));
-        addPin(new Pin(new PinAdd(executePin), context.getString(R.string.action_subtitle_add_pin), PinSlotType.EMPTY));
+    public BoolConvertToOr() {
+        super(R.string.action_bool_convert_or_title);
+        outConditionPin = addPin(outConditionPin);
+        firstConditionPin = addPin(firstConditionPin);
+        secondConditionPin = addPin(secondConditionPin);
+        addPin = addPin(addPin);
     }
 
     public BoolConvertToOr(JsonObject jsonObject) {
-        super(jsonObject);
-        outConditionPin = addPin(tmpPins.remove(0));
-        firstConditionPin = addPin(tmpPins.remove(0));
-        for (Pin pin : tmpPins) {
-            addPin(pin);
-        }
-        tmpPins.clear();
+        super(R.string.action_bool_convert_or_title, jsonObject);
+        outConditionPin = reAddPin(outConditionPin);
+        firstConditionPin = reAddPin(firstConditionPin);
+        secondConditionPin = reAddPin(secondConditionPin);
+        reAddPin(conditionPin, 1);
+        addPin = reAddPin(addPin);
     }
 
     @Override

@@ -13,9 +13,9 @@ import top.bogey.touch_tool.data.action.action.OpenAppAction;
 import top.bogey.touch_tool.data.action.action.OpenUrlAction;
 import top.bogey.touch_tool.data.action.action.ScreenAction;
 import top.bogey.touch_tool.data.action.action.SystemAbilityAction;
+import top.bogey.touch_tool.data.action.action.TouchNodeAction;
 import top.bogey.touch_tool.data.action.action.TouchPathAction;
 import top.bogey.touch_tool.data.action.action.TouchPosAction;
-import top.bogey.touch_tool.data.action.action.TouchNodeAction;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToAnd;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToNot;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToOr;
@@ -140,7 +140,7 @@ public class ActionMap {
     }
 
     public enum ActionType {
-        START, LOGIC, NORMAL, STATE, CONVERT, OPERATE, CUSTOM;
+        START, LOGIC, NORMAL, STATE, CONVERT, OPERATE;
 
         public String getTitle(Context context) {
             String[] strings = context.getResources().getStringArray(R.array.action_type);

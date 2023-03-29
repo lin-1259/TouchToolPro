@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 
-import java.util.LinkedHashMap;
-
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.pin.Pin;
@@ -58,11 +56,11 @@ public class CustomPinOutView extends PinBaseView<PinCustomOutBinding> {
             }
         });
 
-        binding.editText.addTextChangedListener(new TextChangedListener(){
+        binding.editText.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null) {
-                    if (s.toString().equals(pin.getTitle())) return;
+                    if (s.toString().equals(pin.getTitle(context))) return;
                     ((BaseFunction) card.getActionContext()).setPinTitle(card.getAction(), pin, s.toString());
                 }
             }
@@ -80,7 +78,7 @@ public class CustomPinOutView extends PinBaseView<PinCustomOutBinding> {
 
         if (map != null) {
             binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
-            if (pin.getTitle() != null) binding.editText.setTextKeepState(pin.getTitle());
+            if (pin.getTitle(getContext()) != null) binding.editText.setTextKeepState(pin.getTitle(getContext()));
         }
     }
 

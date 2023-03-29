@@ -1,8 +1,5 @@
 package top.bogey.touch_tool.data.action.function;
 
-import android.content.Context;
-
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
@@ -24,6 +21,8 @@ import top.bogey.touch_tool.utils.GsonUtils;
  */
 public class BaseFunction extends NormalAction implements ActionContext {
     private String functionId;
+    private String taskId;
+
     private final HashSet<BaseAction> actions = new HashSet<>();
     private final HashMap<String, PinObject> attrs = new HashMap<>();
     private boolean justCall = false;
@@ -34,23 +33,24 @@ public class BaseFunction extends NormalAction implements ActionContext {
     private transient final HashSet<FunctionAction> endFunctions = new HashSet<>();
     private transient FunctionAction endFunction;
 
-    public BaseFunction(Context context) {
-        super(context, 0);
+    public BaseFunction() {
+        super(0);
         functionId = UUID.randomUUID().toString();
 
-        startFunction = new FunctionAction(context, FUNCTION_TAG.START, this);
+        startFunction = new FunctionAction(FUNCTION_TAG.START, this);
         startFunctions.add(startFunction);
         actions.add(startFunction);
 
         // 不是 this.endFunction
-        FunctionAction endFunction = new FunctionAction(context, FUNCTION_TAG.END, this);
+        FunctionAction endFunction = new FunctionAction(FUNCTION_TAG.END, this);
         endFunctions.add(endFunction);
         actions.add(endFunction);
     }
 
     public BaseFunction(JsonObject jsonObject) {
-        super(jsonObject);
+        super(0, jsonObject);
         functionId = GsonUtils.getAsString(jsonObject, "functionId", UUID.randomUUID().toString());
+        taskId = GsonUtils.getAsString(jsonObject, "taskId", null);
         justCall = GsonUtils.getAsBoolean(jsonObject, "justCall", false);
 
         actions.addAll(GsonUtils.getAsType(jsonObject, "actions", new TypeToken<HashSet<BaseAction>>() {}.getType(), new HashSet<>()));
@@ -68,7 +68,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
         attrs.putAll(GsonUtils.getAsType(jsonObject, "attrs", new TypeToken<HashMap<String, PinObject>>() {}.getType(), new HashMap<>()));
 
-        for (Pin pin : tmpPins) {
+        for (Pin pin : pinsTmp) {
             // 不能直接调用自身的添加
             super.addPin(pin);
             // 自身的输入针脚的值需要使用开始动作的输出针脚的值
@@ -81,7 +81,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     @Override
     public BaseAction copy() {
-        BaseFunction copy = (BaseFunction) GsonUtils.copy(this, BaseAction.class);
+        BaseFunction copy = GsonUtils.copy(this, BaseFunction.class);
         copy.setId(UUID.randomUUID().toString());
 
         copy.getPins().forEach(pin -> {
@@ -209,6 +209,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
         this.functionId = functionId;
     }
 
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
     @Override
     public HashSet<BaseAction> getActions() {
         return actions;
@@ -288,7 +292,15 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     @Override
     public void save() {
-        TaskRepository.getInstance().saveFunction(this);
+        ActionContext parent = getParent();
+        if (parent != null) parent.save();
+        else TaskRepository.getInstance().saveFunction(this);
+    }
+
+    @Override
+    public ActionContext getParent() {
+        if (taskId == null) return null;
+        return TaskRepository.getInstance().getTaskById(taskId);
     }
 
     public enum FUNCTION_TAG {

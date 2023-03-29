@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.operator;
 
-import android.content.Context;
-
 import androidx.annotation.StringRes;
 
 import com.google.gson.JsonObject;
@@ -12,30 +10,33 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class IntRandomAction extends CalculateAction {
-    protected transient final Pin outValuePin;
-    protected transient final Pin originPin;
-    protected transient final Pin secondPin;
+    protected transient Pin outValuePin = new Pin(new PinInteger(), PinDirection.OUT);
+    protected transient Pin originPin = new Pin(new PinInteger(1), R.string.action_for_loop_logic_subtitle_start);
+    protected transient Pin secondPin = new Pin(new PinInteger(5), R.string.action_for_loop_logic_subtitle_end);
 
-    public IntRandomAction(Context context) {
-        this(context, R.string.action_int_random_operator_title);
+    public IntRandomAction() {
+        this(R.string.action_int_random_operator_title);
     }
 
-    public IntRandomAction(Context context, @StringRes int titleId) {
-        super(context, titleId);
-        outValuePin = addPin(new Pin(new PinInteger(), PinDirection.OUT, PinSlotType.MULTI));
-        originPin = addPin(new Pin(new PinInteger(1), context.getString(R.string.action_for_loop_logic_subtitle_start)));
-        secondPin = addPin(new Pin(new PinInteger(5), context.getString(R.string.action_for_loop_logic_subtitle_end)));
+    public IntRandomAction(@StringRes int titleId) {
+        super(titleId);
+        outValuePin = addPin(outValuePin);
+        originPin = addPin(originPin);
+        secondPin = addPin(secondPin);
     }
 
     public IntRandomAction(JsonObject jsonObject) {
-        super(jsonObject);
-        outValuePin = addPin(tmpPins.remove(0));
-        originPin = addPin(tmpPins.remove(0));
-        secondPin = addPin(tmpPins.remove(0));
+        this(R.string.action_int_random_operator_title, jsonObject);
+    }
+
+    public IntRandomAction(@StringRes int titleId, JsonObject jsonObject) {
+        super(titleId, jsonObject);
+        outValuePin = reAddPin(outValuePin);
+        originPin = reAddPin(originPin);
+        secondPin = reAddPin(secondPin);
     }
 
     @Override

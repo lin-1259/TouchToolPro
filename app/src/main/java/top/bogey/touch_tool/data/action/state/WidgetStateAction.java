@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -13,7 +12,6 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.PinSlotType;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
@@ -21,23 +19,23 @@ import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class WidgetStateAction extends StateAction {
-    private transient final Pin widgetPin;
-    private transient final Pin posPin;
-    private transient final Pin nodePin;
+    private transient Pin widgetPin = new Pin(new PinWidget(), R.string.action_widget_state_subtitle_widget);
+    private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
+    private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info, PinDirection.OUT);
 
-    public WidgetStateAction(Context context) {
-        super(context, R.string.action_widget_state_title);
-        widgetPin = addPin(new Pin(new PinWidget(), context.getString(R.string.action_widget_state_subtitle_widget)));
-        posPin = addPin(new Pin(new PinPoint(), context.getString(R.string.action_state_subtitle_position), PinDirection.OUT, PinSlotType.MULTI));
-        nodePin = addPin(new Pin(new PinNodeInfo(), context.getString(R.string.action_state_subtitle_node_info), PinDirection.OUT, PinSlotType.MULTI));
+    public WidgetStateAction() {
+        super(R.string.action_widget_state_title);
+        widgetPin = addPin(widgetPin);
+        posPin = addPin(posPin);
+        nodePin = addPin(nodePin);
     }
 
     public WidgetStateAction(JsonObject jsonObject) {
-        super(jsonObject);
-        widgetPin = addPin(tmpPins.remove(0));
-        posPin = addPin(tmpPins.remove(0));
-        if (tmpPins.size() != 0) {
-            nodePin = addPin(tmpPins.remove(0));
+        super(R.string.action_widget_state_title, jsonObject);
+        widgetPin = reAddPin(widgetPin);
+        posPin = reAddPin(posPin);
+        if (pinsTmp.size() != 0) {
+            nodePin = reAddPin(nodePin);
         } else nodePin = null;
     }
 

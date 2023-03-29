@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.operator;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -12,12 +10,12 @@ import top.bogey.touch_tool.data.pin.object.PinInteger;
 
 public class IntMultiAction extends IntDivAction {
 
-    public IntMultiAction(Context context) {
-        super(context, R.string.action_int_multi_operator_title);
+    public IntMultiAction() {
+        super(R.string.action_int_multi_operator_title);
     }
 
     public IntMultiAction(JsonObject jsonObject) {
-        super(jsonObject);
+        super(R.string.action_int_multi_operator_title, jsonObject);
     }
 
     @Override

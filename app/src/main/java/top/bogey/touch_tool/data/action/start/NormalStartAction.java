@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -11,16 +9,16 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class NormalStartAction extends StartAction {
-    private transient final Pin startPin;
+    private transient Pin startPin = new Pin(new PinBoolean(false), R.string.action_normal_start_subtitle_condition);
 
-    public NormalStartAction(Context context) {
-        super(context, R.string.action_normal_start_title);
-        startPin = addPin(new Pin(new PinBoolean(false), context.getString(R.string.action_normal_start_subtitle_condition)));
+    public NormalStartAction() {
+        super(R.string.action_normal_start_title);
+        startPin = addPin(startPin);
     }
 
     public NormalStartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        startPin = addPin(tmpPins.remove(0));
+        super(R.string.action_normal_start_title, jsonObject);
+        startPin = reAddPin(startPin);
     }
 
     @Override

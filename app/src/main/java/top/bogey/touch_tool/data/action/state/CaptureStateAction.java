@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.state;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -14,12 +12,12 @@ import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class CaptureStateAction extends StateAction {
 
-    public CaptureStateAction(Context context) {
-        super(context, R.string.action_capture_state_title);
+    public CaptureStateAction() {
+        super(R.string.action_capture_state_title);
     }
 
     public CaptureStateAction(JsonObject jsonObject) {
-        super(jsonObject);
+        super(R.string.action_capture_state_title, jsonObject);
     }
 
     @Override

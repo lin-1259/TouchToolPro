@@ -1,7 +1,5 @@
 package top.bogey.touch_tool.data.action.start;
 
-import android.content.Context;
-
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool.R;
@@ -12,17 +10,17 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class BatteryStartAction extends StartAction {
-    private transient final Pin areaPin;
+    private transient Pin areaPin = new Pin(new PinValueArea(1, 100, 1), R.string.action_battery_start_subtitle_battery);
     private transient boolean inRange = false;
 
-    public BatteryStartAction(Context context) {
-        super(context, R.string.action_battery_start_title);
-        areaPin = addPin(new Pin(new PinValueArea(1, 100, 1), context.getString(R.string.action_battery_start_subtitle_battery)));
+    public BatteryStartAction() {
+        super(R.string.action_battery_start_title);
+        areaPin = addPin(areaPin);
     }
 
     public BatteryStartAction(JsonObject jsonObject) {
-        super(jsonObject);
-        areaPin = addPin(tmpPins.remove(0));
+        super(R.string.action_battery_start_title, jsonObject);
+        areaPin = reAddPin(areaPin);
     }
 
     @Override
