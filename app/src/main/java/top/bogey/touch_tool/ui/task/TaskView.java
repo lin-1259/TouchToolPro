@@ -37,7 +37,6 @@ import top.bogey.touch_tool.databinding.ViewTaskBinding;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
-import top.bogey.touch_tool.utils.SettingSave;
 
 public class TaskView extends Fragment {
     private ViewTaskBinding binding;
@@ -85,7 +84,7 @@ public class TaskView extends Fragment {
             }
         }, getViewLifecycleOwner());
 
-        adapter = new TaskListRecyclerViewAdapter(this, SettingSave.getInstance().getTags(requireContext()));
+        adapter = new TaskListRecyclerViewAdapter(this, TaskRepository.getInstance().getTags(requireContext()));
         binding.tasksBox.setAdapter(adapter);
         new TabLayoutMediator(binding.tabBox, binding.tasksBox, (tab, position) -> tab.setText(adapter.getTagByIndex(position))).attach();
 
@@ -233,8 +232,7 @@ public class TaskView extends Fragment {
         }
         if (fileUri != null) {
             intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            String type = context.getContentResolver().getType(fileUri);
-            intent.setType(type);
+            intent.setType("text/*");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
             context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_task_tips)));
         }

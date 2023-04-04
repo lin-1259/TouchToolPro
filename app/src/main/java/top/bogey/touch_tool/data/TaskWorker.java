@@ -28,7 +28,7 @@ public class TaskWorker extends Worker {
             Data inputData = getInputData();
             Task task = TaskRepository.getInstance().getTaskById(inputData.getString(TASK));
             BaseAction action = task.getActionById(inputData.getString(ACTION));
-            service.runTask(task, (TimeStartAction) action);
+            service.runTask(task.copy(), (TimeStartAction) action);
         }
         return Result.success();
     }

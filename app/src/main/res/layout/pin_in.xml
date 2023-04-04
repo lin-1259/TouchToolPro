@@ -4,29 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:minHeight="24dp">
 
-    <LinearLayout
-        android:id="@+id/pinSlotBox"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/titleBox"
         android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content"
+        app:cardBackgroundColor="?attr/colorSurfaceVariant">
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="12dp"
+            android:paddingHorizontal="4dp"
+            android:paddingVertical="2dp"
             android:textSize="9sp"
             tools:ignore="SmallSp" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/pinSlot"
-            style="?attr/materialCardViewFilledStyle"
-            android:layout_width="12dp"
-            android:layout_height="12dp" />
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <FrameLayout
         android:id="@+id/pinBox"

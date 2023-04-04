@@ -2,6 +2,8 @@ package top.bogey.touch_tool.ui.card.pin;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
@@ -14,13 +16,31 @@ import top.bogey.touch_tool.ui.card.BaseCard;
 public class PinInView extends PinBaseView<PinInBinding> {
     public PinInView(@NonNull Context context, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, PinInBinding.class, card, pin);
+
+        initRemoveButton(binding.removeButton);
+        setValueView();
+        refreshPinUI();
+    }
+
+    @Override
+    public void refreshPinUI() {
+        binding.titleBox.setStrokeColor(getPinColor());
+        binding.title.setText(pin.getTitle(getContext()));
+        binding.pinBox.setVisibility(pin.getLinks().size() > 0 ? GONE : VISIBLE);
     }
 
     @Override
     public int[] getSlotLocationOnScreen(float scale) {
-        int[] location = new int[2];
-        pinSlot.getLocationOnScreen(location);
-        location[1] += (pinSlot.getHeight() * scale / 2);
-        return location;
+        return null;
+    }
+
+    @Override
+    public View getSlotBox() {
+        return null;
+    }
+
+    @Override
+    public ViewGroup getPinBox() {
+        return binding.pinBox;
     }
 }

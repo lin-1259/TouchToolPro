@@ -20,6 +20,7 @@ import top.bogey.touch_tool.ui.custom.ToastFloatView;
 import top.bogey.touch_tool.ui.play.PlayFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.PermissionResultCallback;
+import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 public class BaseActivity extends AppCompatActivity {
@@ -108,6 +109,7 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     public void handlePlayFloatView(int size) {
+        if (!SettingSave.getInstance().isPlayViewVisible()) return;
         runOnUiThread(() -> {
             PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getCanonicalName());
             if (size == 0) {

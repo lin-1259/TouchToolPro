@@ -13,7 +13,6 @@ import java.util.List;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskTabItemBinding;
-import top.bogey.touch_tool.utils.SettingSave;
 
 public class TagRecyclerViewAdapter extends RecyclerView.Adapter<TagRecyclerViewAdapter.ViewHolder> {
 
@@ -23,7 +22,7 @@ public class TagRecyclerViewAdapter extends RecyclerView.Adapter<TagRecyclerView
 
     public TagRecyclerViewAdapter(TaskView taskView) {
         this.taskView = taskView;
-        tags = SettingSave.getInstance().getTags(taskView.requireContext());
+        tags = TaskRepository.getInstance().getTags(taskView.requireContext());
         NO = this.taskView.getString(R.string.tag_no);
     }
 

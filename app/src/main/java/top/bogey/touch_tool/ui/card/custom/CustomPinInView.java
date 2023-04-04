@@ -2,15 +2,15 @@ package top.bogey.touch_tool.ui.card.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.util.ArrayMap;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
-
-import java.util.LinkedHashMap;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
@@ -26,8 +26,16 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
     private PinObject pinObject;
     private final ArrayMap<Class<? extends PinObject>, Integer> map = PinMap.getInstance().getMap();
 
+    private final int[][] states = new int[2][];
+
     public CustomPinInView(@NonNull Context context, CustomCard card, Pin pin) {
         super(context, PinCustomInBinding.class, card, pin);
+        initRemoveButton(binding.removeButton);
+        setValueView();
+
+        states[0] = new int[] {android.R.attr.state_focused};
+        states[1] = new int[] {};
+
         pinObject = pin.getValue();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
@@ -58,7 +66,7 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
             }
         });
 
-        binding.editText.addTextChangedListener(new TextChangedListener(){
+        binding.editText.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null) {
@@ -73,22 +81,29 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
 
     @Override
     public void refreshPinUI() {
-        super.refreshPinUI();
-        pinBox.setVisibility(VISIBLE);
-        pinSlot.setStrokeColor(getPinColor());
-        titleText.setVisibility(GONE);
+        int[] colors = new int[] {getPinColor(), getPinColor()};
+        binding.editTextBox.setBoxStrokeColorStateList(new ColorStateList(states, colors));
 
         if (map != null) {
             binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
-            if (pin.getTitle(getContext()) != null) binding.editText.setTextKeepState(pin.getTitle(getContext()));
+            if (!binding.editText.hasFocus() && pin.getTitle(getContext()) != null) {
+                binding.editText.setText(pin.getTitle(getContext()));
+            }
         }
     }
 
     @Override
     public int[] getSlotLocationOnScreen(float scale) {
-        int[] location = new int[2];
-        pinSlot.getLocationOnScreen(location);
-        location[1] += (pinSlot.getHeight() * scale / 2);
-        return location;
+        return null;
+    }
+
+    @Override
+    public View getSlotBox() {
+        return null;
+    }
+
+    @Override
+    public ViewGroup getPinBox() {
+        return binding.pinBox;
     }
 }

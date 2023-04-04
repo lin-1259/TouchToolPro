@@ -90,11 +90,11 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         binding.expandButton.setOnClickListener(v -> {
             action.showDetail = !action.showDetail;
             binding.pinBox.setVisibility(action.showDetail ? VISIBLE : GONE);
-            binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_up : R.drawable.icon_down);
+            binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
             actionContext.save();
         });
         binding.pinBox.setVisibility(action.showDetail ? VISIBLE : GONE);
-        binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_up : R.drawable.icon_down);
+        binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
 
         for (Pin pin : action.getShowPins()) {
             addPinView(pin, 0);
@@ -139,7 +139,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         removePin.removeLinks(actionContext);
 
         PinBaseView<?> pinBaseView = getPinById(pin.getId());
-        ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
+        if (pinBaseView != null) ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
 
         PinBaseView<?> pinDetailView = getPinDetailById(pin.getId());
         if (pinDetailView != null) ((ViewGroup) pinDetailView.getParent()).removeView(pinDetailView);
@@ -176,7 +176,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     public PinBaseView<?> getPinByPosition(float rawX, float rawY) {
         for (PinBaseView<?> pinBaseView : pinBaseViews) {
             int[] location = new int[2];
-            View pinBox = pinBaseView.getPinBox();
+            View pinBox = pinBaseView.getSlotBox();
             pinBox.getLocationOnScreen(location);
             if (new Rect(location[0], location[1], location[0] + (int) (pinBox.getWidth() * getScaleX()), location[1] + (int) (pinBox.getHeight() * getScaleY())).contains((int) rawX, (int) rawY)) {
                 return pinBaseView;

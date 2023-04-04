@@ -212,10 +212,10 @@ public class Pin {
         return value;
     }
 
-    // todo: 需要context
     public void setValue(PinObject value) {
-        if (value == null) throw new RuntimeException("针脚的值为空");
+        if (value == null) return;
 
+        // 值类型变了，需要断开连接
         if (!value.getClass().equals(getPinClass())) {
             if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(LinkListener::onChanged);
         }

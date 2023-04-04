@@ -127,7 +127,7 @@ public class WorldState {
         ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(actionType);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(actionType)) {
-                if (startAction.isEnable()) service.runTask(task, startAction);
+                if (startAction.isEnable()) service.runTask(task.copy(), startAction);
             }
         }
 
@@ -135,7 +135,7 @@ public class WorldState {
         tasks = TaskRepository.getInstance().getTasksByStart(NormalStartAction.class);
         for (Task task : tasks) {
             for (StartAction startAction : task.getStartActions(NormalStartAction.class)) {
-                if (startAction.isEnable()) service.runTask(task, startAction);
+                if (startAction.isEnable()) service.runTask(task.copy(), startAction);
             }
         }
     }

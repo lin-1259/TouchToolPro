@@ -34,7 +34,6 @@
     <string name="capture_service_notification_text">点按即可关闭服务和通知</string>
 
 
-
     <string name="home">主页</string>
     <string name="task">任务</string>
     <string name="blueprint">蓝图</string>
@@ -54,6 +53,10 @@
     <string name="capture_service_off">录屏已关闭</string>
     <string name="capture_service_des">屏幕录制服务，开启之后能够使用图片点击与检测功能</string>
     <string name="capture_service_on_tips">当前任务需要检测图片，请开启屏幕录制</string>
+
+    <string name="play_tile_service_title">手动悬浮窗</string>
+    <string name="package_tile_service_title">当前活动</string>
+    <string name="package_tile_service_tips">应用包名为：%1$s\n活动名为：%2$s</string>
 
     <string name="report_running_error_tips">检测到应用出现崩溃，是否加入QQ群去上报错误？</string>
     <string name="report_running_error_copied">已复制</string>
@@ -120,13 +123,15 @@
     <string name="action_normal_start_title">自定义条件执行</string>
     <string name="action_normal_start_subtitle_condition">开始条件</string>
 
-    <string name="action_out_start_title">外部应用主动执行</string>
+    <string name="action_out_start_title">应用外调用</string>
     <string name="action_out_start_subtitle_id">Url</string>
     <string name="action_out_start_subtitle_copy">复制链接</string>
 
     <string name="action_manual_start_title">手动执行</string>
+    <string name="action_inner_start_title">并行执行</string>
+
     <string name="action_app_start_title">进应用或界面时执行</string>
-    <string name="action_app_start_subtitle_break">退应用或界面时中断</string>
+    <string name="action_app_start_subtitle_break">自动中断</string>
 
     <string name="action_time_start_title">定时执行</string>
     <string name="action_time_start_subtitle_date">日期</string>
@@ -174,6 +179,9 @@
 
     <string name="action_widget_state_title">界面内存在控件</string>
     <string name="action_widget_state_subtitle_widget">控件描述</string>
+
+    <string name="action_widget_text_state_title">获取控件文本</string>
+    <string name="action_widget_text_state_subtitle_text">文本</string>
 
     <string name="action_capture_state_title">录屏服务状态</string>
 
@@ -235,6 +243,9 @@
     <string name="action_bool_convert_not_title">反转条件</string>
     <string name="action_bool_convert_and_subtitle_condition">条件</string>
 
+    <string name="action_string_convert_int_title">文本转换为数值</string>
+    <string name="action_string_convert_int_subtitle_string">文本</string>
+    <string name="action_string_convert_int_subtitle_value">数值</string>
 
     <!-- 任务 - 逻辑 -->
     <string name="action_logic_subtitle_false">未达成</string>
@@ -246,12 +257,12 @@
     <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_wait_condition_logic_subtitle_periodic">检查间隔(ms)</string>
 
-    <string name="action_condition_while_logic_title">一直…到不满足条件</string>
+    <string name="action_condition_while_logic_title">条件循环执行</string>
     <string name="action_condition_while_logic_subtitle_condition">条件</string>
     <string name="action_condition_while_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_condition_while_logic_subtitle_end">结束</string>
 
-    <string name="action_for_loop_logic_title">循环执行</string>
+    <string name="action_for_loop_logic_title">循环执行…次</string>
     <string name="action_for_loop_logic_subtitle_start">开始值</string>
     <string name="action_for_loop_logic_subtitle_end">结束值</string>
     <string name="action_for_loop_logic_subtitle_curr">当前值</string>
@@ -264,23 +275,23 @@
     <string name="action_random_logic_subtitle_times">随机条数</string>
     <string name="action_random_logic_subtitle_complete">完成</string>
 
-    <string name="action_parallel_logic_title">并行执行直到…</string>
-    <string name="action_parallel_logic_subtitle_condition">达到完成数</string>
+    <string name="action_parallel_logic_title">并行执行到完成…条</string>
+    <string name="action_parallel_logic_subtitle_condition">完成条数</string>
     <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_parallel_logic_subtitle_complete">达成</string>
-
 
     <!-- 任务 - 加减乘除 -->
     <string name="action_int_add_operator_title">数值相加 ＋</string>
     <string name="action_int_reduce_operator_title">数值相减 －</string>
     <string name="action_int_multi_operator_title">数值相乘 ×</string>
     <string name="action_int_div_operator_title">数值相除 ÷</string>
+    <string name="action_int_mod_operator_title">数值取余 %</string>
     <string name="action_int_equal_operator_title">数值相等 =</string>
     <string name="action_int_large_operator_title">数值比较 &gt;</string>
     <string name="action_int_small_operator_title">数值比较 &lt;</string>
     <string name="action_int_random_operator_title">随机数值</string>
 
-    <string name="action_string_add_operator_title">文本拼接</string>
+    <string name="action_string_add_operator_title">文本拼接 +</string>
 
     <!-- 针脚 -->
     <string name="pin_value">对象</string>
@@ -317,6 +328,10 @@
     <string name="time_max">最大</string>
     <string name="time_min">最小</string>
 
+    <!-- 采集器 - 位置 -->
+    <string name="point_x">X</string>
+    <string name="point_y">Y</string>
+
     <!-- 采集器 - 系统按键 -->
     <string name="device_not_support_lock">当前设备不支持调用锁屏功能</string>
     <string name="device_not_support_snap">当前设备不支持调用系统截图</string>
@@ -324,4 +339,11 @@
     <!-- 任务日志 -->
     <string name="task_running_log">任务日志</string>
     <string name="task_running_log_clear">清除日志</string>
+
+
+    <!-- 设置 -->
+    <string name="app_setting_title">应用设置</string>
+    <string name="app_setting_hide_background">隐藏后台</string>
+
+
 </resources>

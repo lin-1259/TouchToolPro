@@ -17,14 +17,6 @@
         app:icon="@drawable/icon_remove"
         app:iconTint="?attr/colorOutline" />
 
-    <FrameLayout
-        android:id="@+id/pinBox"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:minWidth="32dp"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/pinSlotBox"
         android:layout_width="32dp"
@@ -36,18 +28,18 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="12dp"
-            android:ellipsize="end"
             android:gravity="center"
             android:lines="1"
             android:paddingHorizontal="2dp"
-            android:textSize="6sp"
+            android:textSize="5sp"
             tools:ignore="SmallSp" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/pinSlot"
             style="?attr/materialCardViewFilledStyle"
             android:layout_width="12dp"
-            android:layout_height="12dp" />
+            android:layout_height="12dp"
+            app:strokeWidth="1dp" />
 
     </LinearLayout>
 

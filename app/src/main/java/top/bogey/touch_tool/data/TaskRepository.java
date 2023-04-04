@@ -5,17 +5,18 @@ import android.content.Context;
 import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.GsonUtils;
-import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskChangedCallback;
 
 public class TaskRepository {
@@ -27,7 +28,10 @@ public class TaskRepository {
     private final static MMKV functionMMKV = MMKV.mmkvWithID(FUNCTION_DB, MMKV.SINGLE_PROCESS_MODE);
 
     private final static String LOG_DB = "LOG_DB";
-    private final static MMKV loggerMMKV = MMKV.mmkvWithID(LOG_DB, MMKV.SINGLE_PROCESS_MODE);
+    private final static MMKV loggerMMKV = MMKV.mmkvWithID(LOG_DB, MMKV.MULTI_PROCESS_MODE);
+
+    private final static String TAGS = "TAGS";
+    private final static MMKV tagsMMKV = MMKV.mmkvWithID(TAGS, MMKV.SINGLE_PROCESS_MODE);
 
     private final LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
     private final HashSet<TaskChangedCallback> callbacks = new HashSet<>();
@@ -172,6 +176,23 @@ public class TaskRepository {
         return new ArrayList<>(functions.values());
     }
 
+
+    public ArrayList<String> getTags(Context context) {
+        String[] keys = tagsMMKV.allKeys();
+        ArrayList<String> tags = new ArrayList<>(Collections.singletonList(context.getString(R.string.tag_no)));
+        if (keys != null) {
+            for (int i = keys.length - 1; i >= 0; i--) {
+                String key = keys[i];
+                tags.add(tags.size() - 1, key);
+            }
+        }
+        return tags;
+    }
+
+    public void addTag(String tag) {
+        tagsMMKV.encode(tag, true);
+    }
+
     public void removeTag(String tag) {
         if (tag == null || tag.isEmpty()) return;
         tasks.forEach((id, task) -> {
@@ -181,7 +202,7 @@ public class TaskRepository {
             }
         });
 
-        SettingSave.getInstance().removeTag(tag);
+        tagsMMKV.remove(tag);
     }
 
     public void addLog(Task task, String action, String log) {

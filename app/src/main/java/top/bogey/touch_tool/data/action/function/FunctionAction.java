@@ -123,7 +123,6 @@ public class FunctionAction extends BaseAction {
     public void setPinValue(String outerPinId, PinObject value) {
         Pin pin = getPinById(getMappingPinId(outerPinId));
         pin.setValue(value.copy());
-        if (callback != null) callback.onPinValueChanged(pin);
     }
 
     public void setPinTitle(String outerPinId, String title) {
@@ -163,8 +162,6 @@ public class FunctionAction extends BaseAction {
         void onPinAdded(Pin pin);
 
         void onPinRemoved(Pin pin);
-
-        void onPinValueChanged(Pin pin);
 
         void onPinTitleChanged(Pin pin);
     }

@@ -41,26 +41,20 @@ public class RandomLogicAction extends NormalAction {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         ArrayList<Pin> pins = getShowPins();
+        pins.remove(completePin);
+        pins.remove(addPin);
+        pins.remove(timesPin);
         pins.remove(inPin);
-        pins.remove(pins.size() - 1);
 
-        if (timesPin == null) {
+        int times = ((PinInteger) getPinValue(runnable, actionContext, timesPin)).getValue();
+        times = Math.min(times, pins.size());
+        for (int i = 0; i < times; i++) {
+            if (runnable.isInterrupt() || actionContext.isReturned()) return;
             int round = (int) Math.round(Math.random() * (pins.size() - 1));
             Pin executePin = pins.get(round);
             doNextAction(runnable, actionContext, executePin);
-        } else {
-            pins.remove(timesPin);
-            pins.remove(completePin);
-            int times = ((PinInteger) getPinValue(runnable, actionContext, timesPin)).getValue();
-            times = Math.min(times, pins.size());
-            for (int i = 0; i < times; i++) {
-                if (runnable.isInterrupt() || actionContext.isReturned()) return;
-                int round = (int) Math.round(Math.random() * (pins.size() - 1));
-                Pin executePin = pins.get(round);
-                doNextAction(runnable, actionContext, executePin);
-                pins.remove(round);
-            }
-            doNextAction(runnable, actionContext, completePin);
+            pins.remove(round);
         }
+        doNextAction(runnable, actionContext, completePin);
     }
 }

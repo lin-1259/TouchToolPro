@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -28,7 +29,6 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinValue;
 import top.bogey.touch_tool.ui.card.BaseCard;
@@ -292,24 +292,73 @@ public class CardLayoutView extends FrameLayout {
         super.dispatchDraw(canvas);
     }
 
+    //带拐点的路径，尽可能少的拐点
+    private Path calculateLinePath(int[] outLocation, int[] inLocation) {
+        Path path = new Path();
+        if (outLocation == null || inLocation == null) return path;
+        float scaleGridSize = getScaleGridSize();
+
+        PointF outLinkLinePoint = new PointF(outLocation[0], outLocation[1] + scaleGridSize);
+        PointF inLinkLinePoint = new PointF(inLocation[0], inLocation[1] - scaleGridSize);
+        // 结束点在右边，为正方向
+        int xScale = outLinkLinePoint.x < inLinkLinePoint.x ? 1 : -1;
+        // 结束点在下边，为正方向
+        int yScale = outLinkLinePoint.y < inLinkLinePoint.y ? 1 : -1;
+
+        path.moveTo(outLocation[0], outLocation[1]);
+        path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y);
+
+        float offsetX = Math.abs(outLinkLinePoint.x - inLinkLinePoint.x);
+        float offsetY = Math.abs(outLinkLinePoint.y - inLinkLinePoint.y);
+
+        /* X更长：yScale = 1, 就先竖，再横，再竖
+                yScale = -1， 就先横，再斜，再横
+           Y更长：yScale = -1, 就先横，再竖，再横
+                yScale = 1, 就先竖，再斜，再竖
+        */
+        float linkLineLen = Math.abs(offsetX - offsetY) / 2;
+        if (yScale == -1) {
+            if (offsetX - scaleGridSize * 2 > offsetY) {
+                // X更长：就先横，再斜，再横
+                path.lineTo(outLinkLinePoint.x + linkLineLen * xScale, outLinkLinePoint.y);
+                path.lineTo(inLinkLinePoint.x - linkLineLen * xScale, inLinkLinePoint.y);
+            } else if (offsetX > scaleGridSize * 2){
+                // Y更长：就先横，再竖，再横
+                path.lineTo(outLinkLinePoint.x + offsetX / 2 * xScale, outLinkLinePoint.y);
+                path.lineTo(inLinkLinePoint.x - offsetX / 2 * xScale, inLinkLinePoint.y);
+            } else {
+                // X短于两格
+                float x = Math.max(outLinkLinePoint.x, inLinkLinePoint.x) + scaleGridSize * 2;
+                path.lineTo(x, outLinkLinePoint.y);
+                path.lineTo(x, inLinkLinePoint.y);
+            }
+        } else {
+            if (offsetX > offsetY) {
+                // X更长：就先竖，再横，再竖
+                path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + offsetY / 2);
+                path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - offsetY / 2);
+            } else {
+                // Y更长：就先竖，再斜，再竖
+                path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + linkLineLen);
+                path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - linkLineLen);
+            }
+        }
+
+        path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y);
+        path.lineTo(inLocation[0], inLocation[1]);
+
+        path.offset(-location[0] - getX(), -location[1] - getY());
+
+        return path;
+    }
+
     private Path calculateLinePath(PinBaseView<?> outPin, PinBaseView<?> inPin) {
         Path path = new Path();
         if (outPin == null || inPin == null) return path;
 
         int[] outLocation = outPin.getSlotLocationOnScreen(scale);
         int[] inLocation = inPin.getSlotLocationOnScreen(scale);
-        float scaleGridSize = getScaleGridSize();
-
-            float offset = inLocation[1] - outLocation[1];
-            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
-            float y1 = outLocation[1] + offset;
-            float y2 = inLocation[1] - offset;
-            path.moveTo(outLocation[0], outLocation[1]);
-            path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
-
-        path.offset(-location[0] - getX(), -location[1] - getY());
-
-        return path;
+        return calculateLinePath(outLocation, inLocation);
     }
 
     private Path calculateLinePath(PinBaseView<?> pinBaseView) {
@@ -325,17 +374,7 @@ public class CardLayoutView extends FrameLayout {
             inLocation = new int[]{(int) dragX, (int) dragY};
             outLocation = pinLocation;
         }
-
-        float scaleGridSize = getScaleGridSize();
-            float offset = inLocation[1] - outLocation[1];
-            offset = offset > scaleGridSize ? offset : scaleGridSize * 8;
-            float y1 = outLocation[1] + offset;
-            float y2 = inLocation[1] - offset;
-            path.moveTo(outLocation[0], outLocation[1]);
-            path.cubicTo(outLocation[0], y1, inLocation[0], y2, inLocation[0], inLocation[1]);
-
-        path.offset(-location[0] - getX(), -location[1] - getY());
-        return path;
+        return calculateLinePath(outLocation, inLocation);
     }
 
     @SuppressLint("ClickableViewAccessibility")

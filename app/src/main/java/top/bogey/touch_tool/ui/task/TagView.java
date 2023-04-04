@@ -11,9 +11,9 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskTabBinding;
 import top.bogey.touch_tool.utils.AppUtils;
-import top.bogey.touch_tool.utils.SettingSave;
 
 public class TagView extends BottomSheetDialogFragment {
     private final TaskView taskView;
@@ -32,7 +32,7 @@ public class TagView extends BottomSheetDialogFragment {
 
         binding.addButton.setOnClickListener(v -> AppUtils.showEditDialog(requireContext(), R.string.tag_add, null, result -> {
             if (result != null && result.length() > 0) {
-                SettingSave.getInstance().addTag(result.toString());
+                TaskRepository.getInstance().addTag(result.toString());
                 adapter.addTag(result.toString());
             }
         }));

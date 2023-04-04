@@ -18,7 +18,8 @@
             android:id="@+id/pinSlot"
             style="?attr/materialCardViewFilledStyle"
             android:layout_width="12dp"
-            android:layout_height="12dp" />
+            android:layout_height="12dp"
+            app:strokeWidth="1dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/title"
@@ -31,14 +32,6 @@
             tools:ignore="SmallSp" />
 
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/pinBox"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:minWidth="32dp"
-        android:visibility="gone" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/removeButton"

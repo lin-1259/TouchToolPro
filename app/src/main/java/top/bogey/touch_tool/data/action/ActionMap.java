@@ -21,6 +21,7 @@ import top.bogey.touch_tool.data.action.convert.BoolConvertToNot;
 import top.bogey.touch_tool.data.action.convert.BoolConvertToOr;
 import top.bogey.touch_tool.data.action.convert.IntConvertToPosition;
 import top.bogey.touch_tool.data.action.convert.PositionConvertToInt;
+import top.bogey.touch_tool.data.action.convert.StringConvertToInt;
 import top.bogey.touch_tool.data.action.convert.ValueConvertToString;
 import top.bogey.touch_tool.data.action.logic.ConditionLogicAction;
 import top.bogey.touch_tool.data.action.logic.ConditionWhileLogicAction;
@@ -33,6 +34,7 @@ import top.bogey.touch_tool.data.action.operator.IntAddAction;
 import top.bogey.touch_tool.data.action.operator.IntDivAction;
 import top.bogey.touch_tool.data.action.operator.IntEqualAction;
 import top.bogey.touch_tool.data.action.operator.IntLargeAction;
+import top.bogey.touch_tool.data.action.operator.IntModAction;
 import top.bogey.touch_tool.data.action.operator.IntMultiAction;
 import top.bogey.touch_tool.data.action.operator.IntRandomAction;
 import top.bogey.touch_tool.data.action.operator.IntReduceAction;
@@ -55,6 +57,7 @@ import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.data.action.state.ScreenStateAction;
 import top.bogey.touch_tool.data.action.state.TextStateAction;
 import top.bogey.touch_tool.data.action.state.WidgetStateAction;
+import top.bogey.touch_tool.data.action.state.WidgetTextStateAction;
 
 public class ActionMap {
     private static ActionMap actionMap;
@@ -63,7 +66,6 @@ public class ActionMap {
     private ActionMap() {
         LinkedHashMap<Class<? extends BaseAction>, Integer> startActions = new LinkedHashMap<>();
         actions.put(ActionType.START, startActions);
-        startActions.put(NormalStartAction.class, R.string.action_normal_start_title);
         startActions.put(ManualStartAction.class, R.string.action_manual_start_title);
         startActions.put(AppStartAction.class, R.string.action_app_start_title);
         startActions.put(TimeStartAction.class, R.string.action_time_start_title);
@@ -71,6 +73,7 @@ public class ActionMap {
         startActions.put(BatteryChargingStartAction.class, R.string.action_battery_charging_start_title);
         startActions.put(NotificationStartAction.class, R.string.action_notification_start_title);
         startActions.put(OutStartAction.class, R.string.action_out_start_title);
+        startActions.put(NormalStartAction.class, R.string.action_normal_start_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
         actions.put(ActionType.LOGIC, logicActions);
@@ -103,6 +106,7 @@ public class ActionMap {
         stateActions.put(ImageStateAction.class, R.string.action_image_state_title);
         stateActions.put(ColorStateAction.class, R.string.action_color_state_title);
         stateActions.put(WidgetStateAction.class, R.string.action_widget_state_title);
+        stateActions.put(WidgetTextStateAction.class, R.string.action_widget_text_state_title);
         stateActions.put(BatteryStateAction.class, R.string.action_battery_state_title);
         stateActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_state_title);
         stateActions.put(ScreenStateAction.class, R.string.action_screen_state_title);
@@ -116,6 +120,7 @@ public class ActionMap {
         convertActions.put(BoolConvertToOr.class, R.string.action_bool_convert_or_title);
         convertActions.put(BoolConvertToAnd.class, R.string.action_bool_convert_and_title);
         convertActions.put(BoolConvertToNot.class, R.string.action_bool_convert_not_title);
+        convertActions.put(StringConvertToInt.class, R.string.action_string_convert_int_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> operateActions = new LinkedHashMap<>();
         actions.put(ActionType.OPERATE, operateActions);
@@ -123,6 +128,7 @@ public class ActionMap {
         operateActions.put(IntReduceAction.class, R.string.action_int_reduce_operator_title);
         operateActions.put(IntMultiAction.class, R.string.action_int_multi_operator_title);
         operateActions.put(IntDivAction.class, R.string.action_int_div_operator_title);
+        operateActions.put(IntModAction.class, R.string.action_int_mod_operator_title);
         operateActions.put(IntEqualAction.class, R.string.action_int_equal_operator_title);
         operateActions.put(IntLargeAction.class, R.string.action_int_large_operator_title);
         operateActions.put(IntSmallAction.class, R.string.action_int_small_operator_title);

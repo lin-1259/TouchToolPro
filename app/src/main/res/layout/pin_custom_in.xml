@@ -6,49 +6,27 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical">
 
-    <LinearLayout
-        android:id="@+id/pinSlotBox"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:gravity="center_vertical">
+    <com.google.android.material.textfield.TextInputLayout
+        style="?attr/textInputOutlinedStyle"
+        android:id="@+id/editTextBox"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:hint="@string/function_pin_hint"
+        app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:lines="1"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="0dp"
             android:textSize="9sp"
-            android:visibility="gone"
             tools:ignore="SmallSp" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="72dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:hint="@string/function_pin_hint"
-            app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editText"
-                android:layout_width="match_parent"
-                android:layout_height="20dp"
-                android:lines="1"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="0dp"
-                android:textSize="9sp"
-                tools:ignore="SmallSp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/pinSlot"
-            style="?attr/materialCardViewFilledStyle"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_marginStart="4dp" />
-
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <FrameLayout
         android:id="@+id/pinBox"

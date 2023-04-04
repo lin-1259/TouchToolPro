@@ -132,8 +132,13 @@ public class MainActivity extends BaseActivity {
     public void handleIntent(Intent intent) {
         if (intent == null) return;
 
-        if (Intent.ACTION_SEND.equals(intent.getAction()) && intent.getType() != null) {
-            Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        if (intent.getType() != null) {
+            Uri uri = null;
+            if (Intent.ACTION_SEND.equals(intent.getAction())) {
+                uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+                uri = intent.getData();
+            }
             if (uri != null) {
                 saveTasksByFile(uri);
             }

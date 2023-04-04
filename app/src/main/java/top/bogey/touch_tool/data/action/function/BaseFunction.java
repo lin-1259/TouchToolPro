@@ -172,7 +172,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
     public void setPinValue(FunctionAction functionAction, Pin innerPin, PinObject value) {
         String pinId = functionAction.getPinIdMap().get(innerPin.getId());
         Pin pin = getPinById(pinId);
-        pin.setValue(value.copy());
+        pin.setValue(value);
 
         for (FunctionAction function : (functionAction.getTag().isStart() ? startFunctions : endFunctions)) {
             function.setPinValue(pinId, value);

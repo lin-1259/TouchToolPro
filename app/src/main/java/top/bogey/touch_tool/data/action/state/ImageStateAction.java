@@ -38,6 +38,7 @@ public class ImageStateAction extends StateAction {
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (!pin.getId().equals(statePin.getId())) return;
+
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (!service.isCaptureEnabled()) {

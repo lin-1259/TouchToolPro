@@ -20,9 +20,6 @@ public class AppStartAction extends StartAction {
     private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_WITH_ACTIVITY_MODE));
     private transient Pin breakPin = new Pin(new PinBoolean(true), R.string.action_app_start_subtitle_break);
 
-    private transient String currPackage;
-    private transient String currActivity;
-
     public AppStartAction() {
         super(R.string.action_app_start_title);
         appPin = addPin(appPin);
@@ -62,30 +59,22 @@ public class AppStartAction extends StartAction {
             return true;
         }
 
+        // 包含自己
         if (packages.containsKey(packageName)) {
             ArrayList<String> activityClasses = packages.get(packageName);
             if (activityClasses == null) return false;
 
             // 活动为空表示只包含应用就行，或者包含对应活动才行
-            return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());
+            return activityClasses.isEmpty() || activityClasses.contains(activityName);
         }
         return false;
     }
 
     @Override
     public boolean checkStop(TaskRunnable runnable, ActionContext actionContext) {
-        if (breakPin == null) return false;
         PinBoolean needBreak = (PinBoolean) getPinValue(runnable, actionContext, breakPin);
         if (needBreak.getValue()) {
-            String packageName = WorldState.getInstance().getPackageName();
-            String activityName = WorldState.getInstance().getActivityName();
-            if (currPackage != null && currActivity != null && currPackage.equals(packageName) && currActivity.equals(activityName)) return false;
-            if (checkReady(runnable, actionContext)) {
-                currPackage = packageName;
-                currActivity = activityName;
-                return false;
-            }
-            return true;
+            return !checkReady(runnable, actionContext);
         }
         return false;
     }

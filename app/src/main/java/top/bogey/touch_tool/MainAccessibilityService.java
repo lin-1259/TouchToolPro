@@ -191,7 +191,7 @@ public class MainAccessibilityService extends AccessibilityService {
                             showToast(getString(R.string.capture_service_on_tips));
                             startCaptureService(true, result -> {
                                 if (result) {
-                                    runTask(task, startAction);
+                                    runTask(copyTask, startAction);
                                 }
                             });
                         } else {
@@ -222,7 +222,7 @@ public class MainAccessibilityService extends AccessibilityService {
             }
         }
 
-        TaskRunnable runnable = new TaskRunnable(task.copy(), startAction);
+        TaskRunnable runnable = new TaskRunnable(task, startAction);
         if (callback != null) runnable.addCallback(callback);
         runnable.addCallback(new TaskRunningCallback() {
             @Override

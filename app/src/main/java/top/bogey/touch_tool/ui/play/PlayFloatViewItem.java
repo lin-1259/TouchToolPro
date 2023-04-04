@@ -74,7 +74,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
                     service.stopTask(runnable);
                 }
             } else {
-                runnable = service.runTask(task, startAction, this);
+                runnable = service.runTask(task.copy(), startAction, this);
             }
         }
     }
