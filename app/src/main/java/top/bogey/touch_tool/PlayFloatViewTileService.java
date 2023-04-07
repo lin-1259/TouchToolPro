@@ -3,6 +3,8 @@ package top.bogey.touch_tool;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 
+import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.ui.setting.SettingView;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class PlayFloatViewTileService extends TileService {
@@ -19,10 +21,13 @@ public class PlayFloatViewTileService extends TileService {
     @Override
     public void onClick() {
         super.onClick();
-        boolean visible = SettingSave.getInstance().isPlayViewVisible();
-        SettingSave.getInstance().setPlayViewVisible(!visible);
+        boolean visible = !SettingSave.getInstance().isPlayViewVisible();
+        SettingSave.getInstance().setPlayViewVisible(visible);
         Tile tile = getQsTile();
-        tile.setState(visible ? Tile.STATE_INACTIVE : Tile.STATE_ACTIVE);
+        tile.setState(visible ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         tile.updateTile();
+
+        SettingView.resetSwitchState();
+        WorldState.getInstance().showManualActionDialog(visible);
     }
 }

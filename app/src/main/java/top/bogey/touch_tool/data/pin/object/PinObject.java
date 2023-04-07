@@ -4,18 +4,8 @@ import android.content.Context;
 
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
-import com.google.gson.Gson;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
-
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -52,18 +42,4 @@ public class PinObject {
                 .build();
     }
 
-    public static class PinObjectDeserializer implements JsonDeserializer<PinObject> {
-        @Override
-        public PinObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            String cls = jsonObject.get("cls").getAsString();
-            try {
-                Class<?> aClass = Class.forName(cls);
-                Constructor<?> constructor = aClass.getConstructor(JsonObject.class);
-                return (PinObject) constructor.newInstance(jsonObject);
-            } catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
 }

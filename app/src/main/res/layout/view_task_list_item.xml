@@ -60,6 +60,15 @@
                     app:icon="@drawable/icon_edit"
                     app:iconSize="16dp" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/copyButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    app:icon="@drawable/icon_copy"
+                    app:iconSize="16dp" />
+
             </LinearLayout>
 
             <com.google.android.material.materialswitch.MaterialSwitch

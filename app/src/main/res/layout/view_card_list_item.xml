@@ -4,7 +4,6 @@
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="match_parent"
     android:layout_height="32dp"
-    android:layout_marginHorizontal="4dp"
     android:layout_marginVertical="2dp">
 
     <LinearLayout
@@ -40,6 +39,16 @@
             android:layout_marginStart="4dp"
             android:visibility="gone"
             app:icon="@drawable/icon_copy"
+            app:iconTint="?attr/colorOutline" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/exportButton"
+            style="@style/Theme.TouchTool.IconButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="4dp"
+            android:visibility="gone"
+            app:icon="@drawable/icon_export"
             app:iconTint="?attr/colorOutline" />
 
         <com.google.android.material.button.MaterialButton

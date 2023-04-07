@@ -66,7 +66,7 @@ public class CardLayoutView extends FrameLayout {
     private float offsetX = 0;
     private float offsetY = 0;
 
-    private float scale = 0.9f;
+    private float scale = 1f;
     private final ScaleGestureDetector detector;
 
     private boolean editMode = true;
@@ -105,7 +105,7 @@ public class CardLayoutView extends FrameLayout {
             public boolean onScale(@NonNull ScaleGestureDetector detector) {
                 float oldScale = scale;
                 scale *= detector.getScaleFactor();
-                scale = Math.max(0.3f, Math.min(scale, 1.5f));
+                scale = Math.max(0.3f, Math.min(scale, 2f));
 
                 // 设置居中缩放偏移
                 float v = 1 - scale / oldScale;
@@ -144,6 +144,9 @@ public class CardLayoutView extends FrameLayout {
         cardMap.clear();
         removeAllViews();
         for (BaseAction action : actionContext.getActions()) {
+//            if (action instanceof BaseFunction) {
+//                ((BaseFunction) action).sync(actionContext);
+//            }
             BaseCard<?> card = newCard(actionContext, action);
             setCardPosition(card);
             addView(card);
@@ -238,7 +241,7 @@ public class CardLayoutView extends FrameLayout {
         float startY = offsetY - ofY;
         for (int i = 0; i < gridRow; i++) {
             if (startY == i * gridScaleSize) {
-                gridPaint.setStrokeWidth(4);
+                gridPaint.setStrokeWidth(6);
             } else {
                 float v = (startY - i * gridScaleSize) % bigGridSize;
                 gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
@@ -249,7 +252,7 @@ public class CardLayoutView extends FrameLayout {
         float startX = offsetX - ofX;
         for (int i = 0; i < gridCol; i++) {
             if (offsetX == i * gridScaleSize + ofX) {
-                gridPaint.setStrokeWidth(4);
+                gridPaint.setStrokeWidth(6);
             } else {
                 float v = (startX - i * gridScaleSize) % bigGridSize;
                 gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
@@ -293,13 +296,22 @@ public class CardLayoutView extends FrameLayout {
     }
 
     //带拐点的路径，尽可能少的拐点
-    private Path calculateLinePath(int[] outLocation, int[] inLocation) {
+    private Path calculateLinePath(int[] outLocation, int[] inLocation, boolean v) {
         Path path = new Path();
         if (outLocation == null || inLocation == null) return path;
         float scaleGridSize = getScaleGridSize();
 
-        PointF outLinkLinePoint = new PointF(outLocation[0], outLocation[1] + scaleGridSize);
-        PointF inLinkLinePoint = new PointF(inLocation[0], inLocation[1] - scaleGridSize);
+        PointF outLinkLinePoint;
+        PointF inLinkLinePoint;
+
+        if (v) {
+            outLinkLinePoint = new PointF(outLocation[0], outLocation[1] + scaleGridSize);
+            inLinkLinePoint = new PointF(inLocation[0], inLocation[1] - scaleGridSize);
+        } else {
+            outLinkLinePoint = new PointF(outLocation[0] + scaleGridSize, outLocation[1]);
+            inLinkLinePoint = new PointF(inLocation[0] - scaleGridSize, inLocation[1]);
+        }
+
         // 结束点在右边，为正方向
         int xScale = outLinkLinePoint.x < inLinkLinePoint.x ? 1 : -1;
         // 结束点在下边，为正方向
@@ -310,37 +322,72 @@ public class CardLayoutView extends FrameLayout {
 
         float offsetX = Math.abs(outLinkLinePoint.x - inLinkLinePoint.x);
         float offsetY = Math.abs(outLinkLinePoint.y - inLinkLinePoint.y);
+        boolean xLong = offsetX > offsetY;
 
-        /* X更长：yScale = 1, 就先竖，再横，再竖
+        /*
+        垂直连接：
+            X长度为0：
+                yScale = 1, 向下连接，看其他条件
+                yScale = -1, 向右绕2格连接
+            X更长：
+                yScale = 1, 就先竖，再横，再竖
                 yScale = -1， 就先横，再斜，再横
-           Y更长：yScale = -1, 就先横，再竖，再横
+            Y更长：
                 yScale = 1, 就先竖，再斜，再竖
+                yScale = -1, 就先横，再竖，再横
+        水平连接：
+            X更长：
+                xScale = 1, 就先横，再斜，再横
+                xScale = -1, 就先竖，再横，再竖
+            Y更长：
+                xScale = 1, 就先横，再竖，再横
+                xScale = -1, 就先竖，再斜，再竖
+            Y长度为0：
+                xScale = 1, 水平连接，看其他条件
+                xScale = -1, 向下绕2格连接
         */
         float linkLineLen = Math.abs(offsetX - offsetY) / 2;
-        if (yScale == -1) {
-            if (offsetX - scaleGridSize * 2 > offsetY) {
-                // X更长：就先横，再斜，再横
-                path.lineTo(outLinkLinePoint.x + linkLineLen * xScale, outLinkLinePoint.y);
-                path.lineTo(inLinkLinePoint.x - linkLineLen * xScale, inLinkLinePoint.y);
-            } else if (offsetX > scaleGridSize * 2){
-                // Y更长：就先横，再竖，再横
-                path.lineTo(outLinkLinePoint.x + offsetX / 2 * xScale, outLinkLinePoint.y);
-                path.lineTo(inLinkLinePoint.x - offsetX / 2 * xScale, inLinkLinePoint.y);
-            } else {
-                // X短于两格
-                float x = Math.max(outLinkLinePoint.x, inLinkLinePoint.x) + scaleGridSize * 2;
+
+        boolean flag = true;
+        if (offsetX < scaleGridSize * 3.1 && v) {
+            // 向左绕2格连接
+            if (yScale == -1) {
+                float x = Math.max(outLinkLinePoint.x, inLinkLinePoint.x) - scaleGridSize * 6;
                 path.lineTo(x, outLinkLinePoint.y);
                 path.lineTo(x, inLinkLinePoint.y);
+                flag = false;
             }
-        } else {
-            if (offsetX > offsetY) {
-                // X更长：就先竖，再横，再竖
-                path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + offsetY / 2);
-                path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - offsetY / 2);
+        } else if (offsetY < scaleGridSize * 3.1 && !v) {
+            //向下绕2格连接
+            if (xScale == -1) {
+                float y = Math.max(outLinkLinePoint.y, inLinkLinePoint.y) + scaleGridSize * 6;
+                path.lineTo(outLinkLinePoint.x, y);
+                path.lineTo(inLinkLinePoint.x, y);
+                flag = false;
+            }
+        }
+
+        if (flag) {
+            if (xLong) {
+                if ((v && yScale == 1) || (!v && xScale == -1)) {
+                    //就先竖，再横，再竖
+                    path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + offsetY / 2 * yScale);
+                    path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - offsetY / 2 * yScale);
+                } else {
+                    //就先横，再斜，再横
+                    path.lineTo(outLinkLinePoint.x + linkLineLen * xScale, outLinkLinePoint.y);
+                    path.lineTo(inLinkLinePoint.x - linkLineLen * xScale, inLinkLinePoint.y);
+                }
             } else {
-                // Y更长：就先竖，再斜，再竖
-                path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + linkLineLen);
-                path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - linkLineLen);
+                if ((v && yScale == 1) || (!v && xScale == -1)) {
+                    //就先竖，再斜，再竖
+                    path.lineTo(outLinkLinePoint.x, outLinkLinePoint.y + linkLineLen * yScale);
+                    path.lineTo(inLinkLinePoint.x, inLinkLinePoint.y - linkLineLen * yScale);
+                } else {
+                    //就先横，再竖，再横
+                    path.lineTo(outLinkLinePoint.x + offsetX / 2 * xScale, outLinkLinePoint.y);
+                    path.lineTo(inLinkLinePoint.x - offsetX / 2 * xScale, inLinkLinePoint.y);
+                }
             }
         }
 
@@ -358,7 +405,7 @@ public class CardLayoutView extends FrameLayout {
 
         int[] outLocation = outPin.getSlotLocationOnScreen(scale);
         int[] inLocation = inPin.getSlotLocationOnScreen(scale);
-        return calculateLinePath(outLocation, inLocation);
+        return calculateLinePath(outLocation, inLocation, outPin.getPin().isVertical());
     }
 
     private Path calculateLinePath(PinBaseView<?> pinBaseView) {
@@ -374,7 +421,7 @@ public class CardLayoutView extends FrameLayout {
             inLocation = new int[]{(int) dragX, (int) dragY};
             outLocation = pinLocation;
         }
-        return calculateLinePath(outLocation, inLocation);
+        return calculateLinePath(outLocation, inLocation, pinBaseView.getPin().isVertical());
     }
 
     @SuppressLint("ClickableViewAccessibility")

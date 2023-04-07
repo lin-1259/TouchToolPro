@@ -19,6 +19,7 @@ import top.bogey.touch_tool.data.pin.PinMap;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.databinding.PinCustomInBinding;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
+import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.TextChangedListener;
 
 @SuppressLint("ViewConstructor")
@@ -26,15 +27,10 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
     private PinObject pinObject;
     private final ArrayMap<Class<? extends PinObject>, Integer> map = PinMap.getInstance().getMap();
 
-    private final int[][] states = new int[2][];
-
     public CustomPinInView(@NonNull Context context, CustomCard card, Pin pin) {
         super(context, PinCustomInBinding.class, card, pin);
         initRemoveButton(binding.removeButton);
         setValueView();
-
-        states[0] = new int[] {android.R.attr.state_focused};
-        states[1] = new int[] {};
 
         pinObject = pin.getValue();
 
@@ -81,8 +77,10 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
 
     @Override
     public void refreshPinUI() {
-        int[] colors = new int[] {getPinColor(), getPinColor()};
-        binding.editTextBox.setBoxStrokeColorStateList(new ColorStateList(states, colors));
+        binding.pinSlot.setStrokeColor(getPinColor());
+        boolean linked = pin.getLinks().size() > 0;
+        binding.pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
+        binding.pinSlot.setShapeAppearanceModel(getPinStyle());
 
         if (map != null) {
             binding.spinner.setSelection(map.indexOfKey(pin.getPinClass()));
@@ -94,12 +92,15 @@ public class CustomPinInView extends PinBaseView<PinCustomInBinding> {
 
     @Override
     public int[] getSlotLocationOnScreen(float scale) {
-        return null;
+        int[] location = new int[2];
+        binding.pinSlot.getLocationOnScreen(location);
+        location[1] += (binding.pinSlot.getHeight() / 2 * scale);
+        return location;
     }
 
     @Override
     public View getSlotBox() {
-        return null;
+        return binding.pinSlotBox;
     }
 
     @Override

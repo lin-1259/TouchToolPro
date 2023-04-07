@@ -31,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> intentLauncher;
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<String> contentLauncher;
+    private ActivityResultLauncher<String> createDocumentLauncher;
     private PermissionResultCallback resultCallback;
 
     @Override
@@ -54,6 +55,14 @@ public class BaseActivity extends AppCompatActivity {
         });
 
         contentLauncher = registerForActivityResult(new ActivityResultContracts.GetContent(), result -> {
+            if (result != null && resultCallback != null) {
+                Intent intent = new Intent();
+                intent.setData(result);
+                resultCallback.onResult(RESULT_OK, intent);
+            }
+        });
+
+        createDocumentLauncher = registerForActivityResult(new ActivityResultContracts.CreateDocument("text/*"), result -> {
             if (result != null && resultCallback != null) {
                 Intent intent = new Intent();
                 intent.setData(result);
@@ -108,11 +117,20 @@ public class BaseActivity extends AppCompatActivity {
         contentLauncher.launch("application/octet-stream");
     }
 
+    public void launcherCreateDocument(String fileName, PermissionResultCallback callback) {
+        if (createDocumentLauncher == null) {
+            if (callback != null) callback.onResult(Activity.RESULT_CANCELED, null);
+            return;
+        }
+        resultCallback = callback;
+        createDocumentLauncher.launch(fileName);
+    }
+
     public void handlePlayFloatView(int size) {
-        if (!SettingSave.getInstance().isPlayViewVisible()) return;
+        int count = SettingSave.getInstance().isPlayViewVisible() ? size : 0;
         runOnUiThread(() -> {
-            PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getCanonicalName());
-            if (size == 0) {
+            PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getName());
+            if (count == 0) {
                 if (view != null) view.setNeedRemove(true);
             } else {
                 if (view == null) {

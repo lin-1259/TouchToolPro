@@ -4,16 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -52,6 +45,7 @@ public class BaseAction {
     public BaseAction(@StringRes int titleId, JsonObject jsonObject) {
         cls = GsonUtils.getAsString(jsonObject, "cls", getClass().getName());
         id = GsonUtils.getAsString(jsonObject, "id", UUID.randomUUID().toString());
+        title = GsonUtils.getAsString(jsonObject, "title", null);
         des = GsonUtils.getAsString(jsonObject, "des", null);
 
         x = GsonUtils.getAsInt(jsonObject, "x", 0);
@@ -190,7 +184,7 @@ public class BaseAction {
     }
 
     public String getTitle(Context context) {
-        if (titleId == 0) return title;
+        if (titleId == 0 || context == null) return title;
         return context.getString(titleId);
     }
 
@@ -224,21 +218,5 @@ public class BaseAction {
 
     public ArrayList<Pin> getShowPins() {
         return new ArrayList<>(pins);
-    }
-
-    public static class BaseActionDeserialize implements JsonDeserializer<BaseAction> {
-        @Override
-        public BaseAction deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            String cls = jsonObject.get("cls").getAsString();
-            try {
-                Class<?> aClass = Class.forName(cls);
-                Constructor<?> constructor = aClass.getConstructor(JsonObject.class);
-                return (BaseAction) constructor.newInstance(jsonObject);
-            } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }

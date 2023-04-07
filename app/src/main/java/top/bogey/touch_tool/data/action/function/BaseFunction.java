@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import top.bogey.touch_tool.data.TaskContext;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
@@ -97,6 +98,52 @@ public class BaseFunction extends NormalAction implements ActionContext {
         copy.x = x + 1;
         copy.y = y + 1;
         return copy;
+    }
+
+    // 同步最新的内容，包括标题，针脚，状态
+    public void sync(ActionContext outContext) {
+        // 获取最新的方法
+        BaseFunction function;
+        if (getParent() == null) function = TaskRepository.getInstance().getFunctionById(functionId);
+        else function = ((TaskContext) getParent()).getFunctionById(functionId);
+        // 标题
+        setTitle(function.getTitle(null));
+        // 仅获取状态
+        setJustCall(function.isJustCall());
+
+        // 针脚
+        // 先移除自身多出的针脚
+        ArrayList<Pin> pins = getPins();
+        for (int i = pins.size() - 1; i >= 0; i--) {
+            Pin pin = pins.get(i);
+            Pin pinById = function.getPinById(pin.getId());
+            if (pinById == null) {
+                pin.removeLinks(outContext);
+                removePin(pin);
+            }
+        }
+
+        // 再同步最新的针脚
+        for (Pin pin : function.getPins()) {
+            Pin pinById = getPinById(pin.getId());
+            if (pinById == null) {
+                // 新的方法里有这个针脚，旧的没有，需要在自己这加上
+                Pin copy = pin.copy(false);
+                copy.setId(pin.getId());
+                addPin(copy);
+            } else if (!pinById.getPinClass().equals(pin.getPinClass())) {
+                // 针脚的类型变了，先移除原来的针脚，再重新加回来
+                pinById.removeLinks(outContext);
+                int index = getPins().indexOf(pinById);
+                removePin(pinById);
+                Pin copy = pin.copy(false);
+                copy.setId(pin.getId());
+                addPin(index, copy);
+            } else {
+                // 同步一下针脚名
+                pinById.setTitle(pin.getTitle(null));
+            }
+        }
     }
 
     @Override
@@ -211,6 +258,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getTaskId() {
+        return taskId;
     }
 
     @Override

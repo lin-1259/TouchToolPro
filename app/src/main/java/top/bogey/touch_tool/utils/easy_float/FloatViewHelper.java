@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.Gravity;
@@ -122,7 +123,14 @@ public class FloatViewHelper {
         });
     }
 
-    public void initGravity() {
+    public Point getConfigPosition() {
+        Point position = getParamsPosition();
+        position.x = params.x - position.x;
+        position.y = params.y - position.y;
+        return position;
+    }
+
+    private Point getParamsPosition() {
         Rect showSize = DisplayUtils.getScreenArea(context);
         int statusBarHeight = DisplayUtils.getStatusBarHeight(floatViewParent, params);
         showSize.top += config.topBorder;
@@ -130,49 +138,56 @@ public class FloatViewHelper {
         showSize.bottom -= (statusBarHeight + config.bottomBorder);
         showSize.right -= config.rightBorder;
 
+        Point point = new Point();
         switch (config.gravity) {
             case TOP_LEFT:
-                params.x = showSize.left;
-                params.y = showSize.top;
+                point.x = showSize.left;
+                point.y = showSize.top;
                 break;
             case TOP_CENTER:
-                params.x = (showSize.width() - floatViewParent.getWidth()) / 2;
-                params.y = showSize.top;
+                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
+                point.y = showSize.top;
                 break;
             case TOP_RIGHT:
-                params.x = showSize.right - floatViewParent.getWidth();
-                params.y = showSize.top;
+                point.x = showSize.right - floatViewParent.getWidth();
+                point.y = showSize.top;
                 break;
             case LEFT_CENTER:
-                params.x = showSize.left;
-                params.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.x = showSize.left;
+                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
                 break;
             case CENTER:
-                params.x = (showSize.width() - floatViewParent.getWidth()) / 2;
-                params.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
+                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
                 break;
             case RIGHT_CENTER:
-                params.x = showSize.right - floatViewParent.getWidth();
-                params.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.x = showSize.right - floatViewParent.getWidth();
+                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
                 break;
             case BOTTOM_LEFT:
-                params.x = showSize.left;
-                params.y = showSize.bottom - floatViewParent.getHeight();
+                point.x = showSize.left;
+                point.y = showSize.bottom - floatViewParent.getHeight();
                 break;
             case BOTTOM_CENTER:
-                params.x = (showSize.width() - floatViewParent.getWidth()) / 2;
-                params.y = showSize.bottom - floatViewParent.getHeight();
+                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
+                point.y = showSize.bottom - floatViewParent.getHeight();
                 break;
             case BOTTOM_RIGHT:
-                params.x = showSize.right - floatViewParent.getWidth();
-                params.y = showSize.bottom - floatViewParent.getHeight();
+                point.x = showSize.right - floatViewParent.getWidth();
+                point.y = showSize.bottom - floatViewParent.getHeight();
                 break;
         }
-        params.x += config.offset.x;
-        params.y += config.offset.y;
+        return point;
+    }
+
+    public void initGravity() {
+        Point position = getParamsPosition();
+        params.x = config.offset.x + position.x;
+        params.y = config.offset.y + position.y;
 
         manager.updateViewLayout(floatViewParent, params);
     }
+
 
     private void initEditText(View view) {
         if (config.hasEditText) {

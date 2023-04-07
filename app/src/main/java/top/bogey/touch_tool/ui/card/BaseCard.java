@@ -15,19 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.TaskContext;
+import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
+import top.bogey.touch_tool.ui.blueprint.BlueprintView;
+import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
 import top.bogey.touch_tool.ui.card.pin.PinBaseView;
 import top.bogey.touch_tool.ui.card.pin.PinBottomView;
 import top.bogey.touch_tool.ui.card.pin.PinInView;
 import top.bogey.touch_tool.ui.card.pin.PinOutView;
 import top.bogey.touch_tool.ui.card.pin.PinTopView;
-import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -37,7 +40,6 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     protected final ActionContext actionContext;
     protected final A action;
 
-    protected final List<PinBaseView<?>> pinDetailViews = new ArrayList<>();
     protected final List<PinBaseView<?>> pinBaseViews = new ArrayList<>();
 
     protected boolean needDelete = false;
@@ -77,6 +79,21 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             }
         });
 
+        binding.expandButton.setOnClickListener(v -> {
+            action.showDetail = !action.showDetail;
+            expandDetail(action.showDetail);
+            binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
+        });
+        binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
+
+        binding.functionButton.setOnClickListener(v -> {
+            BaseFunction function = (BaseFunction) action;
+            if (function.getParent() == null) function = TaskRepository.getInstance().getFunctionById(function.getFunctionId());
+            else function = ((TaskContext) function.getParent()).getFunctionById(function.getFunctionId());
+            BlueprintView.tryPushActionContext(function);
+        });
+        binding.functionButton.setVisibility((action instanceof BaseFunction) ? VISIBLE : GONE);
+
         binding.title.setText(action.getTitle(context));
         binding.des.setText(action.getDes());
         binding.desBox.setVisibility((action.getDes() == null || action.getDes().length() == 0) ? GONE : VISIBLE);
@@ -87,50 +104,38 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
             binding.desBox.setVisibility((result == null || result.length() == 0) ? GONE : VISIBLE);
         }));
 
-        binding.expandButton.setOnClickListener(v -> {
-            action.showDetail = !action.showDetail;
-            binding.pinBox.setVisibility(action.showDetail ? VISIBLE : GONE);
-            binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
-            actionContext.save();
-        });
-        binding.pinBox.setVisibility(action.showDetail ? VISIBLE : GONE);
-        binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);
-
         for (Pin pin : action.getShowPins()) {
             addPinView(pin, 0);
         }
     }
 
     public void addPinView(Pin pin, int offset) {
-        PinBaseView<?> pinDetailView = null;
         PinBaseView<?> pinBaseView;
         if (pin.getDirection() == PinDirection.IN) {
-            if (!(pin.getValue() instanceof PinExecute)) {
-                pinDetailView = new PinInView(getContext(), this, pin);
-                binding.inBox.addView(pinDetailView, binding.inBox.getChildCount() - offset);
+            if (pin.isVertical()) {
+                pinBaseView = new PinTopView(getContext(), this, pin);
+                binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
+            } else {
+                pinBaseView = new PinInView(getContext(), this, pin);
+                binding.inBox.addView(pinBaseView, binding.inBox.getChildCount() - offset);
             }
-            pinBaseView = new PinTopView(getContext(), this, pin);
-            binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
-
         } else {
-            if (!(pin.getValue() instanceof PinExecute)) {
-                pinDetailView = new PinOutView(getContext(), this, pin);
-                binding.outBox.addView(pinDetailView, binding.outBox.getChildCount() - offset);
+            if (pin.isVertical()) {
+                pinBaseView = new PinBottomView(getContext(), this, pin);
+                binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
+            } else {
+                pinBaseView = new PinOutView(getContext(), this, pin);
+                binding.outBox.addView(pinBaseView, binding.outBox.getChildCount() - offset);
             }
-            pinBaseView = new PinBottomView(getContext(), this, pin);
-            binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
         }
-        if (pinDetailView != null) pinDetailViews.add(pinDetailView);
 
-        if (pin.getValue() instanceof PinAdd) {
-            pinBaseView.setVisibility(GONE);
-        }
+        pinBaseView.setExpand(action.showDetail);
         pinBaseViews.add(pinBaseView);
     }
 
     public void addMorePinView(Pin pin, int offset) {
         action.addPin(action.getPins().size() - offset, pin);
-        addPinView(pin, pin.getPinClass().isAssignableFrom(PinExecute.class) ? offset - 1 : offset);
+        addPinView(pin, pin.isVertical() ? offset - 1 : offset);
     }
 
     public void removeMorePinView(Pin pin) {
@@ -140,9 +145,12 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
 
         PinBaseView<?> pinBaseView = getPinById(pin.getId());
         if (pinBaseView != null) ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
+    }
 
-        PinBaseView<?> pinDetailView = getPinDetailById(pin.getId());
-        if (pinDetailView != null) ((ViewGroup) pinDetailView.getParent()).removeView(pinDetailView);
+    protected void expandDetail(boolean expand) {
+        for (PinBaseView<?> pinBaseView : pinBaseViews) {
+            pinBaseView.setExpand(expand);
+        }
     }
 
     public ActionContext getActionContext() {
@@ -156,16 +164,6 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     public PinBaseView<?> getPinById(String id) {
         if (id == null || id.isEmpty()) return null;
         for (PinBaseView<?> pinBaseView : pinBaseViews) {
-            if (id.equals(pinBaseView.getPin().getId())) {
-                return pinBaseView;
-            }
-        }
-        return null;
-    }
-
-    public PinBaseView<?> getPinDetailById(String id) {
-        if (id == null || id.isEmpty()) return null;
-        for (PinBaseView<?> pinBaseView : pinDetailViews) {
             if (id.equals(pinBaseView.getPin().getId())) {
                 return pinBaseView;
             }

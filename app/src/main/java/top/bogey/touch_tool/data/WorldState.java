@@ -140,7 +140,7 @@ public class WorldState {
         }
     }
 
-    private void showManualActionDialog(boolean show) {
+    public void showManualActionDialog(boolean show) {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceEnabled()) return;
 

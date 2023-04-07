@@ -37,9 +37,7 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
         MMKV.initialize(this);
         SettingSave.getInstance().addRunTimes();
-
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-        DynamicColors.applyToActivitiesIfAvailable(this);
+        SettingSave.getInstance().setDynamicColor(this, SettingSave.getInstance().isDynamicColor());
 
         handler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);

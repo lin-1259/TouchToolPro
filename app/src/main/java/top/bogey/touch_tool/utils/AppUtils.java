@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
@@ -14,14 +15,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import androidx.annotation.StringRes;
+import androidx.core.content.FileProvider;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.Task;
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.state.ScreenStateAction;
 
 public class AppUtils {
@@ -205,5 +218,71 @@ public class AppUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.set(dateCalendar.get(Calendar.YEAR), dateCalendar.get(Calendar.MONTH), dateCalendar.get(Calendar.DATE), baseCalendar.get(Calendar.HOUR_OF_DAY), baseCalendar.get(Calendar.MINUTE), 0);
         return calendar.getTimeInMillis();
+    }
+
+    private static String getActionContextsFileName(Context context, ArrayList<ActionContext> actionContexts) {
+        String name = context.getString(R.string.app_name);
+        if (actionContexts.size() == 1) {
+            ActionContext actionContext = actionContexts.get(0);
+            if (actionContext instanceof Task) {
+                name = ((Task) actionContext).getTitle();
+            } else if (actionContext instanceof BaseFunction) {
+                name = ((BaseFunction) actionContext).getTitle(context);
+            }
+        }
+        return String.format("%s_%s.ttp", name, formatDateLocalDate(context, System.currentTimeMillis()));
+    }
+
+    public static void backupActionContexts(Context context, ArrayList<ActionContext> actionContexts) {
+        String fileName = getActionContextsFileName(context, actionContexts);
+        MainApplication.getInstance().getActivity().launcherCreateDocument(fileName, (code, intent) -> {
+            if (code == Activity.RESULT_OK) {
+                Uri uri = intent.getData();
+                if (uri == null) return;
+                try (OutputStream outputStream = context.getContentResolver().openOutputStream(uri)) {
+                    if (outputStream == null) return;
+                    String json = GsonUtils.gson.toJson(actionContexts);
+                    outputStream.write(json.getBytes());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+    }
+
+    public static void exportActionContexts(Context context, ArrayList<ActionContext> actionContexts) {
+        String fileName = getActionContextsFileName(context, actionContexts);
+
+        try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+            String json = GsonUtils.gson.toJson(actionContexts);
+            fileOutputStream.write(json.getBytes());
+
+            File file = new File(context.getFilesDir(), fileName);
+            Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".file_provider", file);
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+            intent.setType("text/*");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_task_tips)));
+
+        } catch (IOException | IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<ActionContext> importActionContexts(Context context, Uri uri) {
+        try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+            if (inputStream != null) {
+                byte[] bytes = new byte[inputStream.available()];
+                int read = inputStream.read(bytes);
+                if (read > 0) {
+                    return GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

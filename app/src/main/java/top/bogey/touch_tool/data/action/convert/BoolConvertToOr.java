@@ -9,12 +9,13 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.CalculateAction;
 import top.bogey.touch_tool.data.pin.Pin;
+import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 
 public class BoolConvertToOr extends CalculateAction {
-    private transient Pin outConditionPin;
-    private transient Pin firstConditionPin;
+    private transient Pin outConditionPin = new Pin(new PinBoolean(), R.string.action_state_subtitle_state, PinDirection.OUT);
+    private transient Pin firstConditionPin = new Pin(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition);
     private transient Pin secondConditionPin = new Pin(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition);
     private final transient Pin conditionPin = new Pin(new PinBoolean(), R.string.action_bool_convert_and_subtitle_condition);
     private transient Pin addPin = new Pin(new PinAdd(conditionPin), R.string.action_subtitle_add_pin);

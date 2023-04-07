@@ -113,7 +113,7 @@
         <service
             android:name=".PackageInfoTileService"
             android:exported="true"
-            android:icon="@drawable/icon_tutorial"
+            android:icon="@drawable/icon_package_info"
             android:label="@string/package_tile_service_title"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>

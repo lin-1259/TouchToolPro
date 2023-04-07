@@ -2,8 +2,6 @@ package top.bogey.touch_tool.ui.task;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,16 +14,12 @@ import android.view.ViewGroup;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +30,6 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskBinding;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.AppUtils;
-import top.bogey.touch_tool.utils.GsonUtils;
 
 public class TaskView extends Fragment {
     private ViewTaskBinding binding;
@@ -46,7 +39,7 @@ public class TaskView extends Fragment {
     public final Map<String, Task> selectTasks = new HashMap<>();
     public boolean isSelect = false;
 
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
         @Override
         public void handleOnBackPressed() {
             unSelectAll();
@@ -75,7 +68,7 @@ public class TaskView extends Fragment {
                         if (code == Activity.RESULT_OK) {
                             Uri uri = intent.getData();
                             if (uri != null) {
-                                mainActivity.saveTasksByFile(uri);
+                                mainActivity.saveTasks(uri);
                             }
                         }
                     });
@@ -207,35 +200,7 @@ public class TaskView extends Fragment {
 
     private void exportSelectTasks() {
         if (selectTasks.size() == 0) return;
-        Context context = requireContext();
-        String name = context.getString(R.string.app_name);
-        ArrayList<Task> tasks = new ArrayList<>(selectTasks.values());
-        if (tasks.size() == 1) {
-            name = tasks.get(0).getTitle();
-        }
-
-        String fileName = String.format("%s_%s.ttp", name, AppUtils.formatDateLocalDate(context, System.currentTimeMillis()));
-
-        try (FileOutputStream fileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
-            String json = GsonUtils.gson.toJson(tasks);
-            fileOutputStream.write(json.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        File file = new File(context.getFilesDir(), fileName);
-        Uri fileUri = null;
-        try {
-            fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".file_provider", file);
-        } catch (IllegalArgumentException ignored) {
-        }
-        if (fileUri != null) {
-            intent.putExtra(Intent.EXTRA_STREAM, fileUri);
-            intent.setType("text/*");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_task_tips)));
-        }
+        AppUtils.exportActionContexts(requireContext(), new ArrayList<>(selectTasks.values()));
         unSelectAll();
     }
 }

@@ -22,10 +22,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import top.bogey.touch_tool.R;
-import top.bogey.touch_tool.data.Task;
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.databinding.ActivityMainBinding;
+import top.bogey.touch_tool.ui.setting.HandleActionContextView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.SettingSave;
@@ -50,7 +50,10 @@ public class MainActivity extends BaseActivity {
             SettingSave.getInstance().addRunTimes();
             try (InputStream inputStream = getAssets().open("default")) {
                 byte[] bytes = new byte[inputStream.available()];
-                if (inputStream.read(bytes) > 0) saveTasks(bytes);
+                if (inputStream.read(bytes) > 0) {
+                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+                    actionContexts.forEach(ActionContext::save);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -92,6 +95,8 @@ public class MainActivity extends BaseActivity {
 
             SettingSave.getInstance().setRunningError(null);
         }
+
+        SettingSave.getInstance().init(this);
     }
 
     private void copyError(String error) {
@@ -140,35 +145,24 @@ public class MainActivity extends BaseActivity {
                 uri = intent.getData();
             }
             if (uri != null) {
-                saveTasksByFile(uri);
+                saveTasks(uri);
             }
             setIntent(null);
         }
     }
 
-    public void saveTasksByFile(Uri uri) {
-        try (InputStream inputStream = getContentResolver().openInputStream(uri)) {
-            if (inputStream == null) return;
-            byte[] bytes = new byte[inputStream.available()];
-            int read = inputStream.read(bytes);
-            if (read > 0)
-                saveTasks(bytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void saveTasks(Uri uri) {
+        ArrayList<ActionContext> actionContexts = AppUtils.importActionContexts(this, uri);
+        HandleActionContextView view = new HandleActionContextView(this, actionContexts);
+        new MaterialAlertDialogBuilder(this)
+                .setPositiveButton(R.string.enter, (dialog, which) -> {
+                    view.getSelectActionContext().forEach(ActionContext::save);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setView(view)
+                .setTitle(R.string.task_setting_import)
+                .show();
     }
 
-    public void saveTasks(byte[] bytes) {
-        if (bytes == null || bytes.length == 0) return;
-
-        ArrayList<Task> tasks = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<Task>>() {}.getType(), new ArrayList<>());
-        if (tasks != null) {
-            for (Task task : tasks) {
-                if (TaskRepository.getInstance().getTaskById(task.getId()) != null) {
-                    task.setId(null);
-                }
-                task.save();
-            }
-        }
-    }
 }

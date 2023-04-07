@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.setting.SettingView"
-    tools:ignore="TooManyViews">
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -34,6 +31,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="8dp"
                         android:layout_marginStart="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/app_setting_title"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
@@ -41,7 +40,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="8dp"
-                        android:gravity="center_vertical">
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="24dp"
@@ -50,23 +50,121 @@
                             android:src="@drawable/icon_service"
                             android:tint="?attr/colorPrimary" />
 
-
-                        <com.google.android.material.textview.MaterialTextView
+                        <LinearLayout
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/app_setting_hide_background"
-                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/app_setting_hide_background"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/app_setting_hide_background_tips"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+                        </LinearLayout>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/hide_background_switch"
+                            android:id="@+id/hideBackgroundSwitch"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
                     </LinearLayout>
 
-                </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/icon_touch"
+                            android:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/app_setting_play_view_visible"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/app_setting_play_view_visible_tips"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/playViewVisibleSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/icon_search"
+                            android:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/app_setting_show_package_info"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/app_setting_show_package_info_tips"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/showPackageInfoSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -87,19 +185,24 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="8dp"
                         android:layout_marginStart="40dp"
-                        android:text="@string/setting_app_running"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/task_setting_title"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
                     <LinearLayout
+                        android:id="@+id/taskBackupButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_margin="8dp"
-                            android:src="@drawable/icon_setting_oversee"
+                            android:src="@drawable/icon_menu_save"
                             android:tint="?attr/colorPrimary" />
 
                         <LinearLayout
@@ -112,78 +215,35 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
-                                android:text="@string/setting_running_state_oversee"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/task_setting_backup"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/setting_running_state_oversee_tips"
+                                android:text="@string/task_setting_backup_tips"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
-
-                            <com.google.android.material.button.MaterialButtonToggleGroup
-                                android:id="@+id/oversee_mode_group"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:selectionRequired="true"
-                                app:singleSelection="true">
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/oversee_close_button"
-                                    style="?attr/materialButtonOutlinedStyle"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:paddingHorizontal="0dp"
-                                    android:text="@string/setting_oversee_close"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/oversee_across_app_button"
-                                    style="?attr/materialButtonOutlinedStyle"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:paddingHorizontal="0dp"
-                                    android:text="@string/setting_oversee_across_app"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
-
-                                <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/oversee_not_manual_button"
-                                    style="?attr/materialButtonOutlinedStyle"
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:paddingHorizontal="0dp"
-                                    android:text="@string/setting_oversee_not_manual"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
-
-                            </com.google.android.material.button.MaterialButtonToggleGroup>
-
                         </LinearLayout>
-
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/taskImportButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_margin="8dp"
-                            android:src="@drawable/icon_setting_debug"
+                            android:src="@drawable/icon_menu_import"
                             android:tint="?attr/colorPrimary" />
 
                         <LinearLayout
-                            android:id="@+id/log_dialog_button"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -193,78 +253,29 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
-                                android:text="@string/setting_running_log"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/task_setting_import"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/setting_running_log_tips"
+                                android:text="@string/task_setting_import_tips"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
-
                         </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/log_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_margin="8dp"
-                            android:src="@drawable/icon_setting_running"
-                            android:tint="?attr/colorPrimary" />
-
-                        <LinearLayout
-                            android:id="@+id/running_task_info_button"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginVertical="4dp"
-                                android:text="@string/setting_running_task_info"
-                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/setting_running_task_info_tips"
-                                android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
-
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/running_task_info_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical" />
-
                     </LinearLayout>
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-
             <com.google.android.material.card.MaterialCardView
                 style="?attr/materialCardViewFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.Corner.Large">
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -277,19 +288,23 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="8dp"
                         android:layout_marginStart="40dp"
-                        android:text="@string/setting_theme"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/theme_setting"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_margin="8dp"
-                            android:src="@drawable/icon_setting_dark_mode"
+                            android:src="@drawable/icon_night"
                             android:tint="?attr/colorPrimary" />
 
                         <LinearLayout
@@ -302,65 +317,77 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
-                                android:text="@string/setting_night_mode"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/theme_setting_night_mode"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.button.MaterialButtonToggleGroup
-                                android:id="@+id/night_mode_group"
+                                android:id="@+id/nightModeGroup"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 app:selectionRequired="true"
                                 app:singleSelection="true">
 
                                 <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/night_auto_button"
+                                    android:id="@+id/nightAutoButton"
                                     style="?attr/materialButtonOutlinedStyle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="@string/setting_night_auto"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
+                                    android:padding="0dp"
+                                    android:text="@string/theme_setting_night_auto"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
 
                                 <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/night_open_button"
+                                    android:id="@+id/nightTimeButton"
                                     style="?attr/materialButtonOutlinedStyle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="@string/setting_night_open"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
+                                    android:padding="0dp"
+                                    android:text="@string/theme_setting_night_time"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
 
                                 <com.google.android.material.button.MaterialButton
-                                    android:id="@+id/night_close_button"
+                                    android:id="@+id/nightCloseButton"
                                     style="?attr/materialButtonOutlinedStyle"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="@string/setting_night_close"
-                                    android:textColor="@color/button_outline_container_check"
-                                    app:backgroundTint="@color/button_outline_background_check"
-                                    app:strokeWidth="0.75dp" />
+                                    android:padding="0dp"
+                                    android:text="@string/theme_setting_night_close"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
 
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/nightOpenButton"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="0dp"
+                                    android:text="@string/theme_setting_night_open"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
                             </com.google.android.material.button.MaterialButtonToggleGroup>
-
                         </LinearLayout>
-
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <com.google.android.material.imageview.ShapeableImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_margin="8dp"
-                            android:src="@drawable/icon_action_color"
+                            android:src="@drawable/icon_color"
                             android:tint="?attr/colorPrimary" />
 
                         <LinearLayout
@@ -373,27 +400,25 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
-                                android:text="@string/setting_dynamic_color"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/theme_setting_dynamic_color"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/setting_dynamic_color_tips"
+                                android:text="@string/theme_setting_dynamic_color_tips"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
-
                         </LinearLayout>
 
                         <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/dynamic_color_switch"
+                            android:id="@+id/dynamicColorSwitch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical" />
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
@@ -401,7 +426,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.Corner.Large">
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Large">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -414,13 +439,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="8dp"
                         android:layout_marginStart="40dp"
-                        android:text="@string/setting_app_info"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/app_info_setting"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <Space
                             android:layout_width="24dp"
@@ -428,7 +457,6 @@
                             android:layout_margin="8dp" />
 
                         <LinearLayout
-                            android:id="@+id/version_button"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -438,24 +466,26 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
-                                android:text="@string/setting_version"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/app_info_setting_version"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/version_text"
+                                android:id="@+id/versionText"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
-
                         </LinearLayout>
-
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/source_code_button"
+                        android:id="@+id/sourceCodeButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="8dp">
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
 
                         <Space
                             android:layout_width="24dp"
@@ -467,17 +497,11 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:text="@string/setting_source_code"
+                            android:text="@string/app_info_setting_source_code"
                             android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
-
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

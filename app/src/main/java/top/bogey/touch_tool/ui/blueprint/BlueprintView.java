@@ -22,12 +22,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.Stack;
 
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.databinding.ViewBlueprintBinding;
+import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.MainActivity;
+import top.bogey.touch_tool.ui.setting.SettingView;
 
 public class BlueprintView extends Fragment {
     private ViewBlueprintBinding binding;
@@ -105,6 +109,9 @@ public class BlueprintView extends Fragment {
     }
 
     public void pushActionContext(ActionContext actionContext) {
+        if (actionContextStack.size() > 0) {
+            actionContextStack.peek().save();
+        }
         // 不能存在相同栈内元素
         actionContextStack.remove(actionContext);
         actionContextStack.push(actionContext);
@@ -138,5 +145,17 @@ public class BlueprintView extends Fragment {
         binding.cardLayout.getActionContext().save();
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if (actionBar != null) actionBar.setSubtitle(null);
+    }
+
+    public static void tryPushActionContext(ActionContext actionContext) {
+        BaseActivity activity = MainApplication.getInstance().getActivity();
+        if (activity instanceof MainActivity) {
+            Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
+            if (navFragment == null || !navFragment.isAdded()) return;
+            Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+            if (fragment instanceof BlueprintView) {
+                ((BlueprintView) fragment).pushActionContext(actionContext);
+            }
+        }
     }
 }

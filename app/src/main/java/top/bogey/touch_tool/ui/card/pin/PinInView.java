@@ -11,6 +11,7 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.databinding.PinInBinding;
 import top.bogey.touch_tool.ui.card.BaseCard;
+import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public class PinInView extends PinBaseView<PinInBinding> {
@@ -24,19 +25,26 @@ public class PinInView extends PinBaseView<PinInBinding> {
 
     @Override
     public void refreshPinUI() {
-        binding.titleBox.setStrokeColor(getPinColor());
+        binding.pinSlot.setStrokeColor(getPinColor());
         binding.title.setText(pin.getTitle(getContext()));
         binding.pinBox.setVisibility(pin.getLinks().size() > 0 ? GONE : VISIBLE);
+
+        boolean linked = pin.getLinks().size() > 0;
+        binding.pinSlot.setCardBackgroundColor(linked ? getPinColor() : DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
+        binding.pinSlot.setShapeAppearanceModel(getPinStyle());
     }
 
     @Override
     public int[] getSlotLocationOnScreen(float scale) {
-        return null;
+        int[] location = new int[2];
+        binding.pinSlot.getLocationOnScreen(location);
+        location[1] += (binding.pinSlot.getHeight() / 2 * scale);
+        return location;
     }
 
     @Override
     public View getSlotBox() {
-        return null;
+        return binding.pinSlotBox;
     }
 
     @Override

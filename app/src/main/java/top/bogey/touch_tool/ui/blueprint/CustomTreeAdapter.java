@@ -19,6 +19,7 @@ import com.amrdeveloper.treeview.TreeViewAdapter;
 import com.amrdeveloper.treeview.TreeViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -312,6 +313,17 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 notifyDataSetChanged();
             });
 
+            binding.exportButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                TreeNode treeNode = manager.get(index);
+                TreeNodeInfo info = (TreeNodeInfo) treeNode.getValue();
+
+                if (info.getType() == TreeNodeType.COMMON_FUNCTION) {
+                    BaseFunction function = TaskRepository.getInstance().getFunctionById(info.getKey());
+                    AppUtils.exportActionContexts(context, new ArrayList<>(Collections.singletonList(function)));
+                }
+            });
+
             binding.editButton.setVisibility(View.VISIBLE);
             binding.editButton.setOnClickListener(v -> {
                 int index = getBindingAdapterPosition();
@@ -451,6 +463,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             } else if (level == 1) {
                 if (info.getType() == TreeNodeType.COMMON_FUNCTION || info.getType() == TreeNodeType.FUNCTION) {
                     itemBinding.title.setText(info.getTitle());
+                    itemBinding.exportButton.setVisibility(info.getType() == TreeNodeType.COMMON_FUNCTION ? View.VISIBLE : View.GONE);
                 } else {
                     attrBinding.title.setText(info.getKey());
                     attrBinding.spinner.setSelection(map.indexOfKey(info.getValue().getClass()));

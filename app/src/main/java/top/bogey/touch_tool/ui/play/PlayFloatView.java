@@ -2,6 +2,7 @@ package top.bogey.touch_tool.ui.play;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,9 +23,11 @@ import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.databinding.FloatPlayBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.FloatBaseCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
+import top.bogey.touch_tool.utils.easy_float.FloatViewHelper;
 import top.bogey.touch_tool.utils.easy_float.FloatViewInterface;
 import top.bogey.touch_tool.utils.easy_float.SidePattern;
 
@@ -114,19 +117,21 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
     @Override
     public void show() {
+        Point position = SettingSave.getInstance().getPlayViewPosition();
         EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setSidePattern(SidePattern.HORIZONTAL)
-                .setGravity(FloatGravity.RIGHT_CENTER, 0, 0)
+                .setGravity(FloatGravity.RIGHT_CENTER, position.x, position.y)
                 .setBorder(20, 20, 0, 0)
-                .setTag(PlayFloatView.class.getCanonicalName())
+                .setTag(PlayFloatView.class.getName())
                 .setAlwaysShow(true)
+                .setCallback(new FloatCallback())
                 .show();
     }
 
     @Override
     public void dismiss() {
-        EasyFloat.dismiss(PlayFloatView.class.getCanonicalName());
+        EasyFloat.dismiss(PlayFloatView.class.getName());
     }
 
     public void setNeedRemove(boolean needRemove) {
@@ -180,5 +185,14 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         postDelayed(() -> {
             if (binding.buttonBox.getChildCount() == 0) dismiss();
         }, 200);
+    }
+
+    private static class FloatCallback extends FloatBaseCallback {
+        @Override
+        public void onDragEnd() {
+            FloatViewHelper helper = EasyFloat.getHelper(PlayFloatView.class.getName());
+            Point position = helper.getConfigPosition();
+            SettingSave.getInstance().setPlayViewPosition(new Point(position.x, position.y));
+        }
     }
 }

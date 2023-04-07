@@ -77,8 +77,6 @@
     <string name="goto_tutorial">查看教程</string>
     <string name="tutorial_tips">当你不知道怎么使用本应用的时候，请点击这里查看教程。</string>
 
-    <string name="import_task">导入任务</string>
-
     <string name="tag_no">未分类</string>
     <string name="tag_add">添加新的分类</string>
 
@@ -324,17 +322,24 @@
     <string name="picker_app_subtitle_include">关联：</string>
     <string name="picker_app_subtitle_exclude">排除：</string>
 
-    <!-- 采集器 - 时间 -->
+    <!-- 采集器 - 包和活动 -->
+    <string name="picker_package_title">获取当前活动信息</string>
+    <string name="picker_package_subtitle_name">应用名：</string>
+    <string name="picker_package_subtitle_package">包名：</string>
+    <string name="picker_package_subtitle_activity">活动名：</string>
+
+    <!-- 时间 -->
     <string name="time_max">最大</string>
     <string name="time_min">最小</string>
 
-    <!-- 采集器 - 位置 -->
+    <!-- 位置 -->
     <string name="point_x">X</string>
     <string name="point_y">Y</string>
 
-    <!-- 采集器 - 系统按键 -->
+    <!-- 系统按键 -->
     <string name="device_not_support_lock">当前设备不支持调用锁屏功能</string>
     <string name="device_not_support_snap">当前设备不支持调用系统截图</string>
+
 
     <!-- 任务日志 -->
     <string name="task_running_log">任务日志</string>
@@ -344,6 +349,36 @@
     <!-- 设置 -->
     <string name="app_setting_title">应用设置</string>
     <string name="app_setting_hide_background">隐藏后台</string>
+    <string name="app_setting_hide_background_tips">在最近任务列表里隐藏本应用</string>
 
+    <string name="app_setting_play_view_visible">显示手动执行</string>
+    <string name="app_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置</string>
+
+    <string name="app_setting_show_package_info">应用信息采集</string>
+    <string name="app_setting_show_package_info_tips">显示一个展示当前所在应用和当前活动信息的悬浮窗，可以在控制中心中快捷开启</string>
+
+    <string name="task_setting_title">任务设置</string>
+    <string name="task_setting_task">任务</string>
+    <string name="task_setting_function">自定义卡片</string>
+
+    <string name="task_setting_backup">备份任务</string>
+    <string name="task_setting_backup_tips">选择需要备份的任务配置和通用自定义卡片到你选择的文件夹中</string>
+
+    <string name="task_setting_import">导入任务</string>
+    <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
+
+    <string name="theme_setting">界面外观</string>
+    <string name="theme_setting_dynamic_color">动态颜色</string>
+    <string name="theme_setting_dynamic_color_tips">在支持的Android版本上，开启后应用将使用壁纸颜色作为主色调</string>
+    <string name="theme_setting_night_auto">跟随系统</string>
+    <string name="theme_setting_night_close">总是关闭</string>
+    <string name="theme_setting_night_mode">深色模式</string>
+    <string name="theme_setting_night_open">总是开启</string>
+    <string name="theme_setting_night_time">跟随时间</string>
+
+    <string name="app_info_setting">应用信息</string>
+    <string name="app_info_setting_source_code">在GitHub查看源码</string>
+    <string name="app_info_setting_version">版本</string>
+    <string name="app_info_setting_version_format">%1$s(%2$d)</string>
 
 </resources>

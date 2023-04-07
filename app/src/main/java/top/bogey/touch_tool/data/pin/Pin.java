@@ -4,14 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.StringRes;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -191,6 +186,10 @@ public class Pin {
         else return !direction.isOut();
     }
 
+    public boolean isVertical() {
+        return value instanceof PinExecute;
+    }
+
     public String getId() {
         return id;
     }
@@ -200,7 +199,7 @@ public class Pin {
     }
 
     public String getTitle(Context context) {
-        if (titleId == 0) return title;
+        if (titleId == 0 || context == null) return title;
         else return context.getString(titleId);
     }
 
@@ -271,13 +270,5 @@ public class Pin {
 
         // 针脚值变更了
         void onChanged();
-    }
-
-    public static class PinDeserialize implements JsonDeserializer<Pin> {
-        @Override
-        public Pin deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            return new Pin(jsonObject);
-        }
     }
 }

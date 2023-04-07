@@ -14,8 +14,6 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.object.PinAdd;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.CardCustomBinding;
 import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
@@ -70,7 +68,7 @@ public class CustomCard extends BaseCard<FunctionAction> {
 
             @Override
             public void onPinTitleChanged(Pin pin) {
-                PinBaseView<?> pinBaseView = getPinDetailById(pin.getId());
+                PinBaseView<?> pinBaseView = getPinById(pin.getId());
                 if (pinBaseView != null) pinBaseView.refreshPinUI();
             }
         });
@@ -104,36 +102,30 @@ public class CustomCard extends BaseCard<FunctionAction> {
 
         PinBaseView<?> pinBaseView = getPinById(pin.getId());
         if (pinBaseView != null) ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);
-
-        PinBaseView<?> pinDetailView = getPinDetailById(pin.getId());
-        if (pinDetailView != null) ((ViewGroup) pinDetailView.getParent()).removeView(pinDetailView);
     }
 
     @Override
     public void addPinView(Pin pin, int offset) {
-        PinBaseView<?> pinDetailView = null;
         PinBaseView<?> pinBaseView;
         if (pin.getDirection() == PinDirection.IN) {
-            if (!(pin.getValue() instanceof PinExecute)) {
-                pinDetailView = new CustomPinInView(getContext(), this, pin);
-                binding.inBox.addView(pinDetailView, binding.inBox.getChildCount() - offset);
+            if (pin.isVertical()) {
+                pinBaseView = new PinTopView(getContext(), this, pin);
+                binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
+            } else {
+                pinBaseView = new CustomPinInView(getContext(), this, pin);
+                binding.inBox.addView(pinBaseView, binding.inBox.getChildCount() - offset);
             }
-            pinBaseView = new PinTopView(getContext(), this, pin);
-            binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
-
         } else {
-            if (!(pin.getValue() instanceof PinExecute)) {
-                pinDetailView = new CustomPinOutView(getContext(), this, pin);
-                binding.outBox.addView(pinDetailView, binding.outBox.getChildCount() - offset);
+            if (pin.isVertical()) {
+                pinBaseView = new PinBottomView(getContext(), this, pin);
+                binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
+            } else {
+                pinBaseView = new CustomPinOutView(getContext(), this, pin);
+                binding.outBox.addView(pinBaseView, binding.outBox.getChildCount() - offset);
             }
-            pinBaseView = new PinBottomView(getContext(), this, pin);
-            binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
         }
-        if (pinDetailView != null) pinDetailViews.add(pinDetailView);
 
-        if (pin.getValue() instanceof PinAdd) {
-            pinBaseView.setVisibility(GONE);
-        }
+        pinBaseView.setExpand(action.showDetail);
         pinBaseViews.add(pinBaseView);
     }
 }

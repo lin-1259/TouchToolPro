@@ -2,8 +2,12 @@ package top.bogey.touch_tool;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
+import android.view.View;
 
-import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.picker.PackagePickerFloatPreview;
+import top.bogey.touch_tool.ui.setting.SettingView;
+import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 public class PackageInfoTileService extends TileService {
 
@@ -12,19 +16,33 @@ public class PackageInfoTileService extends TileService {
         super.onClick();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            String packageName = WorldState.getInstance().getPackageName();
-            String activityName = WorldState.getInstance().getActivityName();
-            service.showToast(getString(R.string.package_tile_service_tips, packageName, activityName));
+            BaseActivity activity = MainApplication.getInstance().getActivity();
+            if (activity != null) {
+                View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
+                if (view == null) {
+                    new PackagePickerFloatPreview(activity).show();
+                } else {
+                    EasyFloat.dismiss(PackagePickerFloatPreview.class.getName());
+                }
+            }
         }
+        updateTile();
+        SettingView.resetSwitchState();
     }
 
     @Override
     public void onStartListening() {
         super.onStartListening();
-        Tile tile = getQsTile();
+        updateTile();
+    }
+
+    private void updateTile() {
         MainAccessibilityService service = MainApplication.getInstance().getService();
-        if (service != null && service.isServiceEnabled()) tile.setState(Tile.STATE_INACTIVE);
-        else tile.setState(Tile.STATE_UNAVAILABLE);
+        Tile tile = getQsTile();
+        if (service != null && service.isServiceEnabled()) {
+            View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
+            tile.setState(view != null ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
+        } else tile.setState(Tile.STATE_UNAVAILABLE);
         tile.updateTile();
     }
 }
