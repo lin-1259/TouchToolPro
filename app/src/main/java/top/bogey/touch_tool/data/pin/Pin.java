@@ -20,6 +20,7 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class Pin {
+    private String uid;
     private String id;
     private String title;
     private PinObject value;
@@ -61,6 +62,7 @@ public class Pin {
 
     public Pin(PinObject value, @StringRes int titleId, PinDirection direction, PinSubType subType, boolean removeAble) {
         if (value == null) throw new RuntimeException("针脚的值为空");
+        uid = UUID.randomUUID().toString();
 
         this.id = UUID.randomUUID().toString();
         this.titleId = titleId;
@@ -75,6 +77,8 @@ public class Pin {
 
     public Pin(JsonObject jsonObject) {
         if (jsonObject == null) return;
+        uid = GsonUtils.getAsString(jsonObject, "uid", UUID.randomUUID().toString());
+
         id = GsonUtils.getAsString(jsonObject, "id", UUID.randomUUID().toString());
         title = GsonUtils.getAsString(jsonObject, "title", null);
 
@@ -188,6 +192,10 @@ public class Pin {
 
     public boolean isVertical() {
         return value instanceof PinExecute;
+    }
+
+    public String getUid() {
+        return uid;
     }
 
     public String getId() {

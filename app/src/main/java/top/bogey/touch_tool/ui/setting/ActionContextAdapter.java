@@ -43,6 +43,10 @@ public class ActionContextAdapter extends RecyclerView.Adapter<ActionContextAdap
         return selectedContexts;
     }
 
+    public ArrayList<ActionContext> getActionContexts() {
+        return actionContexts;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final DialogHandleActionContextItemBinding binding;
         private final Context context;

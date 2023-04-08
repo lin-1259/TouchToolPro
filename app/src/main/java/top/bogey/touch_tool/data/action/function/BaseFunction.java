@@ -108,7 +108,12 @@ public class BaseFunction extends NormalAction implements ActionContext {
         else function = ((TaskContext) getParent()).getFunctionById(functionId);
         // 标题
         setTitle(function.getTitle(null));
+
         // 仅获取状态
+        if (function.isJustCall() != justCall) {
+            inPin.removeLinks(outContext);
+            outPin.removeLinks(outContext);
+        }
         setJustCall(function.isJustCall());
 
         // 针脚
@@ -116,7 +121,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
         ArrayList<Pin> pins = getPins();
         for (int i = pins.size() - 1; i >= 0; i--) {
             Pin pin = pins.get(i);
-            Pin pinById = function.getPinById(pin.getId());
+            Pin pinById = function.getPinByUid(pin.getUid());
             if (pinById == null) {
                 pin.removeLinks(outContext);
                 removePin(pin);
@@ -125,7 +130,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
         // 再同步最新的针脚
         for (Pin pin : function.getPins()) {
-            Pin pinById = getPinById(pin.getId());
+            Pin pinById = getPinByUid(pin.getUid());
             if (pinById == null) {
                 // 新的方法里有这个针脚，旧的没有，需要在自己这加上
                 Pin copy = pin.copy(false);

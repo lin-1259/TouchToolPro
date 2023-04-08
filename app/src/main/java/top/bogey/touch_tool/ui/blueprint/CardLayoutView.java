@@ -144,9 +144,9 @@ public class CardLayoutView extends FrameLayout {
         cardMap.clear();
         removeAllViews();
         for (BaseAction action : actionContext.getActions()) {
-//            if (action instanceof BaseFunction) {
-//                ((BaseFunction) action).sync(actionContext);
-//            }
+            if (action instanceof BaseFunction) {
+                ((BaseFunction) action).sync(actionContext);
+            }
             BaseCard<?> card = newCard(actionContext, action);
             setCardPosition(card);
             addView(card);
@@ -192,7 +192,16 @@ public class CardLayoutView extends FrameLayout {
             function = (BaseFunction) function.copy();
             function.x = (int) (-offsetX / getScaleGridSize()) + 1;
             function.y = (int) (-offsetY / getScaleGridSize()) + 1;
-            addAction(function);
+            addAction((BaseAction) function);
+        }
+    }
+
+    public void addAction(BaseFunction function) {
+        if (function != null) {
+            function = (BaseFunction) function.copy();
+            function.x = (int) (-offsetX / getScaleGridSize()) + 1;
+            function.y = (int) (-offsetY / getScaleGridSize()) + 1;
+            addAction((BaseAction) function);
         }
     }
 

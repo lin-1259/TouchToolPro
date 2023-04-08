@@ -77,4 +77,11 @@ public class HandleActionContextView extends FrameLayout {
         list.addAll(functionAdapter.getSelectedContexts());
         return list;
     }
+
+    public ArrayList<ActionContext> getShowActionContext() {
+        ArrayList<ActionContext> list = new ArrayList<>();
+        list.addAll(taskAdapter.getActionContexts());
+        list.addAll(functionAdapter.getActionContexts());
+        return list;
+    }
 }

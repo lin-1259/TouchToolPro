@@ -183,6 +183,13 @@ public class BaseAction {
         return null;
     }
 
+    public Pin getPinByUid(String uid) {
+        for (Pin pin : pins) {
+            if (pin.getUid().equals(uid)) return pin;
+        }
+        return null;
+    }
+
     public String getTitle(Context context) {
         if (titleId == 0 || context == null) return title;
         return context.getString(titleId);

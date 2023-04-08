@@ -131,7 +131,6 @@ public class MainActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
-        setIntent(null);
     }
 
     public void handleIntent(Intent intent) {
@@ -147,13 +146,15 @@ public class MainActivity extends BaseActivity {
             if (uri != null) {
                 saveTasks(uri);
             }
-            setIntent(null);
         }
+        setIntent(null);
     }
 
     public void saveTasks(Uri uri) {
         ArrayList<ActionContext> actionContexts = AppUtils.importActionContexts(this, uri);
         HandleActionContextView view = new HandleActionContextView(this, actionContexts);
+        if (view.getShowActionContext().size() == 0) return;
+
         new MaterialAlertDialogBuilder(this)
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
                     view.getSelectActionContext().forEach(ActionContext::save);
