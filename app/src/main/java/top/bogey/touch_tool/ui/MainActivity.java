@@ -48,15 +48,15 @@ public class MainActivity extends BaseActivity {
     private void runFirstTimes() {
         if (SettingSave.getInstance().getRunTimes() == 1) {
             SettingSave.getInstance().addRunTimes();
-            try (InputStream inputStream = getAssets().open("default")) {
-                byte[] bytes = new byte[inputStream.available()];
-                if (inputStream.read(bytes) > 0) {
-                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
-                    actionContexts.forEach(ActionContext::save);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            try (InputStream inputStream = getAssets().open("default")) {
+//                byte[] bytes = new byte[inputStream.available()];
+//                if (inputStream.read(bytes) > 0) {
+//                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+//                    actionContexts.forEach(ActionContext::save);
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     }
 

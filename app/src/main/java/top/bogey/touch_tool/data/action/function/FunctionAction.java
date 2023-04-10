@@ -112,12 +112,12 @@ public class FunctionAction extends BaseAction {
     }
 
     @Override
-    public Pin removePin(Pin outerPin) {
+    public Pin removePin(ActionContext context, Pin outerPin) {
         String pinId = getMappingPinId(outerPin.getId());
         Pin pin = getPinById(pinId);
         pinIdMap.remove(pinId);
         if (callback != null) callback.onPinRemoved(pin);
-        return super.removePin(pin);
+        return super.removePin(context, pin);
     }
 
     public void setPinValue(String outerPinId, PinObject value) {

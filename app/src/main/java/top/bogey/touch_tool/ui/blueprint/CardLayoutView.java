@@ -359,16 +359,20 @@ public class CardLayoutView extends FrameLayout {
 
         boolean flag = true;
         if (offsetX < scaleGridSize * 3.1 && v) {
-            // 向左绕2格连接
-            if (yScale == -1) {
+            if (offsetX < 1) {
+                flag = false;
+            } else if (yScale == -1) {
+                // 向左绕2格连接
                 float x = Math.max(outLinkLinePoint.x, inLinkLinePoint.x) - scaleGridSize * 6;
                 path.lineTo(x, outLinkLinePoint.y);
                 path.lineTo(x, inLinkLinePoint.y);
                 flag = false;
             }
         } else if (offsetY < scaleGridSize * 3.1 && !v) {
-            //向下绕2格连接
-            if (xScale == -1) {
+            if (offsetY < 1) {
+                flag = false;
+            } else if (xScale == -1) {
+                //向下绕2格连接
                 float y = Math.max(outLinkLinePoint.y, inLinkLinePoint.y) + scaleGridSize * 6;
                 path.lineTo(outLinkLinePoint.x, y);
                 path.lineTo(inLinkLinePoint.x, y);

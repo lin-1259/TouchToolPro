@@ -194,5 +194,15 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
             Point position = helper.getConfigPosition();
             SettingSave.getInstance().setPlayViewPosition(new Point(position.x, position.y));
         }
+
+        @Override
+        public void onShow(String tag) {
+
+        }
+
+        @Override
+        public void onDismiss() {
+
+        }
     }
 }

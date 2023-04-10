@@ -139,9 +139,8 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
     }
 
     public void removeMorePinView(Pin pin) {
-        Pin removePin = action.removePin(pin);
+        Pin removePin = action.removePin(actionContext, pin);
         if (removePin == null) return;
-        removePin.removeLinks(actionContext);
 
         PinBaseView<?> pinBaseView = getPinById(pin.getId());
         if (pinBaseView != null) ((ViewGroup) pinBaseView.getParent()).removeView(pinBaseView);

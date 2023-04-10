@@ -100,7 +100,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
         return copy;
     }
 
-    // 同步最新的内容，包括标题，针脚，状态
+    // 同步最新的内容，包括标题，针脚，状态，内部动作， 内部属性
     public void sync(ActionContext outContext) {
         // 获取最新的方法
         BaseFunction function;
@@ -124,7 +124,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
             Pin pinById = function.getPinByUid(pin.getUid());
             if (pinById == null) {
                 pin.removeLinks(outContext);
-                removePin(pin);
+                removePin(outContext, pin);
             }
         }
 
@@ -140,7 +140,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
                 // 针脚的类型变了，先移除原来的针脚，再重新加回来
                 pinById.removeLinks(outContext);
                 int index = getPins().indexOf(pinById);
-                removePin(pinById);
+                removePin(outContext, pinById);
                 Pin copy = pin.copy(false);
                 copy.setId(pin.getId());
                 addPin(index, copy);
@@ -149,12 +149,62 @@ public class BaseFunction extends NormalAction implements ActionContext {
                 pinById.setTitle(pin.getTitle(null));
             }
         }
+
+        // 内部属性
+        // 先移除多出来的属性
+        for (String key : attrs.keySet()) {
+            PinObject attr = function.getAttr(key);
+            if (attr == null) {
+                attrs.remove(key);
+            }
+        }
+
+        // 再同步最新的属性
+        function.getAttrs().forEach((key, value) -> {
+            PinObject attr = getAttr(key);
+            if (attr == null) {
+                // 自己没有，同步下来
+                addAttr(key, value.copy());
+            } else if (!attr.getClass().equals(value.getClass())) {
+                // 变量类型不一致，同步下来
+                addAttr(key, value.copy());
+            }
+        });
+
+        // 内部动作
+        // 先移除多出来的动作
+        actions.removeIf(action -> {
+            BaseAction actionById = function.getActionById(action.getId());
+            return actionById == null;
+        });
+
+        // 再同步最新的动作
+        for (BaseAction action : function.getActions()) {
+            BaseAction actionById = getActionById(action.getId());
+            if (actionById == null) {
+                // 自己没有，同步下
+                BaseAction copy = GsonUtils.copy(action, BaseAction.class);
+                addAction(copy);
+            } else {
+                // 自己有，但可能针脚连接有变化，同步下连接
+                removeAction(actionById);
+                BaseAction copy = GsonUtils.copy(action, BaseAction.class);
+                if (copy instanceof FunctionAction) {
+                    // 开始或结束动作需要保持针脚映射表
+                    HashMap<String, String> pinIdMap = ((FunctionAction) copy).getPinIdMap();
+                    pinIdMap.clear();
+                    pinIdMap.putAll(((FunctionAction) actionById).getPinIdMap());
+                }
+                addAction(copy);
+            }
+        }
     }
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         endFunction = null;
         outContext = actionContext;
+        sync(outContext);
         startFunction.doAction(runnable, this, startFunction.getExecutePin());
 
         if (!justCall) {
@@ -212,11 +262,11 @@ public class BaseFunction extends NormalAction implements ActionContext {
     }
 
     @Override
-    public Pin removePin(Pin pin) {
-        Pin removePin = super.removePin(pin);
+    public Pin removePin(ActionContext context, Pin pin) {
+        Pin removePin = super.removePin(context, pin);
         if (removePin == null) return null;
         for (FunctionAction function : (pin.getDirection().isOut() ? endFunctions : startFunctions)) {
-            function.removePin(pin);
+            function.removePin(this, pin);
         }
         return removePin;
     }
@@ -277,9 +327,16 @@ public class BaseFunction extends NormalAction implements ActionContext {
     @Override
     public void addAction(BaseAction action) {
         actions.add(action);
-        // 开始动作有且仅有一个，所以加到结束里去
+
+        // 更新开始结束动作
         if (action instanceof FunctionAction) {
-            endFunctions.add((FunctionAction) action);
+            FunctionAction functionAction = (FunctionAction) action;
+            if (functionAction.getTag().isStart()) {
+                startFunctions.add(functionAction);
+                startFunction = functionAction;
+            } else {
+                endFunctions.add(functionAction);
+            }
         }
     }
 
@@ -291,13 +348,31 @@ public class BaseFunction extends NormalAction implements ActionContext {
                 break;
             }
         }
-        // 开始动作有且仅有一个，所以到结束里去移除
+
+        // 更新开始结束动作
         if (action instanceof FunctionAction) {
-            for (FunctionAction function : endFunctions) {
-                if (function.getId().equals(action.getId())) {
-                    endFunctions.remove(function);
-                    break;
+            FunctionAction functionAction = (FunctionAction) action;
+            if (functionAction.getTag().isStart()) {
+                for (FunctionAction function : startFunctions) {
+                    if (function.getId().equals(functionAction.getId())) {
+                        startFunctions.remove(function);
+                        break;
+                    }
                 }
+                if (startFunction != null && startFunction.getId().equals(functionAction.getId())) {
+                    startFunction = null;
+                }
+            } else {
+                for (FunctionAction function : endFunctions) {
+                    if (function.getId().equals(functionAction.getId())) {
+                        endFunctions.remove(function);
+                        break;
+                    }
+                }
+                if (endFunction != null && endFunction.getId().equals(functionAction.getId())) {
+                    endFunction = null;
+                }
+
             }
         }
     }

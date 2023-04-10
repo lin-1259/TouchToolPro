@@ -165,10 +165,11 @@ public class BaseAction {
         }
     }
 
-    public Pin removePin(Pin pin) {
+    public Pin removePin(ActionContext context, Pin pin) {
         if (pin == null) return null;
         for (Pin oldPin : pins) {
             if (oldPin.getId().equals(pin.getId())) {
+                if (context != null) oldPin.removeLinks(context);
                 pins.remove(oldPin);
                 return oldPin;
             }

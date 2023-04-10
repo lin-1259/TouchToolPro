@@ -90,7 +90,8 @@ public class CustomCard extends BaseCard<FunctionAction> {
     @Override
     public void removeMorePinView(Pin pin) {
         String pinId = action.getPinIdMap().get(pin.getId());
-        ((BaseFunction) actionContext).removePin(((BaseFunction) actionContext).getPinById(pinId));
+        BaseFunction function = (BaseFunction) actionContext;
+        function.removePin(null, function.getPinById(pinId));
     }
 
     private void onPinAdded(Pin pin) {

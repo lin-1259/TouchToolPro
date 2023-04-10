@@ -27,6 +27,8 @@ public class PinWidgetInteger extends BindingView<PinWidgetInputBinding> {
         super(context, attrs, PinWidgetInputBinding.class);
         if (pinInteger == null) throw new RuntimeException("不是有效的引用");
 
+        binding.editText.setSaveEnabled(false);
+        binding.editText.setSaveFromParentEnabled(false);
         binding.editText.setInputType(EditorInfo.TYPE_CLASS_NUMBER);
         binding.editText.addTextChangedListener(new TextChangedListener() {
             @Override
