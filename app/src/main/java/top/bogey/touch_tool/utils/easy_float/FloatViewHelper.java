@@ -138,53 +138,8 @@ public class FloatViewHelper {
         showSize.bottom -= (statusBarHeight + config.bottomBorder);
         showSize.right -= config.rightBorder;
 
-        int width = floatViewParent.getWidth();
-        int height = floatViewParent.getHeight();
-
-        switch (config.gravity) {
-            case TOP_LEFT:
-                showSize.right -= width;
-                showSize.bottom -= height;
-                break;
-            case TOP_CENTER:
-                showSize.left += width / 2;
-                showSize.right -= width / 2;
-                showSize.bottom -= height;
-                break;
-            case TOP_RIGHT:
-                showSize.left += width;
-                showSize.bottom -= height;
-                break;
-            case LEFT_CENTER:
-                showSize.right -= width;
-                showSize.top += height / 2;
-                showSize.bottom -= height / 2;
-                break;
-            case CENTER:
-                showSize.left += width / 2;
-                showSize.right -= width / 2;
-                showSize.top += height / 2;
-                showSize.bottom -= height / 2;
-                break;
-            case RIGHT_CENTER:
-                showSize.left += width;
-                showSize.top += height / 2;
-                showSize.bottom -= height / 2;
-                break;
-            case BOTTOM_LEFT:
-                showSize.right -= width;
-                showSize.top += height;
-                break;
-            case BOTTOM_CENTER:
-                showSize.left += width / 2;
-                showSize.right -= width / 2;
-                showSize.top += height;
-                break;
-            case BOTTOM_RIGHT:
-                showSize.left += width;
-                showSize.top += height;
-                break;
-        }
+        showSize.right -= floatViewParent.getWidth();
+        showSize.bottom -= floatViewParent.getHeight();
 
         return showSize;
     }
