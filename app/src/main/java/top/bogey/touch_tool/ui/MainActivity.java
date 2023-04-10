@@ -32,6 +32,7 @@ import top.bogey.touch_tool.utils.SettingSave;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
+    private boolean firstShowTask = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolBar);
 
+
         handleIntent(getIntent());
         runFirstTimes();
     }
@@ -48,15 +50,15 @@ public class MainActivity extends BaseActivity {
     private void runFirstTimes() {
         if (SettingSave.getInstance().getRunTimes() == 1) {
             SettingSave.getInstance().addRunTimes();
-//            try (InputStream inputStream = getAssets().open("default")) {
-//                byte[] bytes = new byte[inputStream.available()];
-//                if (inputStream.read(bytes) > 0) {
-//                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
-//                    actionContexts.forEach(ActionContext::save);
-//                }
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+            try (InputStream inputStream = getAssets().open("default")) {
+                byte[] bytes = new byte[inputStream.available()];
+                if (inputStream.read(bytes) > 0) {
+                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+                    actionContexts.forEach(ActionContext::save);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -75,6 +77,12 @@ public class MainActivity extends BaseActivity {
                 hideBottomNavigation();
             }
         });
+
+        if (firstShowTask && SettingSave.getInstance().isFirstShowTask()) {
+            controller.getGraph().setStartDestination(R.id.task);
+            controller.navigate(R.id.task);
+            firstShowTask = false;
+        }
 
         String runningError = SettingSave.getInstance().getRunningError();
         if (runningError != null && !runningError.isEmpty()) {
@@ -109,7 +117,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         WorldState.getInstance().resetAppMap(this);
     }
 
@@ -119,12 +126,6 @@ public class MainActivity extends BaseActivity {
 
     public void hideBottomNavigation() {
         binding.menuView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController controller = Navigation.findNavController(this, R.id.conView);
-        return controller.navigateUp() || super.onSupportNavigateUp();
     }
 
     @Override

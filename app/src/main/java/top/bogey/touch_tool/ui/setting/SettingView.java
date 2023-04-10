@@ -115,9 +115,11 @@ public class SettingView extends Fragment {
         });
         binding.nightModeGroup.check(binding.nightModeGroup.getChildAt(SettingSave.getInstance().getNightMode()).getId());
 
-        binding.dynamicColorSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> SettingSave.getInstance().setDynamicColor(requireContext(), isChecked));
+        binding.dynamicColorSwitch.setOnClickListener(v -> SettingSave.getInstance().setDynamicColor(requireContext(), binding.dynamicColorSwitch.isChecked()));
         binding.dynamicColorSwitch.setChecked(SettingSave.getInstance().isDynamicColor());
 
+        binding.showTaskSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstShowTask(binding.showTaskSwitch.isChecked()));
+        binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
 
         PackageManager manager = requireContext().getPackageManager();
         try {

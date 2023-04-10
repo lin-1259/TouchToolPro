@@ -10,6 +10,7 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.pin.object.PinString;
+import top.bogey.touch_tool.utils.GsonUtils;
 
 public class SetValueAction extends NormalAction {
     private transient Pin valuePin = new Pin(new PinString());
@@ -23,7 +24,8 @@ public class SetValueAction extends NormalAction {
 
     public SetValueAction(JsonObject jsonObject) {
         super(R.string.action_set_value_action_title, jsonObject);
-        key = jsonObject.get("key").getAsString();
+        key = GsonUtils.getAsString(jsonObject, "key", null);
+        if (key == null) throw new RuntimeException("变量解析失败");
         valuePin = reAddPin(valuePin);
     }
 

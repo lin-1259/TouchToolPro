@@ -39,6 +39,7 @@ public class HandleActionContextView extends FrameLayout {
             if (actionContext instanceof Task) {
                 Task task = (Task) actionContext;
                 if (repository.getTaskById(task.getId()) == null) {
+                    task.setTag(null);
                     tmpTasks.add(task);
                     for (BaseAction action : task.getActions()) {
                         if (action instanceof BaseFunction) {

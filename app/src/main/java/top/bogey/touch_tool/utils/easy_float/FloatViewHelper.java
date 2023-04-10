@@ -124,19 +124,73 @@ public class FloatViewHelper {
     }
 
     public Point getConfigPosition() {
-        Point position = getParamsPosition();
+        Point position = getGravityPosition();
         position.x = params.x - position.x;
         position.y = params.y - position.y;
         return position;
     }
 
-    private Point getParamsPosition() {
+    private Rect getShowRect() {
         Rect showSize = DisplayUtils.getScreenArea(context);
         int statusBarHeight = DisplayUtils.getStatusBarHeight(floatViewParent, params);
         showSize.top += config.topBorder;
         showSize.left += config.leftBorder;
         showSize.bottom -= (statusBarHeight + config.bottomBorder);
         showSize.right -= config.rightBorder;
+
+        int width = floatViewParent.getWidth();
+        int height = floatViewParent.getHeight();
+
+        switch (config.gravity) {
+            case TOP_LEFT:
+                showSize.right -= width;
+                showSize.bottom -= height;
+                break;
+            case TOP_CENTER:
+                showSize.left += width / 2;
+                showSize.right -= width / 2;
+                showSize.bottom -= height;
+                break;
+            case TOP_RIGHT:
+                showSize.left += width;
+                showSize.bottom -= height;
+                break;
+            case LEFT_CENTER:
+                showSize.right -= width;
+                showSize.top += height / 2;
+                showSize.bottom -= height / 2;
+                break;
+            case CENTER:
+                showSize.left += width / 2;
+                showSize.right -= width / 2;
+                showSize.top += height / 2;
+                showSize.bottom -= height / 2;
+                break;
+            case RIGHT_CENTER:
+                showSize.left += width;
+                showSize.top += height / 2;
+                showSize.bottom -= height / 2;
+                break;
+            case BOTTOM_LEFT:
+                showSize.right -= width;
+                showSize.top += height;
+                break;
+            case BOTTOM_CENTER:
+                showSize.left += width / 2;
+                showSize.right -= width / 2;
+                showSize.top += height;
+                break;
+            case BOTTOM_RIGHT:
+                showSize.left += width;
+                showSize.top += height;
+                break;
+        }
+
+        return showSize;
+    }
+
+    private Point getGravityPosition() {
+        Rect showSize = getShowRect();
 
         Point point = new Point();
         switch (config.gravity) {
@@ -145,46 +199,46 @@ public class FloatViewHelper {
                 point.y = showSize.top;
                 break;
             case TOP_CENTER:
-                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
+                point.x = (showSize.left + showSize.right) / 2;
                 point.y = showSize.top;
                 break;
             case TOP_RIGHT:
-                point.x = showSize.right - floatViewParent.getWidth();
+                point.x = showSize.right;
                 point.y = showSize.top;
                 break;
             case LEFT_CENTER:
                 point.x = showSize.left;
-                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.y = (showSize.top + showSize.bottom) / 2;
                 break;
             case CENTER:
-                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
-                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.x = (showSize.left + showSize.right) / 2;
+                point.y = (showSize.top + showSize.bottom) / 2;
                 break;
             case RIGHT_CENTER:
-                point.x = showSize.right - floatViewParent.getWidth();
-                point.y = (showSize.height() - floatViewParent.getHeight()) / 2;
+                point.x = showSize.right;
+                point.y = (showSize.top + showSize.bottom) / 2;
                 break;
             case BOTTOM_LEFT:
                 point.x = showSize.left;
-                point.y = showSize.bottom - floatViewParent.getHeight();
+                point.y = showSize.bottom;
                 break;
             case BOTTOM_CENTER:
-                point.x = (showSize.width() - floatViewParent.getWidth()) / 2;
-                point.y = showSize.bottom - floatViewParent.getHeight();
+                point.x = (showSize.left + showSize.right) / 2;
+                point.y = showSize.bottom;
                 break;
             case BOTTOM_RIGHT:
-                point.x = showSize.right - floatViewParent.getWidth();
-                point.y = showSize.bottom - floatViewParent.getHeight();
+                point.x = showSize.right;
+                point.y = showSize.bottom;
                 break;
         }
         return point;
     }
 
     public void initGravity() {
-        Point position = getParamsPosition();
-        params.x = config.offset.x + position.x;
-        params.y = config.offset.y + position.y;
-
+        Rect showSize = getShowRect();
+        Point position = getGravityPosition();
+        params.x = Math.max(Math.min(config.offset.x + position.x, showSize.right), showSize.left);
+        params.y = Math.max(Math.min(config.offset.y + position.y, showSize.bottom), showSize.top);
         manager.updateViewLayout(floatViewParent, params);
     }
 

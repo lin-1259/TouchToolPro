@@ -19,6 +19,7 @@ public class PinAdd extends PinObject {
     }
 
     public PinAdd(Pin pin, int offset) {
+        super();
         this.pin = pin;
         this.offset = offset;
     }

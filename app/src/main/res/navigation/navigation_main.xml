@@ -23,7 +23,8 @@
     <fragment
         android:id="@+id/setting"
         android:name="top.bogey.touch_tool.ui.setting.SettingView"
-        android:label="@string/setting" />
+        android:label="@string/setting"
+        tools:layout="@layout/view_setting" />
 
     <fragment
         android:id="@+id/blueprint"

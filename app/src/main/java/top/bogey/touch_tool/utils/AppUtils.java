@@ -118,6 +118,15 @@ public class AppUtils {
         }
     }
 
+    public static void gotoScheme(Context context, String scheme) {
+        try {
+            Intent intent = Intent.parseUri(scheme, Intent.URI_INTENT_SCHEME|Intent.URI_ANDROID_APP_SCHEME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        } catch (Exception ignored) {
+        }
+    }
+
     public static void gotoUrl(Context context, String url) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

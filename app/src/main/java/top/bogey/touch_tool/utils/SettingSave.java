@@ -28,6 +28,7 @@ public class SettingSave {
     private final static String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
 
+    private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
     private static final String NIGHT_MODE = "NIGHT_MODE";
     private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";
 
@@ -155,4 +156,13 @@ public class SettingSave {
         }
         settingMMKV.encode(DYNAMIC_COLOR, enabled);
     }
+
+    public boolean isFirstShowTask() {
+        return settingMMKV.decodeBool(FIRST_SHOW_TASK, false);
+    }
+
+    public void setFirstShowTask(boolean firstShowTask) {
+        settingMMKV.encode(FIRST_SHOW_TASK, firstShowTask);
+    }
+
 }

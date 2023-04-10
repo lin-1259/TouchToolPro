@@ -73,6 +73,10 @@ public class CardLayoutView extends FrameLayout {
 
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+
+        setSaveEnabled(false);
+        setSaveFromParentEnabled(false);
+
         gridSize = DisplayUtils.dp2px(context, 8);
 
         gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

@@ -219,8 +219,8 @@
 
     <string name="action_open_app_action_title">打开应用或界面</string>
 
-    <string name="action_open_url_action_title">打开Url</string>
-    <string name="action_open_url_action_subtitle_url">Url</string>
+    <string name="action_open_url_action_title">打开Uri</string>
+    <string name="action_open_url_action_subtitle_url">Uri</string>
 
     <string name="action_set_value_action_title">设置变量值</string>
     <string name="action_get_value_action_title">获取变量值</string>
@@ -268,6 +268,8 @@
     <string name="action_for_loop_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
+    <string name="action_sequence_condition_logic_title">顺序条件执行</string>
+    <string name="action_sequence_condition_logic_subtitle_condition">条件</string>
 
     <string name="action_random_logic_title">随机执行</string>
     <string name="action_random_logic_subtitle_times">随机条数</string>
@@ -368,6 +370,8 @@
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
 
     <string name="theme_setting">界面外观</string>
+    <string name="theme_setting_first_show_task">任务主页</string>
+    <string name="theme_setting_first_show_task_tips">打开应用时首页展示任务页而不是主页</string>
     <string name="theme_setting_dynamic_color">动态颜色</string>
     <string name="theme_setting_dynamic_color_tips">在支持的Android版本上，开启后应用将使用壁纸颜色作为主色调</string>
     <string name="theme_setting_night_auto">跟随系统</string>
