@@ -26,7 +26,7 @@ public class PinExecute extends PinObject {
 
     @Override
     public ShapeAppearanceModel getPinStyle(Context context) {
-        int cornerSize = DisplayUtils.dp2px(context, 5.5f);
+        float cornerSize = DisplayUtils.dp2px(context, 5.5f);
         return ShapeAppearanceModel.builder()
                 .setTopLeftCorner(CornerFamily.CUT, 0)
                 .setTopRightCorner(CornerFamily.CUT, 0)

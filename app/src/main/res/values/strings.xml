@@ -98,6 +98,7 @@
     <string name="function_end">自定义结束</string>
     <string name="function_pin_hint">针脚名</string>
     <string name="function_just_call">仅获取状态</string>
+    <string name="function_fast_end">结束时中止内部执行</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
     <string name="attribute_title">任务内变量</string>
@@ -109,6 +110,7 @@
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
+    <string name="action_subtitle_add_execute">添加执行</string>
     <string name="action_subtitle_add_des">修改备注</string>
     <string name="action_subtitle_execute">执行</string>
 
@@ -226,26 +228,6 @@
     <string name="action_set_value_action_title">设置变量值</string>
     <string name="action_get_value_action_title">获取变量值</string>
 
-    <!-- 任务 - 转换 -->
-    <string name="action_value_convert_string_title">对象转换为文本</string>
-    <string name="action_value_convert_string_subtitle_value">对象</string>
-    <string name="action_value_convert_string_subtitle_string">文本</string>
-
-    <string name="action_position_convert_int_title">位置拆分为数字</string>
-    <string name="action_int_convert_position_title">数值组合为位置</string>
-    <string name="action_int_convert_position_subtitle_x">X</string>
-    <string name="action_int_convert_position_subtitle_y">Y</string>
-    <string name="action_int_convert_position_subtitle_position">位置</string>
-
-    <string name="action_bool_convert_or_title">任何条件达成</string>
-    <string name="action_bool_convert_and_title">所有条件达成</string>
-    <string name="action_bool_convert_not_title">反转条件</string>
-    <string name="action_bool_convert_and_subtitle_condition">条件</string>
-
-    <string name="action_string_convert_int_title">文本转换为数值</string>
-    <string name="action_string_convert_int_subtitle_string">文本</string>
-    <string name="action_string_convert_int_subtitle_value">数值</string>
-
     <!-- 任务 - 逻辑 -->
     <string name="action_logic_subtitle_false">未达成</string>
 
@@ -281,18 +263,42 @@
     <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_parallel_logic_subtitle_complete">达成</string>
 
+    <!-- 任务 - 转换 -->
+    <string name="action_value_convert_string_title">对象转换为文本</string>
+    <string name="action_value_convert_string_subtitle_value">对象</string>
+    <string name="action_value_convert_string_subtitle_string">文本</string>
+
+    <string name="action_position_convert_int_title">位置拆分为数值</string>
+    <string name="action_int_convert_position_title">数值组合为位置</string>
+    <string name="action_int_convert_position_subtitle_x">X</string>
+    <string name="action_int_convert_position_subtitle_y">Y</string>
+    <string name="action_int_convert_position_subtitle_position">位置</string>
+
+    <string name="action_bool_convert_or_title">任何条件达成</string>
+    <string name="action_bool_convert_and_title">所有条件达成</string>
+    <string name="action_bool_convert_not_title">反转条件</string>
+    <string name="action_bool_convert_and_subtitle_condition">条件</string>
+
+    <string name="action_string_convert_int_title">文本转换为数值</string>
+    <string name="action_string_convert_int_subtitle_string">文本</string>
+    <string name="action_string_convert_int_subtitle_value">数值</string>
+
     <!-- 任务 - 加减乘除 -->
     <string name="action_int_add_operator_title">数值相加 ＋</string>
     <string name="action_int_reduce_operator_title">数值相减 －</string>
     <string name="action_int_multi_operator_title">数值相乘 ×</string>
     <string name="action_int_div_operator_title">数值相除 ÷</string>
     <string name="action_int_mod_operator_title">数值取余 %</string>
-    <string name="action_int_equal_operator_title">数值相等 =</string>
+    <string name="action_int_equal_operator_title">数值比较 =</string>
     <string name="action_int_large_operator_title">数值比较 &gt;</string>
     <string name="action_int_small_operator_title">数值比较 &lt;</string>
     <string name="action_int_random_operator_title">随机数值</string>
 
     <string name="action_string_add_operator_title">文本拼接 +</string>
+    <string name="action_string_equal_operator_title">文本比较 =</string>
+    <string name="action_string_contain_operator_title">包含文本</string>
+    <string name="action_string_contain_operator_subtitle_origin">原文</string>
+    <string name="action_string_contain_operator_title_match">正则</string>
 
     <!-- 针脚 -->
     <string name="pin_value">对象</string>

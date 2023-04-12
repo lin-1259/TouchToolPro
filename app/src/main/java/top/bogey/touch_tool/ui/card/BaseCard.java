@@ -51,7 +51,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         this.actionContext = actionContext;
         this.action = action;
 
-        setCardElevation(DisplayUtils.dp2px(context, 5));
+        setCardElevation(Math.round(DisplayUtils.dp2px(context, 5)));
         setStrokeWidth(0);
         setCardBackgroundColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0));
         setPivotX(0);
@@ -80,6 +80,7 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         });
 
         binding.expandButton.setOnClickListener(v -> {
+            bringToFront();
             action.showDetail = !action.showDetail;
             expandDetail(action.showDetail);
             binding.expandButton.setIconResource(action.showDetail ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);

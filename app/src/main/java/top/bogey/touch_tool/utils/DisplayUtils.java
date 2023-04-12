@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.TypedValue;
 import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
@@ -62,8 +63,8 @@ public class DisplayUtils {
         return 0;
     }
 
-    public static int dp2px(Context context, float dp) {
-        return Math.round(dp * context.getResources().getDisplayMetrics().density);
+    public static float dp2px(Context context, float dp) {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
     public static int[] getHsvColor(Bitmap bitmap, int x, int y) {

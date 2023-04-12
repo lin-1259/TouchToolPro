@@ -45,7 +45,12 @@ public class FunctionAction extends BaseAction {
 
         pinUidMap.putAll(GsonUtils.getAsType(jsonObject, "pinUidMap", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
 
-        executePin = super.addPin(pinsTmp.remove(0));
+        if (tag.isStart()) {
+            executePin = reAddPin(new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT));
+        } else {
+            executePin = reAddPin(new Pin(new PinExecute()));
+        }
+
         for (Pin pin : pinsTmp) {
             super.addPin(pin);
         }
@@ -62,7 +67,7 @@ public class FunctionAction extends BaseAction {
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (tag.isStart()) super.doAction(runnable, actionContext, pin);
         else {
-            ((BaseFunction) actionContext).setEndFunction(this);
+            ((BaseFunction) actionContext).setEndFunction(this, pin);
         }
     }
 

@@ -14,6 +14,7 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.action.function.FunctionAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
+import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.CardCustomBinding;
 import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
@@ -84,9 +85,22 @@ public class CustomCard extends BaseCard<FunctionAction> {
             baseFunction.addPin(pin);
         });
 
-        cardBinding.enableSwitch.setChecked(baseFunction.isJustCall());
-        cardBinding.enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> baseFunction.setJustCall(isChecked));
+        cardBinding.addExecuteButton.setOnClickListener(v -> {
+            Pin pin;
+            // 这个pin是添加到BaseFunction的，所以方向与动作方向一致，与动作内针脚方向相反
+            if (action.getTag().isStart()) pin = new Pin(new PinExecute());
+            else pin = new Pin(new PinExecute(), PinDirection.OUT);
+            baseFunction.addPin(pin);
+        });
+
+        cardBinding.justCallSwitch.setChecked(baseFunction.isJustCall());
+        cardBinding.justCallSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> baseFunction.setJustCall(isChecked));
+
+        cardBinding.fastEndSwitch.setChecked(baseFunction.isFastEnd());
+        cardBinding.fastEndSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> baseFunction.setFastEnd(isChecked));
+
         cardBinding.stateBox.setVisibility(action.getTag().isStart() ? VISIBLE : GONE);
+        cardBinding.fastEndBox.setVisibility(action.getTag().isStart() ? GONE : VISIBLE);
     }
 
     @Override

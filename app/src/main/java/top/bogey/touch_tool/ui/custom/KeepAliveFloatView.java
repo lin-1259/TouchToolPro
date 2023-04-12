@@ -48,7 +48,7 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
 
         EasyFloat.with(service)
                 .setLayout(this)
-                .setGravity(FloatGravity.TOP_CENTER, 0, DisplayUtils.dp2px(getContext(), 2))
+                .setGravity(FloatGravity.TOP_CENTER, 0, Math.round(DisplayUtils.dp2px(getContext(), 2)))
                 .setTag(KeepAliveFloatView.class.getCanonicalName())
                 .setAlwaysShow(true)
                 .setDragEnable(false)

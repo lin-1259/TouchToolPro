@@ -160,7 +160,7 @@ public class BaseAction {
     public void reAddPin(Pin defaultValue, int lastCount) {
         int count = 0;
         while (pinsTmp.size() > lastCount && count < 50) {
-            reAddPin(defaultValue);
+            reAddPin(defaultValue.copy(true));
             count++;
         }
     }

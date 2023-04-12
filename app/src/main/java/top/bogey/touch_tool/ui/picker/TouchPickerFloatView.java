@@ -76,7 +76,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStyle(Paint.Style.STROKE);
 
-        padding = DisplayUtils.dp2px(context, 20);
+        padding = Math.round(DisplayUtils.dp2px(context, 20));
 
         refreshGravityButton(pinPath.getGravity());
     }

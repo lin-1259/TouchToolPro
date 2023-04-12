@@ -27,23 +27,30 @@ public class BaseFunction extends NormalAction implements ActionContext {
     private final HashSet<BaseAction> actions = new HashSet<>();
     private final HashMap<String, PinObject> attrs = new HashMap<>();
     private boolean justCall = false;
+    private boolean fastEnd = true;
 
     private transient ActionContext outContext;
     private transient final HashSet<FunctionAction> startFunctions = new HashSet<>();
     private transient FunctionAction startFunction;
     private transient final HashSet<FunctionAction> endFunctions = new HashSet<>();
     private transient FunctionAction endFunction;
+    private transient Pin endPin;
+    private transient boolean synced = false;
 
     public BaseFunction() {
         super(0);
         functionId = UUID.randomUUID().toString();
 
         startFunction = new FunctionAction(FUNCTION_TAG.START, this);
+        startFunction.x = 1;
+        startFunction.y = 1;
         startFunctions.add(startFunction);
         actions.add(startFunction);
 
         // 不是 this.endFunction
         FunctionAction endFunction = new FunctionAction(FUNCTION_TAG.END, this);
+        endFunction.x = 1;
+        endFunction.y = 21;
         endFunctions.add(endFunction);
         actions.add(endFunction);
     }
@@ -53,6 +60,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
         functionId = GsonUtils.getAsString(jsonObject, "functionId", UUID.randomUUID().toString());
         taskId = GsonUtils.getAsString(jsonObject, "taskId", null);
         justCall = GsonUtils.getAsBoolean(jsonObject, "justCall", false);
+        fastEnd = GsonUtils.getAsBoolean(jsonObject, "fastEnd", true);
 
         actions.addAll(GsonUtils.getAsType(jsonObject, "actions", new TypeToken<HashSet<BaseAction>>() {}.getType(), new HashSet<>()));
         for (BaseAction action : actions) {
@@ -96,13 +104,14 @@ public class BaseFunction extends NormalAction implements ActionContext {
             outPin.removeLinks(outContext);
         }
         setJustCall(function.isJustCall());
+        setFastEnd(function.isFastEnd());
 
         // 外部针脚
         // 先移除自身多出的外部针脚
         for (int i = getPins().size() - 1; i >= 0; i--) {
             Pin pin = getPins().get(i);
-            Pin pinById = function.getPinByUid(pin.getUid());
-            if (pinById == null) {
+            Pin pinByUid = function.getPinByUid(pin.getUid());
+            if (pinByUid == null) {
                 pin.removeLinks(outContext);
                 removePin(outContext, pin);
             }
@@ -110,25 +119,25 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
         // 再同步最新的外部针脚
         for (Pin pin : function.getPins()) {
-            Pin pinById = getPinByUid(pin.getUid());
-            if (pinById == null) {
+            Pin pinByUid = getPinByUid(pin.getUid());
+            if (pinByUid == null) {
                 // 新的方法里有这个针脚，旧的没有，需要在自己这加上
                 Pin copy = pin.copy(false);
                 // 同步新针脚id，针脚连接需要这个
                 copy.setId(pin.getId());
                 addPin(copy);
-            } else if (!pinById.getPinClass().equals(pin.getPinClass())) {
+            } else if (!pinByUid.getPinClass().equals(pin.getPinClass())) {
                 // 针脚的类型变了，先移除原来的针脚，再重新加回来
-                pinById.removeLinks(outContext);
-                int index = getPins().indexOf(pinById);
-                removePin(outContext, pinById);
+                pinByUid.removeLinks(outContext);
+                int index = getPins().indexOf(pinByUid);
+                removePin(outContext, pinByUid);
                 Pin copy = pin.copy(false);
                 // 同步新针脚id，针脚连接需要这个
                 copy.setId(pin.getId());
                 addPin(index, copy);
             } else {
                 // 有这个针脚，且针脚值正确，强制同步一下针脚名
-                pinById.setTitle(pin.getTitle(null));
+                pinByUid.setTitle(pin.getTitle(null));
             }
         }
     }
@@ -148,20 +157,53 @@ public class BaseFunction extends NormalAction implements ActionContext {
         // 内部动作
         actions.clear();
         actions.addAll(GsonUtils.copy(function.getActions(), new TypeToken<HashSet<BaseAction>>() {}.getType()));
+
+        startFunctions.clear();
+        endFunctions.clear();
+        for (BaseAction action : actions) {
+            if (action instanceof FunctionAction) {
+                FunctionAction functionAction = (FunctionAction) action;
+                functionAction.setBaseFunction(this);
+                if (functionAction.getTag().isStart()) {
+                    startFunctions.add(functionAction);
+                    // 开始动作是唯一的
+                    startFunction = functionAction;
+                } else endFunctions.add(functionAction);
+            }
+        }
     }
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         endFunction = null;
+        endPin = null;
         outContext = actionContext;
 
-        sync(outContext);
-        syncInner();
+        if (!synced) {
+            sync(outContext);
+            syncInner();
+            synced = true;
+        }
 
-        startFunction.doAction(runnable, this, startFunction.getExecutePin());
+        if (pin.getUid().equals(inPin.getUid())) {
+            startFunction.doAction(runnable, this, startFunction.getExecutePin());
+        } else {
+            Pin pinByUid = startFunction.getPinByUid(startFunction.getMappingPinUid(pin.getUid()));
+            if (pinByUid != null) {
+                startFunction.doAction(runnable, this, pinByUid);
+            }
+        }
 
         if (!justCall) {
-            doNextAction(runnable, actionContext, outPin);
+            if (endFunction != null && endPin != null) {
+                String pinUid = endFunction.getPinUidMap().get(endPin.getUid());
+                Pin pinByUid = getPinByUid(pinUid);
+                if (pinByUid != null) {
+                    doNextAction(runnable, actionContext, pinByUid);
+                }
+            } else {
+                doNextAction(runnable, actionContext, outPin);
+            }
         }
     }
 
@@ -178,9 +220,9 @@ public class BaseFunction extends NormalAction implements ActionContext {
             calculatePinValue(runnable, actionContext, pin);
             if (endFunction == null) return pin.getValue();
             else {
-                Pin pinById = endFunction.getPinByUid(endFunction.getMappingPinUid(pin.getUid()));
+                Pin pinByUid = endFunction.getPinByUid(endFunction.getMappingPinUid(pin.getUid()));
                 outContext = actionContext;
-                return endFunction.getPinValue(runnable, this, pinById);
+                return endFunction.getPinValue(runnable, this, pinByUid);
             }
         } else {
             return super.getPinValue(runnable, actionContext, pin);
@@ -244,8 +286,9 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
     }
 
-    public void setEndFunction(FunctionAction endFunction) {
+    public void setEndFunction(FunctionAction endFunction, Pin endPin) {
         this.endFunction = endFunction;
+        this.endPin = endPin;
     }
 
     public boolean isJustCall() {
@@ -254,6 +297,14 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     public void setJustCall(boolean justCall) {
         this.justCall = justCall;
+    }
+
+    public boolean isFastEnd() {
+        return fastEnd;
+    }
+
+    public void setFastEnd(boolean fastEnd) {
+        this.fastEnd = fastEnd;
     }
 
     public String getFunctionId() {
@@ -371,7 +422,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
     @Override
     public boolean isReturned() {
-        return endFunction != null;
+        return fastEnd && endFunction != null;
     }
 
     @Override

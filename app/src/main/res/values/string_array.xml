@@ -4,11 +4,11 @@
     <string-array name="action_type">
         <item>开始动作</item>
         <item>逻辑动作</item>
-        <item>普通动作</item>
         <item>状态获取</item>
-        <item>针脚转换</item>
-        <item>针脚运算</item>
-        <item>自定义动作</item>
+        <item>普通动作</item>
+        <item>条件相关</item>
+        <item>文本相关</item>
+        <item>数值相关</item>
     </string-array>
 
     <string-array name="restart_type">

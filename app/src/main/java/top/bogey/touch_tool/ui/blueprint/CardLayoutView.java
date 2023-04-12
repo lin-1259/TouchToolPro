@@ -43,7 +43,7 @@ public class CardLayoutView extends FrameLayout {
     private static final int DRAG_PIN = 3;
     private static final int DRAG_SCALE = 4;
 
-    private final int gridSize;
+    private final float gridSize;
     private final Paint gridPaint;
     private final Paint linePaint;
     private final int[] location = new int[2];
@@ -144,7 +144,7 @@ public class CardLayoutView extends FrameLayout {
         this.actionContext = actionContext;
         offsetX = 0;
         offsetY = 0;
-        scale = 0.9f;
+        scale = 1f;
         cardMap.clear();
         removeAllViews();
         for (BaseAction action : actionContext.getActions()) {
@@ -275,6 +275,7 @@ public class CardLayoutView extends FrameLayout {
         canvas.restore();
 
         // 所有连接的线
+        linePaint.setStrokeWidth(5 * scale);
         for (BaseCard<?> card : cardMap.values()) {
             BaseAction action = card.getAction();
             for (Pin pin : action.getPins()) {
@@ -363,7 +364,7 @@ public class CardLayoutView extends FrameLayout {
 
         boolean flag = true;
         if (offsetX < scaleGridSize * 3.1 && v) {
-            if (offsetX < 1) {
+            if (offsetX < scaleGridSize) {
                 flag = false;
             } else if (yScale == -1) {
                 // 向左绕2格连接
@@ -373,7 +374,7 @@ public class CardLayoutView extends FrameLayout {
                 flag = false;
             }
         } else if (offsetY < scaleGridSize * 3.1 && !v) {
-            if (offsetY < 1) {
+            if (offsetY < scaleGridSize) {
                 flag = false;
             } else if (xScale == -1) {
                 //向下绕2格连接
@@ -539,8 +540,8 @@ public class CardLayoutView extends FrameLayout {
                 dragY = rawY;
                 int width = getWidth();
                 int height = getHeight();
-                int offset = gridSize;
-                int areaSize = gridSize * 4;
+                float offset = gridSize;
+                float areaSize = gridSize * 4;
                 if (rawX - location[0] < areaSize) {
                     offsetX += offset;
                 } else if (rawX - location[0] > width - areaSize) {

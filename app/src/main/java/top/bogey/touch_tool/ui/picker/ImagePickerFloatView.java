@@ -76,7 +76,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         bitmapPaint.setFilterBitmap(true);
         bitmapPaint.setDither(true);
 
-        offset = DisplayUtils.dp2px(context, 4);
+        offset = Math.round(DisplayUtils.dp2px(context, 4));
     }
 
     public Bitmap getBitmap() {
@@ -240,7 +240,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                 case RIGHT:
                 case TOP:
                 case BOTTOM:
-                    int px = DisplayUtils.dp2px(getContext(), 24 * 2);
+                    int px = Math.round(DisplayUtils.dp2px(getContext(), 24 * 2));
                     if (matchArea.width() < px || matchArea.height() == px) {
                         initMatchArea();
                     }
@@ -279,7 +279,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         binding.areaBox.setLayoutParams(params);
 
         ImageView[] images = new ImageView[] {binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
-        int px = DisplayUtils.dp2px(getContext(), 24);
+        int px = Math.round(DisplayUtils.dp2px(getContext(), 24));
         Point size = DisplayUtils.getScreenSize(getContext());
         px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);
         for (ImageView image : images) {

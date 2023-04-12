@@ -88,7 +88,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
             super(binding.getRoot());
             itemBinding = binding;
             context = binding.getRoot().getContext();
-            setNodePadding(DisplayUtils.dp2px(context, 8));
+            setNodePadding(Math.round(DisplayUtils.dp2px(context, 8)));
         }
 
         public void refreshItem(TreeNode node) {

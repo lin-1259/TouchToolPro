@@ -252,7 +252,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             super(binding.getRoot());
             itemBinding = binding;
             context = binding.getRoot().getContext();
-            setNodePadding(DisplayUtils.dp2px(context, 8));
+            setNodePadding(Math.round(DisplayUtils.dp2px(context, 8)));
 
             binding.removeButton.setVisibility(View.VISIBLE);
             binding.removeButton.setOnClickListener(v -> AppUtils.showDialog(context, R.string.delete_function_tips, result -> {
@@ -349,7 +349,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             super(binding.getRoot());
             attrBinding = binding;
             context = binding.getRoot().getContext();
-            setNodePadding(DisplayUtils.dp2px(context, 8));
+            setNodePadding(Math.round(DisplayUtils.dp2px(context, 8)));
 
             binding.removeButton.setOnClickListener(v -> {
                 int index = getBindingAdapterPosition();

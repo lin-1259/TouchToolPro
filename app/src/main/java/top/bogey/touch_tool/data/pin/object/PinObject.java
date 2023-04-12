@@ -35,7 +35,7 @@ public class PinObject {
     }
 
     public ShapeAppearanceModel getPinStyle(Context context) {
-        int cornerSize = DisplayUtils.dp2px(context, 6);
+        float cornerSize = DisplayUtils.dp2px(context, 6);
         return ShapeAppearanceModel.builder()
                 .setTopLeftCorner(CornerFamily.ROUNDED, cornerSize)
                 .setTopRightCorner(CornerFamily.ROUNDED, cornerSize)
