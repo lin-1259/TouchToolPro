@@ -46,7 +46,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow());
+                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                 if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
             }
@@ -55,7 +55,7 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnLongClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow());
+                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
                 AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                 if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
             }

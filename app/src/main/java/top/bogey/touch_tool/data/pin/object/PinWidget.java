@@ -6,6 +6,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.Objects;
 
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -29,7 +30,7 @@ public class PinWidget extends PinValue {
         level = GsonUtils.getAsString(jsonObject, "level", null);
     }
 
-    public AccessibilityNodeInfo getNode(Rect screenSize, AccessibilityNodeInfo root) {
+    public AccessibilityNodeInfo getNode(Rect screenSize, AccessibilityNodeInfo root, boolean justScreen) {
         if (root == null) return null;
 
         if (!(id == null || id.isEmpty())) {
@@ -39,12 +40,11 @@ public class PinWidget extends PinValue {
             AccessibilityNodeInfo accessibilityNodeInfo = null;
             for (AccessibilityNodeInfo node : nodeInfo) {
                 node.getBoundsInScreen(rect);
-                if (Rect.intersects(screenSize, rect)) {
-                    if (accessibilityNodeInfo == null) accessibilityNodeInfo = node;
-                    else {
-                        accessibilityNodeInfo = null;
-                        break;
-                    }
+                if (justScreen && !Rect.intersects(screenSize, rect)) continue;
+                if (accessibilityNodeInfo == null) accessibilityNodeInfo = node;
+                else {
+                    accessibilityNodeInfo = null;
+                    break;
                 }
             }
             if (accessibilityNodeInfo != null) return accessibilityNodeInfo;
@@ -65,7 +65,7 @@ public class PinWidget extends PinValue {
             if (node != null) {
                 Rect rect = new Rect();
                 node.getBoundsInScreen(rect);
-                if (!Rect.intersects(screenSize, rect)) node = null;
+                if (justScreen && !Rect.intersects(screenSize, rect)) node = null;
             }
             return node;
         }
@@ -102,5 +102,30 @@ public class PinWidget extends PinValue {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return id == null && level == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinWidget pinWidget = (PinWidget) o;
+
+        if (!Objects.equals(id, pinWidget.id)) return false;
+        return Objects.equals(level, pinWidget.level);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = 31 * result + (level != null ? level.hashCode() : 0);
+        return result;
     }
 }

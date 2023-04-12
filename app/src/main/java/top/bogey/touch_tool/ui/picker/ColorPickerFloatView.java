@@ -100,7 +100,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
                     Point size = DisplayUtils.getScreenSize(getContext());
                     if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
                         showBitmap = Bitmap.createBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                        if (pinColor.isValid()) {
+                        if (pinColor.isEmpty()) {
                             matchColor(pinColor.getColor(), pinColor.getMaxSize(getContext()), pinColor.getMinSize(getContext()));
                         }
                     }

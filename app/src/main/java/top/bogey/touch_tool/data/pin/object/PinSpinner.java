@@ -3,7 +3,6 @@ package top.bogey.touch_tool.data.pin.object;
 import android.content.Context;
 
 import androidx.annotation.ArrayRes;
-import androidx.annotation.StringRes;
 
 import com.google.gson.JsonObject;
 

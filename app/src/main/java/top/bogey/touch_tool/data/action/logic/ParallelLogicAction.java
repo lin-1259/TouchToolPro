@@ -57,7 +57,7 @@ public class ParallelLogicAction extends NormalAction {
         ArrayList<Pin> pins = getPins();
         ArrayList<Pin> subPins = new ArrayList<>();
         subPins.add(outPin);
-        for (int i = pins.indexOf(timeOutPin) + 1; i < pins.size() - 3; i++) {
+        for (int i = pins.indexOf(secondExcutePin); i < pins.size() - 3; i++) {
             subPins.add(pins.get(i));
         }
 

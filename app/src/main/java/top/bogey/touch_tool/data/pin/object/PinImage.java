@@ -7,13 +7,11 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.util.Base64;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Objects;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -96,5 +94,32 @@ public class PinImage extends PinValue {
 
         float scale = DisplayUtils.getScreen(context) * 1f / screen;
         return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return image == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinImage pinImage = (PinImage) o;
+
+        if (screen != pinImage.screen) return false;
+        if (!Objects.equals(image, pinImage.image)) return false;
+        return area.equals(pinImage.area);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + screen;
+        result = 31 * result + (image != null ? image.hashCode() : 0);
+        result = 31 * result + area.hashCode();
+        return result;
     }
 }

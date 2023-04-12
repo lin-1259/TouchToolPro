@@ -45,7 +45,7 @@ public class ColorStateAction extends StateAction {
         }
 
         PinColor color = (PinColor) getPinValue(runnable, actionContext, colorPin);
-        if (!color.isValid()) {
+        if (!color.isEmpty()) {
             value.setValue(false);
             return;
         }

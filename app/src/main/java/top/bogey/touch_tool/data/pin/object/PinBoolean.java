@@ -42,6 +42,11 @@ public class PinBoolean extends PinValue {
     }
 
     @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0);
     }
@@ -50,5 +55,23 @@ public class PinBoolean extends PinValue {
     @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinBoolean that = (PinBoolean) o;
+
+        return value == that.value;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (value ? 1 : 0);
+        return result;
     }
 }

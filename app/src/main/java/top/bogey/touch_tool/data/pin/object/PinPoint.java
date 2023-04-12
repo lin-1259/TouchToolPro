@@ -60,6 +60,31 @@ public class PinPoint extends PinValue {
     }
 
     @Override
+    public boolean isEmpty() {
+        return x == 0 && y == 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinPoint pinPoint = (PinPoint) o;
+
+        if (x != pinPoint.x) return false;
+        return y == pinPoint.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + x;
+        result = 31 * result + y;
+        return result;
+    }
+
+    @Override
     public int getPinColor(Context context) {
         return context.getResources().getColor(R.color.PointPinColor, null);
     }

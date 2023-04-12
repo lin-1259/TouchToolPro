@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
@@ -21,8 +20,8 @@ import top.bogey.touch_tool.utils.GsonUtils;
 
 public class FunctionAction extends BaseAction {
     private final BaseFunction.FUNCTION_TAG tag;
-    // 内部针脚->外部针脚
-    private final HashMap<String, String> pinIdMap = new HashMap<>();
+    // 内部针脚->外部针脚。仅在增删的时候会修改，复制的时候不会变
+    private final HashMap<String, String> pinUidMap = new HashMap<>();
 
     private transient BaseFunction baseFunction;
     private transient final Pin executePin;
@@ -44,7 +43,7 @@ public class FunctionAction extends BaseAction {
         tag = BaseFunction.FUNCTION_TAG.valueOf(GsonUtils.getAsString(jsonObject, "tag", BaseFunction.FUNCTION_TAG.START.name()));
         setTitleId(tag.isStart() ? R.string.function_start : R.string.function_end);
 
-        pinIdMap.putAll(GsonUtils.getAsType(jsonObject, "pinIdMap", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
+        pinUidMap.putAll(GsonUtils.getAsType(jsonObject, "pinUidMap", new TypeToken<HashMap<String, String>>() {}.getType(), new HashMap<>()));
 
         executePin = super.addPin(pinsTmp.remove(0));
         for (Pin pin : pinsTmp) {
@@ -54,24 +53,10 @@ public class FunctionAction extends BaseAction {
 
     @Override
     public BaseAction copy() {
-        FunctionAction copy = (FunctionAction) GsonUtils.copy(this, BaseAction.class);
-        copy.setId(UUID.randomUUID().toString());
-        copy.getPins().forEach(pin -> {
-            // 动作复制需要更新内部索引
-            String pinId = UUID.randomUUID().toString();
-            String remove = copy.pinIdMap.remove(pin.getId());
-            if (remove != null) copy.pinIdMap.put(pinId, remove);
-            pin.setId(pinId);
-            pin.setActionId(copy.getId());
-            pin.cleanLinks();
-        });
+        FunctionAction copy = (FunctionAction) super.copy();
         copy.baseFunction = baseFunction;
-        copy.x = x + 1;
-        copy.y = y + 1;
-
         return copy;
     }
-
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
@@ -84,7 +69,7 @@ public class FunctionAction extends BaseAction {
     @Override
     protected PinObject getPinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (tag.isStart())
-            return ((BaseFunction) actionContext).getPinValue(runnable, pinIdMap.get(pin.getId()));
+            return ((BaseFunction) actionContext).getPinValue(runnable, pinUidMap.get(pin.getUid()));
         else return super.getPinValue(runnable, actionContext, pin);
     }
 
@@ -104,8 +89,8 @@ public class FunctionAction extends BaseAction {
     public Pin addPin(Pin outerPin) {
         Pin copy = outerPin.copy(true);
         // 针脚方向需要与外部的相反
-        copy.setDirection(copy.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN);
-        pinIdMap.put(copy.getId(), outerPin.getId());
+        copy.setDirection(copy.getDirection().isOut() ? PinDirection.IN : PinDirection.OUT);
+        pinUidMap.put(copy.getUid(), outerPin.getUid());
         super.addPin(copy);
         if (callback != null) callback.onPinAdded(copy);
         return copy;
@@ -113,37 +98,38 @@ public class FunctionAction extends BaseAction {
 
     @Override
     public Pin removePin(ActionContext context, Pin outerPin) {
-        String pinId = getMappingPinId(outerPin.getId());
-        Pin pin = getPinById(pinId);
-        pinIdMap.remove(pinId);
+        String pinUid = getMappingPinUid(outerPin.getUid());
+        Pin pin = getPinByUid(pinUid);
+        pinUidMap.remove(pinUid);
         if (callback != null) callback.onPinRemoved(pin);
         return super.removePin(context, pin);
     }
 
-    public void setPinValue(String outerPinId, PinObject value) {
-        Pin pin = getPinById(getMappingPinId(outerPinId));
+    public void setPinValue(String outerPinUid, PinObject value) {
+        Pin pin = getPinByUid(getMappingPinUid(outerPinUid));
         pin.setValue(value.copy());
+        pin.removeLinks(baseFunction);
     }
 
-    public void setPinTitle(String outerPinId, String title) {
-        Pin pin = getPinById(getMappingPinId(outerPinId));
+    public void setPinTitle(String outerPinUid, String title) {
+        Pin pin = getPinByUid(getMappingPinUid(outerPinUid));
         pin.setTitle(title);
         if (callback != null) callback.onPinTitleChanged(pin);
     }
 
-    public String getMappingPinId(String outerPinId) {
-        for (Map.Entry<String, String> entry : pinIdMap.entrySet()) {
-            if (entry.getValue().equals(outerPinId)) return entry.getKey();
+    public String getMappingPinUid(String outerPinUid) {
+        for (Map.Entry<String, String> entry : pinUidMap.entrySet()) {
+            if (entry.getValue().equals(outerPinUid)) return entry.getKey();
         }
         return null;
     }
 
-    public BaseFunction.FUNCTION_TAG getTag() {
-        return tag;
+    public HashMap<String, String> getPinUidMap() {
+        return pinUidMap;
     }
 
-    public HashMap<String, String> getPinIdMap() {
-        return pinIdMap;
+    public BaseFunction.FUNCTION_TAG getTag() {
+        return tag;
     }
 
     public Pin getExecutePin() {

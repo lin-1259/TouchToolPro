@@ -109,6 +109,8 @@ public class BlueprintView extends Fragment {
     }
 
     public void pushActionContext(ActionContext actionContext) {
+        if (actionContext == null) return;
+
         if (actionContextStack.size() > 0) {
             actionContextStack.peek().save();
         }

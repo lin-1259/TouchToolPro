@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.data.pin.object;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Path;
 import android.graphics.Point;
@@ -116,7 +115,35 @@ public class PinPath extends PinValue {
         this.offset = offset;
     }
 
-    @SuppressLint("DefaultLocale")
+    @Override
+    public boolean isEmpty() {
+        return paths == null || paths.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinPath pinPath = (PinPath) o;
+
+        if (screen != pinPath.screen) return false;
+        if (!paths.equals(pinPath.paths)) return false;
+        if (gravity != pinPath.gravity) return false;
+        return offset.equals(pinPath.offset);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + paths.hashCode();
+        result = 31 * result + screen;
+        result = 31 * result + gravity.hashCode();
+        result = 31 * result + offset.hashCode();
+        return result;
+    }
+
     @NonNull
     @Override
     public String toString() {

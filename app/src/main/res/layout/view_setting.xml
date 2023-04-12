@@ -133,7 +133,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:layout_margin="8dp"
-                            android:src="@drawable/icon_search"
+                            android:src="@drawable/icon_package_info"
                             android:tint="?attr/colorPrimary" />
 
                         <LinearLayout

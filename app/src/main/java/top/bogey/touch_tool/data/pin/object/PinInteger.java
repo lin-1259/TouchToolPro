@@ -47,9 +47,32 @@ public class PinInteger extends PinValue {
         this.value = value;
     }
 
+    @Override
+    public boolean isEmpty() {
+        return value == 0;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return String.valueOf(value);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinInteger that = (PinInteger) o;
+
+        return value == that.value;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + value;
+        return result;
     }
 }

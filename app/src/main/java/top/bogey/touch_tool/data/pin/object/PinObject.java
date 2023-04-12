@@ -28,6 +28,8 @@ public class PinObject {
 
     }
 
+    public boolean isEmpty() {return true;}
+
     public int getPinColor(Context context) {
         return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimaryInverse, 0);
     }
@@ -42,4 +44,18 @@ public class PinObject {
                 .build();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinObject pinObject = (PinObject) o;
+
+        return cls.equals(pinObject.cls);
+    }
+
+    @Override
+    public int hashCode() {
+        return cls.hashCode();
+    }
 }

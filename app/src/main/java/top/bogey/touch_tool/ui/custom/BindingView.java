@@ -28,7 +28,7 @@ public class BindingView<V extends ViewBinding> extends FrameLayout {
             Method inflate = tClass.getDeclaredMethod("inflate", LayoutInflater.class, ViewGroup.class, boolean.class);
             binding = (V) inflate.invoke(null, LayoutInflater.from(context), this, true);
         } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
-            e.printStackTrace();
+            throw new RuntimeException("生成界面时出错");
         }
     }
 }

@@ -4,8 +4,9 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import java.util.Objects;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.GsonUtils;
@@ -43,6 +44,29 @@ public class PinString extends PinValue {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return value == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinString pinString = (PinString) o;
+
+        return Objects.equals(value, pinString.value);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 
     @NonNull

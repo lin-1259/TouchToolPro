@@ -1,13 +1,11 @@
 package top.bogey.touch_tool.data.pin.object;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.ui.app.AppView;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -38,5 +36,30 @@ public class PinSelectApp extends PinValue {
 
     public int getMode() {
         return mode;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return packages.isEmpty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinSelectApp that = (PinSelectApp) o;
+
+        if (mode != that.mode) return false;
+        return packages.equals(that.packages);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + packages.hashCode();
+        result = 31 * result + mode;
+        return result;
     }
 }

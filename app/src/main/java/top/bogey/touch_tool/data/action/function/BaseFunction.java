@@ -72,40 +72,21 @@ public class BaseFunction extends NormalAction implements ActionContext {
         for (Pin pin : pinsTmp) {
             // 不能直接调用自身的添加
             super.addPin(pin);
-            // 自身的输入针脚的值需要使用开始动作的输出针脚的值
-            if (!pin.getDirection().isOut()) {
-                Pin innerPin = startFunction.getPinById(startFunction.getMappingPinId(pin.getId()));
-                pin.setValue(innerPin.getValue());
+            // 自身的输入针脚的值如果为初始值，需要使用开始动作的输出针脚的值
+            if (!pin.getDirection().isOut() && pin.getValue().isEmpty()) {
+                Pin innerPin = startFunction.getPinByUid(startFunction.getMappingPinUid(pin.getUid()));
+                pin.setValue(innerPin.getValue().copy());
             }
         }
     }
 
-    @Override
-    public BaseAction copy() {
-        BaseFunction copy = GsonUtils.copy(this, BaseFunction.class);
-        copy.setId(UUID.randomUUID().toString());
-
-        copy.getPins().forEach(pin -> {
-            String pinId = UUID.randomUUID().toString();
-            // 复制的话需要更新内部动作的外部针脚索引
-            for (FunctionAction function : (pin.getDirection().isOut() ? copy.endFunctions : copy.startFunctions)) {
-                function.getPinIdMap().put(function.getMappingPinId(pin.getId()), pinId);
-            }
-            pin.setId(pinId);
-            pin.setActionId(copy.getId());
-            pin.cleanLinks();
-        });
-        copy.x = x + 1;
-        copy.y = y + 1;
-        return copy;
-    }
-
-    // 同步最新的内容，包括标题，针脚，状态，内部动作， 内部属性
+    // 同步最新的内容，包括标题，针脚，状态
     public void sync(ActionContext outContext) {
         // 获取最新的方法
         BaseFunction function;
         if (getParent() == null) function = TaskRepository.getInstance().getFunctionById(functionId);
         else function = ((TaskContext) getParent()).getFunctionById(functionId);
+        if (function == null) return;
         // 标题
         setTitle(function.getTitle(null));
 
@@ -116,11 +97,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
         setJustCall(function.isJustCall());
 
-        // 针脚
-        // 先移除自身多出的针脚
-        ArrayList<Pin> pins = getPins();
-        for (int i = pins.size() - 1; i >= 0; i--) {
-            Pin pin = pins.get(i);
+        // 外部针脚
+        // 先移除自身多出的外部针脚
+        for (int i = getPins().size() - 1; i >= 0; i--) {
+            Pin pin = getPins().get(i);
             Pin pinById = function.getPinByUid(pin.getUid());
             if (pinById == null) {
                 pin.removeLinks(outContext);
@@ -128,12 +108,13 @@ public class BaseFunction extends NormalAction implements ActionContext {
             }
         }
 
-        // 再同步最新的针脚
+        // 再同步最新的外部针脚
         for (Pin pin : function.getPins()) {
             Pin pinById = getPinByUid(pin.getUid());
             if (pinById == null) {
                 // 新的方法里有这个针脚，旧的没有，需要在自己这加上
                 Pin copy = pin.copy(false);
+                // 同步新针脚id，针脚连接需要这个
                 copy.setId(pin.getId());
                 addPin(copy);
             } else if (!pinById.getPinClass().equals(pin.getPinClass())) {
@@ -142,69 +123,41 @@ public class BaseFunction extends NormalAction implements ActionContext {
                 int index = getPins().indexOf(pinById);
                 removePin(outContext, pinById);
                 Pin copy = pin.copy(false);
+                // 同步新针脚id，针脚连接需要这个
                 copy.setId(pin.getId());
                 addPin(index, copy);
             } else {
-                // 同步一下针脚名
+                // 有这个针脚，且针脚值正确，强制同步一下针脚名
                 pinById.setTitle(pin.getTitle(null));
             }
         }
+    }
+
+    // 同步内部信息，这个只需要直接复制就行
+    private void syncInner() {
+        // 获取最新的方法
+        BaseFunction function;
+        if (getParent() == null) function = TaskRepository.getInstance().getFunctionById(functionId);
+        else function = ((TaskContext) getParent()).getFunctionById(functionId);
+        if (function == null) return;
 
         // 内部属性
-        // 先移除多出来的属性
-        for (String key : attrs.keySet()) {
-            PinObject attr = function.getAttr(key);
-            if (attr == null) {
-                attrs.remove(key);
-            }
-        }
-
-        // 再同步最新的属性
-        function.getAttrs().forEach((key, value) -> {
-            PinObject attr = getAttr(key);
-            if (attr == null) {
-                // 自己没有，同步下来
-                addAttr(key, value.copy());
-            } else if (!attr.getClass().equals(value.getClass())) {
-                // 变量类型不一致，同步下来
-                addAttr(key, value.copy());
-            }
-        });
+        attrs.clear();
+        attrs.putAll(GsonUtils.copy(function.getAttrs(), new TypeToken<HashMap<String, PinObject>>() {}.getType()));
 
         // 内部动作
-        // 先移除多出来的动作
-        actions.removeIf(action -> {
-            BaseAction actionById = function.getActionById(action.getId());
-            return actionById == null;
-        });
-
-        // 再同步最新的动作
-        for (BaseAction action : function.getActions()) {
-            BaseAction actionById = getActionById(action.getId());
-            if (actionById == null) {
-                // 自己没有，同步下
-                BaseAction copy = GsonUtils.copy(action, BaseAction.class);
-                addAction(copy);
-            } else {
-                // 自己有，但可能针脚连接有变化，同步下连接
-                removeAction(actionById);
-                BaseAction copy = GsonUtils.copy(action, BaseAction.class);
-                if (copy instanceof FunctionAction) {
-                    // 开始或结束动作需要保持针脚映射表
-                    HashMap<String, String> pinIdMap = ((FunctionAction) copy).getPinIdMap();
-                    pinIdMap.clear();
-                    pinIdMap.putAll(((FunctionAction) actionById).getPinIdMap());
-                }
-                addAction(copy);
-            }
-        }
+        actions.clear();
+        actions.addAll(GsonUtils.copy(function.getActions(), new TypeToken<HashSet<BaseAction>>() {}.getType()));
     }
 
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         endFunction = null;
         outContext = actionContext;
+
         sync(outContext);
+        syncInner();
+
         startFunction.doAction(runnable, this, startFunction.getExecutePin());
 
         if (!justCall) {
@@ -225,7 +178,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
             calculatePinValue(runnable, actionContext, pin);
             if (endFunction == null) return pin.getValue();
             else {
-                Pin pinById = endFunction.getPinById(endFunction.getMappingPinId(pin.getId()));
+                Pin pinById = endFunction.getPinByUid(endFunction.getMappingPinUid(pin.getUid()));
                 outContext = actionContext;
                 return endFunction.getPinValue(runnable, this, pinById);
             }
@@ -234,8 +187,8 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
     }
 
-    public PinObject getPinValue(TaskRunnable runnable, String pinId) {
-        Pin pin = getPinById(pinId);
+    public PinObject getPinValue(TaskRunnable runnable, String pinUid) {
+        Pin pin = getPinByUid(pinUid);
         return getPinValue(runnable, outContext, pin);
     }
 
@@ -272,22 +225,22 @@ public class BaseFunction extends NormalAction implements ActionContext {
     }
 
     public void setPinValue(FunctionAction functionAction, Pin innerPin, PinObject value) {
-        String pinId = functionAction.getPinIdMap().get(innerPin.getId());
-        Pin pin = getPinById(pinId);
+        String pinUid = functionAction.getPinUidMap().get(innerPin.getUid());
+        Pin pin = getPinByUid(pinUid);
         pin.setValue(value);
 
         for (FunctionAction function : (functionAction.getTag().isStart() ? startFunctions : endFunctions)) {
-            function.setPinValue(pinId, value);
+            function.setPinValue(pinUid, value);
         }
     }
 
     public void setPinTitle(FunctionAction functionAction, Pin innerPin, String title) {
-        String pinId = functionAction.getPinIdMap().get(innerPin.getId());
-        Pin pin = getPinById(pinId);
+        String pinUid = functionAction.getPinUidMap().get(innerPin.getUid());
+        Pin pin = getPinByUid(pinUid);
         pin.setTitle(title);
 
         for (FunctionAction function : (functionAction.getTag().isStart() ? startFunctions : endFunctions)) {
-            function.setPinTitle(pinId, title);
+            function.setPinTitle(pinUid, title);
         }
     }
 

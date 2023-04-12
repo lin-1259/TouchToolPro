@@ -25,12 +25,14 @@ public class TextStateAction extends StateAction {
     private transient Pin textPin = new Pin(new PinString(), R.string.action_text_state_subtitle_text);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
     private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info, PinDirection.OUT);
+    private transient Pin justPin = new Pin(new PinBoolean(true), R.string.action_text_state_subtitle_just);
 
     public TextStateAction() {
         super(R.string.action_text_state_title);
         textPin = addPin(textPin);
         posPin = addPin(posPin);
         nodePin = addPin(nodePin);
+        justPin = addPin(justPin);
     }
 
     public TextStateAction(JsonObject jsonObject) {
@@ -38,21 +40,24 @@ public class TextStateAction extends StateAction {
         textPin = reAddPin(textPin);
         posPin = reAddPin(posPin);
         nodePin = reAddPin(nodePin);
+        justPin = reAddPin(justPin);
     }
 
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        if (!pin.getId().equals(statePin.getId())) return;
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getInstance().getService();
 
         String text = ((PinString) getPinValue(runnable, actionContext, textPin)).getValue();
+        boolean just = ((PinBoolean) getPinValue(runnable, actionContext, justPin)).getValue();
         if (text == null || text.isEmpty()) {
             value.setValue(false);
             return;
         }
 
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
-        AccessibilityNodeInfo searchNode = searchNode(DisplayUtils.getScreenArea(service), root, Pattern.compile(text));
+        AccessibilityNodeInfo searchNode = searchNode(DisplayUtils.getScreenArea(service), root, Pattern.compile(text), just);
         if (searchNode == null) value.setValue(false);
         else {
             value.setValue(true);
@@ -69,20 +74,20 @@ public class TextStateAction extends StateAction {
         }
     }
 
-    private AccessibilityNodeInfo searchNode(Rect screenSize, AccessibilityNodeInfo nodeInfo, Pattern pattern) {
+    private AccessibilityNodeInfo searchNode(Rect screenSize, AccessibilityNodeInfo nodeInfo, Pattern pattern, boolean justScreen) {
         if (nodeInfo == null) return null;
         Rect rect = new Rect();
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);
             if (child != null) {
                 child.getBoundsInScreen(rect);
-                if (!Rect.intersects(screenSize, rect)) continue;
+                if (justScreen && !Rect.intersects(screenSize, rect)) continue;
                 CharSequence text = child.getText();
                 if (text != null && text.length() > 0) {
                     Matcher matcher = pattern.matcher(text);
                     if (matcher.find()) return child;
                 }
-                AccessibilityNodeInfo node = searchNode(screenSize, child, pattern);
+                AccessibilityNodeInfo node = searchNode(screenSize, child, pattern, justScreen);
                 if (node != null) return node;
             }
         }

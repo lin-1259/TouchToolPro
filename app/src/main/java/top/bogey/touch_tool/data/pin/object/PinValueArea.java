@@ -76,6 +76,37 @@ public class PinValueArea extends PinValue {
         this.currMax = Math.min(currMax, valueTo);
     }
 
+    @Override
+    public boolean isEmpty() {
+        return currMin == valueFrom && currMax == valueTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinValueArea that = (PinValueArea) o;
+
+        if (valueFrom != that.valueFrom) return false;
+        if (valueTo != that.valueTo) return false;
+        if (step != that.step) return false;
+        if (currMin != that.currMin) return false;
+        return currMax == that.currMax;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + valueFrom;
+        result = 31 * result + valueTo;
+        result = 31 * result + step;
+        result = 31 * result + currMin;
+        result = 31 * result + currMax;
+        return result;
+    }
+
     @SuppressLint("DefaultLocale")
     @NonNull
     @Override

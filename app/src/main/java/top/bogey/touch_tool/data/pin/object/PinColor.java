@@ -5,6 +5,8 @@ import android.graphics.Rect;
 
 import com.google.gson.JsonObject;
 
+import java.util.Arrays;
+
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -32,13 +34,6 @@ public class PinColor extends PinValue {
         minSize = GsonUtils.getAsInt(jsonObject, "minSize", 0);
         maxSize = GsonUtils.getAsInt(jsonObject, "maxSize", 0);
         area = GsonUtils.getAsClass(jsonObject, "area", Rect.class, new Rect());
-    }
-
-    public boolean isValid() {
-        for (int i : color) {
-            if (i < 0) return false;
-        }
-        return true;
     }
 
     public int getMinSize(Context context) {
@@ -91,5 +86,39 @@ public class PinColor extends PinValue {
 
     public void setArea(Rect area) {
         this.area = area;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        for (int i : color) {
+            if (i < 0) return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinColor pinColor = (PinColor) o;
+
+        if (screen != pinColor.screen) return false;
+        if (minSize != pinColor.minSize) return false;
+        if (maxSize != pinColor.maxSize) return false;
+        if (!Arrays.equals(color, pinColor.color)) return false;
+        return area.equals(pinColor.area);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + screen;
+        result = 31 * result + Arrays.hashCode(color);
+        result = 31 * result + minSize;
+        result = 31 * result + maxSize;
+        result = 31 * result + area.hashCode();
+        return result;
     }
 }

@@ -2,6 +2,7 @@ package top.bogey.touch_tool.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -123,7 +125,12 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         resultCallback = callback;
-        createDocumentLauncher.launch(fileName);
+        try {
+            createDocumentLauncher.launch(fileName);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+            Toast.makeText(this, R.string.task_setting_backup_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void handlePlayFloatView(int size) {

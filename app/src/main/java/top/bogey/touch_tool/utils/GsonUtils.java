@@ -34,6 +34,11 @@ public class GsonUtils {
         return gson.fromJson(json, tClass);
     }
 
+    public static <T> T copy(T object, Type type) {
+        String json = gson.toJson(object);
+        return gson.fromJson(json, type);
+    }
+
     public static String toJson(Object o) {
         return gson.toJson(o);
     }

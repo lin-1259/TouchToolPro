@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +31,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
     protected final FloatPickerWidgetBinding binding;
 
     private final Paint gridPaint;
+    private final Paint markPaint;
     private final int[] location = new int[2];
 
     private final AccessibilityNodeInfo rootNode;
@@ -46,6 +48,10 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         gridPaint.setStrokeJoin(Paint.Join.ROUND);
         gridPaint.setStyle(Paint.Style.STROKE);
 
+        markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        markPaint.setStyle(Paint.Style.FILL);
+        markPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
         binding = FloatPickerWidgetBinding.inflate(LayoutInflater.from(context), this, true);
         MainAccessibilityService service = MainApplication.getInstance().getService();
         rootNode = service.getRootInActiveWindow();
@@ -61,7 +67,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
 
         binding.markBox.setOnClickListener(v -> showWordView(null));
 
-        selectNode = pinWidget.getNode(DisplayUtils.getScreenArea(service), rootNode);
+        selectNode = pinWidget.getNode(DisplayUtils.getScreenArea(service), rootNode, true);
         showWordView(selectNode);
     }
 
@@ -90,6 +96,8 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
             binding.markBox.setLayoutParams(params);
             binding.markBox.setX(rect.left);
             binding.markBox.setY(rect.top - location[1]);
+        } else {
+            postInvalidate();
         }
     }
 
@@ -101,6 +109,15 @@ public class WidgetPickerFloatView extends BasePickerFloatView {
         drawNode(canvas, rootNode);
 
         if (selectNode != null) {
+            canvas.save();
+            int[] boxLocation = new int[2];
+            binding.markBox.getLocationOnScreen(boxLocation);
+            boxLocation[0] -= location[0];
+            boxLocation[1] -= location[1];
+            Rect rect = new Rect(boxLocation[0], boxLocation[1], binding.markBox.getWidth() + boxLocation[0], binding.markBox.getHeight() + boxLocation[1]);
+            canvas.drawRect(rect, markPaint);
+            canvas.restore();
+
             drawChild(canvas, binding.markBox, drawingTime);
             drawChild(canvas, binding.idTitle, drawingTime);
             drawChild(canvas, binding.levelTitle, drawingTime);

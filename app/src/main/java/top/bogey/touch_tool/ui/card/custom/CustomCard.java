@@ -54,6 +54,8 @@ public class CustomCard extends BaseCard<FunctionAction> {
             }
         });
 
+        binding.editButton.setVisibility(action.getTag().isStart() ? VISIBLE : GONE);
+
         action.setCallback(new FunctionAction.FunctionChangedCallback() {
 
             @Override
@@ -89,9 +91,9 @@ public class CustomCard extends BaseCard<FunctionAction> {
 
     @Override
     public void removeMorePinView(Pin pin) {
-        String pinId = action.getPinIdMap().get(pin.getId());
+        String pinUid = action.getPinUidMap().get(pin.getUid());
         BaseFunction function = (BaseFunction) actionContext;
-        function.removePin(null, function.getPinById(pinId));
+        function.removePin(null, function.getPinByUid(pinUid));
     }
 
     private void onPinAdded(Pin pin) {
