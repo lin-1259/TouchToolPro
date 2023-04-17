@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:paddingHorizontal="32dp">
+                android:paddingHorizontal="16dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/selectAllButton"
@@ -81,6 +81,15 @@
                     android:layout_weight="1"
                     android:text="@string/export_task"
                     app:icon="@drawable/icon_export" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/copyButton"
+                    style="@style/Theme.TouchTool.Button.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/copy_task"
+                    app:icon="@drawable/icon_copy" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/moveButton"

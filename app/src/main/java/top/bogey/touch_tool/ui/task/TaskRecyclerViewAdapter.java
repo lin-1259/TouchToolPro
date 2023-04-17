@@ -203,14 +203,6 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                 });
             });
 
-            binding.copyButton.setOnClickListener(v -> {
-                int index = getBindingAdapterPosition();
-                Task task = tasks.get(index);
-                Task copy = task.copy();
-                copy.setId(null);
-                copy.save();
-            });
-
             binding.enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 int index = getBindingAdapterPosition();
                 Task task = tasks.get(index);

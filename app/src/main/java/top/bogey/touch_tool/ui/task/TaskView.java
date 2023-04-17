@@ -98,6 +98,17 @@ public class TaskView extends Fragment {
         binding.folderButton.setOnClickListener(v -> showTagView());
         binding.moveButton.setOnClickListener(v -> showTagView());
 
+        binding.copyButton.setOnClickListener(v -> {
+            selectTasks.forEach((id, task) -> {
+                Task copy = task.copy();
+                copy.setId(null);
+                copy.save();
+            });
+
+            unSelectAll();
+            hideBottomBar();
+        });
+
         binding.cancelButton.setOnClickListener(v -> {
             unSelectAll();
             hideBottomBar();
