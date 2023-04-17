@@ -121,14 +121,13 @@ public class Pin {
         return null;
     }
 
-    public boolean addLink(ActionContext context, Pin pin) {
+    public void addLink(ActionContext context, Pin pin) {
         // 单针脚，需要先移除之前的连接
         if (isSingle()) {
             removeLinks(context);
         }
         links.put(pin.getId(), pin.getActionId());
         if (listeners != null) listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onAdded(pin));
-        return true;
     }
 
     public void removeLink(Pin pin) {
@@ -144,7 +143,7 @@ public class Pin {
             if (action == null) continue;
             Pin pinById = action.getPinById(entry.getKey());
             // 插槽不匹配不能连
-            if (!getPinClass().isAssignableFrom(pinById.getPinClass())) continue;
+            if (!(getPinClass().isAssignableFrom(pinById.getPinClass()) || pinById.getPinClass().isAssignableFrom(getPinClass()))) continue;
 
             // 方向相同不能连
             if (getDirection().equals(pinById.getDirection())) continue;
@@ -152,13 +151,10 @@ public class Pin {
             // 自己不能首尾连
             if (getActionId().equals(pinById.getActionId())) continue;
 
-            // 两边都连上了才行，有一个没连上都要回退
-            if (!(pinById.addLink(context, this) && addLink(context, pinById))) {
-                pinById.removeLink(this);
-                removeLink(pinById);
-            } else {
-                flag = true;
-            }
+            // 两边都连
+            pinById.addLink(context, this);
+            addLink(context, pinById);
+            flag = true;
         }
         return flag;
     }

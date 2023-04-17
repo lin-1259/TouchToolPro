@@ -36,17 +36,17 @@ public class TouchNodeAction extends NormalAction {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinNodeInfo pinNodeInfo = (PinNodeInfo) getPinValue(runnable, actionContext, nodePin);
+        PinBoolean longTouch = (PinBoolean) getPinValue(runnable, actionContext, longTouchPin);
         AccessibilityNodeInfo nodeInfo = pinNodeInfo.getNodeInfo();
         boolean result = false;
         if (nodeInfo != null) {
             AccessibilityNodeInfo clickAble = getClickAbleParent(nodeInfo);
             if (clickAble != null) {
-                PinBoolean longTouch = (PinBoolean) getPinValue(runnable, actionContext, longTouchPin);
                 result = clickAble.performAction(longTouch.getValue() ? AccessibilityNodeInfo.ACTION_LONG_CLICK : AccessibilityNodeInfo.ACTION_CLICK);
             }
         }
-        sleep(100);
         if (result) {
+            sleep(longTouch.getValue() ? 500 : 100);
             doNextAction(runnable, actionContext, outPin);
         } else {
             doNextAction(runnable, actionContext, falsePin);

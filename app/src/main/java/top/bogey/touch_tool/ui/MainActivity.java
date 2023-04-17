@@ -105,6 +105,7 @@ public class MainActivity extends BaseActivity {
         }
 
         SettingSave.getInstance().init(this);
+        WorldState.getInstance().resetAppMap(this);
     }
 
     private void copyError(String error) {
@@ -112,12 +113,6 @@ public class MainActivity extends BaseActivity {
         ClipData clipData = ClipData.newPlainText(getString(R.string.app_name), error);
         manager.setPrimaryClip(clipData);
         Toast.makeText(this, R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        WorldState.getInstance().resetAppMap(this);
     }
 
     public void showBottomNavigation() {
@@ -137,17 +132,16 @@ public class MainActivity extends BaseActivity {
     public void handleIntent(Intent intent) {
         if (intent == null) return;
 
-        if (intent.getType() != null) {
-            Uri uri = null;
-            if (Intent.ACTION_SEND.equals(intent.getAction())) {
-                uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-            } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-                uri = intent.getData();
-            }
-            if (uri != null) {
-                saveTasks(uri);
-            }
+        Uri uri = null;
+        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            uri = intent.getData();
         }
+        if (uri != null) {
+            saveTasks(uri);
+        }
+
         setIntent(null);
     }
 

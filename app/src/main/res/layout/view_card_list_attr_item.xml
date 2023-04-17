@@ -38,7 +38,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="4dp"
-            app:icon="@drawable/icon_export"
+            app:icon="@drawable/icon_get_value"
             app:iconTint="?attr/colorOutline" />
 
         <com.google.android.material.button.MaterialButton
@@ -47,7 +47,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_marginStart="4dp"
-            app:icon="@drawable/icon_menu_import"
+            app:icon="@drawable/icon_set_value"
             app:iconTint="?attr/colorOutline" />
 
         <com.google.android.material.button.MaterialButton

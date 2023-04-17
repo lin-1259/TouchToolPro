@@ -18,12 +18,14 @@ public class StringContainAction extends CalculateAction {
     protected transient Pin outValuePin = new Pin(new PinBoolean(), PinDirection.OUT);
     protected transient Pin originPin = new Pin(new PinString(), R.string.action_string_contain_operator_subtitle_origin);
     protected transient Pin matchPin = new Pin(new PinString(), R.string.action_string_contain_operator_title_match);
+    protected transient Pin valuePin = new Pin(new PinString(), R.string.action_string_contain_operator_title_first_match, PinDirection.OUT);
 
     public StringContainAction() {
         super(R.string.action_string_contain_operator_title);
         outValuePin = addPin(outValuePin);
         originPin = addPin(originPin);
         matchPin = addPin(matchPin);
+        valuePin = addPin(valuePin);
     }
 
     public StringContainAction(JsonObject jsonObject) {
@@ -31,6 +33,7 @@ public class StringContainAction extends CalculateAction {
         outValuePin = reAddPin(outValuePin);
         originPin = reAddPin(originPin);
         matchPin = reAddPin(matchPin);
+        valuePin = reAddPin(valuePin);
     }
 
     @Override
@@ -42,9 +45,15 @@ public class StringContainAction extends CalculateAction {
         String origin = ((PinString) getPinValue(runnable, actionContext, originPin)).getValue();
         String match = ((PinString) getPinValue(runnable, actionContext, matchPin)).getValue();
         if (origin != null && match != null) {
-            Pattern pattern = Pattern.compile(origin);
-            Matcher matcher = pattern.matcher(match);
-            value.setValue(matcher.find());
+            Pattern pattern = Pattern.compile(match);
+            Matcher matcher = pattern.matcher(origin);
+            if (matcher.find()) {
+                value.setValue(true);
+                if (matcher.groupCount() > 0) {
+                    PinString matchString = (PinString) valuePin.getValue();
+                    matchString.setValue(matcher.group(1));
+                }
+            }
         }
     }
 }

@@ -45,6 +45,11 @@ public class BaseActivity extends AppCompatActivity {
             params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         intentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (resultCallback != null) {
@@ -71,6 +76,16 @@ public class BaseActivity extends AppCompatActivity {
                 resultCallback.onResult(RESULT_OK, intent);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        intentLauncher = null;
+        permissionLauncher = null;
+        contentLauncher = null;
+        createDocumentLauncher = null;
+        resultCallback = null;
     }
 
     public void launchCapture(PermissionResultCallback callback) {

@@ -57,7 +57,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
-                    android:mimeType="text/*"
+                    android:mimeType="*/*"
                     android:pathPattern=".*\\.ttp"
                     android:scheme="content" />
             </intent-filter>

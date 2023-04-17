@@ -22,7 +22,6 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinDirection;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.databinding.CardBaseBinding;
 import top.bogey.touch_tool.ui.blueprint.BlueprintView;
 import top.bogey.touch_tool.ui.blueprint.CardLayoutView;
@@ -51,8 +50,8 @@ public class BaseCard<A extends BaseAction> extends MaterialCardView {
         this.actionContext = actionContext;
         this.action = action;
 
-        setCardElevation(Math.round(DisplayUtils.dp2px(context, 5)));
-        setStrokeWidth(0);
+        setStrokeWidth(1);
+        setStrokeColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurface, 0));
         setCardBackgroundColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0));
         setPivotX(0);
         setPivotY(0);

@@ -47,7 +47,7 @@ public class ParallelLogicAction extends NormalAction {
         timeOutPin = reAddPin(timeOutPin);
         secondExcutePin = reAddPin(secondExcutePin);
         reAddPin(executePin, 3);
-        addPin = addPin(addPin);
+        addPin = reAddPin(addPin);
         completePin = reAddPin(completePin);
         falsePin = reAddPin(falsePin);
     }

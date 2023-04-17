@@ -195,13 +195,18 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
 
         if (!justCall) {
+            boolean flag = true;
             if (endFunction != null && endPin != null) {
-                String pinUid = endFunction.getPinUidMap().get(endPin.getUid());
-                Pin pinByUid = getPinByUid(pinUid);
-                if (pinByUid != null) {
-                    doNextAction(runnable, actionContext, pinByUid);
+                if (!endPin.getUid().equals(endFunction.getExecutePin().getUid())) {
+                    String pinUid = endFunction.getPinUidMap().get(endPin.getUid());
+                    Pin pinByUid = getPinByUid(pinUid);
+                    if (pinByUid != null) {
+                        doNextAction(runnable, actionContext, pinByUid);
+                        flag = false;
+                    }
                 }
-            } else {
+            }
+            if (flag) {
                 doNextAction(runnable, actionContext, outPin);
             }
         }

@@ -299,6 +299,7 @@
     <string name="action_string_contain_operator_title">包含文本</string>
     <string name="action_string_contain_operator_subtitle_origin">原文</string>
     <string name="action_string_contain_operator_title_match">正则</string>
+    <string name="action_string_contain_operator_title_first_match">首个匹配</string>
 
     <!-- 针脚 -->
     <string name="pin_value">对象</string>

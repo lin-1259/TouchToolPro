@@ -29,15 +29,6 @@ public class TimeStartAction extends StartAction {
         periodicPin = reAddPin(periodicPin);
     }
 
-    @Override
-    public boolean checkReady(TaskRunnable runnable, ActionContext actionContext) {
-        if (getPeriodic() > 0) {
-            return true;
-        } else {
-            return getStartTime() > System.currentTimeMillis();
-        }
-    }
-
     public long getStartTime() {
         long date = ((PinLong) datePin.getValue()).getValue();
         long time = ((PinLong) timePin.getValue()).getValue();

@@ -364,9 +364,9 @@ public class CardLayoutView extends FrameLayout {
 
         boolean flag = true;
         if (offsetX < scaleGridSize * 3.1 && v) {
-            if (offsetX < scaleGridSize) {
+            if (yScale == 1 && offsetX < scaleGridSize / 2) {
                 flag = false;
-            } else if (yScale == -1) {
+            } else if (yScale == -1 && offsetY > scaleGridSize) {
                 // 向左绕2格连接
                 float x = Math.max(outLinkLinePoint.x, inLinkLinePoint.x) - scaleGridSize * 6;
                 path.lineTo(x, outLinkLinePoint.y);
@@ -374,9 +374,9 @@ public class CardLayoutView extends FrameLayout {
                 flag = false;
             }
         } else if (offsetY < scaleGridSize * 3.1 && !v) {
-            if (offsetY < scaleGridSize) {
+            if (xScale == 1 && offsetY < scaleGridSize / 2) {
                 flag = false;
-            } else if (xScale == -1) {
+            } else if (xScale == -1 && offsetX > scaleGridSize) {
                 //向下绕2格连接
                 float y = Math.max(outLinkLinePoint.y, inLinkLinePoint.y) + scaleGridSize * 6;
                 path.lineTo(outLinkLinePoint.x, y);
@@ -480,6 +480,8 @@ public class CardLayoutView extends FrameLayout {
                                 dragDirection = pin.getDirection();
                                 pinRemoveLinks(pinBaseView);
                             }
+                        } else {
+                            dragCard.bringToFront();
                         }
                         dragX = rawX;
                         dragY = rawY;
