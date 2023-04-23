@@ -3,6 +3,8 @@ package top.bogey.touch_tool.data.pin.object;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -16,12 +18,6 @@ public class PinWidget extends PinValue {
 
     public PinWidget() {
         super();
-    }
-
-    public PinWidget(String id, String level) {
-        super();
-        this.id = id;
-        this.level = level;
     }
 
     public PinWidget(JsonObject jsonObject) {
@@ -102,6 +98,12 @@ public class PinWidget extends PinValue {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "id=" + id + ",level=" + level;
     }
 
     @Override

@@ -73,7 +73,7 @@ public class GsonUtils {
 
     public static long getAsLong(JsonObject jsonObject, String key, long defaultValue) {
         JsonElement element = jsonObject.get(key);
-        if (element != null) return element.getAsInt();
+        if (element != null) return element.getAsLong();
         return defaultValue;
     }
 

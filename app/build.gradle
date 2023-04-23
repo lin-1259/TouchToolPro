@@ -7,14 +7,13 @@ android {
     namespace 'top.bogey.touch_tool'
     compileSdk 33
     ndkVersion '25.2.9519653'
-    buildToolsVersion '34.0.0 rc2'
 
     defaultConfig {
         applicationId "top.bogey.touch_tool_pro"
         minSdk 24
         targetSdk 33
-        versionCode 25
-        versionName "0.1.5"
+        versionCode 26
+        versionName "0.1.6"
 
         externalNativeBuild {
             cmake {
@@ -69,7 +68,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.material:material:1.9.0-beta01'
+    implementation 'com.google.android.material:material:1.9.0-rc01'
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
     implementation 'androidx.navigation:navigation-fragment:2.5.3'

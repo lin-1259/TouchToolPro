@@ -15,29 +15,25 @@ import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinNodeInfo;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
-import top.bogey.touch_tool.data.pin.object.PinWidget;
-import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.data.pin.object.PinXPath;
 
-public class WidgetStateAction extends StateAction {
-    private transient Pin widgetPin = new Pin(new PinWidget(), R.string.action_widget_state_subtitle_widget);
+public class XPathWidgetStateAction extends StateAction {
+    private transient Pin xPathPin = new Pin(new PinXPath(), R.string.action_xpath_widget_state_subtitle_xpath);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
     private transient Pin nodePin = new Pin(new PinNodeInfo(), R.string.action_state_subtitle_node_info, PinDirection.OUT);
-    private transient Pin justPin = new Pin(new PinBoolean(true), R.string.action_text_state_subtitle_just);
 
-    public WidgetStateAction() {
-        super(R.string.action_widget_state_title);
-        widgetPin = addPin(widgetPin);
+    public XPathWidgetStateAction() {
+        super(R.string.action_xpath_widget_state_title);
+        xPathPin = addPin(xPathPin);
         posPin = addPin(posPin);
         nodePin = addPin(nodePin);
-        justPin = addPin(justPin);
     }
 
-    public WidgetStateAction(JsonObject jsonObject) {
-        super(R.string.action_widget_state_title, jsonObject);
-        widgetPin = reAddPin(widgetPin);
+    public XPathWidgetStateAction(JsonObject jsonObject) {
+        super(R.string.action_xpath_widget_state_title, jsonObject);
+        xPathPin = reAddPin(xPathPin);
         posPin = reAddPin(posPin);
         nodePin = reAddPin(nodePin);
-        justPin = reAddPin(justPin);
     }
 
     @Override
@@ -46,9 +42,8 @@ public class WidgetStateAction extends StateAction {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         AccessibilityNodeInfo root = service.getRootInActiveWindow();
 
-        PinWidget widget = (PinWidget) getPinValue(runnable, actionContext, widgetPin);
-        boolean just = ((PinBoolean) getPinValue(runnable, actionContext, justPin)).getValue();
-        AccessibilityNodeInfo node = widget.getNode(DisplayUtils.getScreenArea(service), root, just);
+        PinXPath xPath = (PinXPath) getPinValue(runnable, actionContext, xPathPin);
+        AccessibilityNodeInfo node = xPath.getPathNode(root, actionContext);
         if (node != null) {
             value.setValue(true);
             PinPoint point = (PinPoint) posPin.getValue();

@@ -67,7 +67,7 @@ public class FunctionAction extends BaseAction {
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (tag.isStart()) super.doAction(runnable, actionContext, pin);
         else {
-            ((BaseFunction) actionContext).setEndFunction(this, pin);
+            ((BaseFunction) actionContext).doEndFunction(this, pin);
         }
     }
 

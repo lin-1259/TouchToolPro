@@ -6,9 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatDelegate;
 
-import com.google.android.material.color.DynamicColors;
 import com.tencent.mmkv.MMKV;
 
 import java.io.PrintWriter;

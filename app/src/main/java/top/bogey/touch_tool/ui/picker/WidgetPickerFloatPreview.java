@@ -11,31 +11,52 @@ import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.action.TouchNodeAction;
+import top.bogey.touch_tool.data.pin.object.PinValue;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
+import top.bogey.touch_tool.data.pin.object.PinXPath;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetPreviewBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class WidgetPickerFloatPreview extends BasePickerFloatView {
-    private final PinWidget newPinWidget;
+    private PinWidget pinWidget;
+    private PinXPath pinXPath;
 
-    public WidgetPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinWidget pinWidget) {
+    public WidgetPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinValue pinValue) {
         super(context, callback);
-        newPinWidget = new PinWidget(pinWidget.getId(), pinWidget.getLevel());
+        boolean isWidget = pinValue instanceof PinWidget;
 
         FloatPickerWidgetPreviewBinding binding = FloatPickerWidgetPreviewBinding.inflate(LayoutInflater.from(context), this, true);
-        binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, pinWidget.getId()));
-        binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, pinWidget.getLevel()));
-        binding.pickerButton.setOnClickListener(v -> new WidgetPickerFloatView(context, () -> {
-            binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, newPinWidget.getId()));
-            binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, newPinWidget.getLevel()));
-        }, newPinWidget).show());
+        if (isWidget) {
+            pinWidget = (PinWidget) pinValue.copy();
+            binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, pinWidget.getId()));
+            binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, pinWidget.getLevel()));
+
+            binding.pickerButton.setOnClickListener(v -> new WidgetPickerFloatView(context, () -> {
+                binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_id, pinWidget.getId()));
+                binding.levelTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_level, pinWidget.getLevel()));
+            }, pinWidget).show());
+        } else {
+            pinXPath = (PinXPath) pinValue.copy();
+            binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_xpath, pinXPath.getPath()));
+            binding.levelTitle.setVisibility(GONE);
+
+            binding.pickerButton.setOnClickListener(v -> new XPathPickerFloatView(context, () -> {
+                binding.idTitle.setText(context.getString(R.string.picker_widget_preview_subtitle_xpath, pinXPath.getPath()));
+            }, pinXPath).show());
+        }
 
         binding.saveButton.setOnClickListener(v -> {
             if (callback != null) {
-                pinWidget.setId(newPinWidget.getId());
-                pinWidget.setLevel(newPinWidget.getLevel());
+                if (isWidget) {
+                    PinWidget widget = (PinWidget) pinValue;
+                    widget.setId(pinWidget.getId());
+                    widget.setLevel(pinWidget.getLevel());
+                } else {
+                    PinXPath xPath = (PinXPath) pinValue;
+                    xPath.setPath(pinXPath.getPath());
+                }
                 callback.onComplete();
             }
             dismiss();
@@ -46,18 +67,30 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
-                AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
-                if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                if (isWidget) {
+                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
+                    AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                    if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                } else {
+                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getRootInActiveWindow(), null);
+                    AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                    if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                }
             }
         });
 
         binding.playButton.setOnLongClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
-                AccessibilityNodeInfo node = newPinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
-                AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
-                if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                if (isWidget) {
+                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
+                    AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                    if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                } else {
+                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getRootInActiveWindow(), null);
+                    AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
+                    if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
+                }
             }
             return true;
         });

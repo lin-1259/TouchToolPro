@@ -47,6 +47,7 @@ import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.EmptyActivity;
 import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
+import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
@@ -88,7 +89,7 @@ public class MainAccessibilityService extends AccessibilityService {
             } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
                 if (!Notification.class.getName().contentEquals(className)) return;
                 List<CharSequence> eventText = event.getText();
-                if (eventText == null || eventText.size() == 0) return;
+                if (eventText.size() == 0) return;
                 StringBuilder builder = new StringBuilder();
                 for (CharSequence charSequence : eventText) {
                     builder.append(charSequence);
@@ -107,7 +108,7 @@ public class MainAccessibilityService extends AccessibilityService {
     protected void onServiceConnected() {
         super.onServiceConnected();
         serviceConnected.setValue(true);
-        serviceEnabled.setValue(SettingSave.getInstance().isServiceEnabled());
+        setServiceEnabled(SettingSave.getInstance().isServiceEnabled());
     }
 
     @Override
@@ -205,8 +206,8 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
-    public TaskRunnable runTask(Task task, StartAction startAction) {
-        return runTask(task, startAction, null);
+    public void runTask(Task task, StartAction startAction) {
+        runTask(task, startAction, null);
     }
 
     public TaskRunnable runTask(Task task, StartAction startAction, TaskRunningCallback callback) {
@@ -352,8 +353,8 @@ public class MainAccessibilityService extends AccessibilityService {
         ArrayList<StartAction> startActions = task.getStartActions(TimeStartAction.class);
 
         Task originTask = TaskRepository.getInstance().getOriginTaskById(task.getId());
+        WorkManager workManager = WorkManager.getInstance(this);
         if (originTask != null) {
-            WorkManager workManager = WorkManager.getInstance(this);
             ArrayList<StartAction> originStartActions = originTask.getStartActions(TimeStartAction.class);
 
             // 在之前的任务中找已经不存在的动作并取消，存在的任务之后会被覆盖掉
@@ -373,10 +374,12 @@ public class MainAccessibilityService extends AccessibilityService {
             });
         }
 
-        // 添加新的定时任务，覆盖之前设置的
         for (StartAction startAction : startActions) {
             if (startAction.isEnable() && startAction.checkReady(null, task)) {
+                // 添加新的定时任务，覆盖之前设置的
                 addWork(task, (TimeStartAction) startAction);
+            } else {
+                workManager.cancelUniqueWork(startAction.getId());
             }
         }
     }
@@ -415,7 +418,19 @@ public class MainAccessibilityService extends AccessibilityService {
                             .build())
                     .build();
             workManager.enqueueUniquePeriodicWork(startAction.getId(), ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE, workRequest);
+
+            TaskRepository.getInstance().addLog(task, startAction.getTitle(this),
+                    getString(R.string.periodic_work_add,
+                            getString(R.string.date,
+                                    AppUtils.formatDateLocalDate(this, startTime),
+                                    AppUtils.formatDateLocalTime(this, startTime)),
+                            AppUtils.formatDateLocalDuration(this, periodic)
+                    )
+            );
+
         } else {
+            if (startTime < timeMillis) return;
+
             OneTimeWorkRequest workRequest = new OneTimeWorkRequest.Builder(TaskWorker.class)
                     .setInitialDelay(startTime - timeMillis, TimeUnit.MILLISECONDS)
                     .setInputData(new Data.Builder()
@@ -424,6 +439,14 @@ public class MainAccessibilityService extends AccessibilityService {
                             .build())
                     .build();
             workManager.enqueueUniqueWork(startAction.getId(), ExistingWorkPolicy.REPLACE, workRequest);
+
+            TaskRepository.getInstance().addLog(task, startAction.getTitle(this),
+                    getString(R.string.work_add,
+                            getString(R.string.date,
+                                    AppUtils.formatDateLocalDate(this, startTime),
+                                    AppUtils.formatDateLocalTime(this, startTime))
+                    )
+            );
         }
     }
 

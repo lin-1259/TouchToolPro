@@ -135,6 +135,11 @@ public class Task implements TaskContext {
     }
 
     @Override
+    public PinObject findAttr(String key) {
+        return getAttr(key);
+    }
+
+    @Override
     public boolean isReturned() {
         return false;
     }
@@ -177,6 +182,13 @@ public class Task implements TaskContext {
     public void setId(String id) {
         if (id == null) id = UUID.randomUUID().toString();
         this.id = id;
+
+        functions.forEach((functionId, function) -> function.setTaskId(this.id));
+        actions.forEach(action -> {
+            if (action instanceof BaseFunction) {
+                ((BaseFunction) action).setTaskId(this.id);
+            }
+        });
     }
 
     public long getCreateTime() {

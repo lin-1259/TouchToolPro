@@ -6,7 +6,6 @@ import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.gson.JsonObject;
 
-import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class PinExecute extends PinObject {

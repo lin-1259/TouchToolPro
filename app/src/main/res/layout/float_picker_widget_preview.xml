@@ -40,8 +40,11 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/idTitle"
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:gravity="center_vertical"
+                android:maxWidth="128dp"
+                android:maxLines="4"
+                android:minHeight="24dp"
                 android:text="@string/picker_widget_preview_subtitle_id"
                 android:textSize="11sp" />
 

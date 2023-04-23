@@ -2,7 +2,6 @@ package top.bogey.touch_tool.ui.card.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.text.Editable;
 import android.util.ArrayMap;
 import android.view.View;

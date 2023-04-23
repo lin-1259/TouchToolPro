@@ -1,6 +1,5 @@
 package top.bogey.touch_tool.ui.blueprint;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,7 +30,6 @@ import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.databinding.ViewBlueprintBinding;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.MainActivity;
-import top.bogey.touch_tool.ui.setting.SettingView;
 
 public class BlueprintView extends Fragment {
     private ViewBlueprintBinding binding;
@@ -63,24 +61,21 @@ public class BlueprintView extends Fragment {
                 menuInflater.inflate(R.menu.menu_task_detail, menu);
             }
 
-            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.saveTask:
-                        binding.cardLayout.getActionContext().save();
-                        break;
-                    case R.id.showLog:
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle(R.string.task_running_log)
-                                .setMessage(TaskRepository.getInstance().getLogs(getContext(), task))
-                                .setPositiveButton(R.string.close, (dialog, which) -> dialog.dismiss())
-                                .setNegativeButton(R.string.task_running_log_clear, (dialog, which) -> {
-                                    dialog.dismiss();
-                                    TaskRepository.getInstance().removeLog(task);
-                                })
-                                .show();
-                        break;
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.saveTask) {
+                    binding.cardLayout.getActionContext().save();
+                } else if (itemId == R.id.showLog) {
+                    new MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(R.string.task_running_log)
+                            .setMessage(TaskRepository.getInstance().getLogs(getContext(), task))
+                            .setPositiveButton(R.string.close, (dialog, which) -> dialog.dismiss())
+                            .setNegativeButton(R.string.task_running_log_clear, (dialog, which) -> {
+                                dialog.dismiss();
+                                TaskRepository.getInstance().removeLog(task);
+                            })
+                            .show();
                 }
                 return true;
             }

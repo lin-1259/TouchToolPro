@@ -182,6 +182,9 @@
     <string name="action_widget_state_title">界面内存在控件</string>
     <string name="action_widget_state_subtitle_widget">控件描述</string>
 
+    <string name="action_xpath_widget_state_title">界面内存在控件(路径)</string>
+    <string name="action_xpath_widget_state_subtitle_xpath">控件路径</string>
+
     <string name="action_widget_text_state_title">获取控件文本</string>
     <string name="action_widget_text_state_subtitle_text">文本</string>
 
@@ -325,6 +328,7 @@
     <string name="picker_widget_preview_title">选择控件</string>
     <string name="picker_widget_preview_subtitle_id">ID：%1$s</string>
     <string name="picker_widget_preview_subtitle_level">层级：%1$s</string>
+    <string name="picker_widget_preview_subtitle_xpath">路径：%1$s</string>
 
     <!-- 采集器 - 应用 -->
     <string name="picker_app_title_search">搜索应用</string>
@@ -394,5 +398,9 @@
     <string name="app_info_setting_source_code">在GitHub查看源码</string>
     <string name="app_info_setting_version">版本</string>
     <string name="app_info_setting_version_format">%1$s(%2$d)</string>
+
+    <string name="work_add">设置定时任务，开始时间是：%1$s</string>
+    <string name="periodic_work_add">设置间隔定时任务，开始时间是：%1$s，间隔%2$s</string>
+    <string name="work_execute">执行定时任务：%1$s</string>
 
 </resources>

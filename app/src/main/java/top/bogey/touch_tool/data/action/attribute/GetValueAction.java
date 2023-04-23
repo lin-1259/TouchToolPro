@@ -30,13 +30,8 @@ public class GetValueAction extends CalculateAction {
 
     @Override
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
-        PinObject attr = actionContext.getAttr(key);
-        ActionContext context = actionContext;
-        while (attr == null) {
-            context = context.getParent();
-            if (context == null) break;
-            attr = context.getAttr(key);
-        }
+        PinObject attr = actionContext.findAttr(key);
+        if (attr == null) return;
         valuePin.setValue(attr);
     }
 

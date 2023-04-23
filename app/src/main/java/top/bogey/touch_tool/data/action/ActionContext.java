@@ -25,6 +25,8 @@ public interface ActionContext {
 
     PinObject getAttr(String key);
 
+    PinObject findAttr(String key);
+
     boolean isReturned();
 
     void save();

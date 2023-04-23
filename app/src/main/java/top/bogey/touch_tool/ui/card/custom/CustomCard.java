@@ -126,7 +126,11 @@ public class CustomCard extends BaseCard<FunctionAction> {
         PinBaseView<?> pinBaseView;
         if (pin.getDirection() == PinDirection.IN) {
             if (pin.isVertical()) {
-                pinBaseView = new PinTopView(getContext(), this, pin);
+                if (action.getExecutePin().getId().equals(pin.getId())) {
+                    pinBaseView = new PinTopView(getContext(), this, pin);
+                } else {
+                    pinBaseView = new CustomPinTopView(getContext(), this, pin);
+                }
                 binding.topBox.addView(pinBaseView, binding.topBox.getChildCount() - offset);
             } else {
                 pinBaseView = new CustomPinInView(getContext(), this, pin);
@@ -134,7 +138,11 @@ public class CustomCard extends BaseCard<FunctionAction> {
             }
         } else {
             if (pin.isVertical()) {
-                pinBaseView = new PinBottomView(getContext(), this, pin);
+                if (action.getExecutePin().getId().equals(pin.getId())) {
+                    pinBaseView = new PinBottomView(getContext(), this, pin);
+                } else {
+                    pinBaseView = new CustomPinBottomView(getContext(), this, pin);
+                }
                 binding.bottomBox.addView(pinBaseView, binding.bottomBox.getChildCount() - offset);
             } else {
                 pinBaseView = new CustomPinOutView(getContext(), this, pin);

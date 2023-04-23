@@ -18,9 +18,10 @@ public class ActionContextAdapter extends RecyclerView.Adapter<ActionContextAdap
     private final ArrayList<ActionContext> actionContexts;
     private final ArrayList<ActionContext> selectedContexts = new ArrayList<>();
 
-    public ActionContextAdapter(ArrayList<ActionContext> actionContexts) {
+    public ActionContextAdapter(ArrayList<ActionContext> actionContexts, ArrayList<ActionContext> repeatActionContexts) {
         this.actionContexts = actionContexts;
         selectedContexts.addAll(actionContexts);
+        if (repeatActionContexts != null) actionContexts.addAll(repeatActionContexts);
     }
 
     @NonNull

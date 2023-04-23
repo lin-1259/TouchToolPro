@@ -137,13 +137,16 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         long drawingTime = getDrawingTime();
         drawChild(canvas, binding.getRoot(), drawingTime);
 
-        for (int i = 0; i < markArea.size(); i++) {
-            Rect rect = markArea.get(i);
-            int size = rect.width() * rect.height();
-            if (size >= pinColor.getMinSize(getContext()) && size <= pinColor.getMaxSize(getContext())) {
-                canvas.drawRect(rect, markPaint);
+        if (markArea != null) {
+            for (int i = 0; i < markArea.size(); i++) {
+                Rect rect = markArea.get(i);
+                int size = rect.width() * rect.height();
+                if (size >= pinColor.getMinSize(getContext()) && size <= pinColor.getMaxSize(getContext())) {
+                    canvas.drawRect(rect, markPaint);
+                }
             }
         }
+
         canvas.restore();
 
         if (isMarked) {

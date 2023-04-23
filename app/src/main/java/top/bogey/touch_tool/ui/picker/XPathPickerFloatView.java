@@ -27,12 +27,12 @@ import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
-import top.bogey.touch_tool.data.pin.object.PinWidget;
+import top.bogey.touch_tool.data.pin.object.PinXPath;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
-public class WidgetPickerFloatView extends BasePickerFloatView implements WidgetPickerTreeAdapter.SelectNode {
+public class XPathPickerFloatView extends BasePickerFloatView implements WidgetPickerTreeAdapter.SelectNode {
     protected final FloatPickerWidgetBinding binding;
     private final WidgetPickerTreeAdapter adapter;
 
@@ -43,9 +43,8 @@ public class WidgetPickerFloatView extends BasePickerFloatView implements Widget
     private final AccessibilityNodeInfo rootNode;
     private AccessibilityNodeInfo selectNode;
     private String selectId;
-    private String selectLevel;
 
-    public WidgetPickerFloatView(@NonNull Context context, PickerCallback callback, PinWidget pinWidget) {
+    public XPathPickerFloatView(@NonNull Context context, PickerCallback callback, PinXPath pinXPath) {
         super(context, callback);
 
         gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -67,8 +66,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView implements Widget
         adapter.setRoot(rootNode);
 
         binding.saveButton.setOnClickListener(v -> {
-            pinWidget.setId(selectId);
-            pinWidget.setLevel(selectLevel);
+            pinXPath.setPath(selectNode);
             if (callback != null) callback.onComplete();
             dismiss();
         });
@@ -94,7 +92,7 @@ public class WidgetPickerFloatView extends BasePickerFloatView implements Widget
             }
         });
 
-        selectNode = pinWidget.getNode(DisplayUtils.getScreenArea(service), rootNode, true);
+        selectNode = pinXPath.getPathNode(rootNode, null);
         showWidgetView(selectNode);
     }
 
@@ -113,8 +111,6 @@ public class WidgetPickerFloatView extends BasePickerFloatView implements Widget
 
             binding.idTitle.setText(selectId);
             binding.idTitle.setVisibility(selectId == null ? INVISIBLE : VISIBLE);
-            binding.levelTitle.setText(selectLevel);
-            binding.levelTitle.setVisibility(selectLevel == null ? INVISIBLE : VISIBLE);
 
             Rect rect = new Rect();
 
@@ -212,26 +208,6 @@ public class WidgetPickerFloatView extends BasePickerFloatView implements Widget
                 selectId = matcher.group(1);
             }
         } else selectId = null;
-
-        selectLevel = getNodeLevel(selectNode);
-    }
-
-    private String getNodeLevel(AccessibilityNodeInfo nodeInfo) {
-        AccessibilityNodeInfo parent = nodeInfo.getParent();
-        if (parent != null) {
-            for (int i = 0; i < parent.getChildCount(); i++) {
-                AccessibilityNodeInfo child = parent.getChild(i);
-                if (child != null && child.equals(nodeInfo)) {
-                    String level = getNodeLevel(parent);
-                    if (level != null && !level.isEmpty()) {
-                        return level + "," + i;
-                    } else {
-                        return String.valueOf(i);
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     @Nullable

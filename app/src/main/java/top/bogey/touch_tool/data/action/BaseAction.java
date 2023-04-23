@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.StringRes;
 
@@ -84,6 +85,7 @@ public class BaseAction {
         if (linkedPin == null) return;
         if (!runnable.addProgress()) return;
         BaseAction owner = linkedPin.getOwner(actionContext);
+        Log.d("TAG", "doNextAction: " + owner.getClass().getSimpleName());
         owner.doAction(runnable, actionContext, linkedPin);
     }
 

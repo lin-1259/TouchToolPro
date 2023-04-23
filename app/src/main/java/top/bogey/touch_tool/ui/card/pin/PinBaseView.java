@@ -19,7 +19,6 @@ import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinColor;
-import top.bogey.touch_tool.data.pin.object.PinExecute;
 import top.bogey.touch_tool.data.pin.object.PinImage;
 import top.bogey.touch_tool.data.pin.object.PinInteger;
 import top.bogey.touch_tool.data.pin.object.PinLong;
@@ -30,6 +29,7 @@ import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
+import top.bogey.touch_tool.data.pin.object.PinXPath;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAdd;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAppPicker;
@@ -45,8 +45,8 @@ import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetStringPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetWidgetPicker;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetXPathPicker;
 import top.bogey.touch_tool.ui.custom.BindingView;
-import top.bogey.touch_tool.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> {
@@ -143,6 +143,8 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
             viewGroup.addView(new PinWidgetLongPicker(context, (PinLong) pin.getValue(), pin.getSubType()));
         } else if (PinWidget.class.equals(aClass)) {
             viewGroup.addView(new PinWidgetWidgetPicker(context, (PinWidget) pin.getValue()));
+        } else if (PinXPath.class.equals(aClass)) {
+            viewGroup.addView(new PinWidgetXPathPicker(context, (PinXPath) pin.getValue()));
         }
 
         if (PinAdd.class.equals(aClass)) {

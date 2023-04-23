@@ -26,49 +26,62 @@ public class HandleActionContextView extends FrameLayout {
         super(context);
         binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(context), this, true);
 
-        init(repository.getAllTasks(), repository.getFunctions());
+        init(new ArrayList<>(repository.getAllTasks()), null, new ArrayList<>(repository.getFunctions()), null);
     }
 
     public HandleActionContextView(@NonNull Context context, ArrayList<ActionContext> actionContexts) {
         super(context);
         binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(context), this, true);
 
-        ArrayList<Task> tmpTasks = new ArrayList<>();
-        HashMap<String, BaseFunction> tmpFunctions = new HashMap<>();
+        ArrayList<ActionContext> tmpTasks = new ArrayList<>();
+        ArrayList<ActionContext> repeatTasks = new ArrayList<>();
+
+        HashMap<String, ActionContext> tmpFunctions = new HashMap<>();
+        HashMap<String, ActionContext> repeatFunctions = new HashMap<>();
+
         for (ActionContext actionContext : actionContexts) {
             if (actionContext instanceof Task) {
                 Task task = (Task) actionContext;
-                if (repository.getTaskById(task.getId()) == null) {
-                    task.setTag(null);
+                task.setTag(null);
+                boolean taskExist = repository.getTaskById(task.getId()) == null;
+                if (taskExist) {
                     tmpTasks.add(task);
-                    for (BaseAction action : task.getActions()) {
-                        if (action instanceof BaseFunction) {
-                            BaseFunction function = (BaseFunction) action;
-                            // 通用自定义方法
-                            if (function.getTaskId() == null) {
-                                if (repository.getFunctionById(function.getFunctionId()) == null) {
-                                    tmpFunctions.put(function.getFunctionId(), function);
-                                }
+                } else {
+                    repeatTasks.add(task);
+                }
+
+                for (BaseAction action : task.getActions()) {
+                    if (action instanceof BaseFunction) {
+                        BaseFunction function = (BaseFunction) action;
+                        // 通用自定义方法
+                        if (function.getTaskId() == null) {
+                            if (taskExist && repository.getFunctionById(function.getFunctionId()) == null) {
+                                tmpFunctions.put(function.getFunctionId(), function);
+                            } else {
+                                repeatFunctions.put(function.getFunctionId(), function);
                             }
                         }
                     }
                 }
+
             } else if (actionContext instanceof BaseFunction) {
                 BaseFunction function = (BaseFunction) actionContext;
                 if (repository.getFunctionById(function.getFunctionId()) == null) {
                     tmpFunctions.put(function.getFunctionId(), function);
+                } else {
+                    repeatFunctions.put(function.getFunctionId(), function);
                 }
             }
         }
 
-        init(tmpTasks, new ArrayList<>(tmpFunctions.values()));
+        init(tmpTasks, repeatTasks, new ArrayList<>(tmpFunctions.values()), new ArrayList<>(repeatFunctions.values()));
     }
 
-    private void init(ArrayList<Task> tasks, ArrayList<BaseFunction> functions) {
-        taskAdapter = new ActionContextAdapter(new ArrayList<>(tasks));
+    private void init(ArrayList<ActionContext> tasks, ArrayList<ActionContext> repeatTasks, ArrayList<ActionContext> functions, ArrayList<ActionContext> repeatFunctions) {
+        taskAdapter = new ActionContextAdapter(tasks, repeatTasks);
         binding.tasksBox.setAdapter(taskAdapter);
 
-        functionAdapter = new ActionContextAdapter(new ArrayList<>(functions));
+        functionAdapter = new ActionContextAdapter(functions, repeatFunctions);
         binding.functionsBox.setAdapter(functionAdapter);
     }
 

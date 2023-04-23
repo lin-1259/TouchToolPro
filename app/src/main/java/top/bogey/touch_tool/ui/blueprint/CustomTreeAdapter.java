@@ -165,9 +165,17 @@ public class CustomTreeAdapter extends TreeViewAdapter {
     public ActionContext getRealActionContext(TreeNodeInfo info) {
         ActionContext actionContext = cardLayoutView.getActionContext();
         ActionContext parentContext = actionContext.getParent();
-        if (info.getType() == TreeNodeType.FUNCTION || info.getType() == TreeNodeType.ATTR) {
-            if (parentContext != null) actionContext = parentContext;
+
+        if (info.getType() == TreeNodeType.TYPE) {
+            if (info.getSubType() == TreeNodeType.FUNCTION || info.getSubType() == TreeNodeType.ATTR) {
+                if (parentContext != null) actionContext = parentContext;
+            }
+        } else {
+            if (info.getType() == TreeNodeType.FUNCTION || info.getType() == TreeNodeType.ATTR) {
+                if (parentContext != null) actionContext = parentContext;
+            }
         }
+
         return actionContext;
     }
 
@@ -299,6 +307,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                         BaseFunction function = taskContext.getFunctionById(info.getKey());
                         copy = (BaseFunction) function.copy();
                         copy.setFunctionId(UUID.randomUUID().toString());
+                        taskContext.addFunction(copy);
                         taskContext.save();
                     }
                     parentTreeNode = functionTreeNode;

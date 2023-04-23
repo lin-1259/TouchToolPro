@@ -60,6 +60,7 @@ import top.bogey.touch_tool.data.action.state.ScreenStateAction;
 import top.bogey.touch_tool.data.action.state.TextStateAction;
 import top.bogey.touch_tool.data.action.state.WidgetStateAction;
 import top.bogey.touch_tool.data.action.state.WidgetTextStateAction;
+import top.bogey.touch_tool.data.action.state.XPathWidgetStateAction;
 
 public class ActionMap {
     private static ActionMap actionMap;
@@ -94,6 +95,7 @@ public class ActionMap {
         stateActions.put(ImageStateAction.class, R.string.action_image_state_title);
         stateActions.put(ColorStateAction.class, R.string.action_color_state_title);
         stateActions.put(WidgetStateAction.class, R.string.action_widget_state_title);
+        stateActions.put(XPathWidgetStateAction.class, R.string.action_xpath_widget_state_title);
         stateActions.put(WidgetTextStateAction.class, R.string.action_widget_text_state_title);
         stateActions.put(BatteryStateAction.class, R.string.action_battery_state_title);
         stateActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_state_title);

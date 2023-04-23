@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
 
+import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskContext;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
@@ -34,8 +35,9 @@ public class BaseFunction extends NormalAction implements ActionContext {
     private transient FunctionAction startFunction;
     private transient final HashSet<FunctionAction> endFunctions = new HashSet<>();
     private transient FunctionAction endFunction;
-    private transient Pin endPin;
+
     private transient boolean synced = false;
+    private transient TaskRunnable runnable;
 
     public BaseFunction() {
         super(0);
@@ -62,7 +64,8 @@ public class BaseFunction extends NormalAction implements ActionContext {
         justCall = GsonUtils.getAsBoolean(jsonObject, "justCall", false);
         fastEnd = GsonUtils.getAsBoolean(jsonObject, "fastEnd", true);
 
-        actions.addAll(GsonUtils.getAsType(jsonObject, "actions", new TypeToken<HashSet<BaseAction>>() {}.getType(), new HashSet<>()));
+        actions.addAll(GsonUtils.getAsType(jsonObject, "actions", new TypeToken<HashSet<BaseAction>>() {
+        }.getType(), new HashSet<>()));
         for (BaseAction action : actions) {
             if (action instanceof FunctionAction) {
                 FunctionAction function = (FunctionAction) action;
@@ -75,7 +78,8 @@ public class BaseFunction extends NormalAction implements ActionContext {
             }
         }
 
-        attrs.putAll(GsonUtils.getAsType(jsonObject, "attrs", new TypeToken<HashMap<String, PinObject>>() {}.getType(), new HashMap<>()));
+        attrs.putAll(GsonUtils.getAsType(jsonObject, "attrs", new TypeToken<HashMap<String, PinObject>>() {
+        }.getType(), new HashMap<>()));
 
         for (Pin pin : pinsTmp) {
             // 不能直接调用自身的添加
@@ -152,11 +156,13 @@ public class BaseFunction extends NormalAction implements ActionContext {
 
         // 内部属性
         attrs.clear();
-        attrs.putAll(GsonUtils.copy(function.getAttrs(), new TypeToken<HashMap<String, PinObject>>() {}.getType()));
+        attrs.putAll(GsonUtils.copy(function.getAttrs(), new TypeToken<HashMap<String, PinObject>>() {
+        }.getType()));
 
         // 内部动作
         actions.clear();
-        actions.addAll(GsonUtils.copy(function.getActions(), new TypeToken<HashSet<BaseAction>>() {}.getType()));
+        actions.addAll(GsonUtils.copy(function.getActions(), new TypeToken<HashSet<BaseAction>>() {
+        }.getType()));
 
         startFunctions.clear();
         endFunctions.clear();
@@ -176,7 +182,7 @@ public class BaseFunction extends NormalAction implements ActionContext {
     @Override
     public void doAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         endFunction = null;
-        endPin = null;
+        this.runnable = runnable;
         outContext = actionContext;
 
         if (!synced) {
@@ -195,20 +201,27 @@ public class BaseFunction extends NormalAction implements ActionContext {
         }
 
         if (!justCall) {
-            boolean flag = true;
-            if (endFunction != null && endPin != null) {
-                if (!endPin.getUid().equals(endFunction.getExecutePin().getUid())) {
-                    String pinUid = endFunction.getPinUidMap().get(endPin.getUid());
-                    Pin pinByUid = getPinByUid(pinUid);
-                    if (pinByUid != null) {
-                        doNextAction(runnable, actionContext, pinByUid);
-                        flag = false;
-                    }
+            // 保底执行
+            if (endFunction == null) doNextAction(runnable, actionContext, outPin);
+        }
+    }
+
+    public void doEndFunction(FunctionAction endFunction, Pin endPin) {
+        this.endFunction = endFunction;
+
+        boolean flag = true;
+        if (endFunction != null && endPin != null) {
+            if (!endPin.getUid().equals(endFunction.getExecutePin().getUid())) {
+                String pinUid = endFunction.getPinUidMap().get(endPin.getUid());
+                Pin pinByUid = getPinByUid(pinUid);
+                if (pinByUid != null) {
+                    doNextAction(runnable, outContext, pinByUid);
+                    flag = false;
                 }
             }
-            if (flag) {
-                doNextAction(runnable, actionContext, outPin);
-            }
+        }
+        if (flag) {
+            doNextAction(runnable, outContext, outPin);
         }
     }
 
@@ -289,11 +302,6 @@ public class BaseFunction extends NormalAction implements ActionContext {
         for (FunctionAction function : (functionAction.getTag().isStart() ? startFunctions : endFunctions)) {
             function.setPinTitle(pinUid, title);
         }
-    }
-
-    public void setEndFunction(FunctionAction endFunction, Pin endPin) {
-        this.endFunction = endFunction;
-        this.endPin = endPin;
     }
 
     public boolean isJustCall() {
@@ -426,6 +434,17 @@ public class BaseFunction extends NormalAction implements ActionContext {
     }
 
     @Override
+    public PinObject findAttr(String key) {
+        PinObject attr = attrs.get(key);
+        if (attr != null) return attr;
+        else {
+            ActionContext parent = getParent();
+            if (parent != null) return parent.getAttr(key);
+        }
+        return null;
+    }
+
+    @Override
     public boolean isReturned() {
         return fastEnd && endFunction != null;
     }
@@ -440,6 +459,15 @@ public class BaseFunction extends NormalAction implements ActionContext {
     @Override
     public ActionContext getParent() {
         if (taskId == null) return null;
+        // 运行中的话，找运行中的上下文
+        ActionContext context = outContext;
+        while (context != null) {
+            if (context instanceof Task) {
+                if (((Task) context).getId().equals(taskId)) return context;
+            } else {
+                context = context.getParent();
+            }
+        }
         return TaskRepository.getInstance().getTaskById(taskId);
     }
 
