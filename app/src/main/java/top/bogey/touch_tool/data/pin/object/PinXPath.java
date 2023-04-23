@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.utils.GsonUtils;
 
-public class PinXPath extends PinValue{
+public class PinXPath extends PinValue {
     private String path;
 
     public PinXPath() {
@@ -49,7 +49,7 @@ public class PinXPath extends PinValue{
         StringBuilder builder = new StringBuilder();
         for (XPath path : paths) {
             builder.append(path.toString());
-            builder.append("->");
+            builder.append("\n");
         }
         path = builder.toString();
     }
@@ -57,7 +57,7 @@ public class PinXPath extends PinValue{
     public AccessibilityNodeInfo getPathNode(AccessibilityNodeInfo root, ActionContext context) {
         if (path == null) return null;
 
-        String[] paths = path.split("->");
+        String[] paths = path.split("\n");
         AccessibilityNodeInfo child = null;
         for (String path : paths) {
             if (path.isEmpty()) continue;
@@ -115,6 +115,7 @@ public class PinXPath extends PinValue{
         private String id;
         private int index;
 
+
         public XPath(AccessibilityNodeInfo node) {
             cls = node.getClassName().toString();
             id = node.getViewIdResourceName();
@@ -124,7 +125,7 @@ public class PinXPath extends PinValue{
                 for (int i = 0; i < parent.getChildCount(); i++) {
                     AccessibilityNodeInfo child = parent.getChild(i);
                     if (child != null && child.equals(node)) {
-                        index = i;
+                        index = i + 1;
                         break;
                     }
                 }
@@ -178,7 +179,10 @@ public class PinXPath extends PinValue{
                     child = nodes.get(0);
                 }
             } else {
-                child = root.getChild(index);
+                try {
+                    child = root.getChild(index - 1);
+                } catch (Exception ignored) {
+                }
             }
             // 从id或层级拿的子节点需要判断类型是不是一样的
             if (child != null && child.getClassName().equals(cls)) {
@@ -213,7 +217,7 @@ public class PinXPath extends PinValue{
             StringBuilder builder = new StringBuilder();
             builder.append(cls);
             if (id != null) builder.append("[id=").append(id).append("]");
-            if (index != 0) builder.append("[").append(index).append("]");
+            if (index > 1) builder.append("[").append(index).append("]");
             return builder.toString();
         }
     }

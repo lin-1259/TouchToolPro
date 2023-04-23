@@ -32,7 +32,8 @@ public class WidgetPickerTreeAdapter extends TreeViewAdapter {
         setTreeNodeLongClickListener((treeNode, view) -> {
             AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) treeNode.getValue();
             picker.selectNode(nodeInfo);
-            setSelectedNode(nodeInfo);
+            selectedNode = treeNode;
+            notifyDataSetChanged();
             return true;
         });
     }
@@ -51,7 +52,7 @@ public class WidgetPickerTreeAdapter extends TreeViewAdapter {
 
     public void setRoot(AccessibilityNodeInfo root) {
         rootNode = createTree(root, 0);
-        ArrayList<TreeNode> treeNodes = new ArrayList<>(Collections.singleton(rootNode));
+        ArrayList<TreeNode> treeNodes = new ArrayList<>(Collections.singletonList(rootNode));
         updateTreeNodes(treeNodes);
     }
 
@@ -80,7 +81,8 @@ public class WidgetPickerTreeAdapter extends TreeViewAdapter {
                         parent.setExpanded(true);
                         parent = parent.getParent();
                     }
-                    notifyDataSetChanged();
+                    rootNode.setExpanded(false);
+                    expandNode(rootNode);
                 }
             }
         }

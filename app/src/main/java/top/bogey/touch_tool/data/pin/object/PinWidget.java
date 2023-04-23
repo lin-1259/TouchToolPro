@@ -30,7 +30,12 @@ public class PinWidget extends PinValue {
         if (root == null) return null;
 
         if (!(id == null || id.isEmpty())) {
-            List<AccessibilityNodeInfo> nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
+            List<AccessibilityNodeInfo> nodeInfo;
+            if (id.startsWith("id/")) {
+                nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
+            } else {
+                nodeInfo = root.findAccessibilityNodeInfosByViewId(id);
+            }
             // 仅有一个才是正确的，有多个的话，需要看层级
             Rect rect = new Rect();
             AccessibilityNodeInfo accessibilityNodeInfo = null;

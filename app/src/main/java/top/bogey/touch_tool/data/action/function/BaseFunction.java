@@ -96,7 +96,8 @@ public class BaseFunction extends NormalAction implements ActionContext {
     public void sync(ActionContext outContext) {
         // 获取最新的方法
         BaseFunction function;
-        if (getParent() == null) function = TaskRepository.getInstance().getFunctionById(functionId);
+        if (getParent() == null)
+            function = TaskRepository.getInstance().getFunctionById(functionId);
         else function = ((TaskContext) getParent()).getFunctionById(functionId);
         if (function == null) return;
         // 标题
@@ -150,7 +151,8 @@ public class BaseFunction extends NormalAction implements ActionContext {
     private void syncInner() {
         // 获取最新的方法
         BaseFunction function;
-        if (getParent() == null) function = TaskRepository.getInstance().getFunctionById(functionId);
+        if (getParent() == null)
+            function = TaskRepository.getInstance().getFunctionById(functionId);
         else function = ((TaskContext) getParent()).getFunctionById(functionId);
         if (function == null) return;
 
@@ -462,11 +464,10 @@ public class BaseFunction extends NormalAction implements ActionContext {
         // 运行中的话，找运行中的上下文
         ActionContext context = outContext;
         while (context != null) {
-            if (context instanceof Task) {
-                if (((Task) context).getId().equals(taskId)) return context;
-            } else {
-                context = context.getParent();
-            }
+            if (context instanceof Task)
+                if (((Task) context).getId().equals(taskId))
+                    return context;
+            context = context.getParent();
         }
         return TaskRepository.getInstance().getTaskById(taskId);
     }

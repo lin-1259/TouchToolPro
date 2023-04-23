@@ -9,7 +9,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
@@ -71,26 +70,14 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
             dismiss();
         });
 
+        binding.detailButton.setOnClickListener(v -> {
+            BottomSheetBehavior<FrameLayout> sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+
         binding.backButton.setOnClickListener(v -> dismiss());
 
         binding.markBox.setOnClickListener(v -> showWidgetView(null));
-
-        BottomSheetBehavior<FrameLayout> sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
-        sheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    bottomSheet.animate().alpha(0.2f);
-                } else {
-                    bottomSheet.animate().alpha(1f);
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
 
         selectNode = pinXPath.getPathNode(rootNode, null);
         showWidgetView(selectNode);
@@ -103,10 +90,13 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
         binding.markBox.setVisibility(INVISIBLE);
         binding.idTitle.setVisibility(INVISIBLE);
         binding.levelTitle.setVisibility(INVISIBLE);
+        binding.detailButton.setVisibility(GONE);
+
         if (selectNode != null) {
             binding.markBox.setVisibility(VISIBLE);
             binding.idTitle.setVisibility(VISIBLE);
             binding.levelTitle.setVisibility(VISIBLE);
+            binding.detailButton.setVisibility(VISIBLE);
             setNodeSelectInfo();
 
             binding.idTitle.setText(selectId);
