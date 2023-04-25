@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -48,7 +49,7 @@ public class PinBoolean extends PinValue {
 
     @Override
     public int getPinColor(Context context) {
-        return DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorError, 0);
+        return context.getColor(R.color.BooleanPinColor);
     }
 
     @NonNull

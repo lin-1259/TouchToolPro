@@ -12,6 +12,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
@@ -32,7 +33,8 @@ public class PinPath extends PinValue {
 
     public PinPath(JsonObject jsonObject) {
         super(jsonObject);
-        paths = GsonUtils.getAsType(jsonObject, "paths", new TypeToken<ArrayList<TouchPath>>() {}.getType(), new ArrayList<>());
+        paths = GsonUtils.getAsType(jsonObject, "paths", new TypeToken<ArrayList<TouchPath>>() {
+        }.getType(), new ArrayList<>());
         screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
         gravity = FloatGravity.valueOf(GsonUtils.getAsString(jsonObject, "gravity", FloatGravity.TOP_LEFT.name()));
         offset = GsonUtils.getAsClass(jsonObject, "offset", Point.class, new Point());
@@ -113,6 +115,11 @@ public class PinPath extends PinValue {
 
     public void setOffset(Point offset) {
         this.offset = offset;
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.PathPinColor);
     }
 
     @Override

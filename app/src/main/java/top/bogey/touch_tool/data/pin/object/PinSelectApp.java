@@ -1,11 +1,14 @@
 package top.bogey.touch_tool.data.pin.object;
 
+import android.content.Context;
+
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.ui.app.AppView;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -36,6 +39,11 @@ public class PinSelectApp extends PinValue {
 
     public int getMode() {
         return mode;
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.AppPinColor);
     }
 
     @Override

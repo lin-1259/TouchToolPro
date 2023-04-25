@@ -13,6 +13,8 @@ import android.graphics.Path;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityNodeInfo;
+import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Data;
@@ -498,5 +500,18 @@ public class MainAccessibilityService extends AccessibilityService {
         } else {
             activity.showToast(msg);
         }
+    }
+
+    public ArrayList<AccessibilityNodeInfo> getNeedWindowsRoot() {
+        ArrayList<AccessibilityNodeInfo> roots = new ArrayList<>();
+        List<AccessibilityWindowInfo> windows = getWindows();
+        for (AccessibilityWindowInfo window : windows) {
+            if (window == null) continue;
+            if (window.getType() == AccessibilityWindowInfo.TYPE_ACCESSIBILITY_OVERLAY) continue;
+            AccessibilityNodeInfo root = window.getRoot();
+            if (root == null) continue;
+            if (root.getChildCount() > 0) roots.add(root);
+        }
+        return roots;
     }
 }

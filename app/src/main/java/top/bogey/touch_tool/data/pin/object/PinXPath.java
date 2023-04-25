@@ -6,16 +6,17 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.utils.GsonUtils;
 
-public class PinXPath extends PinValue {
+public class PinXPath extends PinString {
     private String path;
 
     public PinXPath() {
@@ -31,7 +32,6 @@ public class PinXPath extends PinValue {
         super(jsonObject);
         path = GsonUtils.getAsString(jsonObject, "path", null);
     }
-
 
     public void setPath(AccessibilityNodeInfo node) {
         if (node == null) {
@@ -54,23 +54,28 @@ public class PinXPath extends PinValue {
         path = builder.toString();
     }
 
-    public AccessibilityNodeInfo getPathNode(AccessibilityNodeInfo root, ActionContext context) {
+    public AccessibilityNodeInfo getPathNode(ArrayList<AccessibilityNodeInfo> roots, HashMap<String, Integer> params) {
         if (path == null) return null;
 
         String[] paths = path.split("\n");
-        AccessibilityNodeInfo child = null;
-        for (String path : paths) {
-            if (path.isEmpty()) continue;
-            XPath xp = new XPath(path.trim(), context);
-            if (child == null) {
-                child = root;
-            } else {
-                child = xp.getChildNode(child);
-                if (child == null) return null;
+
+        for (AccessibilityNodeInfo root : roots) {
+            AccessibilityNodeInfo child = null;
+            for (String path : paths) {
+                if (path.isEmpty()) continue;
+                XPath xp = new XPath(path.trim(), params);
+                if (child == null) {
+                    child = root;
+                } else {
+                    child = xp.getChildNode(child);
+                    if (child == null) break;
+                }
             }
+            if (root.equals(child)) return null;
+            if (child != null) return child;
         }
-        if (root.equals(child)) return null;
-        return child;
+
+        return null;
     }
 
     public String getPath() {
@@ -115,7 +120,6 @@ public class PinXPath extends PinValue {
         private String id;
         private int index;
 
-
         public XPath(AccessibilityNodeInfo node) {
             cls = node.getClassName().toString();
             id = node.getViewIdResourceName();
@@ -138,7 +142,7 @@ public class PinXPath extends PinValue {
             }
         }
 
-        public XPath(String path, ActionContext context) {
+        public XPath(String path, HashMap<String, Integer> params) {
             Pattern pattern = Pattern.compile("^([a-zA-Z.]+)(\\[*.*?]*)$");
             Matcher matcher = pattern.matcher(path);
             if (matcher.find()) {
@@ -156,11 +160,9 @@ public class PinXPath extends PinValue {
                                 if (string.contains("id=")) {
                                     id = string.replace("id=", "");
                                 } else {
-                                    if (context != null) {
-                                        PinObject attr = context.findAttr(string);
-                                        if (attr instanceof PinInteger) {
-                                            index = ((PinInteger) attr).getValue();
-                                        }
+                                    if (params != null) {
+                                        Integer integer = params.get(string);
+                                        index = integer == null ? 0 : integer;
                                     }
                                 }
                             }

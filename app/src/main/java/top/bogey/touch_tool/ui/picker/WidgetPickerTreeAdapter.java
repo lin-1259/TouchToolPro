@@ -15,7 +15,7 @@ import com.amrdeveloper.treeview.TreeViewAdapter;
 import com.amrdeveloper.treeview.TreeViewHolder;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
 
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetItemBinding;
@@ -23,7 +23,7 @@ import top.bogey.touch_tool.utils.DisplayUtils;
 
 public class WidgetPickerTreeAdapter extends TreeViewAdapter {
     private TreeNode selectedNode;
-    private TreeNode rootNode;
+    private final ArrayList<TreeNode> treeNodes = new ArrayList<>();
     private final TreeNodeManager manager;
 
     public WidgetPickerTreeAdapter(TreeNodeManager manager, SelectNode picker) {
@@ -50,9 +50,12 @@ public class WidgetPickerTreeAdapter extends TreeViewAdapter {
         return new ViewHolder(FloatPickerWidgetItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
-    public void setRoot(AccessibilityNodeInfo root) {
-        rootNode = createTree(root, 0);
-        ArrayList<TreeNode> treeNodes = new ArrayList<>(Collections.singletonList(rootNode));
+    public void setRoots(ArrayList<AccessibilityNodeInfo> roots) {
+        treeNodes.clear();
+        for (AccessibilityNodeInfo root : roots) {
+            TreeNode rootNode = createTree(root, 0);
+            treeNodes.add(rootNode);
+        }
         updateTreeNodes(treeNodes);
     }
 
@@ -73,25 +76,27 @@ public class WidgetPickerTreeAdapter extends TreeViewAdapter {
         if (node == null) {
             selectedNode = null;
         } else {
-            if (rootNode != null) {
-                selectedNode = findTreeNode(rootNode, node);
-                if (selectedNode != null) {
-                    TreeNode parent = selectedNode.getParent();
-                    while (parent != null) {
+            selectedNode = findTreeNode(treeNodes, node);
+            if (selectedNode != null) {
+                TreeNode parent = selectedNode.getParent();
+                while (parent != null) {
+                    TreeNode p = parent.getParent();
+                    if (p == null) {
+                        parent.setExpanded(false);
+                        expandNode(parent);
+                    } else {
                         parent.setExpanded(true);
-                        parent = parent.getParent();
                     }
-                    rootNode.setExpanded(false);
-                    expandNode(rootNode);
+                    parent = p;
                 }
             }
         }
     }
 
-    private TreeNode findTreeNode(TreeNode treeNode, Object value) {
-        if (value.equals(treeNode.getValue())) return treeNode;
-        for (TreeNode child : treeNode.getChildren()) {
-            TreeNode node = findTreeNode(child, value);
+    private TreeNode findTreeNode(List<TreeNode> treeNodes, Object value) {
+        for (TreeNode treeNode : treeNodes) {
+            if (value.equals(treeNode.getValue())) return treeNode;
+            TreeNode node = findTreeNode(treeNode.getChildren(), value);
             if (node != null) return node;
         }
         return null;

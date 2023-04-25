@@ -10,7 +10,7 @@ import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class DelayAction extends NormalAction {
-    private transient Pin delayPin = new Pin(new PinValueArea(100, 60000, 100, 300, 300));
+    private transient Pin delayPin = new Pin(new PinValueArea(50, 60000, 50, 300, 300));
 
     public DelayAction() {
         super(R.string.action_delay_action_title);

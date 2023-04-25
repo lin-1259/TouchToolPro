@@ -68,11 +68,11 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 if (isWidget) {
-                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
+                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getNeedWindowsRoot(), true);
                     AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                     if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 } else {
-                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getRootInActiveWindow(), null);
+                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getNeedWindowsRoot(), null);
                     AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                     if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_CLICK);
                 }
@@ -83,11 +83,11 @@ public class WidgetPickerFloatPreview extends BasePickerFloatView {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 if (isWidget) {
-                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getRootInActiveWindow(), true);
+                    AccessibilityNodeInfo node = pinWidget.getNode(DisplayUtils.getScreenArea(service), service.getNeedWindowsRoot(), true);
                     AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                     if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
                 } else {
-                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getRootInActiveWindow(), null);
+                    AccessibilityNodeInfo node = pinXPath.getPathNode(service.getNeedWindowsRoot(), null);
                     AccessibilityNodeInfo clickAbleParent = TouchNodeAction.getClickAbleParent(node);
                     if (clickAbleParent != null) clickAbleParent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
                 }

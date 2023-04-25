@@ -144,7 +144,7 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
         } else if (PinWidget.class.equals(aClass)) {
             viewGroup.addView(new PinWidgetWidgetPicker(context, (PinWidget) pin.getValue()));
         } else if (PinXPath.class.equals(aClass)) {
-            viewGroup.addView(new PinWidgetXPathPicker(context, (PinXPath) pin.getValue()));
+            viewGroup.addView(new PinWidgetXPathPicker(context, (PinXPath) pin.getValue(), card));
         }
 
         if (PinAdd.class.equals(aClass)) {

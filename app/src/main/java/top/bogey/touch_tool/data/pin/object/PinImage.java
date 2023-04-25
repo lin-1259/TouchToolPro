@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import java.io.ByteArrayOutputStream;
 import java.util.Objects;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -94,6 +95,11 @@ public class PinImage extends PinValue {
 
         float scale = DisplayUtils.getScreen(context) * 1f / screen;
         return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.ImagePinColor);
     }
 
     @Override

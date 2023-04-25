@@ -13,6 +13,7 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.action.CaptureServiceAction;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
+import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
@@ -187,6 +188,9 @@ public class Task implements TaskContext {
         actions.forEach(action -> {
             if (action instanceof BaseFunction) {
                 ((BaseFunction) action).setTaskId(this.id);
+            }
+            if (action instanceof OutStartAction) {
+                action.setId(UUID.randomUUID().toString());
             }
         });
     }

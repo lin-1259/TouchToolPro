@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.data.pin.object;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -7,9 +8,11 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinWidget extends PinValue {
@@ -26,49 +29,65 @@ public class PinWidget extends PinValue {
         level = GsonUtils.getAsString(jsonObject, "level", null);
     }
 
-    public AccessibilityNodeInfo getNode(Rect screenSize, AccessibilityNodeInfo root, boolean justScreen) {
-        if (root == null) return null;
+    public AccessibilityNodeInfo getNode(Rect screenSize, ArrayList<AccessibilityNodeInfo> roots, boolean justScreen) {
+        if (roots == null || roots.size() == 0) return null;
 
-        if (!(id == null || id.isEmpty())) {
-            List<AccessibilityNodeInfo> nodeInfo;
-            if (id.startsWith("id/")) {
-                nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
-            } else {
-                nodeInfo = root.findAccessibilityNodeInfosByViewId(id);
-            }
-            // 仅有一个才是正确的，有多个的话，需要看层级
-            Rect rect = new Rect();
-            AccessibilityNodeInfo accessibilityNodeInfo = null;
-            for (AccessibilityNodeInfo node : nodeInfo) {
-                node.getBoundsInScreen(rect);
-                if (justScreen && !Rect.intersects(screenSize, rect)) continue;
-                if (accessibilityNodeInfo == null) accessibilityNodeInfo = node;
-                else {
-                    accessibilityNodeInfo = null;
-                    break;
-                }
-            }
-            if (accessibilityNodeInfo != null) return accessibilityNodeInfo;
-        }
+        for (int i = roots.size() - 1; i >= 0; i--) {
+            AccessibilityNodeInfo root = roots.get(i);
+            if (root == null) continue;
 
-        if (!(level == null || level.isEmpty())) {
-            String[] levels = level.split(",");
-            AccessibilityNodeInfo node = root;
-            for (String lv : levels) {
-                int l = 0;
-                try {
-                    l = Integer.parseInt(lv);
-                } catch (NumberFormatException ignored) {
+            if (!(id == null || id.isEmpty())) {
+                List<AccessibilityNodeInfo> nodeInfo;
+                if (id.startsWith("id/")) {
+                    nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
+                } else {
+                    nodeInfo = root.findAccessibilityNodeInfosByViewId(id);
                 }
-                node = searchNode(node, l);
-                if (node == null) break;
-            }
-            if (node != null) {
+                // 仅有一个才是正确的，有多个的话，需要看层级
                 Rect rect = new Rect();
-                node.getBoundsInScreen(rect);
-                if (justScreen && !Rect.intersects(screenSize, rect)) node = null;
+                AccessibilityNodeInfo accessibilityNodeInfo = null;
+                for (AccessibilityNodeInfo node : nodeInfo) {
+                    node.getBoundsInScreen(rect);
+                    if (justScreen && !Rect.intersects(screenSize, rect)) continue;
+                    if (accessibilityNodeInfo == null) accessibilityNodeInfo = node;
+                    else {
+                        accessibilityNodeInfo = null;
+                        break;
+                    }
+                }
+                if (accessibilityNodeInfo != null) return accessibilityNodeInfo;
             }
-            return node;
+
+            if (!(level == null || level.isEmpty())) {
+                String[] levels = level.split(",");
+                AccessibilityNodeInfo node = root;
+                for (String lv : levels) {
+                    int l = 0;
+                    try {
+                        l = Integer.parseInt(lv);
+                    } catch (NumberFormatException ignored) {
+                    }
+                    node = searchNode(node, l);
+                    if (node == null) break;
+                }
+
+                // id校验
+                if (node != null && id != null && !id.isEmpty()) {
+                    String name = node.getViewIdResourceName();
+                    if (name != null && !name.isEmpty()) {
+                        if (!name.contains(id)) node = null;
+                    }
+                }
+
+                // 区域校验
+                if (node != null) {
+                    Rect rect = new Rect();
+                    node.getBoundsInScreen(rect);
+                    if (justScreen && !Rect.intersects(screenSize, rect)) node = null;
+                }
+
+                if (node != null) return node;
+            }
         }
 
         return null;
@@ -109,6 +128,11 @@ public class PinWidget extends PinValue {
     @Override
     public String toString() {
         return "id=" + id + ",level=" + level;
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.WidgetPinColor);
     }
 
     @Override

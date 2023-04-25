@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import java.util.Arrays;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.GsonUtils;
 
@@ -86,6 +87,11 @@ public class PinColor extends PinValue {
 
     public void setArea(Rect area) {
         this.area = area;
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.ColorPinColor);
     }
 
     @Override

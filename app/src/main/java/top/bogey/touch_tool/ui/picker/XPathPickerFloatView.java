@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.amrdeveloper.treeview.TreeNodeManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -26,6 +27,7 @@ import java.util.regex.Pattern;
 
 import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinXPath;
 import top.bogey.touch_tool.databinding.FloatPickerWidgetBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
@@ -39,7 +41,7 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
     private final Paint markPaint;
     private final int[] location = new int[2];
 
-    private final AccessibilityNodeInfo rootNode;
+    private final ArrayList<AccessibilityNodeInfo> rootNodes;
     private AccessibilityNodeInfo selectNode;
     private String selectId;
 
@@ -47,7 +49,6 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
         super(context, callback);
 
         gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        gridPaint.setStrokeWidth(2);
         gridPaint.setStrokeCap(Paint.Cap.ROUND);
         gridPaint.setStrokeJoin(Paint.Join.ROUND);
         gridPaint.setStyle(Paint.Style.STROKE);
@@ -58,11 +59,11 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
 
         binding = FloatPickerWidgetBinding.inflate(LayoutInflater.from(context), this, true);
         MainAccessibilityService service = MainApplication.getInstance().getService();
-        rootNode = service.getRootInActiveWindow();
+        rootNodes = service.getNeedWindowsRoot();
 
         adapter = new WidgetPickerTreeAdapter(new TreeNodeManager(), this);
         binding.widgetRecyclerView.setAdapter(adapter);
-        adapter.setRoot(rootNode);
+        adapter.setRoots(rootNodes);
 
         binding.saveButton.setOnClickListener(v -> {
             pinXPath.setPath(selectNode);
@@ -79,7 +80,7 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
 
         binding.markBox.setOnClickListener(v -> showWidgetView(null));
 
-        selectNode = pinXPath.getPathNode(rootNode, null);
+        selectNode = pinXPath.getPathNode(rootNodes, null);
         showWidgetView(selectNode);
     }
 
@@ -126,7 +127,21 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
         long drawingTime = getDrawingTime();
 
         drawChild(canvas, binding.getRoot(), drawingTime);
-        drawNode(canvas, rootNode);
+
+        canvas.saveLayer(getLeft(), getTop(), getRight(), getBottom(), gridPaint);
+        for (int i = rootNodes.size() - 1; i >= 0; i--) {
+            canvas.save();
+            AccessibilityNodeInfo rootNode = rootNodes.get(i);
+            Rect bounds = new Rect();
+            rootNode.getBoundsInScreen(bounds);
+            if (bounds.width() != getWidth() || bounds.height() != getHeight()) {
+                bounds.offset(-location[0], -location[1]);
+                canvas.drawRect(bounds, markPaint);
+            }
+            drawNode(canvas, rootNode);
+            canvas.restore();
+        }
+        canvas.restore();
 
         if (selectNode != null) {
             canvas.save();
@@ -157,7 +172,8 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
         boolean touchAble = nodeInfo.isClickable() || nodeInfo.isEditable() || nodeInfo.isCheckable() || nodeInfo.isLongClickable();
 
         if (!touchAble && nodeInfo.isVisibleToUser()) {
-            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimary, 0));
+            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSecondary, 0));
+            gridPaint.setStrokeWidth(1);
             canvas.drawRect(bounds, gridPaint);
         }
 
@@ -166,10 +182,8 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
         }
 
         if (touchAble && nodeInfo.isVisibleToUser()) {
-            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
-            bounds.offset(2, 2);
-            bounds.right -= 4;
-            bounds.bottom -= 4;
+            gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
+            gridPaint.setStrokeWidth(3);
             canvas.drawRect(bounds, gridPaint);
         }
     }
@@ -202,20 +216,18 @@ public class XPathPickerFloatView extends BasePickerFloatView implements WidgetP
 
     @Nullable
     private AccessibilityNodeInfo getNodeIn(int x, int y) {
-        if (rootNode == null) return null;
+        if (rootNodes == null || rootNodes.size() == 0) return null;
         HashMap<AccessibilityNodeInfo, Integer> infoMap = new HashMap<>();
-        findNodeIn(infoMap, 0, rootNode, x, y);
+        for (int i = 0; i < rootNodes.size(); i++) {
+            AccessibilityNodeInfo rootNode = rootNodes.get(i);
+            findNodeIn(infoMap, (rootNodes.size() - i) * Short.MAX_VALUE, rootNode, x, y);
+        }
 
-        int min = Integer.MAX_VALUE;
         int deep = 0;
         AccessibilityNodeInfo node = null;
-        Rect bounds = new Rect();
         for (Map.Entry<AccessibilityNodeInfo, Integer> entry : infoMap.entrySet()) {
-            entry.getKey().getBoundsInScreen(bounds);
-            int size = bounds.width() * bounds.height();
-            // 范围最小或者深度最深
-            if (size < min || (size == min && deep < entry.getValue())) {
-                min = size;
+            // 深度最深
+            if (deep < entry.getValue()) {
                 deep = entry.getValue();
                 node = entry.getKey();
             }

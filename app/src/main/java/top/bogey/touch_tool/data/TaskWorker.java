@@ -33,7 +33,7 @@ public class TaskWorker extends Worker {
 
             BaseAction action = task.getActionById(inputData.getString(ACTION));
 
-            TaskRepository.getInstance().addLog(task, action.getTitle(service), service.getString(R.string.work_execute, action.getDes()));
+            TaskRepository.getInstance().addLog(task, action.getTitle(service), service.getString(R.string.work_execute, action.getTitle(service)));
 
             service.runTask(task.copy(), (TimeStartAction) action);
         }

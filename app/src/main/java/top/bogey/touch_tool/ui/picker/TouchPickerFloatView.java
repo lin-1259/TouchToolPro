@@ -70,7 +70,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
         binding.bottomRightButton.setOnClickListener(v -> refreshGravityButton(FloatGravity.BOTTOM_RIGHT));
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryContainer, 0));
+        paint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
         paint.setStrokeWidth(10);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeJoin(Paint.Join.ROUND);

@@ -44,11 +44,10 @@ public class WidgetStateAction extends StateAction {
     protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         PinBoolean value = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getInstance().getService();
-        AccessibilityNodeInfo root = service.getRootInActiveWindow();
 
         PinWidget widget = (PinWidget) getPinValue(runnable, actionContext, widgetPin);
         boolean just = ((PinBoolean) getPinValue(runnable, actionContext, justPin)).getValue();
-        AccessibilityNodeInfo node = widget.getNode(DisplayUtils.getScreenArea(service), root, just);
+        AccessibilityNodeInfo node = widget.getNode(DisplayUtils.getScreenArea(service), service.getNeedWindowsRoot(), just);
         if (node != null) {
             value.setValue(true);
             PinPoint point = (PinPoint) posPin.getValue();

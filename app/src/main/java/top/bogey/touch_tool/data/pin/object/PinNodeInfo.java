@@ -30,7 +30,7 @@ public class PinNodeInfo extends PinObject{
 
     @Override
     public int getPinColor(Context context) {
-        return context.getResources().getColor(R.color.NodePinColor, null);
+        return context.getColor(R.color.NodePinColor);
     }
 
     @NonNull

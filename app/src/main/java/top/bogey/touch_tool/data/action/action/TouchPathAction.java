@@ -15,7 +15,7 @@ import top.bogey.touch_tool.data.pin.object.PinValueArea;
 
 public class TouchPathAction extends NormalAction {
     private transient Pin pathPin = new Pin(new PinPath(), R.string.action_touch_path_action_subtitle_path);
-    private transient Pin timePin = new Pin(new PinValueArea(100, 60000, 100, 300, 300), R.string.action_touch_path_action_subtitle_time);
+    private transient Pin timePin = new Pin(new PinValueArea(50, 60000, 50, 300, 300), R.string.action_touch_path_action_subtitle_time);
     private transient Pin offsetPin = new Pin(new PinBoolean(), R.string.action_touch_path_action_subtitle_offset);
 
     public TouchPathAction() {

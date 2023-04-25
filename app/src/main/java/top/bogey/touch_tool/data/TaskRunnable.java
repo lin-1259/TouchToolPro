@@ -39,6 +39,7 @@ public class TaskRunnable implements Runnable {
             startAction.doAction(this, task, null);
         } catch (Exception e) {
             e.printStackTrace();
+            TaskRepository.getInstance().addLog(task, "\n", e.toString());
         }
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
     }

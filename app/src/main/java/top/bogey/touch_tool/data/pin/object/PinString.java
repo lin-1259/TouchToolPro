@@ -35,7 +35,7 @@ public class PinString extends PinValue {
 
     @Override
     public int getPinColor(Context context) {
-        return context.getResources().getColor(R.color.StringPinColor, null);
+        return context.getColor(R.color.StringPinColor);
     }
 
     public String getValue() {

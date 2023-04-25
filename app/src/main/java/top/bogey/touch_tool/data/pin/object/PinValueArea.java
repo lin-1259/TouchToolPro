@@ -1,11 +1,13 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class PinValueArea extends PinValue {
@@ -74,6 +76,11 @@ public class PinValueArea extends PinValue {
 
         currMax = (currMax - valueFrom) / step * step + valueFrom;
         this.currMax = Math.min(currMax, valueTo);
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.ValueAreaPinColor);
     }
 
     @Override
