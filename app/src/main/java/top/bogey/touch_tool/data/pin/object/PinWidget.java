@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import top.bogey.touch_tool.R;
@@ -37,16 +36,19 @@ public class PinWidget extends PinValue {
             if (root == null) continue;
 
             if (!(id == null || id.isEmpty())) {
-                List<AccessibilityNodeInfo> nodeInfo;
+                String searchId;
                 if (id.startsWith("id/")) {
-                    nodeInfo = root.findAccessibilityNodeInfosByViewId(root.getPackageName() + ":" + id);
+                    searchId = root.getPackageName() + ":" + id;
                 } else {
-                    nodeInfo = root.findAccessibilityNodeInfosByViewId(id);
+                    searchId = id;
                 }
+                ArrayList<AccessibilityNodeInfo> nodeInfoList = new ArrayList<>();
+                searchNode(nodeInfoList, root, searchId);
+
                 // 仅有一个才是正确的，有多个的话，需要看层级
                 Rect rect = new Rect();
                 AccessibilityNodeInfo accessibilityNodeInfo = null;
-                for (AccessibilityNodeInfo node : nodeInfo) {
+                for (AccessibilityNodeInfo node : nodeInfoList) {
                     node.getBoundsInScreen(rect);
                     if (justScreen && !Rect.intersects(screenSize, rect)) continue;
                     if (accessibilityNodeInfo == null) accessibilityNodeInfo = node;
@@ -93,7 +95,20 @@ public class PinWidget extends PinValue {
         return null;
     }
 
+    private void searchNode(ArrayList<AccessibilityNodeInfo> list, AccessibilityNodeInfo nodeInfo, String id) {
+        if (nodeInfo == null) return;
+        String idResourceName = nodeInfo.getViewIdResourceName();
+        if (id.equals(idResourceName)) {
+            list.add(nodeInfo);
+        }
+        for (int i = 0; i < nodeInfo.getChildCount(); i++) {
+            AccessibilityNodeInfo child = nodeInfo.getChild(i);
+            searchNode(list, child, id);
+        }
+    }
+
     private AccessibilityNodeInfo searchNode(AccessibilityNodeInfo nodeInfo, int level) {
+        if (nodeInfo == null) return null;
         int index = 0;
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);

@@ -44,6 +44,10 @@ public class PinXPath extends PinString {
         while (node != null) {
             paths.addFirst(new XPath(node));
             node = node.getParent();
+            if (paths.size() > Byte.MAX_VALUE) {
+                path = "";
+                return;
+            }
         }
 
         StringBuilder builder = new StringBuilder();

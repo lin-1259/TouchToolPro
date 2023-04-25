@@ -67,10 +67,8 @@ public class TextStateAction extends StateAction {
             point.setX(bounds.centerX());
             point.setY(bounds.centerY());
 
-            if (nodePin != null) {
-                PinNodeInfo nodePinValue = (PinNodeInfo) nodePin.getValue();
-                nodePinValue.setNodeInfo(searchNode);
-            }
+            PinNodeInfo nodePinValue = (PinNodeInfo) nodePin.getValue();
+            nodePinValue.setNodeInfo(searchNode);
         }
     }
 
