@@ -143,7 +143,7 @@ public class Pin {
             if (action == null) continue;
             Pin pinById = action.getPinById(entry.getKey());
             // 插槽不匹配不能连
-            if (!(getPinClass().isAssignableFrom(pinById.getPinClass()) || pinById.getPinClass().isAssignableFrom(getPinClass()))) continue;
+            if (!isTypeMatched(pinById)) continue;
 
             // 方向相同不能连
             if (getDirection().equals(pinById.getDirection())) continue;
@@ -188,6 +188,10 @@ public class Pin {
 
     public boolean isVertical() {
         return value instanceof PinExecute;
+    }
+
+    public boolean isTypeMatched(Pin pin) {
+        return getPinClass().isAssignableFrom(pin.getPinClass()) || pin.getPinClass().isAssignableFrom(getPinClass());
     }
 
     public String getUid() {

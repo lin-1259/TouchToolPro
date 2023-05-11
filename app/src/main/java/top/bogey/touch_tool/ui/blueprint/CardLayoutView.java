@@ -299,8 +299,10 @@ public class CardLayoutView extends FrameLayout {
                 if (card == null) continue;
                 PinBaseView<?> pinBaseView = card.getPinById(entry.getKey());
                 if (pinBaseView == null) continue;
-                if (matchedPin != null) linePaint.setColor(matchedPin.getPinColor());
-                else linePaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
+                if (matchedPin != null) {
+                    if (dragPin.getPin().isTypeMatched(matchedPin.getPin())) linePaint.setColor(dragPin.getPinColor());
+                    else linePaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorError, 0));
+                } else linePaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
                 canvas.drawPath(calculateLinePath(pinBaseView), linePaint);
             }
         }
@@ -467,13 +469,13 @@ public class CardLayoutView extends FrameLayout {
                         if (pinBaseView != null) {
                             Pin pin = pinBaseView.getPin();
                             dragState = DRAG_PIN;
+                            dragPin = pinBaseView;
                             HashMap<String, String> links = pin.getLinks();
                             // 数量为0 或者 是出线且可以出多条线，从这个点出线。进线要么连接，要么断开
                             if (links.size() == 0 || (!pin.isSingle() && pin.getDirection().isOut())) {
                                 dragLinks.put(pin.getId(), pin.getActionId());
                                 // 目标方向与自身相反
                                 dragDirection = pin.getDirection() == PinDirection.IN ? PinDirection.OUT : PinDirection.IN;
-                                dragPin = pinBaseView;
                             } else {
                                 // 否则就是挪线
                                 dragLinks.putAll(links);

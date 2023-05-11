@@ -61,32 +61,16 @@ public class SelectActivityRecyclerViewAdapter extends RecyclerView.Adapter<Sele
 
         for (int i = activityNames.size() - 1; i >= 0; i--) {
             String info = activityNames.get(i);
-            boolean flag = true;
-            for (String newActivity : newActivityNames) {
-                if (info.equals(newActivity)) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                activityNames.remove(i);
-                notifyItemRemoved(i);
-            }
+            if (newActivityNames.contains(info)) continue;
+            activityNames.remove(i);
+            notifyItemRemoved(i);
         }
 
         for (int i = 0; i < newActivityNames.size(); i++) {
             String newActivity = newActivityNames.get(i);
-            boolean flag = true;
-            for (String info : activityNames) {
-                if (info.equals(newActivity)) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag) {
-                activityNames.add(i, newActivity);
-                notifyItemInserted(i);
-            }
+            if (activityNames.contains(newActivity)) continue;
+            activityNames.add(newActivity);
+            notifyItemInserted(activityNames.size() - 1);
         }
     }
 

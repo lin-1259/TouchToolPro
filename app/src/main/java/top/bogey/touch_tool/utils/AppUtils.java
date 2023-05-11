@@ -13,7 +13,6 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.StringRes;
 import androidx.core.content.FileProvider;
@@ -105,23 +104,25 @@ public class AppUtils {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
                 context.startActivity(intent);
             }
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static void gotoActivity(Context context, String pkgName, String activity) {
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Intent intent = new Intent();
             intent.setClassName(pkgName, activity);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             context.startActivity(intent);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static void gotoScheme(Context context, String scheme) {
         try {
-            Intent intent = Intent.parseUri(scheme, Intent.URI_INTENT_SCHEME|Intent.URI_ANDROID_APP_SCHEME);
+            Intent intent = Intent.parseUri(scheme, Intent.URI_INTENT_SCHEME | Intent.URI_ANDROID_APP_SCHEME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } catch (Exception ignored) {
@@ -287,7 +288,8 @@ public class AppUtils {
                 byte[] bytes = new byte[inputStream.available()];
                 int read = inputStream.read(bytes);
                 if (read > 0) {
-                    return GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+                    return GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {
+                    }.getType(), new ArrayList<>());
                 }
             }
         } catch (IOException e) {

@@ -18,9 +18,11 @@ import com.amrdeveloper.treeview.TreeNodeManager;
 import com.amrdeveloper.treeview.TreeViewAdapter;
 import com.amrdeveloper.treeview.TreeViewHolder;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.UUID;
 
 import top.bogey.touch_tool.R;
@@ -116,6 +118,8 @@ public class CustomTreeAdapter extends TreeViewAdapter {
         // 通用自定义卡
         treeNodes.add(commonFunctionTreeNode);
         ArrayList<BaseFunction> functions = TaskRepository.getInstance().getFunctions();
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        functions.sort((o1, o2) -> collator.compare(o1.getTitle(null), o2.getTitle(null)));
         functions.forEach(function -> {
             TreeNodeInfo info = new TreeNodeInfo(TreeNodeType.COMMON_FUNCTION, function.getFunctionId(), function.getTitle(cardLayoutView.getContext()));
             TreeNode node = new TreeNode(info, R.layout.view_card_list_item);
@@ -131,6 +135,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             // 当前任务或父任务的自定义卡
             treeNodes.add(functionTreeNode);
             functions = ((TaskContext) context).getFunctions();
+            functions.sort((o1, o2) -> collator.compare(o1.getTitle(null), o2.getTitle(null)));
             functions.forEach(function -> {
                 TreeNodeInfo info = new TreeNodeInfo(TreeNodeType.FUNCTION, function.getFunctionId(), function.getTitle(cardLayoutView.getContext()));
                 TreeNode node = new TreeNode(info, R.layout.view_card_list_item);

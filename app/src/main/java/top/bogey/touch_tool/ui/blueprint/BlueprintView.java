@@ -138,10 +138,13 @@ public class BlueprintView extends Fragment {
 
     @Override
     public void onDestroy() {
+        try {
+            binding.cardLayout.getActionContext().save();
+            ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
+            if (actionBar != null) actionBar.setSubtitle(null);
+        } catch (Exception ignored) {
+        }
         super.onDestroy();
-        binding.cardLayout.getActionContext().save();
-        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
-        if (actionBar != null) actionBar.setSubtitle(null);
     }
 
     public static void tryPushActionContext(ActionContext actionContext) {
