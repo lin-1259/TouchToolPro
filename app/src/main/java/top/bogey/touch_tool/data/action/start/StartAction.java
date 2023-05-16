@@ -57,4 +57,8 @@ public class StartAction extends BaseAction {
         PinSpinner value = (PinSpinner) restartPin.getValue();
         return RestartType.values()[value.getIndex()];
     }
+
+    public Pin getOutPin() {
+        return outPin;
+    }
 }

@@ -17,7 +17,9 @@ import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
+import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
+import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class Task implements TaskContext {
@@ -187,10 +189,27 @@ public class Task implements TaskContext {
         functions.forEach((functionId, function) -> function.setTaskId(this.id));
         actions.forEach(action -> {
             if (action instanceof BaseFunction) {
-                ((BaseFunction) action).setTaskId(this.id);
+                BaseFunction function = (BaseFunction) action;
+                if (function.getTaskId() != null && !function.getTaskId().isEmpty()) {
+                    function.setTaskId(this.id);
+                }
             }
+            // 外部调用的动作需要更新动作ID，并重新连接输出针脚
             if (action instanceof OutStartAction) {
+                OutStartAction outStartAction = (OutStartAction) action;
+                Pin outPin = outStartAction.getOutPin();
+                Pin linkedPin = outPin.getLinkedPin(this);
+                outPin.removeLinks(this);
+
+                // 更新动作id、外部链接id和针脚归属
                 action.setId(UUID.randomUUID().toString());
+                ((PinString) outStartAction.getIdPin().getValue()).setValue(action.getId());
+
+                if (linkedPin != null) {
+                    // 重新连接
+                    outPin.addLink(this, linkedPin);
+                    linkedPin.addLink(this, outPin);
+                }
             }
         });
     }

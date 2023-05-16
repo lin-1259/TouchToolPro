@@ -102,6 +102,7 @@ public class TaskView extends Fragment {
             selectTasks.forEach((id, task) -> {
                 Task copy = task.copy();
                 copy.setId(null);
+                copy.setTitle(getString(R.string.task_copy_title, copy.getTitle()));
                 copy.save();
             });
 
@@ -156,10 +157,29 @@ public class TaskView extends Fragment {
     }
 
     private void selectAll() {
-        ArrayList<Task> tasks = TaskRepository.getInstance().getAllTasks();
+        TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
+        if (tab == null || tab.getText() == null) return;
+        String tag = tab.getText().toString();
+        ArrayList<Task> tasks;
+        if (NO.equals(tag)) tasks = TaskRepository.getInstance().getTasksByTag(null);
+        else tasks = TaskRepository.getInstance().getTasksByTag(tag);
+
+        boolean flag = true;
         if (selectTasks.size() == tasks.size()) {
-            unSelectAll();
-        } else {
+            boolean matched = true;
+            for (Task task : tasks) {
+                if (!selectTasks.containsKey(task.getId())) {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) {
+                unSelectAll();
+                flag = false;
+            }
+        }
+        if (flag) {
+            selectTasks.clear();
             tasks.forEach(task -> selectTasks.put(task.getId(), task));
             adapter.notifyItemRangeChanged(0, adapter.getItemCount());
         }

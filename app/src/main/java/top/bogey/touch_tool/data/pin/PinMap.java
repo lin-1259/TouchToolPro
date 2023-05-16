@@ -16,6 +16,7 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.data.pin.object.PinValue;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
+import top.bogey.touch_tool.data.pin.object.PinXPath;
 
 public class PinMap {
     private static PinMap pinMap;
@@ -33,6 +34,7 @@ public class PinMap {
         map.put(PinWidget.class, R.string.pin_widget);
         map.put(PinNodeInfo.class, R.string.pin_node_info);
         map.put(PinSelectApp.class, R.string.pin_app);
+        map.put(PinXPath.class, R.string.pin_xpath);
         map.put(PinValue.class, R.string.pin_value);
 
 //        map.put(PinExecute.class, R.string.pin_execute);

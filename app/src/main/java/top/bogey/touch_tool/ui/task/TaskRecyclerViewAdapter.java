@@ -139,6 +139,10 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         notifyDataSetChanged();
     }
 
+    public ArrayList<Task> getTasks() {
+        return tasks;
+    }
+
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private final ViewTaskListItemBinding binding;
         private final Context context;

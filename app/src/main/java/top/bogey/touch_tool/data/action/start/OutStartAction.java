@@ -20,4 +20,8 @@ public class OutStartAction extends StartAction {
         idPin = reAddPin(idPin);
         ((PinString) idPin.getValue()).setValue(getId());
     }
+
+    public Pin getIdPin() {
+        return idPin;
+    }
 }

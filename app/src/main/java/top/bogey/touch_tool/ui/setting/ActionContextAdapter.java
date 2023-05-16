@@ -69,7 +69,7 @@ public class ActionContextAdapter extends RecyclerView.Adapter<ActionContextAdap
             int index = getBindingAdapterPosition();
             ActionContext actionContext = actionContexts.get(index);
             if (select) {
-                if (!actionContexts.contains(actionContext)) selectedContexts.add(actionContext);
+                if (!selectedContexts.contains(actionContext)) selectedContexts.add(actionContext);
             } else {
                 selectedContexts.remove(actionContext);
             }

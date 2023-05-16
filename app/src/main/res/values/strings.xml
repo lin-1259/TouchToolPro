@@ -91,6 +91,7 @@
     <string name="task_title">任务</string>
     <string name="task_add">添加任务</string>
     <string name="task_change_title">修改标题</string>
+    <string name="task_copy_title">%s_复制</string>
 
     <string name="function_title_common">通用自定义卡片</string>
     <string name="function_title">任务内自定义卡片</string>
@@ -319,6 +320,7 @@
     <string name="pin_widget">控件描述</string>
     <string name="pin_node_info">控件</string>
     <string name="pin_app">应用</string>
+    <string name="pin_xpath">控件路径</string>
 
     <!-- 采集器 -->
     <string name="picker_color_preview_title">选择颜色</string>

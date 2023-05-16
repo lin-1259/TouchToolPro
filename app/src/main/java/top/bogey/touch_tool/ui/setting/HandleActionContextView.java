@@ -40,41 +40,43 @@ public class HandleActionContextView extends FrameLayout {
         HashMap<String, ActionContext> repeatFunctions = new HashMap<>();
 
         for (ActionContext actionContext : actionContexts) {
-            if (actionContext instanceof Task) {
-                Task task = (Task) actionContext;
-                task.setTag(null);
-                boolean taskExist = repository.getTaskById(task.getId()) == null;
-                if (taskExist) {
-                    tmpTasks.add(task);
-                } else {
-                    repeatTasks.add(task);
-                }
+            searchAllActionContext(tmpTasks, repeatTasks, tmpFunctions, repeatFunctions, actionContext);
+        }
 
-                for (BaseAction action : task.getActions()) {
-                    if (action instanceof BaseFunction) {
-                        BaseFunction function = (BaseFunction) action;
-                        // 通用自定义方法
-                        if (function.getTaskId() == null) {
-                            if (taskExist && repository.getFunctionById(function.getFunctionId()) == null) {
-                                tmpFunctions.put(function.getFunctionId(), function);
-                            } else {
-                                repeatFunctions.put(function.getFunctionId(), function);
-                            }
-                        }
-                    }
-                }
+        init(tmpTasks, repeatTasks, new ArrayList<>(tmpFunctions.values()), new ArrayList<>(repeatFunctions.values()));
+    }
 
-            } else if (actionContext instanceof BaseFunction) {
-                BaseFunction function = (BaseFunction) actionContext;
+    private void searchAllActionContext(ArrayList<ActionContext> tasks, ArrayList<ActionContext> repeatTasks, HashMap<String, ActionContext> functions, HashMap<String, ActionContext> repeatFunctions, ActionContext actionContext) {
+        if (actionContext instanceof Task) {
+            Task task = (Task) actionContext;
+            task.setTag(null);
+            if (repository.getTaskById(task.getId()) == null) {
+                tasks.add(task);
+            } else {
+                repeatTasks.add(task);
+            }
+
+            for (BaseFunction function : task.getFunctions()) {
+                searchAllActionContext(tasks, repeatTasks, functions, repeatFunctions, function);
+            }
+
+        } else if (actionContext instanceof BaseFunction) {
+            BaseFunction function = (BaseFunction) actionContext;
+            // 只导入通用卡
+            if (function.getTaskId() == null || function.getTaskId().isEmpty()) {
                 if (repository.getFunctionById(function.getFunctionId()) == null) {
-                    tmpFunctions.put(function.getFunctionId(), function);
+                    functions.put(function.getFunctionId(), function);
                 } else {
                     repeatFunctions.put(function.getFunctionId(), function);
                 }
             }
         }
 
-        init(tmpTasks, repeatTasks, new ArrayList<>(tmpFunctions.values()), new ArrayList<>(repeatFunctions.values()));
+        for (BaseAction action : actionContext.getActions()) {
+            if (action instanceof ActionContext) {
+                searchAllActionContext(tasks, repeatTasks, functions, repeatFunctions, (ActionContext) action);
+            }
+        }
     }
 
     private void init(ArrayList<ActionContext> tasks, ArrayList<ActionContext> repeatTasks, ArrayList<ActionContext> functions, ArrayList<ActionContext> repeatFunctions) {

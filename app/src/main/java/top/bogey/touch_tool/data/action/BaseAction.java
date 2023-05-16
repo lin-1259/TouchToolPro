@@ -64,7 +64,6 @@ public class BaseAction {
         copy.titleId = titleId;
         copy.getPins().forEach(pin -> {
             pin.setId(UUID.randomUUID().toString());
-            pin.setActionId(copy.getId());
             pin.cleanLinks();
         });
         copy.x = x + 1;
@@ -212,6 +211,7 @@ public class BaseAction {
 
     public void setId(String id) {
         this.id = id;
+        pins.forEach(pin -> pin.setActionId(id));
     }
 
     public String getDes() {
