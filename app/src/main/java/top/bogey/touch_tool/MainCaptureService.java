@@ -31,11 +31,13 @@ import androidx.core.app.NotificationCompat;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import top.bogey.touch_tool.utils.AppUtils;
+import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.MatchResult;
 
 public class MainCaptureService extends Service {
@@ -190,10 +192,8 @@ public class MainCaptureService extends Service {
 
             Bitmap bitmap = null;
             if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
-                if (sourceBitmap.getWidth() >= area.right && sourceBitmap.getHeight() >= area.bottom) {
-                    sourceBitmap = Bitmap.createBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
-                    bitmap = sourceBitmap;
-                }
+                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                bitmap = sourceBitmap;
             }
 
             if (sourceBitmap == null) return null;
@@ -201,9 +201,10 @@ public class MainCaptureService extends Service {
             if (bitmap != null) bitmap.recycle();
 
             if (matchResults != null) {
-                matchResults.sort((o1, o2) -> o2.value - o1.value);
+                matchResults.sort(Comparator.comparingInt(MatchResult::getValue));
                 List<Rect> rectList = new ArrayList<>();
-                for (MatchResult matchResult : matchResults) {
+                for (int i = matchResults.size() - 1; i >= 0; i--) {
+                    MatchResult matchResult = matchResults.get(i);
                     matchResult.rect.offset(area.left, area.top);
                     rectList.add(matchResult.rect);
                 }
@@ -225,10 +226,8 @@ public class MainCaptureService extends Service {
 
             Bitmap bitmap = null;
             if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
-                if (sourceBitmap.getWidth() >= area.right && sourceBitmap.getHeight() >= area.bottom) {
-                    sourceBitmap = Bitmap.createBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
-                    bitmap = sourceBitmap;
-                }
+                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                bitmap = sourceBitmap;
             }
 
             if (sourceBitmap == null) return null;

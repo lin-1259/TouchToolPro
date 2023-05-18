@@ -13,9 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import top.bogey.touch_tool.MainAccessibilityService;
@@ -81,7 +79,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     public Bitmap getBitmap() {
         if (showBitmap != null) {
-            Bitmap bitmap = Bitmap.createBitmap(showBitmap, markArea.left, markArea.top, markArea.width(), markArea.height());
+            Bitmap bitmap = DisplayUtils.safeCreateBitmap(showBitmap, markArea.left, markArea.top, markArea.width(), markArea.height());
             showBitmap.recycle();
             return bitmap;
         }
@@ -94,16 +92,13 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             if (service != null && service.isCaptureEnabled() && service.binder != null) {
                 Bitmap bitmap = service.binder.getCurrImage();
                 if (bitmap != null) {
-                    Point size = DisplayUtils.getScreenSize(service);
-                    if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
-                        showBitmap = Bitmap.createBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                        Rect area = new Rect(pinImage.getArea(getContext()));
-                        area.offset(-location[0], -location[1]);
-                        Rect rect = service.binder.matchImage(showBitmap, pinImage.getScaleBitmap(getContext()), 95, area);
-                        if (rect != null && area.contains(rect)) {
-                            markArea = new Rect(rect);
-                            isMarked = true;
-                        }
+                    showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
+                    Rect area = new Rect(pinImage.getArea(getContext()));
+                    area.offset(-location[0], -location[1]);
+                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getScaleBitmap(getContext()), 95, area);
+                    if (rect != null && area.contains(rect)) {
+                        markArea = new Rect(rect);
+                        isMarked = true;
                     }
                     refreshUI();
                     bitmap.recycle();
@@ -278,7 +273,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         params.height = matchArea.height();
         binding.areaBox.setLayoutParams(params);
 
-        ImageView[] images = new ImageView[] {binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
+        ImageView[] images = new ImageView[]{binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
         int px = Math.round(DisplayUtils.dp2px(getContext(), 24));
         Point size = DisplayUtils.getScreenSize(getContext());
         px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);

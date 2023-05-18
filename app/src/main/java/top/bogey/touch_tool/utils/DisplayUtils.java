@@ -99,4 +99,14 @@ public class DisplayUtils {
         }
         return area;
     }
+
+    public static Bitmap safeCreateBitmap(Bitmap bitmap, int x, int y, int width, int height) {
+        x = Math.max(x, 0);
+        y = Math.max(y, 0);
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+        width = Math.min(width, bitmapWidth - x);
+        height = Math.min(height, bitmapHeight - y);
+        return Bitmap.createBitmap(bitmap, x, y, width, height);
+    }
 }

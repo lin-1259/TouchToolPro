@@ -6,6 +6,7 @@ import com.tencent.mmkv.MMKV;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Objects;
@@ -233,10 +234,11 @@ public class TaskRepository {
                 }
             }
         }
-        infoList.sort((a, b) -> (int) (b.getTime() - a.getTime()));
+        infoList.sort(Comparator.comparingLong(LogInfo::getTime));
 
         StringBuilder builder = new StringBuilder();
-        for (LogInfo logInfo : infoList) {
+        for (int i = infoList.size() - 1; i >= 0; i--) {
+            LogInfo logInfo = infoList.get(i);
             builder.append(logInfo.getLog(context));
             builder.append("\n");
         }

@@ -99,7 +99,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
                 if (bitmap != null) {
                     Point size = DisplayUtils.getScreenSize(getContext());
                     if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
-                        showBitmap = Bitmap.createBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
+                        showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
                         if (pinColor.isEmpty()) {
                             matchColor(pinColor.getColor(), pinColor.getMaxSize(getContext()), pinColor.getMinSize(getContext()));
                         }
@@ -271,7 +271,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
 
             Rect min = markArea.get(markArea.size() - 1);
             int areaMinSize = min.width() * min.height();
-            binding.slider.setValueFrom(areaMinSize == areaMaxSize ? areaMinSize - 1 : areaMinSize);
+            binding.slider.setValueFrom(areaMinSize >= areaMaxSize ? areaMaxSize - 1 : areaMinSize);
 
             binding.slider.setValues((float) areaMinSize, (float) areaMaxSize);
         }
@@ -280,6 +280,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     private void matchColor(int[] color, int maxSize, int minSize) {
         if (!service.isCaptureEnabled() || service.binder == null) return;
         this.color = color;
+        if (color == null || color.length != 3) return;
 
         markArea = service.binder.matchColor(showBitmap, color, matchArea);
         if (markArea != null && markArea.size() > 0) {
@@ -293,7 +294,9 @@ public class ColorPickerFloatView extends BasePickerFloatView {
 
             Rect min = markArea.get(markArea.size() - 1);
             int areaMinSize = Math.min(min.width() * min.height(), minSize);
-            binding.slider.setValueFrom(areaMinSize == areaMaxSize ? areaMinSize - 1 : areaMinSize);
+            areaMinSize = areaMinSize >= areaMaxSize ? areaMaxSize - 1 : areaMinSize;
+            binding.slider.setValueFrom(areaMinSize);
+            minSize = Math.max(areaMinSize, minSize);
 
             binding.slider.setValues((float) minSize, (float) maxSize);
         }
