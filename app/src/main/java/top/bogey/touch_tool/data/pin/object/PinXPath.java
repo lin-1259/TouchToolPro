@@ -165,6 +165,8 @@ public class PinXPath extends PinString {
                                     id = string.replace("id=", "");
                                 } else {
                                     if (params != null) {
+                                        string = string.replace("{", "");
+                                        string = string.replace("}", "");
                                         Integer integer = params.get(string);
                                         index = integer == null ? 0 : integer;
                                     }

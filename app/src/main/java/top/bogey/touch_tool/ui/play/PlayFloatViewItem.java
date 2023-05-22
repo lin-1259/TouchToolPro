@@ -71,7 +71,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
         if (service != null && service.isServiceConnected()) {
             if (playing) {
                 if (runnable != null) {
-                    service.stopTask(runnable);
+                    runnable.stop();
                 }
             } else {
                 runnable = service.runTask(task.copy(), startAction, this);

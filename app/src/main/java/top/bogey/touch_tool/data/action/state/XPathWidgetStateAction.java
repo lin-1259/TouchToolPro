@@ -50,7 +50,7 @@ public class XPathWidgetStateAction extends StateAction {
         for (Pin showPin : getShowPins()) {
             if (showPin.isRemoveAble()) {
                 PinInteger integer = (PinInteger) getPinValue(runnable, actionContext, showPin);
-                map.put(pin.getTitle(null), integer.getValue());
+                map.put(showPin.getTitle(null), integer.getValue());
             }
         }
 

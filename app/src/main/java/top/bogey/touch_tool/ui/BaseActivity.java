@@ -1,6 +1,7 @@
 package top.bogey.touch_tool.ui;
 
 import android.Manifest;
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,7 +10,9 @@ import android.content.pm.PackageManager;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.WindowManager;
+import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -17,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.ui.custom.ToastFloatView;
 import top.bogey.touch_tool.ui.play.PlayFloatView;
@@ -45,6 +49,12 @@ public class BaseActivity extends AppCompatActivity {
             params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restartAccessibilityServiceBySecurePermission();
     }
 
     @Override
@@ -79,12 +89,17 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
         intentLauncher = null;
         permissionLauncher = null;
         contentLauncher = null;
         createDocumentLauncher = null;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         resultCallback = null;
     }
 
@@ -173,5 +188,27 @@ public class BaseActivity extends AppCompatActivity {
             }
             view.showToast(msg);
         });
+    }
+
+    public void restartAccessibilityServiceBySecurePermission() {
+        // 界面打开时尝试恢复无障碍服务
+        // 如果应用服务设置关闭了，就啥都不管
+        if (!SettingSave.getInstance().isServiceEnabled()) return;
+
+        // 是否有权限去重启无障碍服务
+        if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) return;
+
+        // 看一下服务有没有开启
+        AccessibilityManager manager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        for (AccessibilityServiceInfo info : manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)) {
+            if (info.getId().contains(getPackageName())) {
+                return;
+            }
+        }
+
+        // 没有开启去开启
+        String enabledService = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, String.format("%s:%s/%s", enabledService, getPackageName(), MainAccessibilityService.class.getName()));
+        Settings.Secure.putInt(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 1);
     }
 }

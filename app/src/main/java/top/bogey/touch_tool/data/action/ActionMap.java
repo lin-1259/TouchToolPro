@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.action.CaptureServiceAction;
 import top.bogey.touch_tool.data.action.action.DelayAction;
+import top.bogey.touch_tool.data.action.action.DoTaskAction;
 import top.bogey.touch_tool.data.action.action.InputNodeAction;
 import top.bogey.touch_tool.data.action.action.LogAction;
 import top.bogey.touch_tool.data.action.action.OpenAppAction;
@@ -114,6 +115,7 @@ public class ActionMap {
         normalActions.put(CaptureServiceAction.class, R.string.action_open_capture_action_title);
         normalActions.put(OpenAppAction.class, R.string.action_open_app_action_title);
         normalActions.put(OpenUrlAction.class, R.string.action_open_url_action_title);
+        normalActions.put(DoTaskAction.class, R.string.action_do_task_action_title);
         normalActions.put(LogAction.class, R.string.action_log_action_title);
 
         LinkedHashMap<Class<? extends BaseAction>, Integer> conditionActions = new LinkedHashMap<>();

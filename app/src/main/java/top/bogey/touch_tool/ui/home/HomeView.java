@@ -1,7 +1,11 @@
 package top.bogey.touch_tool.ui.home;
 
+import android.Manifest;
 import android.accessibilityservice.AccessibilityService;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -120,6 +124,13 @@ public class HomeView extends Fragment {
             }
         });
         binding.tutorialButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0"));
+
+        binding.adbButton.setOnClickListener(v -> {
+            ClipboardManager manager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clipData = ClipData.newPlainText(getString(R.string.app_name), String.format("adb shell pm grant %s %s", requireActivity().getPackageName(), Manifest.permission.WRITE_SECURE_SETTINGS));
+            manager.setPrimaryClip(clipData);
+            Toast.makeText(requireContext(), R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
+        });
 
         return binding.getRoot();
     }

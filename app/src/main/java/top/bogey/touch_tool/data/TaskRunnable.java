@@ -4,11 +4,13 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.Future;
 
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
 public class TaskRunnable implements Runnable {
-    private final Task task;
+    private final Task startTask;
+    private final ActionContext actionContext;
     private final StartAction startAction;
 
     private final HashSet<TaskRunningCallback> callbacks = new HashSet<>();
@@ -17,13 +19,16 @@ public class TaskRunnable implements Runnable {
 
     private Future<?> future;
 
-    public TaskRunnable(Task task, StartAction startAction) {
-        this.task = task;
+    public TaskRunnable(Task startTask, StartAction startAction, ActionContext actionContext) {
+        this.startTask = startTask;
+        this.actionContext = actionContext;
         this.startAction = startAction;
     }
 
     public void stop() {
-        future.cancel(true);
+        if (future != null) {
+            future.cancel(true);
+        }
         interrupt = true;
     }
 
@@ -34,12 +39,11 @@ public class TaskRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            if (!startAction.checkReady(this, task)) return;
+            if (!startAction.checkReady(this, actionContext)) return;
             callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onStart(this));
-            startAction.doAction(this, task, null);
+            startAction.doAction(this, actionContext, null);
         } catch (Exception e) {
             e.printStackTrace();
-            TaskRepository.getInstance().addLog(task, "\n", e.toString());
         }
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onEnd(this));
     }
@@ -51,15 +55,15 @@ public class TaskRunnable implements Runnable {
     public boolean addProgress() {
         progress++;
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onProgress(this, progress));
-        if (startAction.checkStop(this, task)) {
+        if (startAction.checkStop(this, startTask)) {
             stop();
             return false;
         }
         return true;
     }
 
-    public Task getTask() {
-        return task;
+    public Task getStartTask() {
+        return startTask;
     }
 
     public StartAction getStartAction() {

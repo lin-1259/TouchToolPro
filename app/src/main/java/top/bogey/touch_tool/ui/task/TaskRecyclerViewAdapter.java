@@ -108,13 +108,13 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     @Override
     public void onStart(TaskRunnable runnable) {
         if (recyclerView == null) return;
-        recyclerView.post(() -> onChanged(runnable.getTask()));
+        recyclerView.post(() -> onChanged(runnable.getStartTask()));
     }
 
     @Override
     public void onEnd(TaskRunnable runnable) {
         if (recyclerView == null) return;
-        recyclerView.post(() -> onChanged(runnable.getTask()));
+        recyclerView.post(() -> onChanged(runnable.getStartTask()));
     }
 
     @Override
@@ -137,10 +137,6 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         tasks.clear();
         if (newTasks != null) tasks.addAll(newTasks);
         notifyDataSetChanged();
-    }
-
-    public ArrayList<Task> getTasks() {
-        return tasks;
     }
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
@@ -211,7 +207,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                 int index = getBindingAdapterPosition();
                 Task task = tasks.get(index);
 
-                if (isChecked == isAllStartActionEnable(task)) return;
+                if (isChecked == task.isEnable()) return;
                 for (StartAction startAction : task.getStartActions(StartAction.class)) {
                     startAction.setEnable(isChecked);
                 }
@@ -231,7 +227,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             binding.taskDes.setText(task.getTaskDes(context));
             binding.timeText.setText(AppUtils.formatDateLocalDate(context, task.getCreateTime()));
             binding.taskTag.setText(task.getTag());
-            binding.enableSwitch.setChecked(isAllStartActionEnable(task));
+            binding.enableSwitch.setChecked(task.isEnable());
 
             MainAccessibilityService service = MainApplication.getInstance().getService();
             binding.stopButton.setVisibility(service != null && service.isTaskRunning(task) ? View.VISIBLE : View.GONE);
@@ -239,11 +235,5 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
             binding.getRoot().setChecked(taskView.selectTasks.containsKey(task.getId()));
         }
 
-        private boolean isAllStartActionEnable(Task task) {
-            for (StartAction startAction : task.getStartActions(StartAction.class)) {
-                if (!startAction.isEnable()) return false;
-            }
-            return true;
-        }
     }
 }

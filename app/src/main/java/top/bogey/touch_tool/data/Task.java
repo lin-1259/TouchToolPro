@@ -78,6 +78,13 @@ public class Task implements TaskContext {
         return imageActions.size() + colorActions.size() > 0;
     }
 
+    public boolean isEnable() {
+        for (StartAction startAction : getStartActions(StartAction.class)) {
+            if (startAction.isEnable()) return true;
+        }
+        return false;
+    }
+
     @Override
     public HashSet<BaseAction> getActions() {
         return actions;

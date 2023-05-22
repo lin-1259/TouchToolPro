@@ -40,6 +40,7 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.action.start.StartAction;
@@ -76,29 +77,33 @@ public class MainAccessibilityService extends AccessibilityService {
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        if (event != null) {
-            String packageName = (String) event.getPackageName();
-            String className = (String) event.getClassName();
-            if (packageName == null || className == null) return;
-            Log.d("TAG", "onAccessibilityEvent: " + packageName + "/" + className);
+        try {
+            if (event != null) {
+                String packageName = (String) event.getPackageName();
+                String className = (String) event.getClassName();
+                if (packageName == null || className == null) return;
+                Log.d("TAG", "onAccessibilityEvent: " + packageName + "/" + className);
 
-            WorldState worldState = WorldState.getInstance();
-            if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
-                    worldState.setEnterActivity(packageName, className);
-                } else worldState.enterActivity(packageName, className);
+                WorldState worldState = WorldState.getInstance();
+                if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                    if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
+                        worldState.setEnterActivity(packageName, className);
+                    } else worldState.enterActivity(packageName, className);
 
-            } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
-                if (!Notification.class.getName().contentEquals(className)) return;
-                List<CharSequence> eventText = event.getText();
-                if (eventText.size() == 0) return;
-                StringBuilder builder = new StringBuilder();
-                for (CharSequence charSequence : eventText) {
-                    builder.append(charSequence);
-                    builder.append(" ");
+                } else if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
+                    if (!Notification.class.getName().contentEquals(className)) return;
+                    List<CharSequence> eventText = event.getText();
+                    if (eventText.size() == 0) return;
+                    StringBuilder builder = new StringBuilder();
+                    for (CharSequence charSequence : eventText) {
+                        builder.append(charSequence);
+                        builder.append(" ");
+                    }
+                    worldState.setNotification(packageName, builder.toString().trim());
                 }
-                worldState.setNotification(packageName, builder.toString().trim());
             }
+        } catch (Exception e) {
+            Log.d("TAG", "onAccessibilityEvent: " + "Error");
         }
     }
 
@@ -213,7 +218,11 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public TaskRunnable runTask(Task task, StartAction startAction, TaskRunningCallback callback) {
-        if (task == null || startAction == null) return null;
+        return runTask(task, startAction, task, callback);
+    }
+
+    public TaskRunnable runTask(Task task, StartAction startAction, ActionContext actionContext, TaskRunningCallback callback) {
+        if (actionContext == null || startAction == null) return null;
         if (!isServiceEnabled()) return null;
 
         // 放弃重入且有正在运行的任务
@@ -225,19 +234,16 @@ public class MainAccessibilityService extends AccessibilityService {
             }
         }
 
-        TaskRunnable runnable = new TaskRunnable(task, startAction);
+        TaskRunnable runnable = new TaskRunnable(task, startAction, actionContext);
         if (callback != null) runnable.addCallback(callback);
         runnable.addCallback(new TaskRunningCallback() {
             @Override
             public void onStart(TaskRunnable runnable) {
                 // 重新开始时需要停止之前的任务
                 if (startAction.getRestartType() == RestartType.RESTART) {
-                    for (TaskRunnable taskRunnable : runnableSet) {
-                        if (startAction.getId().equals(taskRunnable.getStartAction().getId())) {
-                            taskRunnable.stop();
-                        }
-                    }
+                    stopTask(runnable.getStartTask());
                 }
+
                 KeepAliveFloatView view = (KeepAliveFloatView) EasyFloat.getView(KeepAliveFloatView.class.getCanonicalName());
                 if (view != null) {
                     view.showMe();
@@ -262,13 +268,9 @@ public class MainAccessibilityService extends AccessibilityService {
         return runnable;
     }
 
-    public void stopTask(TaskRunnable runnable) {
-        if (runnableSet.contains(runnable)) runnable.stop();
-    }
-
     public void stopTask(Task task) {
         for (TaskRunnable taskRunnable : runnableSet) {
-            if (task.getId().equals(taskRunnable.getTask().getId())) {
+            if (task.getId().equals(taskRunnable.getStartTask().getId())) {
                 taskRunnable.stop();
             }
         }
@@ -284,7 +286,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public boolean isTaskRunning(Task task) {
         if (task == null) return false;
         for (TaskRunnable runnable : runnableSet) {
-            if (task.getId().equals(runnable.getTask().getId())) {
+            if (task.getId().equals(runnable.getStartTask().getId())) {
                 return true;
             }
         }
@@ -453,6 +455,7 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void runGesture(int x, int y, int time, ResultCallback callback) {
+        if (x < 0 || y < 0) return;
         Path path = new Path();
         path.moveTo(x, y);
         runGesture(path, time, callback);

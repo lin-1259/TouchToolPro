@@ -27,6 +27,7 @@ import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.data.pin.object.PinSelectApp;
 import top.bogey.touch_tool.data.pin.object.PinSpinner;
 import top.bogey.touch_tool.data.pin.object.PinString;
+import top.bogey.touch_tool.data.pin.object.PinTask;
 import top.bogey.touch_tool.data.pin.object.PinValueArea;
 import top.bogey.touch_tool.data.pin.object.PinWidget;
 import top.bogey.touch_tool.data.pin.object.PinXPath;
@@ -43,6 +44,7 @@ import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetPoint;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetSpinner;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetString;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetStringPicker;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetTaskPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetValueArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetWidgetPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetXPathPicker;
@@ -53,8 +55,6 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
     protected final BaseCard<?> card;
     protected final BaseAction action;
     protected final Pin pin;
-
-    private boolean expand;
 
     public PinBaseView(@NonNull Context context, Class<V> tClass, BaseCard<? extends BaseAction> card, Pin pin) {
         super(context, null, tClass);
@@ -90,8 +90,6 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
     }
 
     public void setExpand(boolean expand) {
-        this.expand = expand;
-
         if (pin.isVertical()) return;
         HashMap<String, String> links = pin.getLinks();
         setVisibility((expand || links.size() > 0) ? VISIBLE : GONE);
@@ -145,6 +143,8 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
             viewGroup.addView(new PinWidgetWidgetPicker(context, (PinWidget) pin.getValue()));
         } else if (PinXPath.class.equals(aClass)) {
             viewGroup.addView(new PinWidgetXPathPicker(context, (PinXPath) pin.getValue(), card));
+        } else if (PinTask.class.equals(aClass)) {
+            viewGroup.addView(new PinWidgetTaskPicker(context, (PinTask) pin.getValue()));
         }
 
         if (PinAdd.class.equals(aClass)) {

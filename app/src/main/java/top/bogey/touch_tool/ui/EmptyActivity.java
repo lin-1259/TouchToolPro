@@ -14,7 +14,6 @@ public class EmptyActivity extends BaseActivity {
 
     public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
     public static final String INTENT_KEY_SHOW_TOAST = "INTENT_KEY_SHOW_TOAST";
-    public static final String INTENT_KEY_QUICK_MENU = "INTENT_KEY_QUICK_MENU";
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
 
     @Override
@@ -48,7 +47,7 @@ public class EmptyActivity extends BaseActivity {
         if (scheme != null) {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             Uri uri = intent.getData();
-            if (service != null && service.isServiceEnabled() && "do_action".equals(uri.getHost()) && uri.getQuery() != null) {
+            if (service != null && service.isServiceEnabled() && uri != null && "do_action".equals(uri.getHost()) && uri.getQuery() != null) {
                 String actionId = null;
                 HashMap<String, String> params = new HashMap<>();
                 Set<String> names = uri.getQueryParameterNames();
@@ -75,10 +74,6 @@ public class EmptyActivity extends BaseActivity {
         String msg = intent.getStringExtra(INTENT_KEY_SHOW_TOAST);
         if (msg != null) {
             showToast(msg);
-        }
-
-        boolean showQuickMenu = intent.getBooleanExtra(INTENT_KEY_QUICK_MENU, false);
-        if (showQuickMenu) {
         }
 
         boolean startCaptureService = intent.getBooleanExtra(INTENT_KEY_START_CAPTURE, false);

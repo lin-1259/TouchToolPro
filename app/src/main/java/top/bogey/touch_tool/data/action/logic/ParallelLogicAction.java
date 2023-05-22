@@ -68,7 +68,7 @@ public class ParallelLogicAction extends NormalAction {
         CountDownLatch latch = new CountDownLatch(condition.getValue() > 0 ? condition.getValue() : 1);
         ArrayList<TaskRunnable> runnableList = new ArrayList<>();
         for (Pin subPin : subPins) {
-            TaskRunnable taskRunnable = service.runTask(runnable.getTask(), new InnerStartAction(subPin), new TaskRunningCallback() {
+            TaskRunnable taskRunnable = service.runTask(runnable.getStartTask(), new InnerStartAction(subPin), actionContext, new TaskRunningCallback() {
                 @Override
                 public void onStart(TaskRunnable runnable) {}
 
