@@ -2,6 +2,10 @@ package top.bogey.touch_tool.data.action;
 
 import android.content.Context;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import top.bogey.touch_tool.R;
@@ -65,86 +69,86 @@ import top.bogey.touch_tool.data.action.state.XPathWidgetStateAction;
 
 public class ActionMap {
     private static ActionMap actionMap;
-    private final LinkedHashMap<ActionType, LinkedHashMap<Class<? extends BaseAction>, Integer>> actions = new LinkedHashMap<>();
+    private final LinkedHashMap<ActionType, ArrayList<ActionInfo>> actions = new LinkedHashMap<>();
 
     private ActionMap() {
-        LinkedHashMap<Class<? extends BaseAction>, Integer> startActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> startActions = new ArrayList<>();
         actions.put(ActionType.START, startActions);
-        startActions.put(ManualStartAction.class, R.string.action_manual_start_title);
-        startActions.put(AppStartAction.class, R.string.action_app_start_title);
-        startActions.put(TimeStartAction.class, R.string.action_time_start_title);
-        startActions.put(BatteryStartAction.class, R.string.action_battery_start_title);
-        startActions.put(BatteryChargingStartAction.class, R.string.action_battery_charging_start_title);
-        startActions.put(NotificationStartAction.class, R.string.action_notification_start_title);
-        startActions.put(OutStartAction.class, R.string.action_out_start_title);
-        startActions.put(NormalStartAction.class, R.string.action_normal_start_title);
+        startActions.add(new ActionInfo(ManualStartAction.class, R.string.action_manual_start_title, R.drawable.icon_hand));
+        startActions.add(new ActionInfo(AppStartAction.class, R.string.action_app_start_title, R.drawable.icon_package_info));
+        startActions.add(new ActionInfo(TimeStartAction.class, R.string.action_time_start_title, R.drawable.icon_time));
+        startActions.add(new ActionInfo(BatteryStartAction.class, R.string.action_battery_start_title, R.drawable.icon_battery));
+        startActions.add(new ActionInfo(BatteryChargingStartAction.class, R.string.action_battery_charging_start_title, R.drawable.icon_charging));
+        startActions.add(new ActionInfo(NotificationStartAction.class, R.string.action_notification_start_title, R.drawable.icon_notification));
+        startActions.add(new ActionInfo(OutStartAction.class, R.string.action_out_start_title, R.drawable.icon_auto_start));
+        startActions.add(new ActionInfo(NormalStartAction.class, R.string.action_normal_start_title, R.drawable.icon_task));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> logicActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> logicActions = new ArrayList<>();
         actions.put(ActionType.LOGIC, logicActions);
-        logicActions.put(ConditionLogicAction.class, R.string.action_condition_logic_title);
-        logicActions.put(WaitConditionLogicAction.class, R.string.action_wait_condition_logic_title);
-        logicActions.put(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title);
-        logicActions.put(ForLoopLogicAction.class, R.string.action_for_loop_logic_title);
-        logicActions.put(SequenceLogicAction.class, R.string.action_sequence_logic_title);
-        logicActions.put(RandomLogicAction.class, R.string.action_random_logic_title);
-        logicActions.put(ParallelLogicAction.class, R.string.action_parallel_logic_title);
+        logicActions.add(new ActionInfo(ConditionLogicAction.class, R.string.action_condition_logic_title, R.drawable.icon_condition));
+        logicActions.add(new ActionInfo(WaitConditionLogicAction.class, R.string.action_wait_condition_logic_title, R.drawable.icon_wait_condition));
+        logicActions.add(new ActionInfo(ConditionWhileLogicAction.class, R.string.action_condition_while_logic_title, R.drawable.icon_condition_while));
+        logicActions.add(new ActionInfo(ForLoopLogicAction.class, R.string.action_for_loop_logic_title, R.drawable.icon_for_loop));
+        logicActions.add(new ActionInfo(SequenceLogicAction.class, R.string.action_sequence_logic_title, R.drawable.icon_sequence));
+        logicActions.add(new ActionInfo(RandomLogicAction.class, R.string.action_random_logic_title, R.drawable.icon_random));
+        logicActions.add(new ActionInfo(ParallelLogicAction.class, R.string.action_parallel_logic_title, R.drawable.icon_parallel));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> stateActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> stateActions = new ArrayList<>();
         actions.put(ActionType.STATE, stateActions);
-        stateActions.put(AppStateAction.class, R.string.action_app_state_title);
-        stateActions.put(TextStateAction.class, R.string.action_text_state_title);
-        stateActions.put(ImageStateAction.class, R.string.action_image_state_title);
-        stateActions.put(ColorStateAction.class, R.string.action_color_state_title);
-        stateActions.put(WidgetStateAction.class, R.string.action_widget_state_title);
-        stateActions.put(XPathWidgetStateAction.class, R.string.action_xpath_widget_state_title);
-        stateActions.put(WidgetTextStateAction.class, R.string.action_widget_text_state_title);
-        stateActions.put(BatteryStateAction.class, R.string.action_battery_state_title);
-        stateActions.put(BatteryChargingStateAction.class, R.string.action_battery_charging_state_title);
-        stateActions.put(ScreenStateAction.class, R.string.action_screen_state_title);
-        stateActions.put(CaptureStateAction.class, R.string.action_capture_state_title);
+        stateActions.add(new ActionInfo(AppStateAction.class, R.string.action_app_state_title, R.drawable.icon_package_info));
+        stateActions.add(new ActionInfo(TextStateAction.class, R.string.action_text_state_title, R.drawable.icon_text));
+        stateActions.add(new ActionInfo(ImageStateAction.class, R.string.action_image_state_title, R.drawable.icon_image));
+        stateActions.add(new ActionInfo(ColorStateAction.class, R.string.action_color_state_title, R.drawable.icon_color));
+        stateActions.add(new ActionInfo(WidgetStateAction.class, R.string.action_widget_state_title, R.drawable.icon_widget));
+        stateActions.add(new ActionInfo(XPathWidgetStateAction.class, R.string.action_xpath_widget_state_title, R.drawable.icon_path));
+        stateActions.add(new ActionInfo(WidgetTextStateAction.class, R.string.action_widget_text_state_title, R.drawable.icon_text));
+        stateActions.add(new ActionInfo(BatteryStateAction.class, R.string.action_battery_state_title, R.drawable.icon_battery));
+        stateActions.add(new ActionInfo(BatteryChargingStateAction.class, R.string.action_battery_charging_state_title, R.drawable.icon_charging));
+        stateActions.add(new ActionInfo(ScreenStateAction.class, R.string.action_screen_state_title, R.drawable.icon_screen));
+        stateActions.add(new ActionInfo(CaptureStateAction.class, R.string.action_capture_state_title, R.drawable.icon_capture));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> normalActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> normalActions = new ArrayList<>();
         actions.put(ActionType.NORMAL, normalActions);
-        normalActions.put(DelayAction.class, R.string.action_delay_action_title);
-        normalActions.put(TouchPosAction.class, R.string.action_touch_pos_action_title);
-        normalActions.put(TouchNodeAction.class, R.string.action_touch_node_action_title);
-        normalActions.put(TouchPathAction.class, R.string.action_touch_path_action_title);
-        normalActions.put(InputNodeAction.class, R.string.action_input_node_action_title);
-        normalActions.put(SystemAbilityAction.class, R.string.action_system_ability_action_title);
-        normalActions.put(ScreenAction.class, R.string.action_screen_action_title);
-        normalActions.put(CaptureServiceAction.class, R.string.action_open_capture_action_title);
-        normalActions.put(OpenAppAction.class, R.string.action_open_app_action_title);
-        normalActions.put(OpenUrlAction.class, R.string.action_open_url_action_title);
-        normalActions.put(DoTaskAction.class, R.string.action_do_task_action_title);
-        normalActions.put(LogAction.class, R.string.action_log_action_title);
+        normalActions.add(new ActionInfo(DelayAction.class, R.string.action_delay_action_title, R.drawable.icon_delay));
+        normalActions.add(new ActionInfo(TouchPosAction.class, R.string.action_touch_pos_action_title, R.drawable.icon_position));
+        normalActions.add(new ActionInfo(TouchNodeAction.class, R.string.action_touch_node_action_title, R.drawable.icon_widget));
+        normalActions.add(new ActionInfo(TouchPathAction.class, R.string.action_touch_path_action_title, R.drawable.icon_path));
+        normalActions.add(new ActionInfo(InputNodeAction.class, R.string.action_input_node_action_title, R.drawable.icon_input));
+        normalActions.add(new ActionInfo(SystemAbilityAction.class, R.string.action_system_ability_action_title, R.drawable.icon_screen));
+        normalActions.add(new ActionInfo(ScreenAction.class, R.string.action_screen_action_title, R.drawable.icon_screen));
+        normalActions.add(new ActionInfo(CaptureServiceAction.class, R.string.action_open_capture_action_title, R.drawable.icon_capture));
+        normalActions.add(new ActionInfo(OpenAppAction.class, R.string.action_open_app_action_title, R.drawable.icon_package_info));
+        normalActions.add(new ActionInfo(OpenUrlAction.class, R.string.action_open_url_action_title, R.drawable.icon_uri));
+        normalActions.add(new ActionInfo(DoTaskAction.class, R.string.action_do_task_action_title, R.drawable.icon_task));
+        normalActions.add(new ActionInfo(LogAction.class, R.string.action_log_action_title, R.drawable.icon_log));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> conditionActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> conditionActions = new ArrayList<>();
         actions.put(ActionType.CONDITION, conditionActions);
-        conditionActions.put(BoolConvertToOr.class, R.string.action_bool_convert_or_title);
-        conditionActions.put(BoolConvertToAnd.class, R.string.action_bool_convert_and_title);
-        conditionActions.put(BoolConvertToNot.class, R.string.action_bool_convert_not_title);
+        conditionActions.add(new ActionInfo(BoolConvertToOr.class, R.string.action_bool_convert_or_title, 0));
+        conditionActions.add(new ActionInfo(BoolConvertToAnd.class, R.string.action_bool_convert_and_title, 0));
+        conditionActions.add(new ActionInfo(BoolConvertToNot.class, R.string.action_bool_convert_not_title, 0));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> stringActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> stringActions = new ArrayList<>();
         actions.put(ActionType.STRING, stringActions);
-        stringActions.put(ValueConvertToString.class, R.string.action_value_convert_string_title);
-        stringActions.put(StringConvertToInt.class, R.string.action_string_convert_int_title);
-        stringActions.put(StringAddAction.class, R.string.action_string_add_operator_title);
-        stringActions.put(StringEqualAction.class, R.string.action_string_equal_operator_title);
-        stringActions.put(StringContainAction.class, R.string.action_string_contain_operator_title);
+        stringActions.add(new ActionInfo(ValueConvertToString.class, R.string.action_value_convert_string_title, 0));
+        stringActions.add(new ActionInfo(StringConvertToInt.class, R.string.action_string_convert_int_title, 0));
+        stringActions.add(new ActionInfo(StringAddAction.class, R.string.action_string_add_operator_title, 0));
+        stringActions.add(new ActionInfo(StringEqualAction.class, R.string.action_string_equal_operator_title, 0));
+        stringActions.add(new ActionInfo(StringContainAction.class, R.string.action_string_contain_operator_title, 0));
 
-        LinkedHashMap<Class<? extends BaseAction>, Integer> intActions = new LinkedHashMap<>();
+        ArrayList<ActionInfo> intActions = new ArrayList<>();
         actions.put(ActionType.INT, intActions);
-        intActions.put(IntAddAction.class, R.string.action_int_add_operator_title);
-        intActions.put(IntReduceAction.class, R.string.action_int_reduce_operator_title);
-        intActions.put(IntMultiAction.class, R.string.action_int_multi_operator_title);
-        intActions.put(IntDivAction.class, R.string.action_int_div_operator_title);
-        intActions.put(IntModAction.class, R.string.action_int_mod_operator_title);
-        intActions.put(IntEqualAction.class, R.string.action_int_equal_operator_title);
-        intActions.put(IntLargeAction.class, R.string.action_int_large_operator_title);
-        intActions.put(IntSmallAction.class, R.string.action_int_small_operator_title);
-        intActions.put(IntRandomAction.class, R.string.action_int_random_operator_title);
-        intActions.put(IntConvertToPosition.class, R.string.action_int_convert_position_title);
-        intActions.put(PositionConvertToInt.class, R.string.action_position_convert_int_title);
+        intActions.add(new ActionInfo(IntAddAction.class, R.string.action_int_add_operator_title, 0));
+        intActions.add(new ActionInfo(IntReduceAction.class, R.string.action_int_reduce_operator_title, 0));
+        intActions.add(new ActionInfo(IntMultiAction.class, R.string.action_int_multi_operator_title, 0));
+        intActions.add(new ActionInfo(IntDivAction.class, R.string.action_int_div_operator_title, 0));
+        intActions.add(new ActionInfo(IntModAction.class, R.string.action_int_mod_operator_title, 0));
+        intActions.add(new ActionInfo(IntEqualAction.class, R.string.action_int_equal_operator_title, 0));
+        intActions.add(new ActionInfo(IntLargeAction.class, R.string.action_int_large_operator_title, 0));
+        intActions.add(new ActionInfo(IntSmallAction.class, R.string.action_int_small_operator_title, 0));
+        intActions.add(new ActionInfo(IntRandomAction.class, R.string.action_int_random_operator_title, 0));
+        intActions.add(new ActionInfo(IntConvertToPosition.class, R.string.action_int_convert_position_title, 0));
+        intActions.add(new ActionInfo(PositionConvertToInt.class, R.string.action_position_convert_int_title, 0));
     }
 
     public static ActionMap getInstance() {
@@ -152,7 +156,7 @@ public class ActionMap {
         return actionMap;
     }
 
-    public LinkedHashMap<ActionType, LinkedHashMap<Class<? extends BaseAction>, Integer>> getActions() {
+    public LinkedHashMap<ActionType, ArrayList<ActionInfo>> getActions() {
         return actions;
     }
 
@@ -163,5 +167,34 @@ public class ActionMap {
             String[] strings = context.getResources().getStringArray(R.array.action_type);
             return strings[ordinal()];
         }
+    }
+
+    public static class ActionInfo {
+        private final Class<? extends BaseAction> cls;
+
+        @StringRes
+        private final int title;
+
+        @DrawableRes
+        private final int icon;
+
+        public ActionInfo(Class<? extends BaseAction> cls, @StringRes int title, @DrawableRes int icon) {
+            this.cls = cls;
+            this.title = title;
+            this.icon = icon;
+        }
+
+        public Class<? extends BaseAction> getCls() {
+            return cls;
+        }
+
+        public int getTitle() {
+            return title;
+        }
+
+        public int getIcon() {
+            return icon;
+        }
+
     }
 }
