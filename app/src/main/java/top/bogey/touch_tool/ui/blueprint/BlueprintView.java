@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -29,19 +28,22 @@ import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.databinding.ViewBlueprintBinding;
 import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.FragmentNavigateInterface;
 import top.bogey.touch_tool.ui.MainActivity;
 
-public class BlueprintView extends Fragment {
+public class BlueprintView extends Fragment implements FragmentNavigateInterface {
     private ViewBlueprintBinding binding;
     private final Stack<ActionContext> actionContextStack = new Stack<>();
     private ActionSideSheetDialog dialog;
 
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
+    @Override
+    public boolean onBack() {
+        if (actionContextStack.size() > 1) {
             popActionContext();
+            return true;
         }
-    };
+        return false;
+    }
 
     @Nullable
     @Override
@@ -66,6 +68,7 @@ public class BlueprintView extends Fragment {
                 int itemId = menuItem.getItemId();
                 if (itemId == R.id.saveTask) {
                     binding.cardLayout.getActionContext().save();
+                    return true;
                 } else if (itemId == R.id.showLog) {
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle(R.string.task_running_log)
@@ -76,8 +79,9 @@ public class BlueprintView extends Fragment {
                                 TaskRepository.getInstance().removeLog(task);
                             })
                             .show();
+                    return true;
                 }
-                return true;
+                return false;
             }
         }, getViewLifecycleOwner());
 
@@ -99,7 +103,6 @@ public class BlueprintView extends Fragment {
             binding.lockEditButton.setImageResource(editMode ? R.drawable.icon_hand : R.drawable.icon_edit);
         });
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
         return binding.getRoot();
     }
 
@@ -118,7 +121,6 @@ public class BlueprintView extends Fragment {
             if (actionContext instanceof Task) actionBar.setSubtitle(((Task) actionContext).getTitle());
             else if (actionContext instanceof BaseFunction) actionBar.setSubtitle(((BaseFunction) actionContext).getTitle(getContext()));
         }
-        callback.setEnabled(actionContextStack.size() > 1);
     }
 
     public void popActionContext() {
@@ -129,7 +131,6 @@ public class BlueprintView extends Fragment {
             actionContext = actionContextStack.pop();
             pushActionContext(actionContext);
         }
-        callback.setEnabled(actionContextStack.size() > 1);
     }
 
     public void dismissDialog() {
@@ -158,4 +159,5 @@ public class BlueprintView extends Fragment {
             }
         }
     }
+
 }

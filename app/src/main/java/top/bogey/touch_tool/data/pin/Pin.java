@@ -121,6 +121,10 @@ public class Pin {
         return null;
     }
 
+    public void addLink(Pin pin) {
+        links.put(pin.getId(), pin.getActionId());
+    }
+
     public void addLink(ActionContext context, Pin pin) {
         // 单针脚，需要先移除之前的连接
         if (isSingle()) {

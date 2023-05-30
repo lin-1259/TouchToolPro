@@ -42,9 +42,7 @@ public class SettingView extends Fragment {
     public static void resetSwitchState() {
         BaseActivity activity = MainApplication.getInstance().getActivity();
         if (activity instanceof MainActivity) {
-            Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
-            if (navFragment == null || !navFragment.isAdded()) return;
-            Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+            Fragment fragment = ((MainActivity) activity).getCurrFragment();
             if (fragment instanceof SettingView) {
                 ((SettingView) fragment).refreshSwitchState();
             }
@@ -129,7 +127,7 @@ public class SettingView extends Fragment {
             e.printStackTrace();
         }
 
-        binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://github.com/mr-bogey/TouchTool"));
+        binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://github.com/mr-bogey/TouchToolPro"));
 
         return binding.getRoot();
     }

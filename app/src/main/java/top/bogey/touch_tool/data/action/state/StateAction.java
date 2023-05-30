@@ -22,4 +22,8 @@ public class StateAction extends CalculateAction {
         super(titleId, jsonObject);
         statePin = reAddPin(statePin);
     }
+
+    public Pin getStatePin() {
+        return statePin;
+    }
 }

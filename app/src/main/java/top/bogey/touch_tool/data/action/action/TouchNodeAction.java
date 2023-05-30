@@ -58,4 +58,8 @@ public class TouchNodeAction extends NormalAction {
         if (nodeInfo.isClickable() || nodeInfo.isEditable() || nodeInfo.isCheckable() || nodeInfo.isLongClickable()) return nodeInfo;
         return getClickAbleParent(nodeInfo.getParent());
     }
+
+    public Pin getNodePin() {
+        return nodePin;
+    }
 }

@@ -91,4 +91,12 @@ public class TextStateAction extends StateAction {
         }
         return null;
     }
+
+    public Pin getTextPin() {
+        return textPin;
+    }
+
+    public Pin getNodePin() {
+        return nodePin;
+    }
 }

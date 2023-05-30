@@ -63,4 +63,12 @@ public class ImageStateAction extends StateAction {
             point.setY(rect.centerY());
         }
     }
+
+    public Pin getImagePin() {
+        return imagePin;
+    }
+
+    public Pin getPosPin() {
+        return posPin;
+    }
 }

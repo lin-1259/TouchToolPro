@@ -60,4 +60,12 @@ public class ColorStateAction extends StateAction {
             point.setY(rect.centerY());
         }
     }
+
+    public Pin getColorPin() {
+        return colorPin;
+    }
+
+    public Pin getPosPin() {
+        return posPin;
+    }
 }

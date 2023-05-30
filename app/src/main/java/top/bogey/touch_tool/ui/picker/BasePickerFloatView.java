@@ -39,4 +39,9 @@ public class BasePickerFloatView extends FrameLayout implements FloatViewInterfa
     public void dismiss() {
         EasyFloat.dismiss(tag);
     }
+
+    @Override
+    public String getTag() {
+        return tag;
+    }
 }

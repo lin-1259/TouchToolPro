@@ -28,4 +28,8 @@ public class DelayAction extends NormalAction {
         sleep(pinValueArea.getRandomValue());
         doNextAction(runnable, actionContext, outPin);
     }
+
+    public Pin getDelayPin() {
+        return delayPin;
+    }
 }

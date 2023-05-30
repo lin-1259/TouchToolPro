@@ -39,6 +39,7 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.databinding.ViewCardListAttrItemBinding;
 import top.bogey.touch_tool.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool.databinding.ViewCardListTypeItemBinding;
+import top.bogey.touch_tool.ui.recorder.RecorderFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 
@@ -195,6 +196,27 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             typeBinding = binding;
             context = binding.getRoot().getContext();
             setNodePadding(0);
+
+            typeBinding.recordButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                TreeNode treeNode = manager.get(index);
+                TreeNodeInfo treeNodeInfo = (TreeNodeInfo) treeNode.getValue();
+                TreeNodeType subType = treeNodeInfo.getSubType();
+
+                if (subType == TreeNodeType.FUNCTION) {
+                    ActionContext actionContext = getRealActionContext(treeNodeInfo);
+                    if (actionContext instanceof TaskContext) {
+                        TaskContext taskContext = (TaskContext) actionContext;
+                        BaseFunction function = new BaseFunction();
+                        new RecorderFloatView(context, () -> {
+                            function.setTitle(context.getString(R.string.record_default_title));
+                            taskContext.addFunction(function);
+                            taskContext.save();
+                        }, function).show();
+                    }
+
+                }
+            });
 
             typeBinding.addButton.setVisibility(View.VISIBLE);
             typeBinding.addButton.setOnClickListener(v -> {
@@ -474,6 +496,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             TreeNodeInfo info = (TreeNodeInfo) node.getValue();
             if (level == 0) {
                 typeBinding.title.setText(info.getTitle());
+                typeBinding.recordButton.setVisibility(info.getSubType() == TreeNodeType.FUNCTION ? View.VISIBLE : View.GONE);
             } else if (level == 1) {
                 if (info.getType() == TreeNodeType.COMMON_FUNCTION || info.getType() == TreeNodeType.FUNCTION) {
                     itemBinding.title.setText(info.getTitle());

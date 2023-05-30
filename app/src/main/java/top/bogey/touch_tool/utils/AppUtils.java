@@ -102,7 +102,7 @@ public class AppUtils {
             Intent intent = manager.getLaunchIntentForPackage(pkgName);
             if (intent != null) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                context.startActivity(intent);
+                context.getApplicationContext().startActivity(intent);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -114,7 +114,7 @@ public class AppUtils {
             Intent intent = new Intent();
             intent.setClassName(pkgName, activity);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            context.startActivity(intent);
+            context.getApplicationContext().startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -82,7 +82,6 @@ public class MainAccessibilityService extends AccessibilityService {
                 String packageName = (String) event.getPackageName();
                 String className = (String) event.getClassName();
                 if (packageName == null || className == null) return;
-                Log.d("TAG", "onAccessibilityEvent: " + packageName + "/" + className);
 
                 WorldState worldState = WorldState.getInstance();
                 if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {

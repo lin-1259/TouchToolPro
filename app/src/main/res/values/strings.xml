@@ -368,10 +368,13 @@
     <string name="device_not_support_lock">当前设备不支持调用锁屏功能</string>
     <string name="device_not_support_snap">当前设备不支持调用系统截图</string>
 
-
     <!-- 任务日志 -->
     <string name="task_running_log">任务日志</string>
     <string name="task_running_log_clear">清除日志</string>
+
+    <!-- 自定义录制 -->
+    <string name="record_default_title">录制的卡片</string>
+
 
 
     <!-- 设置 -->

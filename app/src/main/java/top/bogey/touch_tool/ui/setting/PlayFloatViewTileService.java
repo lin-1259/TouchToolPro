@@ -1,4 +1,4 @@
-package top.bogey.touch_tool;
+package top.bogey.touch_tool.ui.setting;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;

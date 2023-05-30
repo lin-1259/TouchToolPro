@@ -24,9 +24,7 @@ public class PinObject {
         return GsonUtils.copy(this, PinObject.class);
     }
 
-    public void setParamValue(String value) {
-
-    }
+    public void setParamValue(String value) {}
 
     public boolean isEmpty() {return true;}
 

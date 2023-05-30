@@ -53,4 +53,8 @@ public class WaitConditionLogicAction extends NormalAction {
             doNextAction(runnable, actionContext, falsePin);
         }
     }
+
+    public Pin getConditionPin() {
+        return conditionPin;
+    }
 }

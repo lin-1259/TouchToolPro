@@ -44,4 +44,12 @@ public class TouchPathAction extends NormalAction {
         sleep(randomTime);
         doNextAction(runnable, actionContext, outPin);
     }
+
+    public Pin getPathPin() {
+        return pathPin;
+    }
+
+    public Pin getTimePin() {
+        return timePin;
+    }
 }

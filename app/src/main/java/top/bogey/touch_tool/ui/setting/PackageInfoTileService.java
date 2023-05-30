@@ -1,9 +1,11 @@
-package top.bogey.touch_tool;
+package top.bogey.touch_tool.ui.setting;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.view.View;
 
+import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.picker.PackagePickerFloatPreview;
 import top.bogey.touch_tool.ui.setting.SettingView;

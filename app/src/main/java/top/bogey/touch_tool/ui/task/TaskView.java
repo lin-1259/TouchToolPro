@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.view.MenuProvider;
@@ -28,10 +27,11 @@ import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.databinding.ViewTaskBinding;
+import top.bogey.touch_tool.ui.FragmentNavigateInterface;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.AppUtils;
 
-public class TaskView extends Fragment {
+public class TaskView extends Fragment implements FragmentNavigateInterface {
     private ViewTaskBinding binding;
     private TaskListRecyclerViewAdapter adapter;
     private String NO;
@@ -39,13 +39,15 @@ public class TaskView extends Fragment {
     public final Map<String, Task> selectTasks = new HashMap<>();
     public boolean isSelect = false;
 
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
+    @Override
+    public boolean onBack() {
+        if (isSelect) {
             unSelectAll();
             hideBottomBar();
+            return true;
         }
-    };
+        return false;
+    }
 
     @Nullable
     @Override
@@ -128,8 +130,6 @@ public class TaskView extends Fragment {
             }
         }));
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
-
         return binding.getRoot();
     }
 
@@ -141,8 +141,6 @@ public class TaskView extends Fragment {
         binding.bottomBar.setVisibility(View.VISIBLE);
 
         isSelect = true;
-
-        callback.setEnabled(true);
     }
 
     public void hideBottomBar() {
@@ -152,8 +150,6 @@ public class TaskView extends Fragment {
         binding.bottomBar.setVisibility(View.GONE);
 
         isSelect = false;
-
-        callback.setEnabled(false);
     }
 
     private void selectAll() {

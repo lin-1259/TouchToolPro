@@ -46,4 +46,8 @@ public class LogAction extends NormalAction {
         }
         doNextAction(runnable, actionContext, outPin);
     }
+
+    public Pin getTextPin() {
+        return textPin;
+    }
 }

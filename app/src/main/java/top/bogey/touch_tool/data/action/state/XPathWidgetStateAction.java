@@ -72,4 +72,12 @@ public class XPathWidgetStateAction extends StateAction {
 
         value.setValue(false);
     }
+
+    public Pin getxPathPin() {
+        return xPathPin;
+    }
+
+    public Pin getNodePin() {
+        return nodePin;
+    }
 }

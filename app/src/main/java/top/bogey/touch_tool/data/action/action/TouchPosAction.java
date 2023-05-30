@@ -44,4 +44,8 @@ public class TouchPosAction extends NormalAction {
         sleep(randomTime);
         doNextAction(runnable, actionContext, outPin);
     }
+
+    public Pin getPosPin() {
+        return posPin;
+    }
 }

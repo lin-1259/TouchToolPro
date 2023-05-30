@@ -24,4 +24,12 @@ public class NormalAction extends BaseAction {
         inPin = reAddPin(inPin);
         outPin = reAddPin(outPin);
     }
+
+    public Pin getInPin() {
+        return inPin;
+    }
+
+    public Pin getOutPin() {
+        return outPin;
+    }
 }

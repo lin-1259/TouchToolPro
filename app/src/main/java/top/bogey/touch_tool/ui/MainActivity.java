@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -53,7 +54,8 @@ public class MainActivity extends BaseActivity {
             try (InputStream inputStream = getAssets().open("default")) {
                 byte[] bytes = new byte[inputStream.available()];
                 if (inputStream.read(bytes) > 0) {
-                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {}.getType(), new ArrayList<>());
+                    ArrayList<ActionContext> actionContexts = GsonUtils.getAsType(new String(bytes), new TypeToken<ArrayList<ActionContext>>() {
+                    }.getType(), new ArrayList<>());
                     actionContexts.forEach(ActionContext::save);
                 }
             } catch (IOException e) {
@@ -121,6 +123,36 @@ public class MainActivity extends BaseActivity {
 
     public void hideBottomNavigation() {
         binding.menuView.setVisibility(View.GONE);
+    }
+
+    public Fragment getCurrFragment() {
+        Fragment navFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+        if (navFragment == null || !navFragment.isAdded()) return null;
+        return navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+    }
+
+    @Override
+    public void onBackPressed() {
+        Fragment currFragment = getCurrFragment();
+        if (currFragment instanceof FragmentNavigateInterface) {
+            if (((FragmentNavigateInterface) currFragment).onBack()) {
+                return;
+            }
+        }
+        super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        Fragment currFragment = getCurrFragment();
+        if (currFragment instanceof FragmentNavigateInterface) {
+            if (((FragmentNavigateInterface) currFragment).onBack()) {
+                return false;
+            }
+        }
+
+        NavController controller = Navigation.findNavController(this, R.id.conView);
+        return controller.navigateUp() || super.onSupportNavigateUp();
     }
 
     @Override
