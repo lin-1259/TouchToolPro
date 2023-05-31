@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 
 public class EmptyActivity extends BaseActivity {

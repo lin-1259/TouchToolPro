@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.databinding.FloatToastBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;

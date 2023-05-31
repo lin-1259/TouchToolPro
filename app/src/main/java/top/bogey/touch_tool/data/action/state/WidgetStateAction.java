@@ -5,7 +5,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.google.gson.JsonObject;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;

@@ -101,6 +101,7 @@ public class DisplayUtils {
     }
 
     public static Bitmap safeCreateBitmap(Bitmap bitmap, int x, int y, int width, int height) {
+        if (bitmap == null) return null;
         x = Math.max(x, 0);
         y = Math.max(y, 0);
         int bitmapWidth = bitmap.getWidth();

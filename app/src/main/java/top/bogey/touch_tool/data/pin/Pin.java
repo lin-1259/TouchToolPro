@@ -7,6 +7,7 @@ import androidx.annotation.StringRes;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -101,6 +102,23 @@ public class Pin {
         for (Map.Entry<String, String> entry : links.entrySet()) {
             BaseAction action = null;
             for (BaseAction baseAction : actionContext.getActions()) {
+                if (baseAction.getId().equals(entry.getValue())) {
+                    action = baseAction;
+                    break;
+                }
+            }
+            if (action == null) continue;
+            Pin pin = action.getPinById(entry.getKey());
+            if (pin == null) continue;
+            return pin;
+        }
+        return null;
+    }
+
+    public Pin getLinkedPin(ArrayList<BaseAction> actions) {
+        for (Map.Entry<String, String> entry : links.entrySet()) {
+            BaseAction action = null;
+            for (BaseAction baseAction : actions) {
                 if (baseAction.getId().equals(entry.getValue())) {
                     action = baseAction;
                     break;

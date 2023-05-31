@@ -2,7 +2,7 @@ package top.bogey.touch_tool.data.action.action;
 
 import com.google.gson.JsonObject;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.TaskRunnable;

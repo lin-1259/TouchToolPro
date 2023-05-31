@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 
 import java.util.List;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinColor;
@@ -38,7 +38,11 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             binding.current.setImageBitmap(pinImage.getBitmap());
             binding.title.setText(R.string.picker_image_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_image);
-            binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show());
+            binding.pickerButton.setOnClickListener(v -> {
+
+
+                new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show();
+            });
             binding.playButton.setVisibility(GONE);
         } else {
             pinColor = (PinColor) pinValue.copy();

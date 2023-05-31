@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinColor;
@@ -113,17 +113,21 @@ public class ColorPickerFloatView extends BasePickerFloatView {
 
     public void onShow() {
         service = MainApplication.getInstance().getService();
-        if (service != null) {
+        if (service != null && service.isServiceEnabled()) {
             if (!service.isCaptureEnabled()) {
                 Toast.makeText(getContext(), R.string.capture_service_on_tips, Toast.LENGTH_SHORT).show();
                 service.startCaptureService(true, result -> {
                     if (result) {
                         realShow(500);
+                    } else {
+                        dismiss();
                     }
                 });
             } else {
                 realShow(100);
             }
+        } else {
+            dismiss();
         }
     }
 
@@ -242,7 +246,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         params.height = matchArea.height();
         binding.areaBox.setLayoutParams(params);
 
-        ImageView[] images = new ImageView[] {binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
+        ImageView[] images = new ImageView[]{binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
         int px = Math.round(DisplayUtils.dp2px(getContext(), 24));
         Point size = DisplayUtils.getScreenSize(getContext());
         px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);
@@ -255,7 +259,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     }
 
     private void matchColor(int[] color) {
-        if (!service.isCaptureEnabled() || service.binder == null) return;
+        if (service == null || !service.isCaptureEnabled() || service.binder == null) return;
         this.color = color;
         if (color == null || color.length != 3) return;
 
@@ -278,7 +282,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     }
 
     private void matchColor(int[] color, int maxSize, int minSize) {
-        if (!service.isCaptureEnabled() || service.binder == null) return;
+        if (service == null || !service.isCaptureEnabled() || service.binder == null) return;
         this.color = color;
         if (color == null || color.length != 3) return;
 

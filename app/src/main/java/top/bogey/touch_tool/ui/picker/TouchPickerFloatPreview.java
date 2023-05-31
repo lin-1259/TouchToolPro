@@ -6,10 +6,7 @@ import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.material.slider.LabelFormatter;
-import com.google.android.material.slider.Slider;
-
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.pin.object.PinPath;
 import top.bogey.touch_tool.databinding.FloatPickerTouchPreviewBinding;

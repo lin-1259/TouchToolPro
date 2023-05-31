@@ -3,13 +3,16 @@ package top.bogey.touch_tool.ui.recorder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.Task;
 import top.bogey.touch_tool.data.TaskRunnable;
@@ -56,6 +59,8 @@ public class RecorderFloatView extends BasePickerFloatView {
     private final MainAccessibilityService service;
 
     private long delayStartTime;
+    private long pauseStartTime;
+    private boolean recording = false;
 
     public RecorderFloatView(@NonNull Context context, PickerCallback pickerCallback, BaseFunction function) {
         super(context, pickerCallback);
@@ -71,6 +76,20 @@ public class RecorderFloatView extends BasePickerFloatView {
             dismiss();
         });
 
+        binding.recodeButton.setOnClickListener(v -> {
+            if (recording) {
+                pauseStartTime = System.currentTimeMillis();
+            } else {
+                if (pauseStartTime > 0) {
+                    // 恢复延迟偏移
+                    delayStartTime = System.currentTimeMillis() - pauseStartTime + delayStartTime;
+                }
+            }
+            recording = !recording;
+            binding.recodeButton.setChecked(recording);
+            showQuickTouch(recording);
+        });
+
         binding.backButton.setOnClickListener(v -> addHistory());
 
         binding.nextButton.setOnClickListener(v -> removeHistory());
@@ -78,66 +97,81 @@ public class RecorderFloatView extends BasePickerFloatView {
         binding.countText.setText(String.valueOf(steps.size()));
 
         binding.widgetButton.setOnClickListener(v -> {
-            long delay = System.currentTimeMillis() - delayStartTime;
+            if (isStopRecord()) return;
             PinXPath pinXPath = new PinXPath();
             new WidgetPickerFloatPreview(context, () -> {
                 RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchNodeAction((int) delay, pinXPath);
+                recorderStep.addTouchNodeAction(getDelay(), pinXPath);
                 addStep(recorderStep);
-                runRecorderStep(recorderStep);
             }, pinXPath).show();
         });
 
         binding.imageButton.setOnClickListener(v -> {
-            long delay = System.currentTimeMillis() - delayStartTime;
+            if (isStopRecord()) return;
             PinImage pinImage = new PinImage();
             new ImagePickerFloatPreview(context, () -> {
                 RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchPosAction((int) delay, pinImage);
+                recorderStep.addTouchPosAction(getDelay(), pinImage);
                 addStep(recorderStep);
-                runRecorderStep(recorderStep);
             }, pinImage).show();
         });
 
         binding.colorButton.setOnClickListener(v -> {
-            long delay = System.currentTimeMillis() - delayStartTime;
+            if (isStopRecord()) return;
             PinColor pinColor = new PinColor();
             new ImagePickerFloatPreview(context, () -> {
                 RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchPosAction((int) delay, pinColor);
+                recorderStep.addTouchPosAction(getDelay(), pinColor);
                 addStep(recorderStep);
-                runRecorderStep(recorderStep);
             }, pinColor).show();
         });
 
         binding.textButton.setOnClickListener(v -> {
-            long delay = System.currentTimeMillis() - delayStartTime;
+            if (isStopRecord()) return;
             PinString pinString = new PinString();
             new TextPickerFloatPreview(context, () -> {
                 RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchNodeAction((int) delay, pinString.getValue());
+                recorderStep.addTouchNodeAction(getDelay(), pinString.getValue());
                 addStep(recorderStep);
-                runRecorderStep(recorderStep);
             }, pinString).show();
         });
 
         binding.logButton.setOnClickListener(v -> {
+            if (isStopRecord()) return;
             PinString pinString = new PinString();
             new TextPickerFloatPreview(context, () -> {
                 RecorderStep recorderStep = new RecorderStep();
                 recorderStep.addLogAction(pinString.getValue());
                 addStep(recorderStep);
-                runRecorderStep(recorderStep);
             }, pinString).show();
         });
     }
 
+    private int getDelay() {
+        if (delayStartTime == 0) return 0;
+        return (int) (System.currentTimeMillis() - delayStartTime);
+    }
+
+    public void showQuickTouch(boolean show) {
+        if (show && recording) {
+            EasyFloat.show(quickRecordFloatView.getTag());
+        } else {
+            EasyFloat.hide(quickRecordFloatView.getTag());
+        }
+    }
+
+    private boolean isStopRecord() {
+        if (recording) return false;
+        Toast.makeText(getContext(), R.string.function_record_tips, Toast.LENGTH_SHORT).show();
+        return true;
+    }
+
     public void addTouchStep(PinPath path, int time) {
-        long delay = System.currentTimeMillis() - delayStartTime;
+        if (isStopRecord()) return;
+
         RecorderStep recorderStep = new RecorderStep();
-        recorderStep.addTouchPathAction((int) delay, path, time);
+        recorderStep.addTouchPathAction(getDelay(), path, time);
         addStep(recorderStep);
-        runRecorderStep(recorderStep);
     }
 
     private void addStep(RecorderStep step) {
@@ -147,6 +181,7 @@ public class RecorderFloatView extends BasePickerFloatView {
 
         history.clear();
         binding.nextButton.setVisibility(GONE);
+        runRecorderStep(step);
     }
 
     private void runRecorderStep(RecorderStep step) {
@@ -154,8 +189,11 @@ public class RecorderFloatView extends BasePickerFloatView {
             Task task = new Task();
             InnerStartAction innerStartAction = null;
             for (BaseAction action : step.getActions()) {
-                if (action instanceof DelayAction) {
-                    innerStartAction = new InnerStartAction(((DelayAction) action).getOutPin());
+                if (action instanceof NormalAction) {
+                    HashMap<String, String> links = ((NormalAction) action).getInPin().getLinks();
+                    if (links.size() == 0) {
+                        innerStartAction = new InnerStartAction(((NormalAction) action).getOutPin());
+                    }
                 }
                 task.addAction(action);
             }
@@ -193,6 +231,7 @@ public class RecorderFloatView extends BasePickerFloatView {
         binding.nextButton.setVisibility(VISIBLE);
         binding.backButton.setVisibility(steps.isEmpty() ? GONE : VISIBLE);
         binding.countText.setText(String.valueOf(steps.size()));
+        delayStartTime = System.currentTimeMillis();
     }
 
     private void removeHistory() {
@@ -201,6 +240,7 @@ public class RecorderFloatView extends BasePickerFloatView {
         binding.backButton.setVisibility(VISIBLE);
         binding.countText.setText(String.valueOf(steps.size()));
         binding.nextButton.setVisibility(history.isEmpty() ? GONE : VISIBLE);
+        delayStartTime = System.currentTimeMillis();
     }
 
     private void addActionsToFunction(BaseFunction function) {
@@ -218,13 +258,15 @@ public class RecorderFloatView extends BasePickerFloatView {
 
         Iterator<RecorderStep> iterator = steps.iterator();
         RecorderStep step = iterator.next();
+        // 首个录制的动作移除延迟
+        step.detachDelayAction();
         addLink(step.getInPin(), start.getExecutePin());
         stepIndex = setStepPosition(function, step, stepIndex);
 
         while (iterator.hasNext()) {
             RecorderStep nextStep = iterator.next();
             addLink(step.getOutPin(), nextStep.getInPin());
-            stepIndex = setStepPosition(function, step, stepIndex);
+            stepIndex = setStepPosition(function, nextStep, stepIndex);
             step = nextStep;
         }
 
@@ -235,6 +277,7 @@ public class RecorderFloatView extends BasePickerFloatView {
     private int setStepPosition(BaseFunction function, RecorderStep step, int index) {
         for (BaseAction action : step.getActions()) {
             index = setActionPosition(action, index);
+            action.showDetail = false;
             function.addAction(action);
         }
         return index;
@@ -249,6 +292,7 @@ public class RecorderFloatView extends BasePickerFloatView {
         action.y = START_Y + index * OFFSET_Y;
         if (action instanceof StateAction) {
             action.x = STATE_X;
+            action.y += 3;
         } else if (action instanceof NormalAction || action instanceof FunctionAction) {
             action.x = MAIN_X;
             index++;
@@ -263,6 +307,11 @@ public class RecorderFloatView extends BasePickerFloatView {
 
     @Override
     public void show() {
+        if (EasyFloat.getView(tag) != null) {
+            EasyFloat.show(tag);
+            return;
+        }
+
         quickRecordFloatView.show();
         EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
@@ -278,22 +327,36 @@ public class RecorderFloatView extends BasePickerFloatView {
         private Pin inPin;
         private Pin outPin;
 
-        private DelayAction addDelayAction(int delay) {
+        private void attachDelayAction(int delay) {
+            if (delay == 0) return;
             DelayAction delayAction = new DelayAction();
 
             Pin delayPin = delayAction.getDelayPin();
             ((PinValueArea) delayPin.getValue()).setCurrMin(delay);
             ((PinValueArea) delayPin.getValue()).setCurrMax(delay);
 
-            actions.add(delayAction);
-            return delayAction;
+            addLink(delayAction.getOutPin(), inPin);
+            inPin = delayAction.getInPin();
+
+            actions.add(0, delayAction);
+        }
+
+        public void detachDelayAction() {
+            for (BaseAction action : actions) {
+                if (action instanceof DelayAction) {
+                    Pin delayOutPin = ((DelayAction) action).getOutPin();
+                    inPin = delayOutPin.getLinkedPin(actions);
+                    if (inPin != null) {
+                        actions.remove(action);
+                        return;
+                    }
+                }
+            }
         }
 
         public void addTouchPathAction(int delay, PinPath path, int time) {
-            DelayAction delayAction = addDelayAction(delay);
-            inPin = delayAction.getInPin();
-
             TouchPathAction touchPathAction = new TouchPathAction();
+            inPin = touchPathAction.getInPin();
             outPin = touchPathAction.getOutPin();
 
             Pin pathPin = touchPathAction.getPathPin();
@@ -303,24 +366,20 @@ public class RecorderFloatView extends BasePickerFloatView {
             ((PinValueArea) timePin.getValue()).setCurrMin(time);
             ((PinValueArea) timePin.getValue()).setCurrMax(time);
 
-            addLink(delayAction.getOutPin(), touchPathAction.getInPin());
-
             actions.add(touchPathAction);
+            attachDelayAction(delay);
         }
 
         public void addTouchNodeAction(int delay, String text) {
-            DelayAction delayAction = addDelayAction(delay);
-            inPin = delayAction.getInPin();
-
             TextStateAction textStateAction = new TextStateAction();
             ((PinString) textStateAction.getTextPin().getValue()).setValue(text);
 
             WaitConditionLogicAction waitConditionLogicAction = new WaitConditionLogicAction();
+            inPin = waitConditionLogicAction.getInPin();
 
             TouchNodeAction touchNodeAction = new TouchNodeAction();
             outPin = touchNodeAction.getOutPin();
 
-            addLink(waitConditionLogicAction.getInPin(), delayAction.getOutPin());
             addLink(textStateAction.getStatePin(), waitConditionLogicAction.getConditionPin());
             addLink(textStateAction.getNodePin(), touchNodeAction.getNodePin());
             addLink(waitConditionLogicAction.getOutPin(), touchNodeAction.getInPin());
@@ -328,21 +387,20 @@ public class RecorderFloatView extends BasePickerFloatView {
             actions.add(textStateAction);
             actions.add(waitConditionLogicAction);
             actions.add(touchNodeAction);
+
+            attachDelayAction(delay);
         }
 
         public void addTouchNodeAction(int delay, PinXPath xPath) {
-            DelayAction delayAction = addDelayAction(delay);
-            inPin = delayAction.getInPin();
-
             XPathWidgetStateAction xPathWidgetStateAction = new XPathWidgetStateAction();
             xPathWidgetStateAction.getxPathPin().setValue(xPath);
 
             WaitConditionLogicAction waitConditionLogicAction = new WaitConditionLogicAction();
+            inPin = waitConditionLogicAction.getInPin();
 
             TouchNodeAction touchNodeAction = new TouchNodeAction();
             outPin = touchNodeAction.getOutPin();
 
-            addLink(waitConditionLogicAction.getInPin(), delayAction.getOutPin());
             addLink(xPathWidgetStateAction.getStatePin(), waitConditionLogicAction.getConditionPin());
             addLink(xPathWidgetStateAction.getNodePin(), touchNodeAction.getNodePin());
             addLink(waitConditionLogicAction.getOutPin(), touchNodeAction.getInPin());
@@ -350,21 +408,20 @@ public class RecorderFloatView extends BasePickerFloatView {
             actions.add(xPathWidgetStateAction);
             actions.add(waitConditionLogicAction);
             actions.add(touchNodeAction);
+
+            attachDelayAction(delay);
         }
 
         public void addTouchPosAction(int delay, PinImage image) {
-            DelayAction delayAction = addDelayAction(delay);
-            inPin = delayAction.getInPin();
-
             ImageStateAction imageStateAction = new ImageStateAction();
             imageStateAction.getImagePin().setValue(image);
 
             WaitConditionLogicAction waitConditionLogicAction = new WaitConditionLogicAction();
+            inPin = waitConditionLogicAction.getInPin();
 
             TouchPosAction touchPosAction = new TouchPosAction();
             outPin = touchPosAction.getOutPin();
 
-            addLink(waitConditionLogicAction.getInPin(), delayAction.getOutPin());
             addLink(imageStateAction.getStatePin(), waitConditionLogicAction.getConditionPin());
             addLink(imageStateAction.getPosPin(), touchPosAction.getPosPin());
             addLink(waitConditionLogicAction.getOutPin(), touchPosAction.getInPin());
@@ -372,21 +429,20 @@ public class RecorderFloatView extends BasePickerFloatView {
             actions.add(imageStateAction);
             actions.add(waitConditionLogicAction);
             actions.add(touchPosAction);
+
+            attachDelayAction(delay);
         }
 
         public void addTouchPosAction(int delay, PinColor color) {
-            DelayAction delayAction = addDelayAction(delay);
-            inPin = delayAction.getInPin();
-
             ColorStateAction colorStateAction = new ColorStateAction();
             colorStateAction.getColorPin().setValue(color);
 
             WaitConditionLogicAction waitConditionLogicAction = new WaitConditionLogicAction();
+            inPin = waitConditionLogicAction.getInPin();
 
             TouchPosAction touchPosAction = new TouchPosAction();
             outPin = touchPosAction.getOutPin();
 
-            addLink(waitConditionLogicAction.getInPin(), delayAction.getOutPin());
             addLink(colorStateAction.getStatePin(), waitConditionLogicAction.getConditionPin());
             addLink(colorStateAction.getPosPin(), touchPosAction.getPosPin());
             addLink(waitConditionLogicAction.getOutPin(), touchPosAction.getInPin());
@@ -394,6 +450,8 @@ public class RecorderFloatView extends BasePickerFloatView {
             actions.add(colorStateAction);
             actions.add(waitConditionLogicAction);
             actions.add(touchPosAction);
+
+            attachDelayAction(delay);
         }
 
         public void addLogAction(String log) {
@@ -423,13 +481,13 @@ public class RecorderFloatView extends BasePickerFloatView {
         @Override
         public void onShow(String tag) {
             super.onShow(tag);
-            EasyFloat.show(quickRecordFloatView.getTag());
+            showQuickTouch(true);
         }
 
         @Override
         public void onHide() {
             super.onHide();
-            EasyFloat.hide(quickRecordFloatView.getTag());
+            showQuickTouch(false);
         }
 
         @Override

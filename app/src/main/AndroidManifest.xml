@@ -84,7 +84,7 @@
         </activity>
 
         <service
-            android:name=".MainAccessibilityService"
+            android:name=".service.MainAccessibilityService"
             android:description="@string/service_des"
             android:exported="false"
             android:label="@string/app_name"
@@ -100,11 +100,18 @@
         </service>
 
         <service
-            android:name=".MainCaptureService"
+            android:name=".service.MainCaptureService"
             android:description="@string/capture_service_des"
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaProjection" />
+
+        <service
+            android:name=".service.KeepAliveService"
+            android:description="@string/app_setting_keep_alive_tips"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
         <service
             android:name=".ui.setting.PlayFloatViewTileService"

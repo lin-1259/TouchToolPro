@@ -1,4 +1,4 @@
-package top.bogey.touch_tool;
+package top.bogey.touch_tool.service;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.MatchResult;

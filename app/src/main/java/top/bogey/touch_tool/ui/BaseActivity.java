@@ -20,7 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.ui.custom.ToastFloatView;
 import top.bogey.touch_tool.ui.play.PlayFloatView;

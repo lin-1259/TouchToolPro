@@ -208,13 +208,25 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                     if (actionContext instanceof TaskContext) {
                         TaskContext taskContext = (TaskContext) actionContext;
                         BaseFunction function = new BaseFunction();
-                        new RecorderFloatView(context, () -> {
-                            function.setTitle(context.getString(R.string.record_default_title));
-                            taskContext.addFunction(function);
-                            taskContext.save();
-                        }, function).show();
-                    }
 
+                        AppUtils.showEditDialog(context, R.string.function_record, null, result -> {
+                            if (result != null && result.length() > 0) {
+                                function.setTitle(result.toString());
+                                new RecorderFloatView(context, () -> {
+                                    taskContext.addFunction(function);
+                                    taskContext.save();
+
+                                    TreeNodeInfo info = new TreeNodeInfo(subType, function.getFunctionId(), function.getTitle(context));
+                                    TreeNode node = new TreeNode(info, R.layout.view_card_list_item);
+                                    functionTreeNode.addChild(node);
+                                    if (functionTreeNode.isExpanded()) manager.collapseNode(functionTreeNode);
+                                    manager.expandNode(functionTreeNode);
+                                    notifyDataSetChanged();
+                                }, function).show();
+                            }
+                        });
+
+                    }
                 }
             });
 

@@ -3,6 +3,7 @@ package top.bogey.touch_tool.utils;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -14,6 +15,7 @@ import com.tencent.mmkv.MMKV;
 import java.util.List;
 
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.service.KeepAliveService;
 
 public class SettingSave {
     private static final String RUN_TIMES = "RUN_TIMES";
@@ -27,6 +29,7 @@ public class SettingSave {
     private final static String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";
     private final static String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
+    private static final String KEEP_ALIVE = "KEEP_ALIVE";
 
     private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
     private static final String NIGHT_MODE = "NIGHT_MODE";
@@ -47,6 +50,7 @@ public class SettingSave {
     public void init(Context context) {
         setHideBackground(context, isHideBackground());
         setNightMode(getNightMode());
+        setKeepAlive(context, isKeepAlive());
     }
 
     public int getRunTimes() {
@@ -127,6 +131,21 @@ public class SettingSave {
             List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
             if (tasks != null) tasks.forEach(task -> task.setExcludeFromRecents(hide));
         }
+    }
+
+    public boolean isKeepAlive() {
+        return settingMMKV.decodeBool(KEEP_ALIVE, false);
+    }
+
+    public void setKeepAlive(Context context, boolean keepAlive) {
+        KeepAliveService keepService = MainApplication.getInstance().getKeepService();
+        if (keepAlive && keepService == null) {
+            context.startService(new Intent(context, KeepAliveService.class));
+        }
+        if (!keepAlive && keepService != null) {
+            context.stopService(new Intent(context, KeepAliveService.class));
+        }
+        settingMMKV.encode(KEEP_ALIVE, keepAlive);
     }
 
 

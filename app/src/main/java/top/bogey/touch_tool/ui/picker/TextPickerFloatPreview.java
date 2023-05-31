@@ -51,6 +51,7 @@ public class TextPickerFloatPreview extends BasePickerFloatView {
                 .setDragEnable(true)
                 .setCallback(floatCallback)
                 .setAnimator(null)
+                .hasEditText(true)
                 .show();
     }
 }

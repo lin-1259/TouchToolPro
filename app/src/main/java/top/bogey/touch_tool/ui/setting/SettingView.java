@@ -18,11 +18,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 
-import top.bogey.touch_tool.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.databinding.ViewSettingBinding;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.ui.picker.PackagePickerFloatPreview;
@@ -59,9 +59,6 @@ public class SettingView extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ViewSettingBinding.inflate(inflater, container, false);
 
-        binding.hideBackgroundSwitch.setOnClickListener(v -> SettingSave.getInstance().setHideBackground(requireContext(), binding.hideBackgroundSwitch.isChecked()));
-        binding.hideBackgroundSwitch.setChecked(SettingSave.getInstance().isHideBackground());
-
         binding.playViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setPlayViewVisible(binding.playViewVisibleSwitch.isChecked()));
         binding.showPackageInfoSwitch.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
@@ -78,6 +75,12 @@ public class SettingView extends Fragment {
             }
         });
         refreshSwitchState();
+
+        binding.hideBackgroundSwitch.setOnClickListener(v -> SettingSave.getInstance().setHideBackground(requireContext(), binding.hideBackgroundSwitch.isChecked()));
+        binding.hideBackgroundSwitch.setChecked(SettingSave.getInstance().isHideBackground());
+
+        binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
+        binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
 
         binding.taskBackupButton.setOnClickListener(v -> {
             HandleActionContextView view = new HandleActionContextView(requireContext());

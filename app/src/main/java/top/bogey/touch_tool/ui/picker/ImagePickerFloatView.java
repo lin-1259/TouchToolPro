@@ -16,7 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import top.bogey.touch_tool.MainAccessibilityService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinImage;
@@ -109,17 +109,21 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     public void onShow() {
         service = MainApplication.getInstance().getService();
-        if (service != null) {
+        if (service != null && service.isServiceEnabled()) {
             if (!service.isCaptureEnabled()) {
                 Toast.makeText(getContext(), R.string.capture_service_on_tips, Toast.LENGTH_SHORT).show();
                 service.startCaptureService(true, result -> {
                     if (result) {
                         realShow(500);
+                    } else {
+                        dismiss();
                     }
                 });
             } else {
                 realShow(100);
             }
+        } else {
+            dismiss();
         }
     }
 

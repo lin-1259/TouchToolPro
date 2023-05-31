@@ -13,6 +13,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.ref.WeakReference;
 
+import top.bogey.touch_tool.service.KeepAliveService;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.utils.SettingSave;
 
@@ -21,6 +23,7 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
     private WeakReference<BaseActivity> activity = new WeakReference<>(null);
     private WeakReference<MainAccessibilityService> service = new WeakReference<>(null);
+    private WeakReference<KeepAliveService> keepService = new WeakReference<>(null);
 
     private Thread.UncaughtExceptionHandler handler;
 
@@ -52,6 +55,14 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
     public void setService(MainAccessibilityService service) {
         this.service = new WeakReference<>(service);
+    }
+
+    public KeepAliveService getKeepService() {
+        return keepService.get();
+    }
+
+    public void setKeepService(KeepAliveService keepService) {
+        this.keepService = new WeakReference<>(keepService);
     }
 
     @Override
