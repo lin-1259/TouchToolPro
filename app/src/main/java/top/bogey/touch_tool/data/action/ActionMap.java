@@ -44,6 +44,7 @@ import top.bogey.touch_tool.data.action.operator.IntMultiAction;
 import top.bogey.touch_tool.data.action.operator.IntRandomAction;
 import top.bogey.touch_tool.data.action.operator.IntReduceAction;
 import top.bogey.touch_tool.data.action.operator.IntSmallAction;
+import top.bogey.touch_tool.data.action.operator.PositionOffsetAction;
 import top.bogey.touch_tool.data.action.operator.StringAddAction;
 import top.bogey.touch_tool.data.action.operator.StringContainAction;
 import top.bogey.touch_tool.data.action.operator.StringEqualAction;
@@ -60,9 +61,11 @@ import top.bogey.touch_tool.data.action.state.BatteryChargingStateAction;
 import top.bogey.touch_tool.data.action.state.BatteryStateAction;
 import top.bogey.touch_tool.data.action.state.CaptureStateAction;
 import top.bogey.touch_tool.data.action.state.ColorStateAction;
+import top.bogey.touch_tool.data.action.state.DateStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.data.action.state.ScreenStateAction;
 import top.bogey.touch_tool.data.action.state.TextStateAction;
+import top.bogey.touch_tool.data.action.state.TimeStateAction;
 import top.bogey.touch_tool.data.action.state.WidgetStateAction;
 import top.bogey.touch_tool.data.action.state.WidgetTextStateAction;
 import top.bogey.touch_tool.data.action.state.XPathWidgetStateAction;
@@ -147,8 +150,17 @@ public class ActionMap {
         intActions.add(new ActionInfo(IntLargeAction.class, R.string.action_int_large_operator_title, 0));
         intActions.add(new ActionInfo(IntSmallAction.class, R.string.action_int_small_operator_title, 0));
         intActions.add(new ActionInfo(IntRandomAction.class, R.string.action_int_random_operator_title, 0));
-        intActions.add(new ActionInfo(IntConvertToPosition.class, R.string.action_int_convert_position_title, 0));
-        intActions.add(new ActionInfo(PositionConvertToInt.class, R.string.action_position_convert_int_title, 0));
+
+        ArrayList<ActionInfo> positionActions = new ArrayList<>();
+        actions.put(ActionType.POSITION, positionActions);
+        positionActions.add(new ActionInfo(IntConvertToPosition.class, R.string.action_int_convert_position_title, 0));
+        positionActions.add(new ActionInfo(PositionConvertToInt.class, R.string.action_position_convert_int_title, 0));
+        positionActions.add(new ActionInfo(PositionOffsetAction.class, R.string.action_position_add_operator_title, 0));
+
+        ArrayList<ActionInfo> timeActions = new ArrayList<>();
+        actions.put(ActionType.TIME, timeActions);
+        timeActions.add(new ActionInfo(DateStateAction.class, R.string.action_date_state_title, 0));
+        timeActions.add(new ActionInfo(TimeStateAction.class, R.string.action_time_state_title, 0));
     }
 
     public static ActionMap getInstance() {
@@ -161,7 +173,7 @@ public class ActionMap {
     }
 
     public enum ActionType {
-        START, LOGIC, STATE, NORMAL, CONDITION, STRING, INT;
+        START, LOGIC, STATE, NORMAL, CONDITION, STRING, INT, POSITION, TIME;
 
         public String getTitle(Context context) {
             String[] strings = context.getResources().getStringArray(R.array.action_type);

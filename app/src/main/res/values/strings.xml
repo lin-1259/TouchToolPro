@@ -17,6 +17,7 @@
     <string name="year">%d年</string>
     <string name="month">%d月</string>
     <string name="day">%d日</string>
+    <string name="week">周%d</string>
     <string name="hour">%d时</string>
     <string name="minute">%d分</string>
     <string name="second">%d秒</string>
@@ -199,6 +200,16 @@
 
     <string name="action_capture_state_title">录屏服务状态</string>
 
+    <string name="action_date_state_title">日期</string>
+    <string name="action_date_state_subtitle_year">年</string>
+    <string name="action_date_state_subtitle_month">月</string>
+    <string name="action_date_state_subtitle_day">日</string>
+    <string name="action_date_state_subtitle_weekday">周几</string>
+
+    <string name="action_time_state_title">时间</string>
+    <string name="action_time_state_subtitle_hour">时</string>
+    <string name="action_time_state_subtitle_minute">分</string>
+    <string name="action_time_state_subtitle_second">秒</string>
 
     <!-- 任务 - 动作 -->
     <string name="action_delay_action_title">延迟</string>
@@ -317,6 +328,10 @@
     <string name="action_string_contain_operator_subtitle_origin">原文</string>
     <string name="action_string_contain_operator_title_match">正则</string>
     <string name="action_string_contain_operator_title_first_match">首个匹配</string>
+
+    <string name="action_position_add_operator_title">位置偏移</string>
+    <string name="action_position_add_operator_subtitle_position">位置</string>
+    <string name="action_position_add_operator_subtitle_offset">偏移</string>
 
     <!-- 针脚 -->
     <string name="pin_value">对象</string>

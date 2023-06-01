@@ -9,6 +9,8 @@
         <item>条件相关</item>
         <item>文本相关</item>
         <item>数值相关</item>
+        <item>位置相关</item>
+        <item>时间相关</item>
     </string-array>
 
     <string-array name="restart_type">
