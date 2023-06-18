@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -81,6 +82,9 @@ public class ParallelLogicAction extends NormalAction {
                 public void onProgress(TaskRunnable run, int progress) {
                     if (runnable.isInterrupt()) throw new RuntimeException("并行中断");
                 }
+
+                @Override
+                public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {}
             });
 
             runnableList.add(taskRunnable);

@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import top.bogey.touch_tool.R;
+import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.data.Task;
@@ -51,6 +52,11 @@ import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class RecorderFloatView extends BasePickerFloatView {
+    private static final int MAIN_X = 21;
+    private static final int STATE_X = 1;
+    private static final int START_Y = 1;
+    private static final int OFFSET_Y = 20;
+
     private final FloatRecorderBinding binding;
     private final QuickRecordFloatView quickRecordFloatView;
     private final ArrayList<RecorderStep> steps = new ArrayList<>();
@@ -221,6 +227,11 @@ public class RecorderFloatView extends BasePickerFloatView {
                 public void onProgress(TaskRunnable runnable, int progress) {
 
                 }
+
+                @Override
+                public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+
+                }
             }), 100);
         }
     }
@@ -284,11 +295,6 @@ public class RecorderFloatView extends BasePickerFloatView {
     }
 
     private int setActionPosition(BaseAction action, int index) {
-        final int MAIN_X = 21;
-        final int STATE_X = 1;
-        final int START_Y = 1;
-        final int OFFSET_Y = 20;
-
         action.y = START_Y + index * OFFSET_Y;
         if (action instanceof StateAction) {
             action.x = STATE_X;

@@ -50,4 +50,9 @@ public class LogAction extends NormalAction {
     public Pin getTextPin() {
         return textPin;
     }
+
+    public String getLog(TaskRunnable runnable, ActionContext actionContext) {
+        PinString pinString = (PinString) getPinValue(runnable, actionContext, textPin);
+        return pinString.getValue();
+    }
 }

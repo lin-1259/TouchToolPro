@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.concurrent.Future;
 
 import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 
@@ -52,9 +53,10 @@ public class TaskRunnable implements Runnable {
         callbacks.add(callback);
     }
 
-    public boolean addProgress() {
+    public boolean addProgress(ActionContext actionContext, BaseAction action) {
         progress++;
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onProgress(this, progress));
+        callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onAction(this, actionContext, action));
         if (startAction.checkStop(this, startTask)) {
             stop();
             return false;

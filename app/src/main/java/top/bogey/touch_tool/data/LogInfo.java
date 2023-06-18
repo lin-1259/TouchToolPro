@@ -39,4 +39,8 @@ public class LogInfo {
     public String getLog(Context context) {
         return getTime(context) + "\t" + log;
     }
+
+    public String getLog() {
+        return log;
+    }
 }

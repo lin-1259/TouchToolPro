@@ -26,7 +26,7 @@
     <string name="minutes">%d分钟</string>
 
     <!-- 通知 -->
-    <string name="notification_on_tips">应用需要发送通知，请授予应用发送通知的权限</string>
+    <string name="notification_on_tips">前台服务和录屏服务需要发送通知，请授予应用发送通知的权限</string>
     <string name="capture_service_running_channel_name">前台服务通知</string>
     <string name="capture_service_running_channel_tips">软件服务正在前台运行的通知，禁用可隐藏通知</string>
 
@@ -35,6 +35,7 @@
     <string name="capture_service_notification_title">录屏服务 正在运行</string>
     <string name="capture_service_notification_text">点按即可关闭服务和通知</string>
 
+    <string name="location_on_tips">地理围栏需要精确的地理位置，请授予应用获取地理位置的权限</string>
 
     <string name="home">主页</string>
     <string name="task">任务</string>
@@ -158,6 +159,10 @@
 
     <string name="action_notification_start_title">收到新通知时执行</string>
     <string name="action_notification_start_subtitle_text">匹配文本</string>
+
+    <string name="action_location_start_title">进出地理围栏时执行</string>
+    <string name="action_location_start_subtitle_location">经纬度</string>
+    <string name="action_location_start_subtitle_radius">半径(米)</string>
 
 
     <!-- 任务 - 状态 -->
@@ -413,6 +418,9 @@
 
     <string name="task_setting_import">导入任务</string>
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
+
+    <string name="task_setting_log">实时任务日志</string>
+    <string name="task_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
 
     <string name="theme_setting">界面外观</string>
     <string name="theme_setting_first_show_task">任务主页</string>

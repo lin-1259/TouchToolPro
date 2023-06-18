@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -119,6 +121,11 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
     @Override
     public void onProgress(TaskRunnable runnable, int progress) {
+    }
+
+    @Override
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+
     }
 
     private int getTaskIndex(Task task) {

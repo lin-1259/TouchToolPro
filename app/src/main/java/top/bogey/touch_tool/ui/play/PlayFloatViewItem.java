@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -131,5 +133,10 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
     public void onProgress(TaskRunnable runnable, int progress) {
         playing = true;
         refreshProgress(progress);
+    }
+
+    @Override
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+
     }
 }

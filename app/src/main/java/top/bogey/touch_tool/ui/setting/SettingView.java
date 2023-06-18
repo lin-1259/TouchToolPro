@@ -52,6 +52,7 @@ public class SettingView extends Fragment {
     public void refreshSwitchState() {
         binding.playViewVisibleSwitch.setChecked(SettingSave.getInstance().isPlayViewVisible());
         binding.showPackageInfoSwitch.setChecked(EasyFloat.getView(PackagePickerFloatPreview.class.getName()) != null);
+        binding.logSwitch.setChecked(EasyFloat.getView(LogFloatView.class.getName()) != null);
     }
 
     @Nullable
@@ -72,6 +73,20 @@ public class SettingView extends Fragment {
                 new PackagePickerFloatPreview(requireContext()).show();
             } else {
                 EasyFloat.dismiss(PackagePickerFloatPreview.class.getName());
+            }
+        });
+        binding.logSwitch.setOnClickListener(v -> {
+            MainAccessibilityService service = MainApplication.getInstance().getService();
+            if (service == null || !service.isServiceEnabled()) {
+                binding.showPackageInfoSwitch.setChecked(false);
+                Toast.makeText(getContext(), R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            View view = EasyFloat.getView(LogFloatView.class.getName());
+            if (view == null) {
+                new LogFloatView(requireContext()).show();
+            } else {
+                EasyFloat.dismiss(LogFloatView.class.getName());
             }
         });
         refreshSwitchState();

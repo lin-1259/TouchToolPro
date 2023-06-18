@@ -43,6 +43,7 @@ import top.bogey.touch_tool.data.TaskRunnable;
 import top.bogey.touch_tool.data.TaskWorker;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.action.start.OutStartAction;
 import top.bogey.touch_tool.data.action.start.RestartType;
 import top.bogey.touch_tool.data.action.start.StartAction;
@@ -51,14 +52,12 @@ import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
 import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.EmptyActivity;
-import top.bogey.touch_tool.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.TaskQueue;
 import top.bogey.touch_tool.utils.TaskRunningCallback;
 import top.bogey.touch_tool.utils.TaskThreadPoolExecutor;
-import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 public class MainAccessibilityService extends AccessibilityService {
     private BatteryReceiver batteryReceiver;
@@ -73,6 +72,7 @@ public class MainAccessibilityService extends AccessibilityService {
     private ServiceConnection connection = null;
     public ResultCallback captureResultCallback;
 
+    // 任务
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 5L, TimeUnit.MINUTES, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningCallback> callbacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -245,10 +245,6 @@ public class MainAccessibilityService extends AccessibilityService {
                     stopTask(runnable.getStartTask());
                 }
 
-                KeepAliveFloatView view = (KeepAliveFloatView) EasyFloat.getView(KeepAliveFloatView.class.getCanonicalName());
-                if (view != null) {
-                    view.showMe();
-                }
                 runnableSet.add(runnable);
             }
 
@@ -259,7 +255,10 @@ public class MainAccessibilityService extends AccessibilityService {
 
             @Override
             public void onProgress(TaskRunnable runnable, int progress) {
+            }
 
+            @Override
+            public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
             }
         });
         callbacks.stream().filter(Objects::nonNull).forEach(runnable::addCallback);

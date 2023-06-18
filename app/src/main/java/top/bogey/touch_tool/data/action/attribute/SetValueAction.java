@@ -41,7 +41,7 @@ public class SetValueAction extends NormalAction {
         }
 
         if (attr != null) {
-            context.addAttr(key, value);
+            context.addAttr(key, value.copy());
         }
 
         doNextAction(runnable, actionContext, outPin);

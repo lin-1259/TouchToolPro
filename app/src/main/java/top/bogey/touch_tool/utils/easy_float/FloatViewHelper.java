@@ -189,7 +189,7 @@ public class FloatViewHelper {
         return point;
     }
 
-    public void initGravity() {
+    public void initGravity(Point point) {
         Rect showSize = getShowRect();
         Point position = getGravityPosition();
         params.x = Math.max(Math.min(config.offset.x + position.x, showSize.right), showSize.left);
@@ -197,6 +197,13 @@ public class FloatViewHelper {
         manager.updateViewLayout(floatViewParent, params);
     }
 
+    public void initGravity() {
+        Rect showSize = getShowRect();
+        Point position = getGravityPosition();
+        params.x = Math.max(Math.min(config.offset.x + position.x, showSize.right), showSize.left);
+        params.y = Math.max(Math.min(config.offset.y + position.y, showSize.bottom), showSize.top);
+        manager.updateViewLayout(floatViewParent, params);
+    }
 
     private void initEditText(View view) {
         if (config.hasEditText) {

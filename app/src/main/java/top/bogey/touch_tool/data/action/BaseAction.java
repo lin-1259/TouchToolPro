@@ -79,10 +79,10 @@ public class BaseAction {
     protected void doNextAction(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
         if (runnable.isInterrupt() || actionContext.isReturned()) return;
         if (!pin.getDirection().isOut()) throw new RuntimeException("执行针脚不正确");
+        if (!runnable.addProgress(actionContext, this)) return;
 
         Pin linkedPin = pin.getLinkedPin(actionContext);
         if (linkedPin == null) return;
-        if (!runnable.addProgress()) return;
         BaseAction owner = linkedPin.getOwner(actionContext);
         Log.d("TAG", "doNextAction: " + owner.getClass().getSimpleName());
         owner.doAction(runnable, actionContext, linkedPin);

@@ -8,16 +8,20 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 
+import top.bogey.touch_tool.data.TaskRunnable;
+import top.bogey.touch_tool.data.action.ActionContext;
+import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.databinding.FloatKeepAliveBinding;
 import top.bogey.touch_tool.utils.DisplayUtils;
+import top.bogey.touch_tool.utils.TaskRunningCallback;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool.utils.easy_float.FloatGravity;
 import top.bogey.touch_tool.utils.easy_float.FloatViewInterface;
 
 @SuppressLint("ViewConstructor")
-public class KeepAliveFloatView extends FrameLayout implements FloatViewInterface {
+public class KeepAliveFloatView extends FrameLayout implements FloatViewInterface, TaskRunningCallback {
     private final FloatKeepAliveBinding binding;
     private final Handler handler;
 
@@ -25,6 +29,10 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
         super(context);
         binding = FloatKeepAliveBinding.inflate(LayoutInflater.from(context), this, true);
         handler = new Handler();
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) {
+            service.addRunningCallback(this);
+        }
     }
 
     public void showMe() {
@@ -61,5 +69,34 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
     @Override
     public void dismiss() {
         EasyFloat.dismiss(KeepAliveFloatView.class.getCanonicalName());
+    }
+
+    @Override
+    public void onStart(TaskRunnable runnable) {
+        showMe();
+    }
+
+    @Override
+    public void onEnd(TaskRunnable runnable) {
+
+    }
+
+    @Override
+    public void onProgress(TaskRunnable runnable, int progress) {
+
+    }
+
+    @Override
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) {
+            service.removeRunningCallback(this);
+        }
+        super.onDetachedFromWindow();
     }
 }
