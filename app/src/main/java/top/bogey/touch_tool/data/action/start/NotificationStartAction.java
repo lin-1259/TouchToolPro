@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import top.bogey.touch_tool.data.pin.PinDirection;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -20,17 +21,20 @@ import top.bogey.touch_tool.ui.app.AppView;
 public class NotificationStartAction extends StartAction {
     private transient Pin appPin = new Pin(new PinSelectApp(AppView.MULTI_MODE));
     private transient Pin textPin = new Pin(new PinString(), R.string.action_notification_start_subtitle_text);
+    private transient Pin noticePin = new Pin(new PinString(), R.string.action_notification_start_subtitle_notice, PinDirection.OUT);
 
     public NotificationStartAction() {
         super(R.string.action_notification_start_title);
         appPin = addPin(appPin);
         textPin = addPin(textPin);
+        noticePin = addPin(noticePin);
     }
 
     public NotificationStartAction(JsonObject jsonObject) {
         super(R.string.action_notification_start_title, jsonObject);
         appPin = reAddPin(appPin);
         textPin = reAddPin(textPin);
+        noticePin = reAddPin(noticePin);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class NotificationStartAction extends StartAction {
         String notificationText = worldState.getNotificationText();
         if (notificationText == null) return false;
 
-        PinString text = (PinString) textPin.getValue();
+        PinString text = (PinString) getPinValue(runnable, actionContext, textPin);
         if (text.getValue() == null || text.getValue().isEmpty()) return false;
 
         Pattern compile = Pattern.compile(text.getValue());
@@ -70,5 +74,12 @@ public class NotificationStartAction extends StartAction {
             return activityClasses.isEmpty() || activityClasses.contains(worldState.getActivityName());
         }
         return false;
+    }
+
+    @Override
+    protected void calculatePinValue(TaskRunnable runnable, ActionContext actionContext, Pin pin) {
+        PinString notice = (PinString) noticePin.getValue();
+        String notificationText = WorldState.getInstance().getNotificationText();
+        notice.setValue(notificationText);
     }
 }

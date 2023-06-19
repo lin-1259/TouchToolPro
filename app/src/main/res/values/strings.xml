@@ -159,6 +159,7 @@
 
     <string name="action_notification_start_title">收到新通知时执行</string>
     <string name="action_notification_start_subtitle_text">匹配文本</string>
+    <string name="action_notification_start_subtitle_notice">通知文本</string>
 
     <string name="action_location_start_title">进出地理围栏时执行</string>
     <string name="action_location_start_subtitle_location">经纬度</string>
