@@ -138,6 +138,8 @@
     <string name="action_out_start_title">应用外调用</string>
     <string name="action_out_start_subtitle_id">Url</string>
     <string name="action_out_start_subtitle_copy">复制链接</string>
+    <string name="action_out_start_subtitle_shortcut">快捷方式</string>
+    <string name="action_out_start_subtitle_shortcut_create">创建</string>
 
     <string name="action_manual_start_title">手动执行</string>
     <string name="action_inner_start_title">并行执行</string>
@@ -390,6 +392,7 @@
     <!-- 系统按键 -->
     <string name="device_not_support_lock">当前设备不支持调用锁屏功能</string>
     <string name="device_not_support_snap">当前设备不支持调用系统截图</string>
+    <string name="device_not_support_shortcut">当前设备不支持创建快捷方式</string>
 
     <!-- 任务日志 -->
     <string name="task_running_log">任务日志</string>

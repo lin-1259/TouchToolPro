@@ -1,5 +1,6 @@
 package top.bogey.touch_tool.ui.setting;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -44,6 +45,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         return showLogs.size();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void addLogs(String taskId, ArrayList<LogInfo> logs) {
         this.taskId = taskId;
         showLogs.clear();
@@ -69,8 +71,9 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
             context = binding.getRoot().getContext();
         }
 
+        @SuppressLint("DefaultLocale")
         public void refreshItem(LogInfo log) {
-            binding.titleText.setText(String.format("%s\n%s", log.getTime(context), log.getLog()));
+            binding.titleText.setText(String.format("%s\n%d. %s", log.getTime(context), log.getIndex(), log.getLog()));
         }
     }
 }

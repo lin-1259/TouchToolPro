@@ -124,7 +124,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
     }
 
     @Override
-    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress) {
 
     }
 

@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -22,12 +24,13 @@
     <application
         android:name=".MainApplication"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/Theme.TouchTool">
 
         <activity
-            android:name=".ui.EmptyActivity"
+            android:name=".ui.InstantActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTask"
@@ -35,7 +38,6 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
@@ -43,6 +45,14 @@
                     android:host="do_action"
                     android:scheme="ttp" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.PermissionActivity"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.TouchTool.Transparent">
         </activity>
 
         <activity

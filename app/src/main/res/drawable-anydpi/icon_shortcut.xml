@@ -1,0 +1,47 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+    <path
+        android:fillColor="#90d4dd"
+        android:pathData="M190,290a100,100 0,1 0,200 0a100,100 0,1 0,-200 0z"
+        android:strokeWidth="25"
+        android:strokeColor="#90d4dd" />
+    <path
+        android:fillAlpha="0"
+        android:fillColor="#ffffff"
+        android:pathData="m346,120c32.6,0 60,27.4 60,60l-0,180c-0,32.6 -27.4,60 -60,60l-180,0c-32.6,0 -60,-27.4 -60,-60l-0,-180c-0,-32.6 27.4,-60 60,-60"
+        android:strokeWidth="25"
+        android:strokeColor="#4c4c4c" />
+    <path
+        android:fillAlpha="0"
+        android:fillColor="#ffffff"
+        android:pathData="M206,85L306,85A30,30 0,0 1,336 115L336,125A30,30 0,0 1,306 155L206,155A30,30 0,0 1,176 125L176,115A30,30 0,0 1,206 85z"
+        android:strokeWidth="25"
+        android:strokeColor="#4c4c4c" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M234.86,318.19a10,10 0,1 0,14.14 -14.14a10,10 0,1 0,-14.14 14.14z"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M319.72,233.33a10,10 0,1 0,14.14 -14.14a10,10 0,1 0,-14.14 14.14z"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M234.86,304.04l84.85,-84.85l14.14,14.14l-84.85,84.85z"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M191.72,261.72a10,10 0,1 0,14.14 14.14a10,10 0,1 0,-14.14 -14.14z"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M234.14,304.14a10,10 0,1 0,14.14 14.14a10,10 0,1 0,-14.14 -14.14z"
+        android:strokeWidth="0" />
+    <path
+        android:fillColor="#4c4c4c"
+        android:pathData="M205.86,261.72l42.43,42.43l-14.14,14.14l-42.43,-42.43z"
+        android:strokeWidth="0" />
+</vector>

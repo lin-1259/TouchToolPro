@@ -122,7 +122,7 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
             if (pin.getSubType() == PinSubType.NORMAL) {
                 viewGroup.addView(new PinWidgetString(context, (PinString) pin.getValue()));
             } else {
-                viewGroup.addView(new PinWidgetStringPicker(context, (PinString) pin.getValue(), pin.getSubType()));
+                viewGroup.addView(new PinWidgetStringPicker(context, (PinString) pin.getValue(), pin.getSubType(), card));
             }
         } else if (PinValueArea.class.equals(aClass)) {
             viewGroup.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));

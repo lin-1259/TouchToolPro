@@ -149,15 +149,12 @@ public class BlueprintView extends Fragment implements FragmentNavigateInterface
     }
 
     public static void tryPushActionContext(ActionContext actionContext) {
-        BaseActivity activity = MainApplication.getInstance().getActivity();
-        if (activity instanceof MainActivity) {
-            Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
-            if (navFragment == null || !navFragment.isAdded()) return;
-            Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-            if (fragment instanceof BlueprintView) {
-                ((BlueprintView) fragment).pushActionContext(actionContext);
-            }
+        MainActivity activity = MainApplication.getInstance().getActivity();
+        Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
+        if (navFragment == null || !navFragment.isAdded()) return;
+        Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (fragment instanceof BlueprintView) {
+            ((BlueprintView) fragment).pushActionContext(actionContext);
         }
     }
-
 }

@@ -12,6 +12,7 @@ public class LogInfo {
     private final long time;
     private final String taskId;
     private final String log;
+    private int index;
 
     public LogInfo(String taskId, String log) {
         id = UUID.randomUUID().toString();
@@ -42,5 +43,13 @@ public class LogInfo {
 
     public String getLog() {
         return log;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 }

@@ -11,6 +11,7 @@ import android.media.projection.MediaProjectionManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
@@ -38,28 +39,19 @@ public class BaseActivity extends AppCompatActivity {
     private ActivityResultLauncher<String> permissionLauncher;
     private ActivityResultLauncher<String> contentLauncher;
     private ActivityResultLauncher<String> createDocumentLauncher;
+
     private PermissionResultCallback resultCallback;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("BaseActivity", "onCreate: " + this.getClass().getName());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             WindowManager.LayoutParams params = getWindow().getAttributes();
             params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(params);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        restartAccessibilityServiceBySecurePermission();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         intentLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (resultCallback != null) {
@@ -89,17 +81,38 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("BaseActivity", "onStart: " + this.getClass().getName());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("BaseActivity", "onResume: " + this.getClass().getName());
+        restartAccessibilityServiceBySecurePermission();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("BaseActivity", "onPause: " + this.getClass().getName());
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        intentLauncher = null;
-        permissionLauncher = null;
-        contentLauncher = null;
-        createDocumentLauncher = null;
+        Log.d("BaseActivity", "onStop: " + this.getClass().getName());
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.d("BaseActivity", "onDestroy: " + this.getClass().getName());
+        intentLauncher = null;
+        permissionLauncher = null;
+        contentLauncher = null;
+        createDocumentLauncher = null;
         resultCallback = null;
     }
 

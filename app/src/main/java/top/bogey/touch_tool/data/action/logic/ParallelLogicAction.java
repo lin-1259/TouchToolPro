@@ -84,7 +84,7 @@ public class ParallelLogicAction extends NormalAction {
                 }
 
                 @Override
-                public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {}
+                public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress) {}
             });
 
             runnableList.add(taskRunnable);

@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 
-import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.start.AppStartAction;
@@ -28,8 +27,9 @@ import top.bogey.touch_tool.data.action.start.ManualStartAction;
 import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
-import top.bogey.touch_tool.ui.BaseActivity;
-import top.bogey.touch_tool.ui.EmptyActivity;
+import top.bogey.touch_tool.service.MainAccessibilityService;
+import top.bogey.touch_tool.ui.InstantActivity;
+import top.bogey.touch_tool.ui.MainActivity;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -144,6 +144,7 @@ public class WorldState {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service == null || !service.isServiceEnabled()) return;
 
+        boolean existView = manualStartActions.size() > 0;
         manualStartActions.clear();
         if (show) {
             ArrayList<Task> tasks = TaskRepository.getInstance().getTasksByStart(ManualStartAction.class);
@@ -155,14 +156,16 @@ public class WorldState {
             }
         }
 
-        BaseActivity activity = MainApplication.getInstance().getActivity();
-        if (activity == null) {
-            Intent intent = new Intent(service, EmptyActivity.class);
-            intent.putExtra(EmptyActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            service.startActivity(intent);
-        } else {
-            activity.handlePlayFloatView(manualStartActions.size());
+        if (manualStartActions.size() > 0 || existView) {
+            MainActivity activity = MainApplication.getInstance().getActivity();
+            if (activity == null) {
+                Intent intent = new Intent(service, InstantActivity.class);
+                intent.putExtra(InstantActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                service.startActivity(intent);
+            } else {
+                activity.handlePlayFloatView(manualStartActions.size());
+            }
         }
     }
 

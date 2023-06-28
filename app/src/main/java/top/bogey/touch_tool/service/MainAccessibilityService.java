@@ -3,7 +3,6 @@ package top.bogey.touch_tool.service;
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.GestureDescription;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
@@ -50,8 +49,9 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
-import top.bogey.touch_tool.ui.BaseActivity;
-import top.bogey.touch_tool.ui.EmptyActivity;
+import top.bogey.touch_tool.ui.InstantActivity;
+import top.bogey.touch_tool.ui.MainActivity;
+import top.bogey.touch_tool.ui.PermissionActivity;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.ResultCallback;
 import top.bogey.touch_tool.utils.SettingSave;
@@ -84,6 +84,7 @@ public class MainAccessibilityService extends AccessibilityService {
                 String packageName = (String) event.getPackageName();
                 String className = (String) event.getClassName();
                 if (packageName == null || className == null) return;
+                Log.d("TAG", "onAccessibilityEvent: " + packageName + "|" + className);
 
                 WorldState worldState = WorldState.getInstance();
                 if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -198,7 +199,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
                         if (copyTask.needCaptureService()) {
                             showToast(getString(R.string.capture_service_on_tips));
-                            startCaptureService(true, result -> {
+                            startCaptureService(result -> {
                                 if (result) {
                                     runTask(copyTask, startAction);
                                 }
@@ -258,7 +259,7 @@ public class MainAccessibilityService extends AccessibilityService {
             }
 
             @Override
-            public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+            public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress) {
             }
         });
         callbacks.stream().filter(Objects::nonNull).forEach(runnable::addCallback);
@@ -293,47 +294,44 @@ public class MainAccessibilityService extends AccessibilityService {
         return false;
     }
 
-    public void startCaptureService(boolean moveBack, ResultCallback callback) {
-        if (binder == null) {
-            BaseActivity activity = MainApplication.getInstance().getActivity();
-            if (activity != null) {
-                activity.launchNotification((notifyCode, notifyIntent) -> {
-                    if (notifyCode == Activity.RESULT_OK) {
-                        activity.launchCapture(((code, data) -> {
-                            if (code == Activity.RESULT_OK) {
-                                if (moveBack) activity.moveTaskToBack(true);
-                                connection = new ServiceConnection() {
-                                    @Override
-                                    public void onServiceConnected(ComponentName name, IBinder service) {
-                                        binder = (MainCaptureService.CaptureServiceBinder) service;
-                                        captureEnabled.setValue(true);
-                                        if (callback != null) callback.onResult(true);
-                                    }
+    public void callStartCaptureFailed() {
+        if (captureResultCallback != null) captureResultCallback.onResult(false);
+    }
 
-                                    @Override
-                                    public void onServiceDisconnected(ComponentName name) {
-                                        stopCaptureService();
-                                    }
-                                };
-                                Intent intent = new Intent(this, MainCaptureService.class);
-                                intent.putExtra(MainCaptureService.DATA, data);
-                                boolean result = bindService(intent, connection, Context.BIND_AUTO_CREATE);
-                                if (!result) if (callback != null) callback.onResult(false);
-                            } else {
-                                if (callback != null) callback.onResult(false);
-                            }
-                        }));
-                    } else {
-                        if (callback != null) callback.onResult(false);
-                    }
-                });
-            } else {
-                captureResultCallback = callback;
-                Intent intent = new Intent(this, EmptyActivity.class);
-                intent.putExtra(EmptyActivity.INTENT_KEY_START_CAPTURE, true);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+    public void bindCaptureService(boolean result, Intent data) {
+        Log.d("TAG", "bindCaptureService: " + result);
+        if (result) {
+            connection = new ServiceConnection() {
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    binder = (MainCaptureService.CaptureServiceBinder) service;
+                    captureEnabled.setValue(true);
+                    if (captureResultCallback != null) captureResultCallback.onResult(true);
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    stopCaptureService();
+                }
+            };
+            Intent intent = new Intent(this, MainCaptureService.class);
+            intent.putExtra(MainCaptureService.DATA, data);
+            result = bindService(intent, connection, Context.BIND_AUTO_CREATE);
+            if (!result) {
+                callStartCaptureFailed();
             }
+        } else {
+            callStartCaptureFailed();
+        }
+    }
+
+    public void startCaptureService(ResultCallback callback) {
+        if (binder == null) {
+            captureResultCallback = callback;
+            Intent intent = new Intent(this, PermissionActivity.class);
+            intent.putExtra(PermissionActivity.INTENT_KEY_START_CAPTURE, true);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
         } else {
             if (callback != null) callback.onResult(true);
         }
@@ -494,10 +492,10 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showToast(String msg) {
-        BaseActivity activity = MainApplication.getInstance().getActivity();
+        MainActivity activity = MainApplication.getInstance().getActivity();
         if (activity == null) {
-            Intent intent = new Intent(this, EmptyActivity.class);
-            intent.putExtra(EmptyActivity.INTENT_KEY_SHOW_TOAST, msg);
+            Intent intent = new Intent(this, InstantActivity.class);
+            intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOAST, msg);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {

@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.UUID;
 
-import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 
-public class EmptyActivity extends BaseActivity {
+public class InstantActivity extends BaseActivity {
 
     public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
     public static final String INTENT_KEY_SHOW_TOAST = "INTENT_KEY_SHOW_TOAST";
-    public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
+    public static final String INTENT_KEY_DO_ACTION = "INTENT_KEY_DO_ACTION";
 
     @Override
     protected void onResume() {
@@ -22,14 +22,6 @@ public class EmptyActivity extends BaseActivity {
 
         Intent intent = getIntent();
         handleIntent(intent);
-
-        if (intent == null) {
-            intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
-
-        setIntent(null);
         moveTaskToBack(true);
     }
 
@@ -37,7 +29,7 @@ public class EmptyActivity extends BaseActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         handleIntent(intent);
-        setIntent(null);
+        moveTaskToBack(true);
     }
 
     private void handleIntent(Intent intent) {
@@ -66,6 +58,14 @@ public class EmptyActivity extends BaseActivity {
             }
         }
 
+        String actionId = intent.getStringExtra(INTENT_KEY_DO_ACTION);
+        if (actionId != null) {
+            MainAccessibilityService service = MainApplication.getInstance().getService();
+            if (service != null && service.isServiceEnabled()) {
+                service.doOutAction(actionId, null);
+            }
+        }
+
         int size = intent.getIntExtra(INTENT_KEY_SHOW_PLAY, -1);
         if (size >= 0) {
             handlePlayFloatView(size);
@@ -76,12 +76,6 @@ public class EmptyActivity extends BaseActivity {
             showToast(msg);
         }
 
-        boolean startCaptureService = intent.getBooleanExtra(INTENT_KEY_START_CAPTURE, false);
-        if (startCaptureService) {
-            MainAccessibilityService service = MainApplication.getInstance().getService();
-            if (service != null && service.isServiceConnected()) {
-                service.startCaptureService(true, service.captureResultCallback);
-            }
-        }
+        setIntent(null);
     }
 }

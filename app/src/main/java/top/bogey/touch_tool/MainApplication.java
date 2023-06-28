@@ -1,11 +1,8 @@
 package top.bogey.touch_tool;
 
-import android.app.Activity;
 import android.app.Application;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.tencent.mmkv.MMKV;
 
@@ -15,13 +12,13 @@ import java.lang.ref.WeakReference;
 
 import top.bogey.touch_tool.service.KeepAliveService;
 import top.bogey.touch_tool.service.MainAccessibilityService;
-import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.SettingSave;
 
-public class MainApplication extends Application implements Thread.UncaughtExceptionHandler, Application.ActivityLifecycleCallbacks {
+public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
     private static MainApplication application;
 
-    private WeakReference<BaseActivity> activity = new WeakReference<>(null);
+    private WeakReference<MainActivity> activity = new WeakReference<>(null);
     private WeakReference<MainAccessibilityService> service = new WeakReference<>(null);
     private WeakReference<KeepAliveService> keepService = new WeakReference<>(null);
 
@@ -42,11 +39,14 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
 
         handler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(this);
-        registerActivityLifecycleCallbacks(this);
     }
 
-    public BaseActivity getActivity() {
+    public MainActivity getActivity() {
         return activity.get();
+    }
+
+    public void setActivity(MainActivity activity) {
+        this.activity = new WeakReference<>(activity);
     }
 
     public MainAccessibilityService getService() {
@@ -77,40 +77,5 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         }
         SettingSave.getInstance().setRunningError(errorInfo);
         handler.uncaughtException(t, e);
-    }
-
-    @Override
-    public void onActivityCreated(@NonNull Activity activity, @Nullable Bundle savedInstanceState) {
-
-    }
-
-    @Override
-    public void onActivityStarted(@NonNull Activity activity) {
-
-    }
-
-    @Override
-    public void onActivityResumed(@NonNull Activity activity) {
-        this.activity = new WeakReference<>((BaseActivity) activity);
-    }
-
-    @Override
-    public void onActivityPaused(@NonNull Activity activity) {
-
-    }
-
-    @Override
-    public void onActivityStopped(@NonNull Activity activity) {
-
-    }
-
-    @Override
-    public void onActivitySaveInstanceState(@NonNull Activity activity, @NonNull Bundle outState) {
-
-    }
-
-    @Override
-    public void onActivityDestroyed(@NonNull Activity activity) {
-
     }
 }

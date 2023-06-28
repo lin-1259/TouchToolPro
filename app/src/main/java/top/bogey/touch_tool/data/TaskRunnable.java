@@ -56,7 +56,7 @@ public class TaskRunnable implements Runnable {
     public boolean addProgress(ActionContext actionContext, BaseAction action) {
         progress++;
         callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onProgress(this, progress));
-        callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onAction(this, actionContext, action));
+        callbacks.stream().filter(Objects::nonNull).forEach(taskRunningCallback -> taskRunningCallback.onAction(this, actionContext, action, progress));
         if (startAction.checkStop(this, startTask)) {
             stop();
             return false;
@@ -74,5 +74,17 @@ public class TaskRunnable implements Runnable {
 
     public void setFuture(Future<?> future) {
         this.future = future;
+    }
+
+    public synchronized void pause(long ms) {
+        try {
+            wait(ms);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public synchronized void resume() {
+        notifyAll();
     }
 }

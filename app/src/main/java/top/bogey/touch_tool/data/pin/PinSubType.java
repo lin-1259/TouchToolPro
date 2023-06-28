@@ -7,5 +7,6 @@ public enum PinSubType {
     PERIODIC,
 
     ID,
-    URL
+    URL,
+    SHORTCUT
 }

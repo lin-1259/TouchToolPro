@@ -42,7 +42,7 @@ public class PinWidgetLongPicker extends BindingView<PinWidgetStringPickerBindin
             binding.pickButton.setIconResource(R.drawable.icon_date);
             binding.pickButton.setOnClickListener(v -> {
                 CalendarConstraints calendarConstraints = new CalendarConstraints.Builder()
-                        .setValidator(DateValidatorPointForward.now())
+                        .setValidator(DateValidatorPointForward.from(System.currentTimeMillis() - 48 * 60 * 60 * 1000))
                         .build();
 
                 MaterialDatePicker<Long> picker = MaterialDatePicker.Builder

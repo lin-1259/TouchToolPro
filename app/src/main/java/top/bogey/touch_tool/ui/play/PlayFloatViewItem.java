@@ -56,7 +56,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
             if (service != null && !service.isCaptureEnabled()) {
                 if (task.needCaptureService()) {
                     service.showToast(context.getString(R.string.capture_service_on_tips));
-                    service.startCaptureService(true, null);
+                    service.startCaptureService(null);
                 } else {
                     startPlay();
                 }
@@ -136,7 +136,7 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningCallbac
     }
 
     @Override
-    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress) {
 
     }
 }

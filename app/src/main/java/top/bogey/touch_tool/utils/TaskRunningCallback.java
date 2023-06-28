@@ -11,5 +11,5 @@ public interface TaskRunningCallback {
 
     void onProgress(TaskRunnable runnable, int progress);
 
-    void onAction(TaskRunnable runnable, ActionContext context, BaseAction action);
+    void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress);
 }

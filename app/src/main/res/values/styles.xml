@@ -10,6 +10,7 @@
     <color name="WidgetPinColor">#8D6E63</color>
     <color name="NodePinColor">#8D6E63</color>
     <color name="AppPinColor">#F57C00</color>
+    <color name="LauncherBackgroundColor">#FAFAFA</color>
 
     <attr name="colorPrimaryLight" format="color" />
 

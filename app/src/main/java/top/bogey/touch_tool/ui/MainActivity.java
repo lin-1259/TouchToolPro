@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.data.action.ActionContext;
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MainApplication.getInstance().setActivity(this);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -46,6 +48,12 @@ public class MainActivity extends BaseActivity {
 
         handleIntent(getIntent());
         runFirstTimes();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainApplication.getInstance().setActivity(null);
     }
 
     private void runFirstTimes() {

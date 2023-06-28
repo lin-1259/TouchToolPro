@@ -29,7 +29,8 @@ public class CaptureServiceAction extends NormalAction {
         PinBoolean state = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (state.getValue()) {
-            service.startCaptureService(true, null);
+            service.startCaptureService(result -> runnable.resume());
+            runnable.pause(10000);
         } else {
             service.stopCaptureService();
         }

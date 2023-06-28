@@ -92,11 +92,11 @@ public class HomeView extends Fragment {
                         service.stopCaptureService();
                     } else {
                         if (SettingSave.getInstance().isCaptureServiceEnabledTip()) {
-                            service.startCaptureService(false, null);
+                            service.startCaptureService(null);
                         } else {
                             AppUtils.showDialog(getContext(), R.string.capture_service_des, result -> {
                                 if (result) {
-                                    service.startCaptureService(false, null);
+                                    service.startCaptureService(null);
                                     SettingSave.getInstance().setCaptureServiceEnabledTip(true);
                                 }
                             });

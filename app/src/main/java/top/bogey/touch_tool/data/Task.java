@@ -208,9 +208,8 @@ public class Task implements TaskContext {
                 Pin linkedPin = outPin.getLinkedPin(this);
                 outPin.removeLinks(this);
 
-                // 更新动作id、外部链接id和针脚归属
+                // 更新动作id
                 action.setId(UUID.randomUUID().toString());
-                ((PinString) outStartAction.getIdPin().getValue()).setValue(action.getId());
 
                 if (linkedPin != null) {
                     // 重新连接

@@ -7,6 +7,7 @@ import android.view.View;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 public class LogTileService extends TileService {
@@ -16,7 +17,7 @@ public class LogTileService extends TileService {
         super.onClick();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            BaseActivity activity = MainApplication.getInstance().getActivity();
+            MainActivity activity = MainApplication.getInstance().getActivity();
             if (activity != null) {
                 View view = EasyFloat.getView(LogFloatView.class.getName());
                 if (view == null) {

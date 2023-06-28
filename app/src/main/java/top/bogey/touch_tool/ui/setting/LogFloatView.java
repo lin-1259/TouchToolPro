@@ -215,11 +215,12 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
     }
 
     @Override
-    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action) {
+    public void onAction(TaskRunnable runnable, ActionContext context, BaseAction action, int progress) {
         post(() -> {
             Task task = runnable.getStartTask();
             String log = action.getTitle(getContext());
             LogInfo logInfo = new LogInfo(task.getId(), log);
+            logInfo.setIndex(progress);
 
             ArrayList<LogInfo> logInfoList = logs.computeIfAbsent(task.getId(), k -> new ArrayList<>());
             logInfoList.add(logInfo);

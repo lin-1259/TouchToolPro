@@ -112,7 +112,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         if (service != null && service.isServiceEnabled()) {
             if (!service.isCaptureEnabled()) {
                 Toast.makeText(getContext(), R.string.capture_service_on_tips, Toast.LENGTH_SHORT).show();
-                service.startCaptureService(true, result -> {
+                service.startCaptureService(result -> {
                     if (result) {
                         realShow(500);
                     } else {

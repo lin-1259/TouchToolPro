@@ -5,5 +5,5 @@
     android:layout_width="4dp"
     android:layout_height="4dp"
     android:alpha="0"
-    app:cardBackgroundColor="?attr/colorPrimaryInverse"
+    app:cardBackgroundColor="?attr/colorPrimaryLight"
     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />

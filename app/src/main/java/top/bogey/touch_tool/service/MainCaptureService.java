@@ -152,12 +152,12 @@ public class MainCaptureService extends Service {
                 notificationManager.createNotificationChannel(runningChannel);
             }
 
+            Notification foregroundNotification = new NotificationCompat.Builder(this, RUNNING_CHANNEL_ID).build();
+            startForeground(NOTIFICATION_ID, foregroundNotification);
+
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.capture_service_notification_channel_name), NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription(getString(R.string.capture_service_notification_channel_tips));
             notificationManager.createNotificationChannel(channel);
-
-            Notification foregroundNotification = new NotificationCompat.Builder(this, RUNNING_CHANNEL_ID).build();
-            startForeground(NOTIFICATION_ID, foregroundNotification);
 
             Intent intent = new Intent(this, MainCaptureService.class);
             intent.putExtra(STOP_CAPTURE, true);
