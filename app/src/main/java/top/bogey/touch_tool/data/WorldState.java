@@ -28,6 +28,7 @@ import top.bogey.touch_tool.data.action.start.NormalStartAction;
 import top.bogey.touch_tool.data.action.start.NotificationStartAction;
 import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.service.MainAccessibilityService;
+import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.InstantActivity;
 import top.bogey.touch_tool.ui.MainActivity;
 
@@ -157,7 +158,7 @@ public class WorldState {
         }
 
         if (manualStartActions.size() > 0 || existView) {
-            MainActivity activity = MainApplication.getInstance().getActivity();
+            BaseActivity activity = MainApplication.getInstance().getValidActivity();
             if (activity == null) {
                 Intent intent = new Intent(service, InstantActivity.class);
                 intent.putExtra(InstantActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
@@ -184,7 +185,10 @@ public class WorldState {
         if (isActivityClass(packageName, className)) {
             setPackageName(packageName);
             setActivityName(className);
-            showManualActionDialog(false);
+
+            if (className.contains(MainActivity.class.getName())) {
+                showManualActionDialog(false);
+            }
         }
     }
 

@@ -23,7 +23,6 @@ import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.databinding.ViewSettingBinding;
 import top.bogey.touch_tool.service.MainAccessibilityService;
-import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.ui.picker.PackagePickerFloatPreview;
 import top.bogey.touch_tool.utils.AppUtils;
@@ -40,7 +39,7 @@ public class SettingView extends Fragment {
     }
 
     public static void resetSwitchState() {
-        MainActivity activity = MainApplication.getInstance().getActivity();
+        MainActivity activity = MainApplication.getInstance().getMainActivity();
         Fragment fragment = activity.getCurrFragment();
         if (fragment instanceof SettingView) {
             ((SettingView) fragment).refreshSwitchState();

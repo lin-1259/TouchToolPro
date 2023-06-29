@@ -2,6 +2,8 @@ package top.bogey.touch_tool.data.action.action;
 
 import com.google.gson.JsonObject;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -29,8 +31,12 @@ public class CaptureServiceAction extends NormalAction {
         PinBoolean state = (PinBoolean) statePin.getValue();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (state.getValue()) {
-            service.startCaptureService(result -> runnable.resume());
-            runnable.pause(10000);
+            AtomicBoolean noResume = new AtomicBoolean(true);
+            service.startCaptureService(true, result -> {
+                noResume.set(false);
+                runnable.resume();
+            });
+            if (noResume.get()) runnable.pause(10000);
         } else {
             service.stopCaptureService();
         }

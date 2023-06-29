@@ -2,6 +2,9 @@ package top.bogey.touch_tool.ui;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -15,6 +18,18 @@ public class InstantActivity extends BaseActivity {
     public static final String INTENT_KEY_SHOW_PLAY = "INTENT_KEY_SHOW_PLAY";
     public static final String INTENT_KEY_SHOW_TOAST = "INTENT_KEY_SHOW_TOAST";
     public static final String INTENT_KEY_DO_ACTION = "INTENT_KEY_DO_ACTION";
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MainApplication.getInstance().setInstantActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainApplication.getInstance().setInstantActivity(null);
+    }
 
     @Override
     protected void onResume() {

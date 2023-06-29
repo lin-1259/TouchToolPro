@@ -19,7 +19,6 @@ import top.bogey.touch_tool.data.action.state.ColorStateAction;
 import top.bogey.touch_tool.data.action.state.ImageStateAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.object.PinObject;
-import top.bogey.touch_tool.data.pin.object.PinString;
 import top.bogey.touch_tool.utils.GsonUtils;
 
 public class Task implements TaskContext {

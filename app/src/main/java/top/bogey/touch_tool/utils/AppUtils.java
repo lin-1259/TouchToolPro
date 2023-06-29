@@ -246,7 +246,7 @@ public class AppUtils {
 
     public static void backupActionContexts(Context context, ArrayList<ActionContext> actionContexts) {
         String fileName = getActionContextsFileName(context, actionContexts);
-        MainApplication.getInstance().getActivity().launcherCreateDocument(fileName, (code, intent) -> {
+        MainApplication.getInstance().getMainActivity().launcherCreateDocument(fileName, (code, intent) -> {
             if (code == Activity.RESULT_OK) {
                 Uri uri = intent.getData();
                 if (uri == null) return;

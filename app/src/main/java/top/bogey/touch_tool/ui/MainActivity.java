@@ -39,21 +39,13 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainApplication.getInstance().setActivity(this);
+        MainApplication.getInstance().setMainActivity(this);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.toolBar);
 
-
-        handleIntent(getIntent());
         runFirstTimes();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        MainApplication.getInstance().setActivity(null);
     }
 
     private void runFirstTimes() {
@@ -125,6 +117,40 @@ public class MainActivity extends BaseActivity {
         Toast.makeText(this, R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    public void handleIntent(Intent intent) {
+        if (intent == null) return;
+
+        Uri uri = null;
+        if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+            uri = intent.getData();
+        }
+        if (uri != null) {
+            saveTasks(uri);
+        }
+
+        setIntent(null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MainApplication.getInstance().setMainActivity(null);
+    }
+
     public void showBottomNavigation() {
         binding.menuView.setVisibility(View.VISIBLE);
     }
@@ -163,27 +189,6 @@ public class MainActivity extends BaseActivity {
         return controller.navigateUp() || super.onSupportNavigateUp();
     }
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        handleIntent(intent);
-    }
-
-    public void handleIntent(Intent intent) {
-        if (intent == null) return;
-
-        Uri uri = null;
-        if (Intent.ACTION_SEND.equals(intent.getAction())) {
-            uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        } else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
-            uri = intent.getData();
-        }
-        if (uri != null) {
-            saveTasks(uri);
-        }
-
-        setIntent(null);
-    }
 
     public void saveTasks(Uri uri) {
         ArrayList<ActionContext> actionContexts = AppUtils.importActionContexts(this, uri);

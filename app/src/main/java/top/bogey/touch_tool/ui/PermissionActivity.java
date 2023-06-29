@@ -8,6 +8,7 @@ import top.bogey.touch_tool.service.MainAccessibilityService;
 
 public class PermissionActivity extends BaseActivity {
     public static final String INTENT_KEY_START_CAPTURE = "INTENT_KEY_START_CAPTURE";
+    public static final String INTENT_KEY_MOVE_BACK = "INTENT_KEY_MOVE_BACK";
 
     @Override
     protected void onResume() {
@@ -42,5 +43,15 @@ public class PermissionActivity extends BaseActivity {
             return;
         }
         finish();
+    }
+
+    @Override
+    public void finish() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            boolean moveBack = intent.getBooleanExtra(INTENT_KEY_MOVE_BACK, false);
+            if (moveBack) moveTaskToBack(true);
+        }
+        super.finish();
     }
 }

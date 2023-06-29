@@ -170,7 +170,7 @@ public class SettingSave {
         } else {
             if (isDynamicColor != enabled) {
                 isDynamicColor = enabled;
-                MainApplication.getInstance().getActivity().recreate();
+                MainApplication.getInstance().getMainActivity().recreate();
             }
         }
         settingMMKV.encode(DYNAMIC_COLOR, enabled);

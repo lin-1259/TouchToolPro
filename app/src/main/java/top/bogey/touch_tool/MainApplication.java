@@ -12,13 +12,16 @@ import java.lang.ref.WeakReference;
 
 import top.bogey.touch_tool.service.KeepAliveService;
 import top.bogey.touch_tool.service.MainAccessibilityService;
+import top.bogey.touch_tool.ui.BaseActivity;
+import top.bogey.touch_tool.ui.InstantActivity;
 import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.utils.SettingSave;
 
 public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
     private static MainApplication application;
 
-    private WeakReference<MainActivity> activity = new WeakReference<>(null);
+    private WeakReference<MainActivity> mainActivity = new WeakReference<>(null);
+    private WeakReference<InstantActivity> instantActivity = new WeakReference<>(null);
     private WeakReference<MainAccessibilityService> service = new WeakReference<>(null);
     private WeakReference<KeepAliveService> keepService = new WeakReference<>(null);
 
@@ -41,12 +44,26 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
-    public MainActivity getActivity() {
-        return activity.get();
+    public BaseActivity getValidActivity() {
+        MainActivity mainActivity = getMainActivity();
+        if (mainActivity != null) return mainActivity;
+        return getInstantActivity();
     }
 
-    public void setActivity(MainActivity activity) {
-        this.activity = new WeakReference<>(activity);
+    public MainActivity getMainActivity() {
+        return mainActivity.get();
+    }
+
+    public void setMainActivity(MainActivity mainActivity) {
+        this.mainActivity = new WeakReference<>(mainActivity);
+    }
+
+    public InstantActivity getInstantActivity() {
+        return instantActivity.get();
+    }
+
+    public void setInstantActivity(InstantActivity instantActivity) {
+        this.instantActivity = new WeakReference<>(instantActivity);
     }
 
     public MainAccessibilityService getService() {

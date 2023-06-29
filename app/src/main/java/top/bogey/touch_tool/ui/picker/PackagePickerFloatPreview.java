@@ -16,7 +16,6 @@ import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.WorldState;
 import top.bogey.touch_tool.databinding.FloatPickerPackagePreviewBinding;
 import top.bogey.touch_tool.ui.setting.SettingView;
-import top.bogey.touch_tool.utils.SettingSave;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")

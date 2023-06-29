@@ -359,9 +359,11 @@
     <string name="pin_task">任务</string>
 
     <!-- 采集器 -->
+    <string name="picker_area_preview_title">选择区域</string>
     <string name="picker_color_preview_title">选择颜色</string>
     <string name="picker_image_preview_title">选择图片</string>
     <string name="picker_touch_preview_title">采集手势</string>
+    <string name="picker_pos_preview_title">选择位置</string>
 
     <string name="picker_widget_preview_title">选择控件</string>
     <string name="picker_widget_preview_subtitle_id">ID：%1$s</string>

@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import top.bogey.touch_tool.data.pin.object.PinPoint;
 import top.bogey.touch_tool.databinding.PinWidgetPointBinding;
 import top.bogey.touch_tool.ui.custom.BindingView;
+import top.bogey.touch_tool.ui.picker.PosPickerFloatPreview;
 import top.bogey.touch_tool.utils.TextChangedListener;
 
 public class PinWidgetPoint extends BindingView<PinWidgetPointBinding> {
@@ -54,5 +55,10 @@ public class PinWidgetPoint extends BindingView<PinWidgetPointBinding> {
                 else pinPoint.setY(0);
             }
         });
+
+        binding.pickButton.setOnClickListener(v -> new PosPickerFloatPreview(context, () -> {
+            binding.xEdit.setText(String.valueOf(pinPoint.getX()));
+            binding.yEdit.setText(String.valueOf(pinPoint.getY()));
+        }, pinPoint).show());
     }
 }

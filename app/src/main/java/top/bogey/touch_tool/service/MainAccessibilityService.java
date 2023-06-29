@@ -49,8 +49,8 @@ import top.bogey.touch_tool.data.action.start.StartAction;
 import top.bogey.touch_tool.data.action.start.TimeStartAction;
 import top.bogey.touch_tool.data.pin.object.PinObject;
 import top.bogey.touch_tool.data.receiver.BatteryReceiver;
+import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.InstantActivity;
-import top.bogey.touch_tool.ui.MainActivity;
 import top.bogey.touch_tool.ui.PermissionActivity;
 import top.bogey.touch_tool.utils.AppUtils;
 import top.bogey.touch_tool.utils.ResultCallback;
@@ -88,7 +88,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
                 WorldState worldState = WorldState.getInstance();
                 if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                    if (getPackageName().contentEquals(packageName) && worldState.isActivityClass(packageName, className)) {
+                    if (getPackageName().contentEquals(packageName)) {
                         worldState.setEnterActivity(packageName, className);
                     } else worldState.enterActivity(packageName, className);
 
@@ -199,7 +199,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
                         if (copyTask.needCaptureService()) {
                             showToast(getString(R.string.capture_service_on_tips));
-                            startCaptureService(result -> {
+                            startCaptureService(true, result -> {
                                 if (result) {
                                     runTask(copyTask, startAction);
                                 }
@@ -325,11 +325,12 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
-    public void startCaptureService(ResultCallback callback) {
+    public void startCaptureService(boolean moveBack, ResultCallback callback) {
         if (binder == null) {
             captureResultCallback = callback;
             Intent intent = new Intent(this, PermissionActivity.class);
             intent.putExtra(PermissionActivity.INTENT_KEY_START_CAPTURE, true);
+            intent.putExtra(PermissionActivity.INTENT_KEY_MOVE_BACK, moveBack);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
@@ -492,7 +493,7 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showToast(String msg) {
-        MainActivity activity = MainApplication.getInstance().getActivity();
+        BaseActivity activity = MainApplication.getInstance().getValidActivity();
         if (activity == null) {
             Intent intent = new Intent(this, InstantActivity.class);
             intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOAST, msg);

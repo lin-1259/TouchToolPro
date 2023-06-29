@@ -27,7 +27,6 @@ import top.bogey.touch_tool.data.TaskRepository;
 import top.bogey.touch_tool.data.action.ActionContext;
 import top.bogey.touch_tool.data.action.function.BaseFunction;
 import top.bogey.touch_tool.databinding.ViewBlueprintBinding;
-import top.bogey.touch_tool.ui.BaseActivity;
 import top.bogey.touch_tool.ui.FragmentNavigateInterface;
 import top.bogey.touch_tool.ui.MainActivity;
 
@@ -149,7 +148,7 @@ public class BlueprintView extends Fragment implements FragmentNavigateInterface
     }
 
     public static void tryPushActionContext(ActionContext actionContext) {
-        MainActivity activity = MainApplication.getInstance().getActivity();
+        MainActivity activity = MainApplication.getInstance().getMainActivity();
         Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
         if (navFragment == null || !navFragment.isAdded()) return;
         Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();

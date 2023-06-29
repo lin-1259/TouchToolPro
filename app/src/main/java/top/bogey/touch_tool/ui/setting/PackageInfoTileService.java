@@ -17,7 +17,7 @@ public class PackageInfoTileService extends TileService {
         super.onClick();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            MainActivity activity = MainApplication.getInstance().getActivity();
+            MainActivity activity = MainApplication.getInstance().getMainActivity();
             if (activity != null) {
                 View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
                 if (view == null) {

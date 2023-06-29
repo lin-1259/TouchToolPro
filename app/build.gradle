@@ -13,8 +13,8 @@ android {
         applicationId "top.bogey.touch_tool_pro"
         minSdk 24
         targetSdk 33
-        versionCode 34
-        versionName "0.2.3"
+        versionCode 35
+        versionName "0.2.4"
 
         externalNativeBuild {
             cmake {
