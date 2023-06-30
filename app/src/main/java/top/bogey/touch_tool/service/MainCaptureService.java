@@ -193,7 +193,7 @@ public class MainCaptureService extends Service {
             if (sourceBitmap == null) return null;
 
             Bitmap bitmap = null;
-            if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
+            if (!(area.isEmpty())) {
                 sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
                 bitmap = sourceBitmap;
             }
@@ -227,7 +227,7 @@ public class MainCaptureService extends Service {
             if (sourceBitmap == null || matchBitmap == null) return null;
 
             Bitmap bitmap = null;
-            if (!(area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0)) {
+            if (!(area.isEmpty())) {
                 sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
                 bitmap = sourceBitmap;
             }

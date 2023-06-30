@@ -172,6 +172,7 @@
     <string name="action_state_subtitle_state">结果</string>
     <string name="action_state_subtitle_position">位置</string>
     <string name="action_state_subtitle_node_info">控件</string>
+    <string name="action_state_subtitle_area">区域</string>
 
     <string name="action_app_state_title">在应用或界面内</string>
     <string name="action_app_state_subtitle_package">包名</string>
@@ -334,12 +335,16 @@
     <string name="action_string_equal_operator_title">文本比较 =</string>
     <string name="action_string_contain_operator_title">包含文本</string>
     <string name="action_string_contain_operator_subtitle_origin">原文</string>
-    <string name="action_string_contain_operator_title_match">正则</string>
-    <string name="action_string_contain_operator_title_first_match">首个匹配</string>
+    <string name="action_string_contain_operator_subtitle_match">正则</string>
+    <string name="action_string_contain_operator_subtitle_first_match">首个匹配</string>
 
     <string name="action_position_add_operator_title">位置偏移</string>
     <string name="action_position_add_operator_subtitle_position">位置</string>
     <string name="action_position_add_operator_subtitle_offset">偏移</string>
+
+    <string name="action_area_contain_operator_title">位置在区域内</string>
+    <string name="action_area_contain_operator_subtitle_area">区域</string>
+    <string name="action_area_contain_operator_subtitle_position">位置</string>
 
     <!-- 针脚 -->
     <string name="pin_value">对象</string>
@@ -351,6 +356,7 @@
     <string name="pin_image">图片</string>
     <string name="pin_color">颜色</string>
     <string name="pin_point">位置</string>
+    <string name="pin_area">区域</string>
     <string name="pin_path">手势</string>
     <string name="pin_widget">控件描述</string>
     <string name="pin_node_info">控件</string>
@@ -390,6 +396,12 @@
     <!-- 位置 -->
     <string name="point_x">X</string>
     <string name="point_y">Y</string>
+
+    <!-- 区域 -->
+    <string name="area_left">左</string>
+    <string name="area_top">上</string>
+    <string name="area_right">右</string>
+    <string name="area_bottom">下</string>
 
     <!-- 系统按键 -->
     <string name="device_not_support_lock">当前设备不支持调用锁屏功能</string>
@@ -443,6 +455,10 @@
     <string name="app_info_setting_source_code">在GitHub查看源码</string>
     <string name="app_info_setting_version">版本</string>
     <string name="app_info_setting_version_format">%1$s(%2$d)</string>
+    <string name="app_info_setting_version_update">在QQ群查看最新版本</string>
+    <string name="app_info_setting_thank">贡献者</string>
+    <string name="app_info_setting_thank_text">墨汀 - 测试与反馈\n喝茶君 - 视频教程\n鸣得毛 - 各种自定义卡分享\nLumiaGG - 编程指导</string>
+
 
     <string name="work_add">设置定时任务，开始时间是：%1$s</string>
     <string name="periodic_work_add">设置间隔定时任务，开始时间是：%1$s，间隔%2$s</string>

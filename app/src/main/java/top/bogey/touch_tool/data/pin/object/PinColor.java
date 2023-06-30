@@ -1,7 +1,6 @@
 package top.bogey.touch_tool.data.pin.object;
 
 import android.content.Context;
-import android.graphics.Rect;
 
 import com.google.gson.JsonObject;
 
@@ -17,7 +16,6 @@ public class PinColor extends PinValue {
     private int[] color;
     private int minSize;
     private int maxSize;
-    private Rect area;
 
     public PinColor() {
         super();
@@ -25,7 +23,6 @@ public class PinColor extends PinValue {
         screen = 1080;
         minSize = 0;
         maxSize = 0;
-        area = new Rect();
     }
 
     public PinColor(JsonObject jsonObject) {
@@ -34,7 +31,6 @@ public class PinColor extends PinValue {
         screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
         minSize = GsonUtils.getAsInt(jsonObject, "minSize", 0);
         maxSize = GsonUtils.getAsInt(jsonObject, "maxSize", 0);
-        area = GsonUtils.getAsClass(jsonObject, "area", Rect.class, new Rect());
     }
 
     public int getMinSize(Context context) {
@@ -75,20 +71,6 @@ public class PinColor extends PinValue {
         this.maxSize = maxSize;
     }
 
-    public Rect getArea(Context context) {
-        if (area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0) {
-            area = DisplayUtils.getScreenArea(context);
-            return area;
-        }
-
-        float scale = DisplayUtils.getScreen(context) * 1f / screen;
-        return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
-    }
-
-    public void setArea(Rect area) {
-        this.area = area;
-    }
-
     @Override
     public int getPinColor(Context context) {
         return context.getColor(R.color.ColorPinColor);
@@ -113,8 +95,7 @@ public class PinColor extends PinValue {
         if (screen != pinColor.screen) return false;
         if (minSize != pinColor.minSize) return false;
         if (maxSize != pinColor.maxSize) return false;
-        if (!Arrays.equals(color, pinColor.color)) return false;
-        return area.equals(pinColor.area);
+        return Arrays.equals(color, pinColor.color);
     }
 
     @Override
@@ -124,7 +105,6 @@ public class PinColor extends PinValue {
         result = 31 * result + Arrays.hashCode(color);
         result = 31 * result + minSize;
         result = 31 * result + maxSize;
-        result = 31 * result + area.hashCode();
         return result;
     }
 }

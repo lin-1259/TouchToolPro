@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 
 import java.util.List;
 
+import top.bogey.touch_tool.data.pin.object.PinArea;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -20,17 +21,20 @@ import top.bogey.touch_tool.data.pin.object.PinPoint;
 public class ColorStateAction extends StateAction {
     private transient Pin colorPin = new Pin(new PinColor(), R.string.action_color_state_subtitle_color);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
+    private transient Pin areaPin = new Pin(new PinArea(), R.string.action_state_subtitle_area);
 
     public ColorStateAction() {
         super(R.string.action_color_state_title);
         colorPin = addPin(colorPin);
         posPin = addPin(posPin);
+        areaPin = addPin(areaPin);
     }
 
     public ColorStateAction(JsonObject jsonObject) {
         super(R.string.action_color_state_title, jsonObject);
         colorPin = reAddPin(colorPin);
         posPin = reAddPin(posPin);
+        areaPin = reAddPin(areaPin);
     }
 
     @Override
@@ -50,7 +54,8 @@ public class ColorStateAction extends StateAction {
             return;
         }
 
-        List<Rect> rectList = service.binder.matchColor(color.getColor(), color.getArea(service));
+        PinArea area = (PinArea) getPinValue(runnable, actionContext, areaPin);
+        List<Rect> rectList = service.binder.matchColor(color.getColor(), area.getArea(service));
         if (rectList == null || rectList.isEmpty()) value.setValue(false);
         else {
             value.setValue(true);

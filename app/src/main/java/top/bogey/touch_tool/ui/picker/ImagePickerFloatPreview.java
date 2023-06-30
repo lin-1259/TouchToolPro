@@ -38,11 +38,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             binding.current.setImageBitmap(pinImage.getBitmap());
             binding.title.setText(R.string.picker_image_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_image);
-            binding.pickerButton.setOnClickListener(v -> {
-
-
-                new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show();
-            });
+            binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, () -> binding.current.setImageBitmap(pinImage.getBitmap()), pinImage).show());
             binding.playButton.setVisibility(GONE);
         } else {
             pinColor = (PinColor) pinValue.copy();
@@ -59,7 +55,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
                     if (pinImage != null) {
                         PinImage image = (PinImage) pinValue;
                         Bitmap bitmap = pinImage.getBitmap();
-                        image.setBitmap(context, bitmap, pinImage.getArea(context));
+                        image.setBitmap(context, bitmap);
                     }
                 } else {
                     if (pinColor != null) {
@@ -68,7 +64,6 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
                         color.setMinSize(pinColor.getMinSize(context));
                         color.setMaxSize(pinColor.getMaxSize(context));
                         color.setScreen(DisplayUtils.getScreen(context));
-                        color.setArea(pinColor.getArea(context));
                     }
                 }
                 callback.onComplete();
@@ -81,7 +76,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isCaptureEnabled()) {
-                List<Rect> rectList = service.binder.matchColor(pinColor.getColor(), pinColor.getArea(context));
+                List<Rect> rectList = service.binder.matchColor(pinColor.getColor(), new Rect());
                 if (rectList != null && rectList.size() > 0) {
                     Rect rect = rectList.get(0);
                     service.runGesture(rect.centerX(), rect.centerY(), 100, null);
@@ -99,7 +94,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
         binding.matchButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isCaptureEnabled()) {
-                Rect rect = service.binder.matchImage(pinImage.getScaleBitmap(context), match[0], pinImage.getArea(context));
+                Rect rect = service.binder.matchImage(pinImage.getScaleBitmap(context), match[0], new Rect());
                 if (rect != null) {
                     service.runGesture(rect.centerX(), rect.centerY(), 100, null);
                 }

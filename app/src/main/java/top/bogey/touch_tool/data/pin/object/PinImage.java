@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.util.Base64;
 
 import com.google.gson.JsonObject;
@@ -24,19 +23,16 @@ public class PinImage extends PinValue {
     private int screen;
 
     private String image;
-    private Rect area;
 
     public PinImage() {
         super();
         screen = 1080;
-        area = new Rect();
     }
 
     public PinImage(JsonObject jsonObject) {
         super(jsonObject);
         screen = GsonUtils.getAsInt(jsonObject, "screen", 1080);
         image = GsonUtils.getAsString(jsonObject, "image", null);
-        area = GsonUtils.getAsClass(jsonObject, "area", Rect.class, new Rect());
     }
 
     public Bitmap getBitmap() {
@@ -50,9 +46,8 @@ public class PinImage extends PinValue {
         return bitmap;
     }
 
-    public void setBitmap(Context context, Bitmap bitmap, Rect area) {
+    public void setBitmap(Context context, Bitmap bitmap) {
         this.bitmap = bitmap;
-        this.area = area;
         screen = DisplayUtils.getScreen(context);
 
         if (bitmap == null) image = "";
@@ -87,16 +82,6 @@ public class PinImage extends PinValue {
         return image;
     }
 
-    public Rect getArea(Context context) {
-        if (area.left == 0 && area.right == 0 && area.top == 0 && area.bottom == 0) {
-            area = DisplayUtils.getScreenArea(context);
-            return area;
-        }
-
-        float scale = DisplayUtils.getScreen(context) * 1f / screen;
-        return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
-    }
-
     @Override
     public int getPinColor(Context context) {
         return context.getColor(R.color.ImagePinColor);
@@ -116,8 +101,7 @@ public class PinImage extends PinValue {
         PinImage pinImage = (PinImage) o;
 
         if (screen != pinImage.screen) return false;
-        if (!Objects.equals(image, pinImage.image)) return false;
-        return area.equals(pinImage.area);
+        return Objects.equals(image, pinImage.image);
     }
 
     @Override
@@ -125,7 +109,6 @@ public class PinImage extends PinValue {
         int result = super.hashCode();
         result = 31 * result + screen;
         result = 31 * result + (image != null ? image.hashCode() : 0);
-        result = 31 * result + area.hashCode();
         return result;
     }
 }

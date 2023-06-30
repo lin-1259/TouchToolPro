@@ -142,7 +142,10 @@ public class SettingView extends Fragment {
             e.printStackTrace();
         }
 
+        binding.updateButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=U_kZLwSTyLm3X-2bpVQiRqGJ-5i7cUwu&authKey=gu%2FK7YV87TVtmj50KuSer%2BRXdrfB330UxcHpL6ZmUXEkxZ2joJR%2FMHK21ms8Y5QK&noverify=0&group_code=529463048"));
         binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://github.com/mr-bogey/TouchToolPro"));
+
+        binding.thankButton.setOnClickListener(v -> AppUtils.showDialog(getContext(), R.string.app_info_setting_thank_text, null));
 
         return binding.getRoot();
     }

@@ -18,7 +18,7 @@ public class RandomLogicAction extends NormalAction {
     private transient Pin timesPin = new Pin(new PinInteger(1), R.string.action_random_logic_subtitle_times);
     private transient Pin secondExcutePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
     private final transient Pin executePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
-    private transient Pin addPin = new Pin(new PinAdd(executePin, 2), R.string.action_subtitle_add_pin, PinDirection.OUT);
+    private transient Pin addPin = new Pin(new PinAdd(executePin, 2), R.string.action_subtitle_add_execute, PinDirection.OUT);
     private transient Pin completePin = new Pin(new PinExecute(), R.string.action_random_logic_subtitle_complete, PinDirection.OUT);
 
     public RandomLogicAction() {

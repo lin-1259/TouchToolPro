@@ -4,6 +4,7 @@ import android.graphics.Rect;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool.data.pin.object.PinArea;
 import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
@@ -20,12 +21,14 @@ public class ImageStateAction extends StateAction {
     private transient Pin imagePin = new Pin(new PinImage(), R.string.action_image_state_subtitle_image);
     private transient Pin similarPin = new Pin(new PinInteger(85), R.string.action_image_state_subtitle_similar);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.action_state_subtitle_position, PinDirection.OUT);
+    private transient Pin areaPin = new Pin(new PinArea(), R.string.action_state_subtitle_area);
 
     public ImageStateAction() {
         super(R.string.action_image_state_title);
         imagePin = addPin(imagePin);
         similarPin = addPin(similarPin);
         posPin = addPin(posPin);
+        areaPin = addPin(areaPin);
     }
 
     public ImageStateAction(JsonObject jsonObject) {
@@ -33,6 +36,7 @@ public class ImageStateAction extends StateAction {
         imagePin = reAddPin(imagePin);
         similarPin = reAddPin(similarPin);
         posPin = reAddPin(posPin);
+        areaPin = reAddPin(areaPin);
     }
 
     @Override
@@ -53,7 +57,8 @@ public class ImageStateAction extends StateAction {
         }
 
         PinInteger similar = (PinInteger) getPinValue(runnable, actionContext, similarPin);
-        Rect rect = service.binder.matchImage(image.getScaleBitmap(service), similar.getValue(), image.getArea(service));
+        PinArea area = (PinArea) getPinValue(runnable, actionContext, areaPin);
+        Rect rect = service.binder.matchImage(image.getScaleBitmap(service), similar.getValue(), area.getArea(service));
         if (rect == null) {
             value.setValue(false);
         } else {

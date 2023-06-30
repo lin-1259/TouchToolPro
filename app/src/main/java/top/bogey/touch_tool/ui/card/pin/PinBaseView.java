@@ -17,6 +17,7 @@ import top.bogey.touch_tool.data.action.BaseAction;
 import top.bogey.touch_tool.data.pin.Pin;
 import top.bogey.touch_tool.data.pin.PinSubType;
 import top.bogey.touch_tool.data.pin.object.PinAdd;
+import top.bogey.touch_tool.data.pin.object.PinArea;
 import top.bogey.touch_tool.data.pin.object.PinBoolean;
 import top.bogey.touch_tool.data.pin.object.PinColor;
 import top.bogey.touch_tool.data.pin.object.PinImage;
@@ -34,6 +35,7 @@ import top.bogey.touch_tool.data.pin.object.PinXPath;
 import top.bogey.touch_tool.ui.card.BaseCard;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAdd;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetAppPicker;
+import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetArea;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetBoolean;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetColorPicker;
 import top.bogey.touch_tool.ui.card.pin_widget.PinWidgetImagePicker;
@@ -128,6 +130,8 @@ public abstract class PinBaseView<V extends ViewBinding> extends BindingView<V> 
             viewGroup.addView(new PinWidgetValueArea(context, (PinValueArea) pin.getValue()));
         } else if (PinPoint.class.equals(aClass)) {
             viewGroup.addView(new PinWidgetPoint(context, (PinPoint) pin.getValue()));
+        } else if (PinArea.class.equals(aClass)) {
+            viewGroup.addView(new PinWidgetArea(context, (PinArea) pin.getValue()));
         }
 
         // picker

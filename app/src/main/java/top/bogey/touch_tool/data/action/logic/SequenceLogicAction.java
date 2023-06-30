@@ -16,7 +16,7 @@ import top.bogey.touch_tool.data.pin.object.PinExecute;
 public class SequenceLogicAction extends NormalAction {
     private transient Pin secondExcutePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
     private final transient Pin executePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
-    private transient Pin addPin = new Pin(new PinAdd(executePin), R.string.action_subtitle_add_pin, PinDirection.OUT);
+    private transient Pin addPin = new Pin(new PinAdd(executePin), R.string.action_subtitle_add_execute, PinDirection.OUT);
 
     public SequenceLogicAction() {
         super(R.string.action_sequence_logic_title);

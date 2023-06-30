@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -13,21 +12,20 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.MainApplication;
 import top.bogey.touch_tool.R;
 import top.bogey.touch_tool.data.pin.object.PinImage;
 import top.bogey.touch_tool.databinding.FloatPickerImageBinding;
+import top.bogey.touch_tool.service.MainAccessibilityService;
 import top.bogey.touch_tool.utils.DisplayUtils;
 import top.bogey.touch_tool.utils.FloatBaseCallback;
 import top.bogey.touch_tool.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class ImagePickerFloatView extends BasePickerFloatView {
-    private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG, LEFT, RIGHT, TOP, BOTTOM}
+    private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG}
 
     private final PinImage pinImage;
 
@@ -40,7 +38,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     private final Paint markPaint;
     private Rect markArea = new Rect();
-    private Rect matchArea = new Rect();
 
     private AdjustMode adjustMode = AdjustMode.NONE;
     private boolean isMarked = false;
@@ -59,7 +56,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         binding = FloatPickerImageBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.saveButton.setOnClickListener(v -> {
-            pinImage.setBitmap(context, getBitmap(), matchArea);
+            pinImage.setBitmap(context, getBitmap());
             if (callback != null) callback.onComplete();
             dismiss();
         });
@@ -93,10 +90,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                 Bitmap bitmap = service.binder.getCurrImage();
                 if (bitmap != null) {
                     showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                    Rect area = new Rect(pinImage.getArea(getContext()));
-                    area.offset(-location[0], -location[1]);
-                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getScaleBitmap(getContext()), 95, area);
-                    if (rect != null && area.contains(rect)) {
+                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getScaleBitmap(getContext()), 95, new Rect());
+                    if (rect != null) {
                         markArea = new Rect(rect);
                         isMarked = true;
                     }
@@ -137,8 +132,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         super.dispatchDraw(canvas);
         canvas.drawRect(markArea, markPaint);
         canvas.restore();
-
-        drawChild(canvas, binding.areaBox, getDrawingTime());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -156,7 +149,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             lastX = x;
             lastY = y;
 
-            View[] views = new View[]{binding.moveRight, binding.moveLeft, binding.markBox, binding.areaLeft, binding.areaRight, binding.areaTop, binding.areaBottom};
+            View[] views = new View[]{binding.moveRight, binding.moveLeft, binding.markBox};
             int[] location = new int[2];
             for (int i = 0; i < views.length; i++) {
                 View view = views[i];
@@ -166,84 +159,51 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                     adjustMode = AdjustMode.values()[i + AdjustMode.BOTTOM_RIGHT.ordinal()];
                     // 对可能隐藏的控件做剔除
                     if (adjustMode.ordinal() <= AdjustMode.DRAG.ordinal() && !isMarked) {
-                        adjustMode = AdjustMode.NONE;
+                        continue;
                     }
                     break;
                 }
             }
 
-            // 没点到控制按钮
+            // 没点到控制按钮且不是拖动
             if (adjustMode == AdjustMode.NONE) {
-                // 判断是否点到区域内
-                if (matchArea.contains(x, y)) {
-                    isMarked = false;
-                    adjustMode = AdjustMode.MARK;
-                    markArea = new Rect(localX, localY, localX, localY);
-                }
+                adjustMode = AdjustMode.MARK;
+                markArea.left = localX;
+                markArea.top = localY;
+                markArea.right = localX;
+                markArea.bottom = localY;
             }
         } else if (action == MotionEvent.ACTION_MOVE) {
             int dx = x - lastX;
             int dy = y - lastY;
             switch (adjustMode) {
                 case MARK:
-                    if (matchArea.left <= x && matchArea.right >= x) {
-                        markArea.right = localX;
-                    }
-                    if (matchArea.top <= y && matchArea.bottom >= y) {
-                        markArea.bottom = localY;
-                    }
+                    markArea.right = localX;
+                    markArea.bottom = localY;
                     break;
                 case DRAG:
-                    markArea.left = Math.max(matchArea.left - location[0], markArea.left + dx);
-                    markArea.top = Math.max(matchArea.top - location[1], markArea.top + dy);
-                    markArea.right = Math.min(matchArea.right - location[0], markArea.right + dx);
-                    markArea.bottom = Math.min(matchArea.bottom - location[1], markArea.bottom + dy);
+                    markArea.left = Math.max(location[0], markArea.left + dx);
+                    markArea.top = Math.max(location[1], markArea.top + dy);
+                    markArea.right = Math.min(getWidth() + location[0], markArea.right + dx);
+                    markArea.bottom = Math.min(getHeight() + location[1], markArea.bottom + dy);
                     break;
                 case TOP_LEFT:
-                    markArea.left = Math.max(matchArea.left - location[0], markArea.left + dx);
-                    markArea.top = Math.max(matchArea.top - location[1], markArea.top + dy);
+                    markArea.left = Math.max(location[0], markArea.left + dx);
+                    markArea.top = Math.max(location[1], markArea.top + dy);
                     break;
                 case BOTTOM_RIGHT:
-                    markArea.right = Math.min(matchArea.right - location[0], markArea.right + dx);
-                    markArea.bottom = Math.min(matchArea.bottom - location[1], markArea.bottom + dy);
-                    break;
-                case LEFT:
-                    matchArea.left = Math.max(location[0], matchArea.left + dx);
-                    markArea.left = Math.max(matchArea.left - location[0], markArea.left);
-                    break;
-                case RIGHT:
-                    matchArea.right = Math.min(location[0] + getWidth(), matchArea.right + dx);
-                    markArea.right = Math.min(matchArea.right - location[0], markArea.right);
-                    break;
-                case TOP:
-                    matchArea.top = Math.max(location[1], matchArea.top + dy);
-                    markArea.top = Math.max(matchArea.top - location[1], markArea.top);
-                    break;
-                case BOTTOM:
-                    matchArea.bottom = Math.min(location[1] + getHeight(), matchArea.bottom + dy);
-                    markArea.bottom = Math.min(matchArea.bottom - location[1], markArea.bottom);
+                    markArea.right = Math.min(getWidth() + location[0], markArea.right + dx);
+                    markArea.bottom = Math.min(getHeight() + location[1], markArea.bottom + dy);
                     break;
             }
             markArea.sort();
-            matchArea.sort();
             lastX = x;
             lastY = y;
         } else if (action == MotionEvent.ACTION_UP) {
-            switch (adjustMode) {
-                case MARK:
-                    if (markArea.width() > 0 && markArea.height() > 0) {
-                        isMarked = true;
-                    }
-                    break;
-                case LEFT:
-                case RIGHT:
-                case TOP:
-                case BOTTOM:
-                    int px = Math.round(DisplayUtils.dp2px(getContext(), 24 * 2));
-                    if (matchArea.width() < px || matchArea.height() == px) {
-                        initMatchArea();
-                    }
-                    break;
+            if (adjustMode == AdjustMode.MARK) {
+                if (!markArea.isEmpty()) {
+                    isMarked = true;
+                }
             }
         }
         refreshUI();
@@ -269,32 +229,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                 binding.buttonBox.setY(markArea.bottom + offset * 2);
             }
         }
-
-        binding.areaBox.setX(matchArea.left - location[0]);
-        binding.areaBox.setY(matchArea.top - location[1]);
-        ViewGroup.LayoutParams params = binding.areaBox.getLayoutParams();
-        params.width = matchArea.width();
-        params.height = matchArea.height();
-        binding.areaBox.setLayoutParams(params);
-
-        ImageView[] images = new ImageView[]{binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
-        int px = Math.round(DisplayUtils.dp2px(getContext(), 24));
-        Point size = DisplayUtils.getScreenSize(getContext());
-        px = (int) (px * matchArea.width() * matchArea.height() * 1f / size.x / size.y);
-        for (ImageView image : images) {
-            ViewGroup.MarginLayoutParams layoutParams = (MarginLayoutParams) image.getLayoutParams();
-            layoutParams.setMargins(px, px, px, px);
-        }
-
         postInvalidate();
-    }
-
-    private void initMatchArea() {
-        matchArea = pinImage.getArea(getContext());
-        matchArea.left = Math.max(matchArea.left, location[0]);
-        matchArea.top = Math.max(matchArea.top, location[1]);
-        matchArea.right = Math.min(matchArea.right, location[0] + getWidth());
-        matchArea.bottom = Math.min(matchArea.bottom, location[1] + getHeight());
     }
 
     @Override
@@ -303,7 +238,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
         if (changed) {
             getLocationOnScreen(location);
-            initMatchArea();
         }
     }
 

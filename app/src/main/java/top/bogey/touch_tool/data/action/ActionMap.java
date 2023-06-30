@@ -35,6 +35,7 @@ import top.bogey.touch_tool.data.action.logic.ParallelLogicAction;
 import top.bogey.touch_tool.data.action.logic.RandomLogicAction;
 import top.bogey.touch_tool.data.action.logic.SequenceLogicAction;
 import top.bogey.touch_tool.data.action.logic.WaitConditionLogicAction;
+import top.bogey.touch_tool.data.action.operator.AreaContainAction;
 import top.bogey.touch_tool.data.action.operator.IntAddAction;
 import top.bogey.touch_tool.data.action.operator.IntDivAction;
 import top.bogey.touch_tool.data.action.operator.IntEqualAction;
@@ -156,6 +157,7 @@ public class ActionMap {
         positionActions.add(new ActionInfo(IntConvertToPosition.class, R.string.action_int_convert_position_title, 0));
         positionActions.add(new ActionInfo(PositionConvertToInt.class, R.string.action_position_convert_int_title, 0));
         positionActions.add(new ActionInfo(PositionOffsetAction.class, R.string.action_position_add_operator_title, 0));
+        positionActions.add(new ActionInfo(AreaContainAction.class, R.string.action_area_contain_operator_title, 0));
 
         ArrayList<ActionInfo> timeActions = new ArrayList<>();
         actions.put(ActionType.TIME, timeActions);

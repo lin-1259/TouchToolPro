@@ -17,8 +17,8 @@ import top.bogey.touch_tool.data.pin.object.PinString;
 public class StringContainAction extends CalculateAction {
     protected transient Pin outValuePin = new Pin(new PinBoolean(), PinDirection.OUT);
     protected transient Pin originPin = new Pin(new PinString(), R.string.action_string_contain_operator_subtitle_origin);
-    protected transient Pin matchPin = new Pin(new PinString(), R.string.action_string_contain_operator_title_match);
-    protected transient Pin valuePin = new Pin(new PinString(), R.string.action_string_contain_operator_title_first_match, PinDirection.OUT);
+    protected transient Pin matchPin = new Pin(new PinString(), R.string.action_string_contain_operator_subtitle_match);
+    protected transient Pin valuePin = new Pin(new PinString(), R.string.action_string_contain_operator_subtitle_first_match, PinDirection.OUT);
 
     public StringContainAction() {
         super(R.string.action_string_contain_operator_title);

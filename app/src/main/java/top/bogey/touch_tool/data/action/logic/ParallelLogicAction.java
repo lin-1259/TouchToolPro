@@ -27,7 +27,7 @@ public class ParallelLogicAction extends NormalAction {
 
     private transient Pin secondExcutePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
     private final transient Pin executePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, PinDirection.OUT);
-    private transient Pin addPin = new Pin(new PinAdd(executePin, 3), R.string.action_subtitle_add_pin, PinDirection.OUT);
+    private transient Pin addPin = new Pin(new PinAdd(executePin, 3), R.string.action_subtitle_add_execute, PinDirection.OUT);
 
     private transient Pin completePin = new Pin(new PinExecute(), R.string.action_parallel_logic_subtitle_complete, PinDirection.OUT);
     private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, PinDirection.OUT);
