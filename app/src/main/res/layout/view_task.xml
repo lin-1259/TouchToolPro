@@ -25,12 +25,12 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/folderButton"
-                style="@style/Theme.TouchTool.IconButton.Filled"
+                style="@style/Theme.TouchTool.IconButton.Outlined"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="8dp"
-                app:icon="@drawable/icon_folder" />
+                app:icon="@drawable/icon_tag" />
 
         </LinearLayout>
 
@@ -98,7 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/move_task"
-                    app:icon="@drawable/icon_move" />
+                    app:icon="@drawable/icon_tag" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cancelButton"
@@ -121,6 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="32dp"
-        android:src="@drawable/icon_add" />
+        android:src="@drawable/icon_add"
+        tools:ignore="ContentDescription" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

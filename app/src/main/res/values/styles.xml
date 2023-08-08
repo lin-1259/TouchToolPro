@@ -1,19 +1,4 @@
 <resources>
-    <color name="BooleanPinColor">#E81123</color>
-    <color name="StringPinColor">#C239B3</color>
-    <color name="IntegerPinColor">#00CC6A</color>
-    <color name="ValueAreaPinColor">#10893E</color>
-    <color name="ImagePinColor">#FF8C00</color>
-    <color name="ColorPinColor">#F7630C</color>
-    <color name="PointPinColor">#00B294</color>
-    <color name="PathPinColor">#018574</color>
-    <color name="WidgetPinColor">#847545</color>
-    <color name="NodePinColor">#7E735F</color>
-    <color name="AppPinColor">#4C4A48</color>
-    <color name="AreaPinColor">#107C10</color>
-
-    <color name="LauncherBackgroundColor">#FAFAFA</color>
-
     <attr name="colorPrimaryLight" format="color" />
 
     <style name="Theme.TouchTool.IconButton" parent="Widget.Material3.Button.TextButton">

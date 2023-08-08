@@ -2,15 +2,17 @@
 <resources>
 
     <string-array name="action_type">
+        <item>自定义</item>
+        <item>变量</item>
         <item>开始动作</item>
         <item>逻辑动作</item>
-        <item>状态获取</item>
+        <item>获取状态</item>
+        <item>状态检测</item>
         <item>普通动作</item>
         <item>条件相关</item>
         <item>文本相关</item>
         <item>数值相关</item>
         <item>位置相关</item>
-        <item>时间相关</item>
     </string-array>
 
     <string-array name="restart_type">
@@ -19,9 +21,22 @@
         <item>执行新的</item>
     </string-array>
 
+    <string-array name="select_app_type">
+        <item>单应用</item>
+        <item>单应用或活动</item>
+        <item>多应用</item>
+        <item>多应用或活动</item>
+    </string-array>
+
+    <string-array name="long_value_type">
+        <item>日期</item>
+        <item>时间</item>
+        <item>间隔</item>
+    </string-array>
+
     <string-array name="charging_state">
         <item>充电中</item>
-        <item>入不敷出</item>
+        <item>放电中</item>
         <item>未充电</item>
         <item>充满了</item>
     </string-array>
@@ -29,7 +44,7 @@
     <string-array name="screen_state">
         <item>息屏</item>
         <item>锁屏</item>
-        <item>解锁</item>
+        <item>已解锁</item>
     </string-array>
 
     <string-array name="system_ability">

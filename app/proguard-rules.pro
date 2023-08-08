@@ -12,20 +12,6 @@
 #   public *;
 #}
 
--assumenosideeffects class android.util.Log{
-    public static int d(...);
-}
-
--keep class android.graphics.Point{*;}
--keep class android.graphics.Rect{*;}
-
--keep class top.bogey.touch_tool.utils.MatchResult{*;}
-
--keep class top.bogey.touch_tool.databinding.**{*;}
--keep class top.bogey.touch_tool.data.**{*;}
-
--keep enum top.bogey.touch_tool.** {*;}
-
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
 #-keepattributes SourceFile,LineNumberTable
@@ -33,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-assumenosideeffects class android.util.Log{
+    public static int d(...);
+}
+
+-keep class android.graphics.Point{*;}
+-keep class android.graphics.Rect{*;}
+
+-keep class top.bogey.touch_tool_pro.utils.MatchResult{*;}
+-keep class top.bogey.touch_tool_pro.bean.**{*;}
+
+-keep enum top.bogey.touch_tool.** {*;}

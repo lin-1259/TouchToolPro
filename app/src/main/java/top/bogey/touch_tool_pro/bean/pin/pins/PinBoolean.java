@@ -1,0 +1,56 @@
+package top.bogey.touch_tool_pro.bean.pin.pins;
+
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.google.gson.JsonObject;
+
+import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.pin.PinType;
+import top.bogey.touch_tool_pro.utils.GsonUtils;
+
+public class PinBoolean extends PinValue{
+    private boolean bool = false;
+
+    public PinBoolean() {
+        super(PinType.BOOLEAN);
+    }
+
+    public PinBoolean(boolean bool) {
+        this();
+        this.bool = bool;
+    }
+
+    public PinBoolean(JsonObject jsonObject) {
+        super(jsonObject);
+        bool = GsonUtils.getAsBoolean(jsonObject, "bool", false);
+    }
+
+    @Override
+    public int getPinColor(Context context) {
+        return context.getColor(R.color.BooleanPinColor);
+    }
+
+    @Override
+    public boolean cast(String value) {
+        if (Boolean.toString(true).equals(value)) bool = true;
+        else if (Boolean.toString(false).equals(value)) bool = false;
+        else bool = !"0".equals(value);
+        return true;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return String.valueOf(bool);
+    }
+
+    public boolean isBool() {
+        return bool;
+    }
+
+    public void setBool(boolean bool) {
+        this.bool = bool;
+    }
+}

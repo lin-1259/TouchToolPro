@@ -1,162 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/topBox"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/icon"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            app:srcCompat="@drawable/icon_setting"
+            app:tint="?attr/colorSurfaceContainerLow" />
 
         <LinearLayout
-            android:id="@+id/topBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="4dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
+            android:layout_height="48dp"
+            android:orientation="vertical"
             android:paddingHorizontal="4dp">
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="24dp"
-                android:layout_weight="1"
-                android:gravity="start|center_vertical"
-                android:orientation="vertical">
+                android:gravity="center_vertical">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lines="1"
-                    android:minWidth="24dp"
-                    android:textSize="11sp"
-                    tools:ignore="SmallSp" />
-
-                <FrameLayout
-                    android:id="@+id/desBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone">
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="24dp"
+                    android:layout_weight="1"
+                    android:gravity="start|center_vertical"
+                    android:orientation="vertical">
 
                     <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/des"
+                        android:id="@+id/title"
                         android:layout_width="wrap_content"
-                        android:layout_height="11dp"
-                        android:layout_gravity="bottom"
-                        android:gravity="center_vertical"
-                        android:textSize="8sp"
+                        android:layout_height="wrap_content"
+                        android:lines="1"
+                        android:minWidth="24dp"
+                        android:textSize="11sp"
                         tools:ignore="SmallSp" />
 
-                </FrameLayout>
+                    <FrameLayout
+                        android:id="@+id/desBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/des"
+                            android:layout_width="wrap_content"
+                            android:layout_height="11dp"
+                            android:layout_gravity="bottom"
+                            android:gravity="center_vertical"
+                            android:textSize="8sp"
+                            tools:ignore="SmallSp" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/editButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    app:icon="@drawable/icon_edit"
+                    app:iconSize="16dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/functionButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:icon="@drawable/icon_setting"
+                    app:iconSize="16dp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/expandButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    app:icon="@drawable/icon_zoom_in"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/copyButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    app:icon="@drawable/icon_copy"
+                    app:iconSize="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/removeButton"
+                    style="@style/Theme.TouchTool.IconButton"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/fill_button_background_error_check"
+                    android:checkable="true"
+                    app:icon="@drawable/icon_delete"
+                    app:iconSize="16dp"
+                    app:iconTint="@color/button_container_check" />
 
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/editButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="4dp"
-                app:icon="@drawable/icon_edit"
-                app:iconSize="16dp" />
+
         </LinearLayout>
 
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/pinBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/inBox"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:paddingHorizontal="4dp">
+            android:layout_weight="1"
+            android:orientation="vertical" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/functionButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="4dp"
-                android:visibility="gone"
-                app:icon="@drawable/icon_setting"
-                app:iconSize="16dp" />
-
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/expandButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="4dp"
-                app:icon="@drawable/icon_zoom_in"
-                app:iconSize="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/copyButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="4dp"
-                app:icon="@drawable/icon_copy"
-                app:iconSize="16dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/removeButton"
-                style="@style/Theme.TouchTool.IconButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:backgroundTint="@color/fill_button_background_error_check"
-                android:checkable="true"
-                app:icon="@drawable/icon_delete"
-                app:iconSize="16dp"
-                app:iconTint="@color/button_container_check" />
-
-        </LinearLayout>
-
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/pinBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/inBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical" />
-
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
-
-            <LinearLayout
-                android:id="@+id/outBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:orientation="vertical" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/bottomBox"
-            android:layout_width="match_parent"
+            android:id="@+id/outBox"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:gravity="bottom"
-            android:orientation="horizontal"
-            android:paddingHorizontal="4dp" />
+            android:layout_gravity="end"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:orientation="vertical" />
 
     </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <LinearLayout
+        android:id="@+id/bottomBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp" />
+
+</LinearLayout>

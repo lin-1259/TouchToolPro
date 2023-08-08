@@ -1,58 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="24dp">
 
     <FrameLayout
         android:layout_width="wrap_content"
-        android:layout_height="24dp">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/minLayout"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
-                android:hint="@string/time_min"
+                android:hint="@string/pin_value_area_low"
                 app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
                 app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.LeftCorner.Small">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/minEdit"
+                    android:id="@+id/lowEdit"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:layout_marginEnd="-0.5dp"
                     android:gravity="start|center_vertical"
                     android:inputType="number"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="0dp"
-                    android:textSize="9sp" />
+                    android:textSize="9sp"
+                    tools:ignore="SmallSp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/maxLayout"
+                android:id="@+id/highLayout"
                 android:layout_width="48dp"
                 android:layout_height="wrap_content"
                 android:clipChildren="false"
-                android:hint="@string/time_max"
+                android:hint="@string/pin_value_area_high"
                 app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
                 app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.RightCorner.Small">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/maxEdit"
+                    android:id="@+id/highEdit"
                     android:layout_width="match_parent"
                     android:layout_height="20dp"
-                    android:layout_marginStart="-0.5dp"
                     android:gravity="end|center_vertical"
                     android:inputType="number"
                     android:paddingHorizontal="8dp"
                     android:paddingVertical="0dp"
-                    android:textSize="9sp" />
+                    android:textSize="9sp"
+                    tools:ignore="SmallSp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,5 +71,80 @@
             app:iconTint="@color/button_container_check" />
 
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/moreBox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_marginHorizontal="4dp">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:hint="@string/pin_value_area_step"
+            app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
+            app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.LeftCorner.Small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/step"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginEnd="-0.5dp"
+                android:gravity="start|center_vertical"
+                android:inputType="numberSigned"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="0dp"
+                android:textSize="9sp"
+                tools:ignore="SmallSp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:hint="@string/pin_value_area_min"
+            app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.None">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/minEdit"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginEnd="-0.5dp"
+                android:gravity="start|center_vertical"
+                android:inputType="numberSigned"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="0dp"
+                android:textSize="9sp"
+                tools:ignore="SmallSp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:hint="@string/pin_value_area_max"
+            app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
+            app:shapeAppearanceOverlay="@style/Theme.TouchTool.ShapeAppearance.RightCorner.Small">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/maxEdit"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginStart="-0.5dp"
+                android:gravity="end|center_vertical"
+                android:inputType="numberSigned"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="0dp"
+                android:textSize="9sp"
+                tools:ignore="SmallSp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -6,34 +6,49 @@
 
     <fragment
         android:id="@+id/home"
-        android:name="top.bogey.touch_tool.ui.home.HomeView"
+        android:name="top.bogey.touch_tool_pro.ui.home.HomeView"
         android:label="@string/home"
         tools:layout="@layout/view_home" />
 
     <fragment
         android:id="@+id/task"
-        android:name="top.bogey.touch_tool.ui.task.TaskView"
+        android:name="top.bogey.touch_tool_pro.ui.task.TaskView"
         android:label="@string/task"
         tools:layout="@layout/view_task">
         <action
-            android:id="@+id/action_task_to_blueprintView"
+            android:id="@+id/action_task_to_blueprint"
             app:destination="@id/blueprint" />
     </fragment>
 
     <fragment
         android:id="@+id/setting"
-        android:name="top.bogey.touch_tool.ui.setting.SettingView"
+        android:name="top.bogey.touch_tool_pro.ui.setting.SettingView"
         android:label="@string/setting"
         tools:layout="@layout/view_setting" />
 
     <fragment
         android:id="@+id/blueprint"
-        android:name="top.bogey.touch_tool.ui.blueprint.BlueprintView"
+        android:name="top.bogey.touch_tool_pro.ui.blueprint.BlueprintView"
         android:label="@string/blueprint"
         tools:layout="@layout/view_blueprint">
         <argument
             android:name="taskId"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="functionId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/function"
+        android:name="top.bogey.touch_tool_pro.ui.function.FunctionView"
+        android:label="@string/function"
+        tools:layout="@layout/view_function" >
+        <action
+            android:id="@+id/action_function_to_blueprint"
+            app:destination="@id/blueprint" />
     </fragment>
 
 </navigation>

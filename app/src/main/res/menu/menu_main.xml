@@ -12,6 +12,11 @@
         android:title="@string/task" />
 
     <item
+        android:id="@+id/function"
+        android:icon="@drawable/icon_folder"
+        android:title="@string/function" />
+
+    <item
         android:id="@+id/setting"
         android:icon="@drawable/icon_setting"
         android:title="@string/setting" />

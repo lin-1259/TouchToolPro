@@ -6,6 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_gravity="bottom"
     android:gravity="center_horizontal"
+    android:minWidth="32dp"
+    android:minHeight="24dp"
     android:orientation="vertical">
 
     <com.google.android.material.button.MaterialButton
@@ -17,30 +19,21 @@
         app:icon="@drawable/icon_remove"
         app:iconTint="?attr/colorOutline" />
 
-    <LinearLayout
-        android:id="@+id/pinSlotBox"
-        android:layout_width="32dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal|bottom"
-        android:orientation="vertical">
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:textSize="6sp"
+        tools:ignore="SmallSp" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="12dp"
-            android:gravity="center"
-            android:lines="1"
-            android:paddingHorizontal="2dp"
-            android:textSize="5sp"
-            tools:ignore="SmallSp" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/pinSlot"
-            style="?attr/materialCardViewFilledStyle"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            app:strokeWidth="1dp" />
-
-    </LinearLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/pinSlot"
+        style="?attr/materialCardViewFilledStyle"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        app:strokeWidth="1dp" />
 
 </LinearLayout>

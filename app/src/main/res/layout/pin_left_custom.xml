@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:minHeight="24dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/pinSlot"
+        style="?attr/materialCardViewFilledStyle"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginEnd="4dp"
+        app:strokeWidth="1dp" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextBox"
+        style="?attr/textInputOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginEnd="4dp"
+        android:hint="@string/function_pin_hint"
+        app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            android:lines="1"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="0dp"
+            android:textSize="9sp"
+            tools:ignore="SmallSp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <FrameLayout
+        android:id="@+id/pinBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="1"
+        android:minHeight="24dp" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_marginEnd="4dp"
+        android:background="@drawable/shape_spinner"
+        android:dropDownWidth="wrap_content"
+        android:popupBackground="@drawable/shape_spinner_background"
+        android:spinnerMode="dropdown" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/removeButton"
+        style="@style/Theme.TouchTool.IconButton.Outlined"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        app:icon="@drawable/icon_remove"
+        app:iconSize="12dp"
+        app:iconTint="?attr/colorOutline" />
+
+</LinearLayout>

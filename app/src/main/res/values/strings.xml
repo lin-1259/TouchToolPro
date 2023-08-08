@@ -1,6 +1,6 @@
 <resources>
     <!-- 通用 -->
-<!--    <string name="app_name">点击助手Pro</string>-->
+    <!--    <string name="app_name">点击助手Pro</string>-->
     <string name="app_name_release">点击助手Pro</string>
     <string name="app_name_debug">点击助手Debug</string>
 
@@ -39,6 +39,7 @@
 
     <string name="home">主页</string>
     <string name="task">任务</string>
+    <string name="function">自定义</string>
     <string name="blueprint">蓝图</string>
     <string name="setting">设置</string>
 
@@ -80,21 +81,24 @@
     <string name="goto_tutorial">查看教程</string>
     <string name="tutorial_tips">当你不知道怎么使用本应用的时候，请点击这里查看教程。</string>
 
+    <string name="shell_code">便捷的Shell命令</string>
+    <string name="shell_code_copy">复制代码去终端执行</string>
     <string name="auto_restart_accessibility_service">自动重启无障碍服务</string>
     <string name="auto_restart_accessibility_service_tips">因一些不可描述的原因导致无障碍服务崩溃后，任务无法正常运行，手动重启无障碍服务又略显麻烦，所以可以授予应用“写入安全设置”的权限让应用能重启无障碍服务。</string>
-    <string name="auto_restart_accessibility_service_shizuku">通过Shizuku授权</string>
-    <string name="auto_restart_accessibility_service_adb">复制ADB代码去终端执行</string>
+    <string name="auto_allow_capture">自动授予录屏权限</string>
+    <string name="auto_allow_capture_tips">软件请求录屏权限会弹窗让用户手动授予录屏权限，执行任务时需要主动去处理授予操作，所以可以授予应用“自动允许录屏”的权限来免去麻烦。但是，这可能会带来一些安全隐患。如果你不信任本软件，请不要授予！！！</string>
 
     <string name="tag_no">未分类</string>
-    <string name="tag_add">添加新的分类</string>
+    <string name="tag_shortcut">快捷方式</string>
+    <string name="tag_add">添加新的标签</string>
 
     <string name="select_all">全选</string>
     <string name="delete_task">删除</string>
-    <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
     <string name="export_task">导出</string>
     <string name="export_task_tips">导出任务配置并发送</string>
-    <string name="move_task">移动</string>
+    <string name="move_task">标签</string>
     <string name="copy_task">复制</string>
+    <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
 
     <string name="task_title">任务</string>
     <string name="task_add">添加任务</string>
@@ -111,14 +115,15 @@
     <string name="function_pin_hint">针脚名</string>
     <string name="function_just_call">仅获取状态</string>
     <string name="function_fast_end">结束时中止内部执行</string>
+    <string name="function_error_tips">存在%d个错误自定义卡片</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
     <string name="attribute_title">任务内变量</string>
+    <string name="attribute_title_common">全局变量</string>
     <string name="attribute_title_function">卡片内变量</string>
     <string name="attribute_hint">变量名</string>
     <string name="attribute_add">添加变量</string>
     <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>
-    <string name="delete_attribute_tips">当前变量正在使用中，删除变量会删除变量相关卡片，确认要删除吗？</string>
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
@@ -126,8 +131,10 @@
     <string name="action_subtitle_add_des">修改备注</string>
     <string name="action_subtitle_execute">执行</string>
 
+
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
+    <string name="action_start_subtitle_break">中断条件</string>
     <string name="action_start_subtitle_enable">启用</string>
     <string name="action_start_subtitle_enable_true">已启用</string>
     <string name="action_start_subtitle_enable_false">未启用</string>
@@ -135,17 +142,18 @@
     <string name="action_normal_start_title">自定义条件执行</string>
     <string name="action_normal_start_subtitle_condition">开始条件</string>
 
-    <string name="action_out_start_title">应用外调用</string>
-    <string name="action_out_start_subtitle_id">Url</string>
-    <string name="action_out_start_subtitle_copy">复制链接</string>
-    <string name="action_out_start_subtitle_shortcut">快捷方式</string>
-    <string name="action_out_start_subtitle_shortcut_create">创建</string>
+    <string name="action_outer_start_title">应用外调用</string>
+    <string name="action_outer_start_subtitle_url">链接</string>
+    <string name="action_outer_start_subtitle_copy">复制链接</string>
+    <string name="action_outer_start_subtitle_shortcut">快捷方式</string>
+    <string name="action_outer_start_subtitle_shortcut_create">创建</string>
 
     <string name="action_manual_start_title">手动执行</string>
-    <string name="action_inner_start_title">并行执行</string>
+    <string name="action_inner_start_title">并行内部执行</string>
 
     <string name="action_app_start_title">进应用或界面时执行</string>
     <string name="action_app_start_subtitle_break">自动中断</string>
+    <string name="action_app_start_subtitle_info">触发界面</string>
 
     <string name="action_time_start_title">定时执行</string>
     <string name="action_time_start_subtitle_date">日期</string>
@@ -153,61 +161,28 @@
     <string name="action_time_start_subtitle_periodic">间隔</string>
     <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
 
-    <string name="action_battery_start_title">到电量范围内执行</string>
-    <string name="action_battery_start_subtitle_battery">范围</string>
-
-    <string name="action_battery_charging_start_title">充电状态变更时执行</string>
-    <string name="action_battery_charging_start_subtitle_state">状态</string>
+    <string name="action_battery_start_title">电池状态变更时执行</string>
+    <string name="action_battery_start_subtitle_state">状态</string>
+    <string name="action_battery_start_subtitle_battery">电量</string>
 
     <string name="action_notification_start_title">收到新通知时执行</string>
     <string name="action_notification_start_subtitle_text">匹配文本</string>
     <string name="action_notification_start_subtitle_notice">通知文本</string>
 
-    <string name="action_location_start_title">进出地理围栏时执行</string>
-    <string name="action_location_start_subtitle_location">经纬度</string>
-    <string name="action_location_start_subtitle_radius">半径(米)</string>
-
 
     <!-- 任务 - 状态 -->
-    <string name="action_state_subtitle_state">结果</string>
-    <string name="action_state_subtitle_position">位置</string>
-    <string name="action_state_subtitle_node_info">控件</string>
-    <string name="action_state_subtitle_area">区域</string>
+    <string name="action_app_state_title">获取当前界面</string>
+    <string name="action_app_state_subtitle_where">界面</string>
 
-    <string name="action_app_state_title">在应用或界面内</string>
-    <string name="action_app_state_subtitle_package">包名</string>
-    <string name="action_app_state_subtitle_activity">界面</string>
-
-    <string name="action_battery_state_title">在电量范围内</string>
-    <string name="action_battery_state_subtitle_battery">范围</string>
-
-    <string name="action_battery_charging_state_title">电池充电状态</string>
-    <string name="action_battery_charging_state_subtitle_state">状态</string>
+    <string name="action_battery_state_title">获取电池状态</string>
+    <string name="action_battery_state_subtitle_state">状态</string>
+    <string name="action_battery_state_subtitle_battery">电量</string>
 
     <string name="action_screen_state_title">屏幕状态</string>
     <string name="action_screen_state_subtitle_state">状态</string>
 
-    <string name="action_text_state_title">界面内存在文本</string>
-    <string name="action_text_state_subtitle_text">文本</string>
-    <string name="action_text_state_subtitle_just">屏幕内</string>
-
-    <string name="action_image_state_title">界面内存在图片</string>
-    <string name="action_image_state_subtitle_image">图片</string>
-    <string name="action_image_state_subtitle_similar">相似度</string>
-
-    <string name="action_color_state_title">界面内存在颜色</string>
-    <string name="action_color_state_subtitle_color">颜色</string>
-
-    <string name="action_widget_state_title">界面内存在控件</string>
-    <string name="action_widget_state_subtitle_widget">控件描述</string>
-
-    <string name="action_xpath_widget_state_title">界面内存在控件(路径)</string>
-    <string name="action_xpath_widget_state_subtitle_xpath">控件路径</string>
-
-    <string name="action_widget_text_state_title">获取控件文本</string>
-    <string name="action_widget_text_state_subtitle_text">文本</string>
-
     <string name="action_capture_state_title">录屏服务状态</string>
+    <string name="action_capture_state_subtitle_state">开启</string>
 
     <string name="action_date_state_title">日期</string>
     <string name="action_date_state_subtitle_year">年</string>
@@ -220,149 +195,196 @@
     <string name="action_time_state_subtitle_minute">分</string>
     <string name="action_time_state_subtitle_second">秒</string>
 
+
+    <!-- 任务 - 检测 -->
+    <string name="action_check_subtitle_result">结果</string>
+
+    <string name="action_in_app_check_title">在应用或界面内</string>
+    <string name="action_in_app_check_subtitle_who">待测界面</string>
+
+    <string name="action_battery_state_check_title">电池状态对比</string>
+    <string name="action_battery_state_check_subtitle_state">状态</string>
+    <string name="action_battery_state_check_subtitle_check_state">待测状态</string>
+
+    <string name="action_screen_state_check_title">屏幕状态对比</string>
+    <string name="action_screen_state_check_subtitle_state">状态</string>
+    <string name="action_screen_state_check_subtitle_check_state">待测状态</string>
+
+    <string name="action_exist_text_check_title">界面内存在文本</string>
+    <string name="action_exist_text_check_subtitle_just">屏幕内</string>
+
+    <string name="action_exist_node_check_title">界面内存在控件</string>
+
+    <string name="action_exist_image_check_title">界面内存在图片</string>
+    <string name="action_exist_image_check_subtitle_similar">相似度</string>
+
+    <string name="action_exist_color_check_title">界面内存在颜色</string>
+
+
     <!-- 任务 - 动作 -->
     <string name="action_delay_action_title">延迟</string>
+    <string name="action_delay_action_subtitle_time">时长(ms)</string>
 
     <string name="action_log_action_title">输出日志</string>
-    <string name="action_log_action_subtitle_tips">文本</string>
+    <string name="action_log_action_subtitle_log">日志</string>
     <string name="action_log_action_subtitle_toast">弹出提示</string>
+    <string name="action_log_action_subtitle_save">保存日志</string>
 
     <string name="action_touch_pos_action_title">点击位置</string>
-    <string name="action_touch_pos_action_subtitle_position">位置</string>
     <string name="action_touch_pos_action_subtitle_time">时长(ms)</string>
     <string name="action_touch_pos_action_subtitle_offset">随机偏移</string>
 
     <string name="action_touch_node_action_title">点击控件</string>
     <string name="action_touch_node_action_subtitle_long_touch">长按</string>
 
+    <string name="action_system_ability_action_title">系统按键</string>
+
+    <string name="action_touch_path_action_title">执行手势</string>
+    <string name="action_touch_path_action_subtitle_offset">随机偏移</string>
+
     <string name="action_input_node_action_title">输入框输入</string>
     <string name="action_input_node_action_subtitle_content">内容</string>
     <string name="action_input_node_action_subtitle_append">附加</string>
     <string name="action_input_node_action_subtitle_enter">模拟回车</string>
 
-    <string name="action_touch_path_action_title">执行手势</string>
-    <string name="action_touch_path_action_subtitle_path">手势</string>
-    <string name="action_touch_path_action_subtitle_time">时长</string>
-    <string name="action_touch_path_action_subtitle_offset">随机偏移</string>
-
-    <string name="action_system_ability_action_title">系统按键动作</string>
-
     <string name="action_screen_action_title">亮屏或息屏</string>
-    <string name="action_screen_action_subtitle_state">亮屏</string>
+    <string name="action_screen_action_subtitle_state">是否亮屏</string>
 
     <string name="action_open_capture_action_title">请求开关录屏</string>
-    <string name="action_open_capture_subtitle_state">开启</string>
+    <string name="action_open_capture_subtitle_state">是否开启</string>
+    <string name="action_open_capture_subtitle_wait">等待授权</string>
 
     <string name="action_open_app_action_title">打开应用或界面</string>
 
     <string name="action_open_url_action_title">打开Uri</string>
     <string name="action_open_url_action_subtitle_url">Uri</string>
 
+    <string name="action_play_ringtone_action_title">播放铃声</string>
+    <string name="action_play_ringtone_action_subtitle_url">铃声</string>
+
     <string name="action_do_task_action_title">执行任务</string>
     <string name="action_do_task_action_subtitle_task">任务</string>
-    <string name="action_do_task_action_subtitle_start">开始</string>
+    <string name="action_do_task_action_subtitle_action">动作</string>
+    <string name="action_break_task_action_title">中断执行</string>
 
     <string name="action_set_value_action_title">设置变量值</string>
     <string name="action_get_value_action_title">获取变量值</string>
+    <string name="action_set_common_value_action_title">设置全局变量值</string>
+    <string name="action_get_common_value_action_title">获取全局变量值</string>
+
 
     <!-- 任务 - 逻辑 -->
     <string name="action_logic_subtitle_false">未达成</string>
+    <string name="action_logic_subtitle_complete">结束</string>
 
     <string name="action_condition_logic_title">如果…就…</string>
-    <string name="action_condition_logic_subtitle_condition">条件</string>
 
     <string name="action_wait_condition_logic_title">等待条件成立</string>
     <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>
     <string name="action_wait_condition_logic_subtitle_periodic">检查间隔(ms)</string>
 
-    <string name="action_condition_while_logic_title">条件循环执行</string>
-    <string name="action_condition_while_logic_subtitle_condition">条件</string>
-    <string name="action_condition_while_logic_subtitle_timeout">超时(ms)</string>
-    <string name="action_condition_while_logic_subtitle_end">结束</string>
-
     <string name="action_for_loop_logic_title">循环执行…次</string>
+    <string name="action_for_loop_logic_subtitle_curr">当前值</string>
+    <string name="action_for_loop_logic_subtitle_break">提前终止</string>
     <string name="action_for_loop_logic_subtitle_start">开始值</string>
     <string name="action_for_loop_logic_subtitle_end">结束值</string>
-    <string name="action_for_loop_logic_subtitle_curr">当前值</string>
-    <string name="action_for_loop_logic_subtitle_complete">结束</string>
-    <string name="action_for_loop_logic_subtitle_break">提前终止</string>
+
+    <string name="action_condition_while_logic_title">条件循环执行</string>
+    <string name="action_condition_while_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
     <string name="action_sequence_condition_logic_title">顺序条件执行</string>
     <string name="action_sequence_condition_logic_subtitle_condition">条件</string>
 
     <string name="action_random_logic_title">随机执行</string>
-    <string name="action_random_logic_subtitle_times">随机条数</string>
-    <string name="action_random_logic_subtitle_complete">完成</string>
+    <string name="action_random_logic_subtitle_times">执行次数</string>
+    <string name="action_random_logic_subtitle_repeat">允许重复</string>
 
     <string name="action_parallel_logic_title">并行执行到完成…条</string>
     <string name="action_parallel_logic_subtitle_condition">完成条数</string>
     <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
-    <string name="action_parallel_logic_subtitle_complete">达成</string>
 
-    <!-- 任务 - 转换 -->
-    <string name="action_value_convert_string_title">对象转换为文本</string>
-    <string name="action_value_convert_string_subtitle_value">对象</string>
-    <string name="action_value_convert_string_subtitle_string">文本</string>
 
-    <string name="action_position_convert_int_title">位置拆分为数值</string>
-    <string name="action_int_convert_position_title">数值组合为位置</string>
-    <string name="action_int_convert_position_subtitle_x">X</string>
-    <string name="action_int_convert_position_subtitle_y">Y</string>
-    <string name="action_int_convert_position_subtitle_position">位置</string>
-
+    <!-- 任务 - boolean -->
     <string name="action_bool_convert_or_title">任何条件达成</string>
+
     <string name="action_bool_convert_and_title">所有条件达成</string>
+
     <string name="action_bool_convert_not_title">反转条件</string>
-    <string name="action_bool_convert_and_subtitle_condition">条件</string>
 
-    <string name="action_string_convert_int_title">文本转换为数值</string>
-    <string name="action_string_convert_int_subtitle_string">文本</string>
-    <string name="action_string_convert_int_subtitle_value">数值</string>
 
-    <!-- 任务 - 加减乘除 -->
-    <string name="action_int_add_operator_title">数值相加 ＋</string>
-    <string name="action_int_reduce_operator_title">数值相减 －</string>
-    <string name="action_int_multi_operator_title">数值相乘 ×</string>
-    <string name="action_int_div_operator_title">数值相除 ÷</string>
-    <string name="action_int_mod_operator_title">数值取余 %</string>
-    <string name="action_int_equal_operator_title">数值比较 =</string>
-    <string name="action_int_large_operator_title">数值比较 &gt;</string>
-    <string name="action_int_small_operator_title">数值比较 &lt;</string>
-    <string name="action_int_random_operator_title">随机数值</string>
+    <!-- 任务 - string -->
+    <string name="action_string_from_value_title">对象转换为文本</string>
 
-    <string name="action_string_add_operator_title">文本拼接 +</string>
-    <string name="action_string_equal_operator_title">文本比较 =</string>
-    <string name="action_string_contain_operator_title">包含文本</string>
-    <string name="action_string_contain_operator_subtitle_origin">原文</string>
-    <string name="action_string_contain_operator_subtitle_match">正则</string>
-    <string name="action_string_contain_operator_subtitle_first_match">首个匹配</string>
+    <string name="action_string_to_int_title">文本转换为数值</string>
 
-    <string name="action_position_add_operator_title">位置偏移</string>
-    <string name="action_position_add_operator_subtitle_position">位置</string>
-    <string name="action_position_add_operator_subtitle_offset">偏移</string>
+    <string name="action_string_add_title">文本拼接 +</string>
 
-    <string name="action_area_contain_operator_title">位置在区域内</string>
-    <string name="action_area_contain_operator_subtitle_area">区域</string>
-    <string name="action_area_contain_operator_subtitle_position">位置</string>
+    <string name="action_string_equal_title">文本比较 =</string>
+
+    <string name="action_string_regex_title">正则匹配</string>
+    <string name="action_string_regex_subtitle_match">正则表达式</string>
+    <string name="action_string_regex_subtitle_match_result">匹配结果</string>
+
+
+    <!-- 任务 - int -->
+    <string name="action_int_add_title">数值相加 ＋</string>
+    <string name="action_int_reduce_title">数值相减 －</string>
+    <string name="action_int_multi_title">数值相乘 ×</string>
+    <string name="action_int_div_title">数值相除 ÷</string>
+    <string name="action_int_mod_title">数值取余 %</string>
+    <string name="action_int_equal_title">数值比较 =</string>
+    <string name="action_int_large_title">数值比较 &gt;</string>
+    <string name="action_int_small_title">数值比较 &lt;</string>
+    <string name="action_int_in_area_title">数值在区域内</string>
+    <string name="action_int_random_title">随机数值</string>
+
+
+    <!-- 任务 - position -->
+    <string name="action_position_to_int_title">位置拆分为数值</string>
+
+    <string name="action_position_from_int_title">数值组合为位置</string>
+
+    <string name="action_position_offset_title">位置偏移</string>
+    <string name="action_position_offset_subtitle_offset">偏移</string>
+
+    <string name="action_position_in_area_title">位置在区域内</string>
 
     <!-- 针脚 -->
-    <string name="pin_value">对象</string>
     <string name="pin_execute">执行</string>
+
+    <string name="pin_value">对象</string>
+
     <string name="pin_boolean">条件</string>
+
     <string name="pin_int">数值</string>
-    <string name="pin_string">文本</string>
     <string name="pin_value_area">数值区域</string>
-    <string name="pin_image">图片</string>
-    <string name="pin_color">颜色</string>
+    <string name="pin_value_area_low">最低</string>
+    <string name="pin_value_area_high">最高</string>
+    <string name="pin_value_area_step">步长</string>
+    <string name="pin_value_area_min">最小</string>
+    <string name="pin_value_area_max">最大</string>
+
     <string name="pin_point">位置</string>
     <string name="pin_area">区域</string>
-    <string name="pin_path">手势</string>
-    <string name="pin_widget">控件描述</string>
-    <string name="pin_node_info">控件</string>
-    <string name="pin_app">应用</string>
-    <string name="pin_xpath">控件路径</string>
+    <string name="pin_touch">手势</string>
+
+    <string name="pin_long">时间</string>
+
+    <string name="pin_string">文本</string>
+    <string name="pin_string_node_id">控件ID</string>
+
+    <string name="pin_spinner">单选</string>
+    <string name="pin_spinner_hint">选项(逗号分隔)</string>
+
+    <string name="pin_node">控件</string>
+    <string name="pin_node_path">控件路径</string>
+
     <string name="pin_task">任务</string>
+    <string name="pin_app">应用或界面</string>
+
+    <string name="pin_image">图片</string>
+    <string name="pin_color">颜色</string>
 
     <!-- 采集器 -->
     <string name="picker_area_preview_title">选择区域</string>
@@ -373,8 +395,7 @@
 
     <string name="picker_widget_preview_title">选择控件</string>
     <string name="picker_widget_preview_subtitle_id">ID：%1$s</string>
-    <string name="picker_widget_preview_subtitle_level">层级：%1$s</string>
-    <string name="picker_widget_preview_subtitle_xpath">路径：%1$s</string>
+    <string name="picker_widget_preview_subtitle_path">路径：%1$s</string>
 
     <!-- 采集器 - 应用 -->
     <string name="picker_app_title_search">搜索应用</string>
@@ -388,10 +409,6 @@
     <string name="picker_package_subtitle_name">应用名：</string>
     <string name="picker_package_subtitle_package">包名：</string>
     <string name="picker_package_subtitle_activity">活动名：</string>
-
-    <!-- 时间 -->
-    <string name="time_max">最大</string>
-    <string name="time_min">最小</string>
 
     <!-- 位置 -->
     <string name="point_x">X</string>
