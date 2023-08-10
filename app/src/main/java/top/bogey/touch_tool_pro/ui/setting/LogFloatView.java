@@ -53,6 +53,15 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
     private boolean isExpand = true;
     private boolean isZoom = false;
 
+    @Override
+    protected void onDetachedFromWindow() {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) {
+            service.removeListener(this);
+        }
+        super.onDetachedFromWindow();
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     public LogFloatView(@NonNull Context context) {
         super(context);
@@ -210,7 +219,7 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
     public void onProgress(TaskRunnable runnable, Action action, int progress) {
         post(() -> {
             Task task = runnable.getTask();
-            String log = action.getTitle();
+            String log = action.getFullDescription();
             LogInfo logInfo = new LogInfo(progress, log);
 
             ArrayList<LogInfo> logInfoList = logs.computeIfAbsent(task.getId(), k -> new ArrayList<>());
@@ -227,12 +236,4 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
         });
     }
 
-    @Override
-    protected void onDetachedFromWindow() {
-        MainAccessibilityService service = MainApplication.getInstance().getService();
-        if (service != null) {
-            service.removeListener(this);
-        }
-        super.onDetachedFromWindow();
-    }
 }

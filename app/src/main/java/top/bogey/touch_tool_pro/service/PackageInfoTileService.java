@@ -6,7 +6,7 @@ import android.view.View;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.ui.MainActivity;
-import top.bogey.touch_tool_pro.ui.picker.PackagePickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.setting.PackageInfoFloatView;
 import top.bogey.touch_tool_pro.ui.setting.SettingView;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
@@ -20,11 +20,11 @@ public class PackageInfoTileService extends TileService {
         if (service != null && service.isServiceEnabled()) {
             MainActivity activity = MainApplication.getInstance().getMainActivity();
             if (activity != null) {
-                View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
+                View view = EasyFloat.getView(PackageInfoFloatView.class.getName());
                 if (view == null) {
-                    new PackagePickerFloatPreview(activity).show();
+                    new PackageInfoFloatView(activity).show();
                 } else {
-                    EasyFloat.dismiss(PackagePickerFloatPreview.class.getName());
+                    EasyFloat.dismiss(PackageInfoFloatView.class.getName());
                 }
             }
         }
@@ -42,7 +42,7 @@ public class PackageInfoTileService extends TileService {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         Tile tile = getQsTile();
         if (service != null && service.isServiceEnabled()) {
-            View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
+            View view = EasyFloat.getView(PackageInfoFloatView.class.getName());
             tile.setState(view != null ? Tile.STATE_ACTIVE : Tile.STATE_INACTIVE);
         } else tile.setState(Tile.STATE_UNAVAILABLE);
         tile.updateTile();

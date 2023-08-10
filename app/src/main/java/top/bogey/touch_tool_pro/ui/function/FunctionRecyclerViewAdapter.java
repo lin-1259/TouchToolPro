@@ -11,7 +11,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -52,6 +54,8 @@ public class FunctionRecyclerViewAdapter extends RecyclerView.Adapter<FunctionRe
         } else {
             functions.addAll(functionView.task.getFunctionsByTag(tag));
         }
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        functions.sort((fun1, fun2) -> collator.compare(fun1.getTitle(), fun2.getTitle()));
         notifyDataSetChanged();
     }
 

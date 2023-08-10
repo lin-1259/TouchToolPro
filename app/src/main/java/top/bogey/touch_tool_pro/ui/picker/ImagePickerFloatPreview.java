@@ -80,11 +80,15 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
         binding.playButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isCaptureEnabled()) {
-                List<Rect> rectList = service.binder.matchColor(pinColor.getColor(), new Rect());
-                if (rectList != null && rectList.size() > 0) {
-                    Rect rect = rectList.get(0);
-                    service.runGesture(rect.centerX(), rect.centerY(), 100, null);
-                }
+                EasyFloat.hide(tag);
+                postDelayed(() -> {
+                    List<Rect> rectList = service.binder.matchColor(pinColor.getColor(), new Rect());
+                    if (rectList != null && rectList.size() > 0) {
+                        Rect rect = rectList.get(0);
+                        service.runGesture(rect.centerX(), rect.centerY(), 100, null);
+                    }
+                    EasyFloat.show(tag);
+                }, 100);
             }
         });
 

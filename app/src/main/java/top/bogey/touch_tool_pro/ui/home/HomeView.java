@@ -11,19 +11,27 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.databinding.ViewHomeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.BaseActivity;
+import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -33,6 +41,33 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class HomeView extends Fragment {
     private ViewHomeBinding binding;
+
+    private final MenuProvider menuProvider = new MenuProvider() {
+        @Override
+        public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+            menuInflater.inflate(R.menu.menu_home, menu);
+        }
+
+        @Override
+        public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.restartService) {
+                MainActivity activity = MainApplication.getInstance().getMainActivity();
+                boolean result = activity.stopAccessibilityServiceBySecurePermission();
+                if (!result) {
+                    Toast.makeText(activity, R.string.restart_accessibility_service_error, Toast.LENGTH_SHORT).show();
+                } else {
+                    binding.getRoot().postDelayed(() -> {
+                        SettingSave.getInstance().setServiceEnabled(true);
+                        activity.restartAccessibilityServiceBySecurePermission();
+                        Toast.makeText(activity, R.string.restart_accessibility_service_complete, Toast.LENGTH_SHORT).show();
+                    }, 1000);
+                }
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onResume() {
@@ -44,6 +79,7 @@ public class HomeView extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ViewHomeBinding.inflate(inflater, container, false);
+        requireActivity().addMenuProvider(menuProvider, getViewLifecycleOwner());
 
         binding.serviceButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();

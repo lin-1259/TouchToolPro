@@ -42,4 +42,8 @@ public class RunTaskAction extends NormalAction{
         }
         executeNext(runnable, context, falsePin);
     }
+
+    public Pin getTaskPin() {
+        return taskPin;
+    }
 }

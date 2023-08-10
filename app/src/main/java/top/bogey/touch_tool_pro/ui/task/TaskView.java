@@ -17,6 +17,7 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
@@ -36,6 +37,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.databinding.ViewTaskBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
 public class TaskView extends Fragment implements TaskSaveChangedListener, TaskRunningListener {
@@ -226,7 +228,20 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
 
     private void exportSelectTasks() {
         if (selectedTasks.size() == 0) return;
-        AppUtils.exportFunctionContexts(requireContext(), new ArrayList<>(selectedTasks.values()));
+        HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new ArrayList<>(selectedTasks.values()));
+        if (view.isEmpty()) return;
+        view.switchState(true);
+
+        new MaterialAlertDialogBuilder(requireContext())
+                .setPositiveButton(R.string.enter, (dialog, which) -> {
+                    AppUtils.exportFunctionContexts(requireContext(), view.getSelectActionContext());
+                    dialog.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setView(view)
+                .setTitle(R.string.task_setting_export)
+                .show();
+
         unSelectAll();
     }
 

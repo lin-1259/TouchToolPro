@@ -298,8 +298,7 @@ public class AppUtils {
                 byte[] bytes = new byte[inputStream.available()];
                 int read = inputStream.read(bytes);
                 if (read > 0) {
-                    return GsonUtils.getAsObject(new String(bytes), new TypeToken<ArrayList<FunctionContext>>() {
-                    }.getType(), new ArrayList<>());
+                    return GsonUtils.getAsObject(new String(bytes), TypeToken.getParameterized(ArrayList.class, FunctionContext.class).getType(), new ArrayList<>());
                 }
             }
         } catch (IOException e) {

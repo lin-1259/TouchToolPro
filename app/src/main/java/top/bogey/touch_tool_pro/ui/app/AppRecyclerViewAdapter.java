@@ -15,26 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.ViewAppItemBinding;
 import top.bogey.touch_tool_pro.utils.ResultCallback;
 
 public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerViewAdapter.ViewHolder> {
-    private final Map<String, ArrayList<String>> selectedActivities;
+    private final HashMap<String, ArrayList<String>> selectedActivities;
     private final ResultCallback callback;
 
     private final ArrayList<PackageInfo> apps = new ArrayList<>();
 
     private final boolean single;
+    private final boolean all;
 
-    private boolean showMore = true;
+    private final boolean showActivity;
 
-    public AppRecyclerViewAdapter(Map<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single) {
+    public AppRecyclerViewAdapter(HashMap<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single, boolean all, boolean showActivity) {
         this.selectedActivities = selectedActivities;
         this.callback = callback;
         this.single = single;
+        this.all = all;
+        this.showActivity = showActivity;
     }
 
     @NonNull
@@ -93,10 +96,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         }
     }
 
-    public void setShowMore(boolean showMore) {
-        this.showMore = showMore;
-    }
-
     protected class ViewHolder extends RecyclerView.ViewHolder {
         private final ViewAppItemBinding binding;
         private final Context context;
@@ -115,8 +114,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 ArrayList<String> remove = selectedActivities.remove(info.packageName);
                 if (remove == null || remove.size() > 0) {
                     if (single) {
-                        String[] keys = new String[selectedActivities.size()];
-                        selectedActivities.keySet().toArray(keys);
+                        ArrayList<String> keys = new ArrayList<>(selectedActivities.keySet());
                         selectedActivities.clear();
                         for (String packageName : keys) {
                             for (int i = 0; i < apps.size(); i++) {
@@ -142,6 +140,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                         }
                     }
                 }
+
                 notifyItemChanged(getBindingAdapterPosition());
                 callback.onResult(true);
             });
@@ -174,7 +173,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
             if (info.activities != null) {
                 for (ActivityInfo activityInfo : info.activities) {
-                    if (!single || activityInfo.exported) {
+                    if (all || activityInfo.exported) {
                         activities.add(activityInfo.name);
                     }
                 }
@@ -208,7 +207,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 binding.selectAppButton.setText(String.valueOf(list.size()));
                 binding.selectAppButton.setIcon(null);
             }
-            binding.selectAppButton.setVisibility(((!showMore) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
+            binding.selectAppButton.setVisibility(((!showActivity) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
         }
     }
 }

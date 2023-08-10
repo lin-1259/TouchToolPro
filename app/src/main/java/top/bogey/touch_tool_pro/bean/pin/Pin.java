@@ -64,8 +64,7 @@ public class Pin extends IdentityInfo {
         value = GsonUtils.getAsObject(jsonObject, "value", PinObject.class, null);
         out = GsonUtils.getAsBoolean(jsonObject, "out", false);
         removeAble = GsonUtils.getAsBoolean(jsonObject, "removeAble", false);
-        links.putAll(GsonUtils.getAsObject(jsonObject, "links", new TypeToken<HashMap<String, String>>() {
-        }.getType(), new HashMap<>()));
+        links.putAll(GsonUtils.getAsObject(jsonObject, "links", TypeToken.getParameterized(HashMap.class, String.class, String.class).getType(), new HashMap<>()));
     }
 
     @Override

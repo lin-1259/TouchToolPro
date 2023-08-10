@@ -24,7 +24,7 @@ public class SelectActivityDialog extends FrameLayout {
 
         adapter = new SelectActivityRecyclerViewAdapter(single, selectedNameList);
         binding.activityBox.setAdapter(adapter);
-        adapter.refreshActivityNames(new ArrayList<>(activityNameList));
+        adapter.refreshActivityNames(activityNameList);
 
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
@@ -32,7 +32,7 @@ public class SelectActivityDialog extends FrameLayout {
                 if (s != null) {
                     String searchText = s.toString();
                     if (searchText.isEmpty()) {
-                        adapter.refreshActivityNames(new ArrayList<>(activityNameList));
+                        adapter.refreshActivityNames(activityNameList);
                     } else {
                         Pattern pattern = Pattern.compile(searchText.toLowerCase());
                         ArrayList<String> newActivityNameList = new ArrayList<>();

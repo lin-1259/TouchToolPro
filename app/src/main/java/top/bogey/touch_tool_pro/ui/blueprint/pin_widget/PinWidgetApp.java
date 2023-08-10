@@ -70,8 +70,10 @@ public class PinWidgetApp extends PinWidget<PinApplication> {
     private int subTypeToIndex(PinSubType subType) {
         return switch (subType) {
             case SINGLE_ACTIVITY -> 1;
-            case MULTI -> 2;
-            case MULTI_ACTIVITY -> 3;
+            case SINGLE_ALL_ACTIVITY -> 2;
+            case MULTI -> 3;
+            case MULTI_ACTIVITY -> 4;
+            case MULTI_ALL_ACTIVITY -> 5;
             default -> 0;
         };
     }
@@ -79,8 +81,10 @@ public class PinWidgetApp extends PinWidget<PinApplication> {
     private PinSubType indexToSubType(int index) {
         return switch (index) {
             case 1 -> PinSubType.SINGLE_ACTIVITY;
-            case 2 -> PinSubType.MULTI;
-            case 3 -> PinSubType.MULTI_ACTIVITY;
+            case 2 -> PinSubType.SINGLE_ALL_ACTIVITY;
+            case 3 -> PinSubType.MULTI;
+            case 4 -> PinSubType.MULTI_ACTIVITY;
+            case 5 -> PinSubType.MULTI_ALL_ACTIVITY;
             default -> PinSubType.SINGLE;
         };
     }

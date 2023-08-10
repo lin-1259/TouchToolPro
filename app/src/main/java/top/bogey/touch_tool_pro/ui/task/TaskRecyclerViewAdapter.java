@@ -11,8 +11,10 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -85,6 +87,8 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         ArrayList<Task> newTasks = SaveRepository.getInstance().getTasksByTag(tag);
         tasks.clear();
         tasks.addAll(newTasks);
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        tasks.sort((task1, task2) -> collator.compare(task1.getTitle(), task2.getTitle()));
         notifyDataSetChanged();
     }
 

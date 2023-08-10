@@ -37,12 +37,9 @@ public abstract class FunctionContext extends IdentityInfo {
     public FunctionContext(JsonObject jsonObject) {
         super(jsonObject);
         type = GsonUtils.getAsObject(jsonObject, "type", FunctionType.class, FunctionType.FUNCTION);
-        actions.addAll(GsonUtils.getAsObject(jsonObject, "actions", new TypeToken<HashSet<Action>>() {
-        }.getType(), new HashSet<>()));
-        vars.putAll(GsonUtils.getAsObject(jsonObject, "vars", new TypeToken<HashMap<String, PinObject>>() {
-        }.getType(), new HashMap<>()));
-        tags = GsonUtils.getAsObject(jsonObject, "tags", new TypeToken<HashSet<String>>() {
-        }.getType(), new HashSet<>());
+        actions.addAll(GsonUtils.getAsObject(jsonObject, "actions", TypeToken.getParameterized(HashSet.class, Action.class).getType(), new HashSet<>()));
+        vars.putAll(GsonUtils.getAsObject(jsonObject, "vars", TypeToken.getParameterized(HashMap.class, String.class, PinObject.class).getType(), new HashMap<>()));
+        tags = GsonUtils.getAsObject(jsonObject, "tags", TypeToken.getParameterized(HashSet.class, String.class).getType(), new HashSet<>());
     }
 
     public HashSet<Action> getActions() {

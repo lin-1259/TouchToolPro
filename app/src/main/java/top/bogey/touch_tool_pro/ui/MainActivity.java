@@ -131,8 +131,7 @@ public class MainActivity extends BaseActivity {
             try (InputStream inputStream = getAssets().open("default")) {
                 byte[] bytes = new byte[inputStream.available()];
                 if (inputStream.read(bytes) > 0) {
-                    ArrayList<FunctionContext> functionContexts = GsonUtils.getAsObject(new String(bytes), new TypeToken<ArrayList<FunctionContext>>() {
-                    }.getType(), new ArrayList<>());
+                    ArrayList<FunctionContext> functionContexts = GsonUtils.getAsObject(new String(bytes), TypeToken.getParameterized(ArrayList.class, FunctionContext.class).getType(), new ArrayList<>());
                     functionContexts.forEach(FunctionContext::save);
                 }
             } catch (IOException e) {
@@ -175,7 +174,8 @@ public class MainActivity extends BaseActivity {
     public void saveTasks(Uri uri) {
         ArrayList<FunctionContext> functionContexts = AppUtils.importFunctionContexts(this, uri);
         HandleFunctionContextView view = new HandleFunctionContextView(this, functionContexts);
-        if (view.getShowActionContext().size() == 0) return;
+        if (view.isEmpty()) return;
+        view.switchState(false);
 
         new MaterialAlertDialogBuilder(this)
                 .setPositiveButton(R.string.enter, (dialog, which) -> {

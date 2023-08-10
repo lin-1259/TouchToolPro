@@ -23,9 +23,11 @@
 
     <string-array name="select_app_type">
         <item>单应用</item>
-        <item>单应用或活动</item>
+        <item>单应用或导出活动</item>
+        <item>单应用或全部活动</item>
         <item>多应用</item>
-        <item>多应用或活动</item>
+        <item>多应用或导出活动</item>
+        <item>多应用或全部活动</item>
     </string-array>
 
     <string-array name="long_value_type">

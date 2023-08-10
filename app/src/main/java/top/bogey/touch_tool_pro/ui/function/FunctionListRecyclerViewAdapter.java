@@ -44,10 +44,10 @@ public class FunctionListRecyclerViewAdapter extends RecyclerView.Adapter<Functi
     }
 
     public void setTags(ArrayList<String> tags) {
-        Collator collator = Collator.getInstance(Locale.CHINA);
-        tags.sort(collator::compare);
         this.tags.clear();
         this.tags.addAll(tags);
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        this.tags.sort(collator::compare);
         notifyDataSetChanged();
     }
 

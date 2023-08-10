@@ -160,18 +160,21 @@ public class WorldState {
         }
     }
 
-    public void enterActivity(String packageName, String className) {
+    public boolean enterActivity(String packageName, String className) {
         if (isActivityClass(packageName, className)) {
             if (packageName.equals(MainApplication.getInstance().getPackageName())) {
                 setActivityInfo(packageName, className);
                 showManualActionDialog(false);
+                return true;
             } else {
                 if (setActivityInfo(packageName, className)) {
                     checkAutoStartAction(AppStartAction.class);
                     showManualActionDialog(true);
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     public String getPackageName() {

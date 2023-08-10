@@ -10,6 +10,7 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.databinding.ViewTaskListBinding;
 
 public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRecyclerViewAdapter.ViewHolder> {
@@ -44,10 +45,12 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
     }
 
     public void setTags(ArrayList<String> tags) {
-        Collator collator = Collator.getInstance(Locale.CHINA);
-        tags.sort(collator::compare);
         this.tags.clear();
         this.tags.addAll(tags);
+        boolean remove = this.tags.remove(SaveRepository.SHORTCUT_TAG);
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        this.tags.sort(collator::compare);
+        if (remove) this.tags.add(SaveRepository.SHORTCUT_TAG);
         notifyDataSetChanged();
     }
 

@@ -14,7 +14,7 @@ import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class ManualStartAction extends StartAction {
-    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ACTIVITY), R.string.pin_app);
+    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY), R.string.pin_app);
 
     public ManualStartAction() {
         super(ActionType.MANUAL_START);

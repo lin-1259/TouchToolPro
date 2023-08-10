@@ -240,4 +240,23 @@ public class BaseActivity extends AppCompatActivity {
         Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, String.format("%s:%s/%s", enabledService, getPackageName(), MainAccessibilityService.class.getName()));
         Settings.Secure.putInt(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 1);
     }
+
+    public boolean stopAccessibilityServiceBySecurePermission() {
+        // 是否有权限去重启无障碍服务
+        if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) return false;
+
+        // 看一下服务有没有开启
+        AccessibilityManager manager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
+        for (AccessibilityServiceInfo info : manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)) {
+            if (info.getId().contains(getPackageName())) {
+                // 开启去关闭
+                String enabledService = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+                String replace = enabledService.replaceFirst(String.format(":?%s/%s", getPackageName(), MainAccessibilityService.class.getName()), "");
+                Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, replace);
+                Settings.Secure.putInt(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 1);
+                return true;
+            }
+        }
+        return true;
+    }
 }

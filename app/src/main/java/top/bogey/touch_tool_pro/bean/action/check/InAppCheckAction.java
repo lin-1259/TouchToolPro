@@ -14,8 +14,8 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class InAppCheckAction extends CheckAction {
-    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ACTIVITY), R.string.pin_app);
-    private transient Pin checkAppPin = new Pin(new PinApplication(PinSubType.SINGLE_ACTIVITY), R.string.action_in_app_check_subtitle_who);
+    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY), R.string.pin_app);
+    private transient Pin checkAppPin = new Pin(new PinApplication(PinSubType.SINGLE_ALL_ACTIVITY), R.string.action_in_app_check_subtitle_who);
 
     public InAppCheckAction() {
         super(ActionType.CHECK_IN_APP);

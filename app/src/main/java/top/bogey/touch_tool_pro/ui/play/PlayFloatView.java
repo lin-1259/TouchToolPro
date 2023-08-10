@@ -190,13 +190,14 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     public void checkShow() {
         postDelayed(() -> {
             if (binding.buttonBox.getChildCount() == 0) dismiss();
-        }, 200);
+        }, 100);
     }
 
     private static class FloatCallback extends FloatBaseCallback {
         @Override
         public void onDragEnd() {
             FloatViewHelper helper = EasyFloat.getHelper(PlayFloatView.class.getName());
+            if (helper == null) return;
             Point position = helper.getConfigPosition();
             SettingSave.getInstance().setPlayViewPosition(new Point(position.x, position.y));
         }

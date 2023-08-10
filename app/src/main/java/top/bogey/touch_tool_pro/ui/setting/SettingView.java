@@ -24,7 +24,6 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.databinding.ViewSettingBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.MainActivity;
-import top.bogey.touch_tool_pro.ui.picker.PackagePickerFloatPreview;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -40,6 +39,7 @@ public class SettingView extends Fragment {
 
     public static void resetSwitchState() {
         MainActivity activity = MainApplication.getInstance().getMainActivity();
+        if (activity == null) return;
         Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
         if (navFragment == null || !navFragment.isAdded()) return;
         Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
@@ -50,7 +50,7 @@ public class SettingView extends Fragment {
 
     public void refreshSwitchState() {
         binding.playViewVisibleSwitch.setChecked(SettingSave.getInstance().isPlayViewVisible());
-        binding.showPackageInfoSwitch.setChecked(EasyFloat.getView(PackagePickerFloatPreview.class.getName()) != null);
+        binding.showPackageInfoSwitch.setChecked(EasyFloat.getView(PackageInfoFloatView.class.getName()) != null);
         binding.logSwitch.setChecked(EasyFloat.getView(LogFloatView.class.getName()) != null);
     }
 
@@ -67,11 +67,11 @@ public class SettingView extends Fragment {
                 Toast.makeText(getContext(), R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
                 return;
             }
-            View view = EasyFloat.getView(PackagePickerFloatPreview.class.getName());
+            View view = EasyFloat.getView(PackageInfoFloatView.class.getName());
             if (view == null) {
-                new PackagePickerFloatPreview(requireContext()).show();
+                new PackageInfoFloatView(requireContext()).show();
             } else {
-                EasyFloat.dismiss(PackagePickerFloatPreview.class.getName());
+                EasyFloat.dismiss(PackageInfoFloatView.class.getName());
             }
         });
         binding.logSwitch.setOnClickListener(v -> {

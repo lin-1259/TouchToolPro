@@ -51,8 +51,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         super(jsonObject);
         type = GsonUtils.getAsObject(jsonObject, "type", ActionType.class, ActionType.BASE);
 
-        tmpPins.addAll(GsonUtils.getAsObject(jsonObject, "pins", new TypeToken<ArrayList<Pin>>() {
-        }.getType(), new ArrayList<>()));
+        tmpPins.addAll(GsonUtils.getAsObject(jsonObject, "pins", TypeToken.getParameterized(ArrayList.class, Pin.class).getType(), new ArrayList<>()));
 
         x = GsonUtils.getAsInt(jsonObject, "x", 0);
         y = GsonUtils.getAsInt(jsonObject, "y", 0);

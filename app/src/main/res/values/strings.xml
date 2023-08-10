@@ -88,6 +88,11 @@
     <string name="auto_allow_capture">自动授予录屏权限</string>
     <string name="auto_allow_capture_tips">软件请求录屏权限会弹窗让用户手动授予录屏权限，执行任务时需要主动去处理授予操作，所以可以授予应用“自动允许录屏”的权限来免去麻烦。但是，这可能会带来一些安全隐患。如果你不信任本软件，请不要授予！！！</string>
 
+    <string name="restart_accessibility_service">重启无障碍服务</string>
+    <string name="restart_accessibility_service_error">权限不足，重启无障碍服务失败</string>
+    <string name="restart_accessibility_service_complete">重启完毕</string>
+
+
     <string name="tag_no">未分类</string>
     <string name="tag_shortcut">快捷方式</string>
     <string name="tag_add">添加新的标签</string>
@@ -452,6 +457,7 @@
     <string name="task_setting_backup_error">备份任务失败，没有可用来保存文件的应用</string>
 
     <string name="task_setting_import">导入任务</string>
+    <string name="task_setting_export">导入任务</string>
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
 
     <string name="task_setting_log">实时任务日志</string>

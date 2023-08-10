@@ -124,7 +124,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
 
     private void initFunctions(TreeNode rootNode, ArrayList<Function> functions, TreeNodeSubtype subtype) {
         HashMap<String, ArrayList<Function>> functionMap = new HashMap<>();
-        Collator collator = Collator.getInstance(Locale.CHINA);
+        ArrayList<String> allTags = new ArrayList<>();
         functions.forEach(function -> {
             HashSet<String> tags = function.getTags();
             if (tags == null || tags.isEmpty() || (tags.size() == 1 && tags.contains(SaveRepository.NO_TAG))) {
@@ -134,14 +134,20 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 for (String tag : tags) {
                     ArrayList<Function> list = functionMap.computeIfAbsent(tag, k -> new ArrayList<>());
                     list.add(function);
+                    if (!allTags.contains(tag)) allTags.add(tag);
                 }
             }
         });
 
-        // 带分类的
-        functionMap.forEach((tag, list) -> {
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        allTags.sort(collator::compare);
+
+        allTags.forEach(tag -> {
+            ArrayList<Function> list = functionMap.get(tag);
+            if (list == null) return;
             list.sort((fun1, fun2) -> collator.compare(fun1.getTitle(), fun2.getTitle()));
             if (tag.equals(SaveRepository.NO_TAG)) return;
+            // 带分类的
             TreeNode treeNode = new TreeNode(new TreeNodeInfo(TreeNodeType.SUBTYPE, subtype, tag), R.layout.view_card_list_subtype_item);
             list.forEach(function -> {
                 TreeNode node = new TreeNode(new TreeNodeInfo(TreeNodeType.NODE, subtype, function.getId(), function.getTitle()), R.layout.view_card_list_item);
@@ -160,7 +166,12 @@ public class CustomTreeAdapter extends TreeViewAdapter {
     }
 
     private void initVariables(TreeNode rootNode, HashMap<String, PinValue> variables, TreeNodeSubtype subtype) {
-        variables.forEach((key, variable) -> {
+        ArrayList<String> list = new ArrayList<>(variables.keySet());
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        list.sort(collator::compare);
+        list.forEach(key -> {
+            PinValue variable = variables.get(key);
+            if (variable == null) return;
             TreeNode treeNode = new TreeNode(new TreeNodeInfo(TreeNodeType.NODE, subtype, key, variable), R.layout.view_card_list_attr_item);
             rootNode.addChild(treeNode);
         });

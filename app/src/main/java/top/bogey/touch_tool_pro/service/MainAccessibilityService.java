@@ -76,7 +76,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 30, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
-
+    private final HashSet<EnterActivityListener> enterActivityListeners = new HashSet<>();
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -88,7 +88,9 @@ public class MainAccessibilityService extends AccessibilityService {
 
         WorldState worldState = WorldState.getInstance();
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-            worldState.enterActivity(packageName, className);
+            if (worldState.enterActivity(packageName, className)) {
+                enterActivityListeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onEnterActivity(packageName, className));
+            }
         }
 
         if (event.getEventType() == AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED) {
@@ -167,6 +169,14 @@ public class MainAccessibilityService extends AccessibilityService {
             WorkManager.getInstance(this).cancelAllWork();
             stopAllTask();
         }
+    }
+
+    public void addEnterListener(EnterActivityListener listener) {
+        enterActivityListeners.add(listener);
+    }
+
+    public void removeEnterListener(EnterActivityListener listener) {
+        enterActivityListeners.remove(listener);
     }
 
     //-----------------------------------任务----------------------------------

@@ -36,8 +36,7 @@ public class PinSpinner extends PinValue {
     public PinSpinner(JsonObject jsonObject) {
         super(jsonObject);
         index = GsonUtils.getAsInt(jsonObject, "index", 0);
-        arrays.addAll(GsonUtils.getAsObject(jsonObject, "arrays", new TypeToken<ArrayList<String>>() {
-        }.getType(), new ArrayList<>()));
+        arrays.addAll(GsonUtils.getAsObject(jsonObject, "arrays", TypeToken.getParameterized(ArrayList.class, String.class).getType(), new ArrayList<>()));
     }
 
     @Override

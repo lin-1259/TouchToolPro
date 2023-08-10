@@ -13,7 +13,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashMap;
 
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
@@ -22,14 +22,14 @@ import top.bogey.touch_tool_pro.utils.ResultCallback;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
 public class AppView extends BottomSheetDialogFragment {
-    private final Map<String, ArrayList<String>> packages;
+    private final HashMap<String, ArrayList<String>> packages;
     private final PinSubType mode;
     private ResultCallback callback;
 
     private CharSequence searchText = "";
     private boolean showSystem = false;
 
-    public AppView(Map<String, ArrayList<String>> packages, PinSubType mode, ResultCallback callback) {
+    public AppView(HashMap<String, ArrayList<String>> packages, PinSubType mode, ResultCallback callback) {
         this.packages = packages;
         this.mode = mode;
         this.callback = callback;
@@ -39,8 +39,9 @@ public class AppView extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewAppBinding binding = ViewAppBinding.inflate(inflater, container, false);
-        boolean single = mode == PinSubType.SINGLE || mode == PinSubType.SINGLE_ACTIVITY;
-        boolean withActivity = mode == PinSubType.SINGLE_ACTIVITY || mode == PinSubType.MULTI_ACTIVITY;
+        boolean single = mode == PinSubType.SINGLE || mode == PinSubType.SINGLE_ACTIVITY || mode == PinSubType.SINGLE_ALL_ACTIVITY;
+        boolean all = mode == PinSubType.SINGLE_ALL_ACTIVITY || mode == PinSubType.MULTI_ALL_ACTIVITY;
+        boolean withActivity = mode != PinSubType.SINGLE && mode != PinSubType.MULTI;
         AppRecyclerViewAdapter adapter = new AppRecyclerViewAdapter(packages, result -> {
             if (single) {
                 if (callback != null) {
@@ -49,10 +50,9 @@ public class AppView extends BottomSheetDialogFragment {
                     dismiss();
                 }
             }
-        }, single);
+        }, single, all, withActivity);
         binding.appIconBox.setAdapter(adapter);
         adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
-        adapter.setShowMore(withActivity);
 
         binding.exchangeButton.setOnClickListener(v -> {
             showSystem = !showSystem;

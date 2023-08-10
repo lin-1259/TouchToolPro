@@ -30,8 +30,7 @@ public class PinApplication extends PinValue {
 
     public PinApplication(JsonObject jsonObject) {
         super(jsonObject);
-        apps.putAll(GsonUtils.getAsObject(jsonObject, "apps", new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
-        }.getType(), new LinkedHashMap<>()));
+        apps.putAll(GsonUtils.getAsObject(jsonObject, "apps", TypeToken.getParameterized(LinkedHashMap.class, String.class, TypeToken.getParameterized(ArrayList.class, String.class).getType()).getType(), new LinkedHashMap<>()));
     }
 
     public boolean contain(Context context, String packageName, String activityName) {

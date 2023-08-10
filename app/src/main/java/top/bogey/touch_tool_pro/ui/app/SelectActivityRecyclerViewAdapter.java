@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.radiobutton.MaterialRadioButton;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class SelectActivityRecyclerViewAdapter extends RecyclerView.Adapter<SelectActivityRecyclerViewAdapter.ViewHolder> {
     private final ArrayList<String> activityNames = new ArrayList<>();
@@ -43,21 +45,25 @@ public class SelectActivityRecyclerViewAdapter extends RecyclerView.Adapter<Sele
     }
 
     public void refreshActivityNames(ArrayList<String> newActivityNames) {
-        if (newActivityNames != null) {
-            for (int i = selectedActivityNames.size() - 1; i >= 0; i--) {
-                String activityName = selectedActivityNames.get(i);
-                if (!newActivityNames.contains(activityName)) {
-                    newActivityNames.add(0, activityName);
-                }
+        if (newActivityNames == null) newActivityNames = new ArrayList<>();
+        else newActivityNames = new ArrayList<>(newActivityNames);
+
+        for (int i = selectedActivityNames.size() - 1; i >= 0; i--) {
+            String activityName = selectedActivityNames.get(i);
+            if (!newActivityNames.contains(activityName)) {
+                newActivityNames.add(0, activityName);
             }
         }
 
-        if (newActivityNames == null || newActivityNames.size() == 0) {
+        if (newActivityNames.size() == 0) {
             int size = activityNames.size();
             activityNames.clear();
             notifyItemRangeRemoved(0, size);
             return;
         }
+
+        Collator collator = Collator.getInstance(Locale.CHINA);
+        newActivityNames.sort(collator::compare);
 
         for (int i = activityNames.size() - 1; i >= 0; i--) {
             String info = activityNames.get(i);
