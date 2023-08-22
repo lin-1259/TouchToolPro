@@ -159,6 +159,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
         // 未分类的
         ArrayList<Function> list = functionMap.get(SaveRepository.NO_TAG);
         if (list == null) return;
+        list.sort((fun1, fun2) -> collator.compare(fun1.getTitle(), fun2.getTitle()));
         list.forEach(function -> {
             TreeNode node = new TreeNode(new TreeNodeInfo(TreeNodeType.NODE, subtype, function.getId(), function.getTitle()), R.layout.view_card_list_item);
             rootNode.addChild(node);

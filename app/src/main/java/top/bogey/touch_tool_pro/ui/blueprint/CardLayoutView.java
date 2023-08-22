@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -58,6 +59,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
     private final Paint gridPaint;
     private final Paint linePaint;
     private final int[] location = new int[2];
+    private final RectF show = new RectF();
 
     private final LinkedHashMap<String, ActionCard<?>> cardMap = new LinkedHashMap<>();
     private FunctionContext functionContext;
@@ -262,8 +264,18 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         Action action = card.getAction();
         card.setScaleX(scale);
         card.setScaleY(scale);
-        card.setX(action.getX() * getScaleGridSize() + offsetX);
-        card.setY(action.getY() * getScaleGridSize() + offsetY);
+        float x = action.getX() * getScaleGridSize() + offsetX;
+        float y = action.getY() * getScaleGridSize() + offsetY;
+        card.setX(x);
+        card.setY(y);
+        float width = card.getWidth() * scale;
+        float height = card.getHeight() * scale;
+        RectF cardArea = new RectF(x, y, x + width, y + height);
+        if (RectF.intersects(show, cardArea)) {
+            card.setVisibility(VISIBLE);
+        } else {
+            card.setVisibility(INVISIBLE);
+        }
     }
 
     private void showSelectActionDialog() {
@@ -331,7 +343,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         float startX = offsetX - ofX;
         for (int i = 0; i < gridCol; i++) {
             if (offsetX == i * gridScaleSize + ofX) {
-                gridPaint.setStrokeWidth(6);
+                gridPaint.setStrokeWidth(4);
             } else {
                 float v = (startX - i * gridScaleSize) % bigGridSize;
                 gridPaint.setStrokeWidth((Math.abs(v) < 1 || Math.abs(v) > bigGridSize - 1) ? 2 : 0.5f);
@@ -671,8 +683,10 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         super.onLayout(changed, left, top, right, bottom);
         if (changed) {
             getLocationOnScreen(location);
+            show.set(0, 0, getWidth(), getHeight());
             dragX = location[0];
             dragY = location[1];
+            setCardsPosition();
         }
     }
 
