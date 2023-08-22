@@ -27,6 +27,7 @@ import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.ViewFunctionBinding;
+import top.bogey.touch_tool_pro.ui.custom.CreateFunctionContextDialogBuilder;
 import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
@@ -123,14 +124,26 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
 
         binding.folderButton.setOnClickListener(v -> showTagView());
 
-        binding.addButton.setOnClickListener(v -> AppUtils.showEditDialog(getContext(), R.string.function_add, null, result -> {
-            if (result != null && result.length() > 0) {
-                Function function = new Function();
-                function.setTitle(result.toString());
-                if (task != null) task.addFunction(function);
-                function.save();
+        binding.addButton.setOnClickListener(v -> {
+            String tag = null;
+            TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
+            if (tab != null && tab.getText() != null) {
+                tag = tab.getText().toString();
+                if (SaveRepository.NO_TAG.equals(tag)) tag = null;
             }
-        }));
+            CreateFunctionContextDialogBuilder dialog = new CreateFunctionContextDialogBuilder(requireContext(), SaveRepository.getInstance().getFunctionTags(), tag);
+            dialog.setTitle(R.string.function_add);
+            dialog.setCallback(result -> {
+                if (result && !dialog.getTitle().isEmpty()) {
+                    Function function = new Function();
+                    function.setTitle(dialog.getTitle());
+                    function.addTags(dialog.getTags());
+                    if (task != null) task.addFunction(function);
+                    function.save();
+                }
+            });
+            dialog.show();
+        });
 
         return binding.getRoot();
     }

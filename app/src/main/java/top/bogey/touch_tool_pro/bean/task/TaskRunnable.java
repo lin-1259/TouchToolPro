@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 
 public class TaskRunnable implements Runnable{
     private final Task task;
-    private final FunctionContext context;
+    private FunctionContext context;
     private final StartAction startAction;
 
     private final HashSet<TaskRunningListener> listeners = new HashSet<>();
@@ -19,12 +19,6 @@ public class TaskRunnable implements Runnable{
     private Boolean paused = null;
 
     private Future<?> future;
-
-    public TaskRunnable(Task task, StartAction startAction) {
-        this.task = task;
-        context = task;
-        this.startAction = startAction;
-    }
 
     public TaskRunnable(Task task, FunctionContext context, StartAction startAction) {
         this.task = task;
@@ -45,6 +39,7 @@ public class TaskRunnable implements Runnable{
             e.printStackTrace();
         }
         listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onEnd(this));
+        context = null;
     }
 
     public void addProgress(Action action) {

@@ -11,6 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -130,6 +131,12 @@ public abstract class FunctionContext extends IdentityInfo {
     public void addTag(String tag) {
         if (tags == null) tags = new HashSet<>();
         tags.add(tag);
+    }
+
+    public void addTags(Collection<String> tags) {
+        for (String tag : tags) {
+            addTag(tag);
+        }
     }
 
     public void removeTag(String tag) {

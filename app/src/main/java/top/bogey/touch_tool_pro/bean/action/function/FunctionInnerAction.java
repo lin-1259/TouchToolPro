@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionListener;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
@@ -17,7 +18,7 @@ public abstract class FunctionInnerAction extends Action implements ActionListen
     public FunctionInnerAction(ActionType type, Function owner) {
         super(type);
         // 添加初始执行针脚
-        Pin pin = addPin(new Pin(new PinExecute()));
+        Pin pin = addPin(new Pin(new PinExecute(), R.string.pin_execute));
         pin.setRemoveAble(false);
         Pin copy = (Pin) pin.copy();
         copy.setOut(!copy.isOut());

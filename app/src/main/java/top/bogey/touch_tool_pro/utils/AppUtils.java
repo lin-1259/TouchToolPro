@@ -34,11 +34,12 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.state.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
+import top.bogey.touch_tool_pro.bean.task.Task;
 
 public class AppUtils {
-    public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, int method);
+    public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, boolean withColor);
 
-    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor);
+    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
 
     public static boolean isDebug(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
@@ -66,7 +67,7 @@ public class AppUtils {
 
     public static void showEditDialog(Context context, @StringRes int title, CharSequence defaultValue, EditCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_text_input, null);
-        TextInputEditText editText = view.findViewById(R.id.title_edit);
+        TextInputEditText editText = view.findViewById(R.id.titleEdit);
         editText.setText(defaultValue);
 
         new MaterialAlertDialogBuilder(context)
@@ -232,7 +233,14 @@ public class AppUtils {
     @SuppressLint("DefaultLocale")
     private static String getFunctionContextsFileName(Context context, ArrayList<FunctionContext> functionContexts) {
         String name = context.getString(R.string.app_name);
-        if (functionContexts.size() == 1) {
+        ArrayList<Task> tasks = new ArrayList<>();
+        for (FunctionContext functionContext : functionContexts) {
+            if (functionContext instanceof Task task) tasks.add(task);
+        }
+
+        if (tasks.size() == 1) {
+            name = tasks.get(0).getTitle();
+        } else if (functionContexts.size() == 1) {
             FunctionContext functionContext = functionContexts.get(0);
             name = functionContext.getTitle();
         }
@@ -266,6 +274,8 @@ public class AppUtils {
     }
 
     public static void exportFunctionContexts(Context context, ArrayList<FunctionContext> functionContexts) {
+        if (functionContexts == null || functionContexts.isEmpty()) return;
+
         String fileName = getFunctionContextsFileName(context, functionContexts);
         File file = new File(context.getCacheDir(), fileName);
         if (!file.exists()) {
@@ -290,6 +300,38 @@ public class AppUtils {
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void exportMultiFunctionContexts(Context context, ArrayList<ArrayList<FunctionContext>> functionContexts) {
+        if (functionContexts == null || functionContexts.isEmpty()) return;
+
+        ArrayList<Uri> files = new ArrayList<>();
+        for (ArrayList<FunctionContext> list : functionContexts) {
+            String fileName = getFunctionContextsFileName(context, list);
+            File file = new File(context.getCacheDir(), fileName);
+            if (!file.exists()) {
+                try {
+                    if (!file.createNewFile()) return;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+                String json = GsonUtils.gson.toJson(list);
+                fileOutputStream.write(json.getBytes());
+                Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".file_provider", file);
+                files.add(fileUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
+        intent.setType("text/*");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_task_tips)));
     }
 
     public static ArrayList<FunctionContext> importFunctionContexts(Context context, Uri uri) {

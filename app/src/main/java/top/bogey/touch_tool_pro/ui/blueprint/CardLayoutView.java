@@ -289,13 +289,15 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         if (dialog != null) dialog.dismiss();
     }
 
-    private void tryLinkDragPin(Action action) {
+    private boolean tryLinkDragPin(Action action) {
         if (dragPin != null) {
             Pin pin = action.getFirstPinByClass(dragPin.getPin().getPinClass(), dragOut);
             if (pin != null) {
                 pin.addLinks(dragLinks, functionContext);
+                return true;
             }
         }
+        return false;
     }
 
     private float getScaleGridSize() {
@@ -564,34 +566,40 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
             }
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             if (dragState == DRAG_PIN) {
-                boolean flag = true;
-                // 看是否放到针脚上了
-                for (ActionCard<?> baseCard : cardMap.values()) {
-                    int[] location = new int[2];
-                    baseCard.getLocationOnScreen(location);
-                    if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
-                        PinView pinBaseView = baseCard.getPinViewByPos(rawX, rawY);
-                        if (pinBaseView == null) continue;
-                        if (pinAddLinks(pinBaseView, dragLinks)) {
-                            flag = false;
-                            break;
-                        }
-                    }
-                }
-
-                // 无效的拖动且没怎么拖动，相当于点击了这个针脚，点击针脚是断开这个针脚
-                if (flag && Math.abs(rawX - startX) * Math.abs(rawY - startY) <= 81) {
+                if (Math.abs(rawX - startX) * Math.abs(rawY - startY) <= 81) {
                     if (dragPin != null) {
                         pinRemoveLinks(dragPin);
-                        flag = false;
                     }
-                }
+                } else {
+                    boolean flag = true;
+                    ActionCard<?> selectCard = null;
+                    // 看是否放到针脚上了
+                    for (ActionCard<?> baseCard : cardMap.values()) {
+                        int[] location = new int[2];
+                        baseCard.getLocationOnScreen(location);
+                        if (new Rect(location[0], location[1], location[0] + (int) (baseCard.getWidth() * scale), location[1] + (int) (baseCard.getHeight() * scale)).contains((int) rawX, (int) rawY)) {
+                            if (selectCard == null) selectCard = baseCard;
 
-                // 无效的拖动，尝试弹出能连接这个拖动针脚的所有动作
-                if (flag && dragPin != null && !isBreakLink) {
-                    showSelectActionDialog();
-                    postInvalidate();
-                    return true;
+                            PinView pinBaseView = baseCard.getPinViewByPos(rawX, rawY);
+                            if (pinBaseView == null) continue;
+                            if (pinAddLinks(pinBaseView, dragLinks)) {
+                                flag = false;
+                                break;
+                            }
+                        }
+                    }
+
+                    // 看是否能连接卡片
+                    if (flag && selectCard != null) {
+                        flag = !tryLinkDragPin(selectCard.getAction());
+                    }
+
+                    // 无效的拖动，尝试弹出能连接这个拖动针脚的所有动作
+                    if (flag && dragPin != null && !isBreakLink) {
+                        showSelectActionDialog();
+                        postInvalidate();
+                        return true;
+                    }
                 }
             }
 

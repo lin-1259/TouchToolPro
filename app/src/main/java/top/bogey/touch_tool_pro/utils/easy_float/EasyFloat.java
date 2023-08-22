@@ -19,7 +19,7 @@ import java.util.List;
 public class EasyFloat {
     private static final String TAG = "DEFAULT_TAG";
     public static final int FOCUSABLE = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_LAYOUT_NO_LIMITS | LayoutParams.FLAG_SHOW_WHEN_LOCKED;
-    public static final int NOT_FOCUSABLE = LayoutParams.FLAG_NOT_TOUCH_MODAL | LayoutParams.FLAG_NOT_FOCUSABLE | LayoutParams.FLAG_LAYOUT_NO_LIMITS | LayoutParams.FLAG_SHOW_WHEN_LOCKED;
+    public static final int NOT_FOCUSABLE = FOCUSABLE | LayoutParams.FLAG_NOT_FOCUSABLE;
 
     private static final HashMap<String, FloatViewHelper> views = new HashMap<>();
     private static final List<String> tags = new ArrayList<>();

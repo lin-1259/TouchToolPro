@@ -188,17 +188,17 @@ public class MainCaptureService extends Service {
 
     public class CaptureServiceBinder extends Binder {
 
-        public List<Rect> matchColor(Bitmap sourceBitmap, int[] color, Rect area) {
+        public synchronized List<Rect> matchColor(Bitmap sourceBitmap, int[] color, Rect area, int offset) {
             if (sourceBitmap == null) return null;
 
             Bitmap bitmap = null;
             if (!(area.isEmpty())) {
-                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area);
                 bitmap = sourceBitmap;
                 if (bitmap == null) return null;
             }
 
-            List<MatchResult> matchResults = AppUtils.nativeMatchColor(sourceBitmap, color);
+            List<MatchResult> matchResults = AppUtils.nativeMatchColor(sourceBitmap, color, offset);
             if (bitmap != null) bitmap.recycle();
 
             if (matchResults != null) {
@@ -214,25 +214,25 @@ public class MainCaptureService extends Service {
             return null;
         }
 
-        public List<Rect> matchColor(int[] color, Rect area) {
+        public synchronized List<Rect> matchColor(int[] color, Rect area, int offset) {
             Bitmap bitmap = getCurrImage();
             if (bitmap == null) return null;
-            List<Rect> rectList = matchColor(bitmap, color, area);
+            List<Rect> rectList = matchColor(bitmap, color, area, offset);
             bitmap.recycle();
             return rectList;
         }
 
-        public Rect matchImage(Bitmap sourceBitmap, Bitmap matchBitmap, int matchValue, Rect area) {
+        public synchronized Rect matchImage(Bitmap sourceBitmap, Bitmap matchBitmap, int matchValue, Rect area, boolean withColor) {
             if (sourceBitmap == null || matchBitmap == null) return null;
 
             Bitmap bitmap = null;
             if (!(area.isEmpty())) {
-                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area.left, area.top, area.width(), area.height());
+                sourceBitmap = DisplayUtils.safeCreateBitmap(sourceBitmap, area);
                 bitmap = sourceBitmap;
                 if (bitmap == null) return null;
             }
 
-            MatchResult matchResult = AppUtils.nativeMatchTemplate(sourceBitmap, matchBitmap, 5);
+            MatchResult matchResult = AppUtils.nativeMatchTemplate(sourceBitmap, matchBitmap, withColor);
             if (bitmap != null) bitmap.recycle();
 
             if (Math.min(100, matchValue) > matchResult.value) return null;
@@ -240,15 +240,15 @@ public class MainCaptureService extends Service {
             return matchResult.rect;
         }
 
-        public Rect matchImage(Bitmap matchBitmap, int matchValue, Rect area) {
+        public synchronized Rect matchImage(Bitmap matchBitmap, int matchValue, Rect area, boolean withColor) {
             Bitmap bitmap = getCurrImage();
             if (bitmap == null) return null;
-            Rect rect = matchImage(bitmap, matchBitmap, matchValue, area);
+            Rect rect = matchImage(bitmap, matchBitmap, matchValue, area, withColor);
             bitmap.recycle();
             return rect;
         }
 
-        public Bitmap getCurrImage() {
+        public synchronized Bitmap getCurrImage() {
             try (Image image = imageReader.acquireLatestImage()) {
                 if (image == null) return null;
                 Image.Plane[] planes = image.getPlanes();

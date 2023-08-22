@@ -53,6 +53,8 @@ public enum ActionMap {
                     ActionType.BATTERY_STATE,
                     ActionType.SCREEN_STATE,
                     ActionType.CAPTURE_STATE,
+                    ActionType.IMAGE_STATE,
+                    ActionType.COLOR_STATE,
                     ActionType.DATE_STATE,
                     ActionType.TIME_STATE)
             );
@@ -61,6 +63,8 @@ public enum ActionMap {
                     ActionType.CHECK_EXIST_NODE,
                     ActionType.CHECK_EXIST_IMAGE,
                     ActionType.CHECK_EXIST_COLOR,
+                    ActionType.CHECK_IMAGE,
+                    ActionType.CHECK_COLOR,
                     ActionType.CHECK_IN_APP,
                     ActionType.CHECK_ON_BATTERY_STATE,
                     ActionType.CHECK_ON_SCREEN_STATE)
@@ -109,7 +113,8 @@ public enum ActionMap {
                     ActionType.POS_FROM_INT,
                     ActionType.POS_TO_INT,
                     ActionType.POS_OFFSET,
-                    ActionType.POS_IN_AREA)
+                    ActionType.POS_IN_AREA,
+                    ActionType.POS_TO_AREA)
             );
             default -> new ArrayList<>();
         };

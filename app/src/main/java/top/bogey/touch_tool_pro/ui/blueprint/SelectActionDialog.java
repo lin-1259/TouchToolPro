@@ -9,9 +9,11 @@ import androidx.annotation.NonNull;
 
 import com.amrdeveloper.treeview.TreeNodeManager;
 
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
@@ -34,6 +36,7 @@ public class SelectActionDialog extends FrameLayout {
         super(context);
         DialogSelectActionBinding binding = DialogSelectActionBinding.inflate(LayoutInflater.from(context), this, true);
 
+        Collator collator = Collator.getInstance(Locale.CHINA);
         types = new LinkedHashMap<>();
 
         ArrayList<Object> customFunctions = new ArrayList<>();
@@ -75,7 +78,20 @@ public class SelectActionDialog extends FrameLayout {
             });
         }
 
-        if (!customFunctions.isEmpty()) types.put(ActionMap.CUSTOM, customFunctions);
+        if (!customFunctions.isEmpty()) {
+            customFunctions.sort((o1, o2) -> {
+                String title1;
+                if (o1 instanceof String s) title1 = s;
+                else title1 = ((Function) o1).getTitle();
+
+                String title2;
+                if (o2 instanceof String s) title2 = s;
+                else title2 = ((Function) o2).getTitle();
+
+                return collator.compare(title1, title2);
+            });
+            types.put(ActionMap.CUSTOM, customFunctions);
+        }
 
         HashMap<ActionType, Action> tmpActions = layoutView.getTmpActions();
         for (ActionMap actionMap : ActionMap.values()) {
@@ -91,7 +107,10 @@ public class SelectActionDialog extends FrameLayout {
             types.put(actionMap, actionTypes);
         }
 
-        if (!variables.isEmpty()) types.put(ActionMap.VARIABLE, variables);
+        if (!variables.isEmpty()) {
+            customFunctions.sort((o1, o2) -> collator.compare(((VariableInfo) o1).key, ((VariableInfo) o2).key));
+            types.put(ActionMap.VARIABLE, variables);
+        }
 
         SelectActionTreeAdapter adapter = new SelectActionTreeAdapter(layoutView, new TreeNodeManager(), types);
         binding.activityBox.setAdapter(adapter);

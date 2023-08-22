@@ -28,14 +28,5 @@ public class FunctionPinsAction extends Action {
             });
             break;
         }
-
-        for (Action action : function.getActionsByClass(FunctionEndAction.class)) {
-            FunctionEndAction endAction = (FunctionEndAction) action;
-            endAction.getPins().forEach(pin -> {
-                Pin pinByUid = getPinByUid(pin.getUid());
-                pinByUid.setValue(pin.getValue().copy());
-            });
-            break;
-        }
     }
 }

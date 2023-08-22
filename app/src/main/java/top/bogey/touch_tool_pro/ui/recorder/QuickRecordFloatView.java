@@ -98,7 +98,7 @@ public class QuickRecordFloatView extends BasePickerFloatView {
         PinTouch.TouchRecord record = new PinTouch.TouchRecord((int) (currTime - lastTime));
         for (int i = 0; i < event.getPointerCount(); i++) {
             int pointerId = event.getPointerId(i);
-            float currX = event.getX(i) + location[0], currY = event.getY(i) + location[0];
+            float currX = event.getX(i) + location[0], currY = event.getY(i) + location[1];
             for (int j = 0; j < event.getHistorySize(); j++) {
                 currX = event.getHistoricalX(i, j) + location[0];
                 currY = event.getHistoricalY(i, j) + location[1];

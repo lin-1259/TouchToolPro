@@ -7,6 +7,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 
@@ -26,10 +27,58 @@ public class HandleFunctionContextView extends FrameLayout {
     private final HandleTaskAdapter taskAdapter;
     private final HandleFunctionAdapter functionAdapter;
 
+    private final ArrayList<Task> tasks = new ArrayList<>();
+    private final ArrayList<Function> functions = new ArrayList<>();
+
     public HandleFunctionContextView(@NonNull Context context) {
         this(context, SaveRepository.getInstance().getAllTasks(), SaveRepository.getInstance().getAllFunctions());
         switchState(true);
+        tasks.addAll(SaveRepository.getInstance().getAllTasks());
+        functions.addAll(SaveRepository.getInstance().getAllFunctions());
     }
+
+    // 导入
+    public HandleFunctionContextView(@NonNull Context context, ArrayList<FunctionContext> actionContexts) {
+        this(context, getTasks(actionContexts), getFunctions(actionContexts));
+        actionContexts.forEach(actionContext -> {
+            if (actionContext instanceof Task task) {
+                tasks.add(task);
+            } else if (actionContext instanceof Function function) {
+                functions.add(function);
+            }
+        });
+    }
+
+    public HandleFunctionContextView(@NonNull Context context, ArrayList<Task> tasks, ArrayList<Function> functions) {
+        super(context);
+        binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(context), this, true);
+
+        ArrayList<String> taskTags = SaveRepository.getInstance().getTaskTags();
+        tasks.forEach(task -> {
+            if (task.getTags() == null) return;
+            HashSet<String> set = new HashSet<>(task.getTags());
+            set.forEach(tag -> {
+                if (!taskTags.contains(tag)) task.removeTag(tag);
+            });
+        });
+        taskAdapter = new HandleTaskAdapter(this, new ArrayList<>(tasks));
+        binding.tasksBox.setAdapter(taskAdapter);
+
+        ArrayList<String> functionTags = SaveRepository.getInstance().getFunctionTags();
+        functions.forEach(function -> {
+            if (function.getTags() == null) return;
+            HashSet<String> set = new HashSet<>(function.getTags());
+            set.forEach(tag -> {
+                if (!functionTags.contains(tag)) function.removeTag(tag);
+            });
+        });
+        functionAdapter = new HandleFunctionAdapter(this, new ArrayList<>(functions));
+        binding.functionsBox.setAdapter(functionAdapter);
+
+        binding.taskCheckBox.setOnClickListener(v -> taskAdapter.selectAll(binding.taskCheckBox.isChecked()));
+        binding.functionCheckBox.setOnClickListener(v -> functionAdapter.selectAll(binding.functionCheckBox.isChecked()));
+    }
+
 
     private static void searchTask(LinkedHashMap<String, Task> tasks, HashSet<FunctionContext> contexts) {
         contexts.forEach(context -> {
@@ -109,41 +158,6 @@ public class HandleFunctionContextView extends FrameLayout {
         return new ArrayList<>(functions.values());
     }
 
-    // 导入
-    public HandleFunctionContextView(@NonNull Context context, ArrayList<FunctionContext> actionContexts) {
-        this(context, getTasks(actionContexts), getFunctions(actionContexts));
-    }
-
-    public HandleFunctionContextView(@NonNull Context context, ArrayList<Task> tasks, ArrayList<Function> functions) {
-        super(context);
-        binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(context), this, true);
-
-        ArrayList<String> taskTags = SaveRepository.getInstance().getTaskTags();
-        tasks.forEach(task -> {
-            if (task.getTags() == null) return;
-            HashSet<String> set = new HashSet<>(task.getTags());
-            set.forEach(tag -> {
-                if (!taskTags.contains(tag)) task.removeTag(tag);
-            });
-        });
-        taskAdapter = new HandleTaskAdapter(this, new ArrayList<>(tasks));
-        binding.tasksBox.setAdapter(taskAdapter);
-
-        ArrayList<String> functionTags = SaveRepository.getInstance().getFunctionTags();
-        functions.forEach(function -> {
-            if (function.getTags() == null) return;
-            HashSet<String> set = new HashSet<>(function.getTags());
-            set.forEach(tag -> {
-                if (!functionTags.contains(tag)) function.removeTag(tag);
-            });
-        });
-        functionAdapter = new HandleFunctionAdapter(this, new ArrayList<>(functions));
-        binding.functionsBox.setAdapter(functionAdapter);
-
-        binding.taskCheckBox.setOnClickListener(v -> taskAdapter.selectAll(binding.taskCheckBox.isChecked()));
-        binding.functionCheckBox.setOnClickListener(v -> functionAdapter.selectAll(binding.functionCheckBox.isChecked()));
-    }
-
     public void switchState(boolean export) {
         if (export) {
             taskAdapter.selectAll(true);
@@ -176,6 +190,31 @@ public class HandleFunctionContextView extends FrameLayout {
         ArrayList<FunctionContext> list = new ArrayList<>();
         list.addAll(taskAdapter.getSelectedTasks());
         list.addAll(functionAdapter.getSelectedFunctions());
+        return list;
+    }
+
+    public ArrayList<ArrayList<FunctionContext>> getMultiSelectActionContext() {
+        ArrayList<ArrayList<FunctionContext>> list = new ArrayList<>();
+        ArrayList<Task> selectedTasks = taskAdapter.getSelectedTasks();
+        ArrayList<Function> selectedFunctions = functionAdapter.getSelectedFunctions();
+        for (Task selectedTask : selectedTasks) {
+            if (tasks.contains(selectedTask)) {
+                ArrayList<FunctionContext> part = new ArrayList<>();
+                LinkedHashMap<String, Task> partTasks = new LinkedHashMap<>();
+                partTasks.put(selectedTask.getId(), selectedTask);
+                searchTask(partTasks, new HashSet<>(Collections.singleton(selectedTask)));
+
+                ArrayList<Function> partFunctions = getFunctions(new ArrayList<>(partTasks.values()));
+                for (int i = partFunctions.size() - 1; i >= 0; i--) {
+                    Function function = partFunctions.get(i);
+                    if (!selectedFunctions.contains(function)) partFunctions.remove(i);
+                }
+
+                part.addAll(partTasks.values());
+                part.addAll(partFunctions);
+                list.add(part);
+            }
+        }
         return list;
     }
 

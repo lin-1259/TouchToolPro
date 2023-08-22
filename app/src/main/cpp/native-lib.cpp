@@ -12,7 +12,7 @@
 using namespace std;
 using namespace cv;
 
-Mat bitmap2Mat(JNIEnv *env, jobject bitmap){
+Mat bitmap2Mat(JNIEnv *env, jobject bitmap) {
     AndroidBitmapInfo bitmapInfo;
     AndroidBitmap_getInfo(env, bitmap, &bitmapInfo);
     int *pixels = nullptr;
@@ -22,29 +22,31 @@ Mat bitmap2Mat(JNIEnv *env, jobject bitmap){
     return rgba;
 }
 
-jobject createMatchResult(JNIEnv *env, jdouble value, jint x, jint y, jint width, jint height){
+jobject createMatchResult(JNIEnv *env, jdouble value, jint x, jint y, jint width, jint height) {
     auto resultClass = (jclass) env->FindClass("top/bogey/touch_tool_pro/utils/MatchResult");
     jmethodID mid = env->GetMethodID(resultClass, "<init>", "(DIIII)V");
     jobject result = env->NewObject(resultClass, mid, value, x, y, width, height);
     return result;
 }
 
-int clamp(int up, int low, int value){
+int clamp(int up, int low, int value) {
     return max(low, min(up, value));
 }
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, jclass clazz, jobject bitmap, jobject temp, jint method) {
+Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, jclass clazz, jobject bitmap, jobject temp, jboolean withColor) {
     int scale = 2;
 
     Mat src = bitmap2Mat(env, bitmap);
     Mat tmp = bitmap2Mat(env, temp);
     if (src.empty() || tmp.empty()) return createMatchResult(env, 0, 0, 0, 0, 0);
 
-    cvtColor(src, src, COLOR_RGBA2GRAY);
+    if (!withColor) {
+        cvtColor(src, src, COLOR_RGBA2GRAY);
+        cvtColor(tmp, tmp, COLOR_RGBA2GRAY);
+    }
     resize(src, src, Size(src.cols / scale, src.rows / scale));
-    cvtColor(tmp, tmp, COLOR_RGBA2GRAY);
     resize(tmp, tmp, Size(tmp.cols / scale, tmp.rows / scale));
 
     int resultCol = src.cols - tmp.cols + 1;
@@ -52,7 +54,7 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, 
 
     Mat result;
     result.create(resultCol, resultRow, CV_32FC1);
-    matchTemplate(src, tmp, result, method);
+    matchTemplate(src, tmp, result, TM_CCOEFF_NORMED);
 
     double minVal = -1;
     double maxVal;
@@ -61,11 +63,7 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, 
     minMaxLoc(result, &minVal, &maxVal, &minLoc, &maxLoc);
 
     jobject matchResult;
-    if (method == TM_SQDIFF || method == TM_SQDIFF_NORMED){
-        matchResult = createMatchResult(env, minVal, minLoc.x * scale, minLoc.y * scale, tmp.cols * scale, tmp.rows * scale);
-    } else {
-        matchResult = createMatchResult(env, maxVal, maxLoc.x * scale, maxLoc.y * scale, tmp.cols * scale, tmp.rows * scale);
-    }
+    matchResult = createMatchResult(env, maxVal, maxLoc.x * scale, maxLoc.y * scale, tmp.cols * scale, tmp.rows * scale);
     src.release();
     tmp.release();
     result.release();
@@ -74,7 +72,7 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, 
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jclass clazz, jobject bitmap, jintArray hsvColor) {
+Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jclass clazz, jobject bitmap, jintArray hsvColor, jint offset) {
     Mat src = bitmap2Mat(env, bitmap);
     if (src.empty()) return nullptr;
     cvtColor(src, src, COLOR_RGBA2BGR);
@@ -84,8 +82,12 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jcl
 
     jint *hsv = env->GetIntArrayElements(hsvColor, JNI_FALSE);
     Scalar color((int) hsv[0], (int) hsv[1], (int) hsv[2]);
-    Scalar lowColor(clamp(180, 0, (int)color[0] - 5), clamp(255, 0, (int)color[1] - 5), clamp(255, 0, (int)color[2] - 5));
-    Scalar highColor(clamp(180, 0, (int)color[0] + 5), clamp(255, 0, (int)color[1] + 5), clamp(255, 0, (int)color[2] + 5));
+    Scalar lowColor(clamp(180, 0, (int) color[0] - offset),
+                    clamp(255, 0, (int) color[1] - offset),
+                    clamp(255, 0, (int) color[2] - offset));
+    Scalar highColor(clamp(180, 0, (int) color[0] + offset),
+                     clamp(255, 0, (int) color[1] + offset),
+                     clamp(255, 0, (int) color[2] + offset));
 
     Mat colorImg;
     inRange(src, lowColor, highColor, colorImg);
@@ -97,9 +99,9 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jcl
     jobject listObj = env->NewObject(listCls, listInit);
     jmethodID listAdd = env->GetMethodID(listCls, "add", "(Ljava/lang/Object;)Z");
 
-    for (auto & contour : contours) {
+    for (auto &contour: contours) {
         double area = contourArea(contour);
-        if(area > 81){
+        if (area > 81) {
             Rect r = boundingRect(contour);
             env->CallBooleanMethod(listObj, listAdd, createMatchResult(env, area, r.x, r.y, r.width, r.height));
         }

@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "top.bogey.touch_tool_pro"
-    compileSdk = 33
+    compileSdk = 34
     ndkVersion = "25.2.9519653"
     buildToolsVersion = "34.0.0"
 
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId = "top.bogey.touch_tool_pro"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 36
         versionName = now
 
@@ -88,4 +88,6 @@ dependencies {
     implementation(libs.mmkv)
     implementation(libs.gson)
     implementation(libs.treeview)
+
+    implementation(platform(libs.kotlin.bom))
 }

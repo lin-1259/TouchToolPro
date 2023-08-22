@@ -35,6 +35,6 @@ public class IntInAreaAction extends CheckAction {
         PinValueArea area = (PinValueArea) getPinValue(runnable, context, areaPin);
         PinInteger value = (PinInteger) getPinValue(runnable, context, valuePin);
 
-        result.setBool(value.getValue() <= area.getLow() && value.getValue() >= area.getHigh());
+        result.setBool(value.getValue() <= area.getHigh() && value.getValue() >= area.getLow());
     }
 }

@@ -67,10 +67,12 @@ public class TaskTagView extends BottomSheetDialogFragment {
         binding.tagBox.addView(itemBinding.getRoot());
         Chip chip = itemBinding.getRoot();
         chip.setText(tag);
-        chip.setOnCloseIconClickListener(v -> {
-            SaveRepository.getInstance().removeTaskTag(tag);
-            binding.tagBox.removeView(chip);
-        });
+        chip.setOnCloseIconClickListener(v -> AppUtils.showDialog(getContext(), R.string.tag_delete, result -> {
+            if (result) {
+                SaveRepository.getInstance().removeTaskTag(tag);
+                binding.tagBox.removeView(chip);
+            }
+        }));
         chip.setCloseIconVisible(!SaveRepository.SHORTCUT_TAG.equals(tag));
 
         if (taskView.isSelect) {

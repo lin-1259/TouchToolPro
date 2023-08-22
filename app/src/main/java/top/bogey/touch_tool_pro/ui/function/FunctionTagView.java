@@ -67,10 +67,12 @@ public class FunctionTagView extends BottomSheetDialogFragment {
         binding.tagBox.addView(itemBinding.getRoot());
         Chip chip = itemBinding.getRoot();
         chip.setText(tag);
-        chip.setOnCloseIconClickListener(v -> {
-            binding.tagBox.removeView(chip);
-            SaveRepository.getInstance().removeFunctionTag(tag);
-        });
+        chip.setOnCloseIconClickListener(v -> AppUtils.showDialog(getContext(), R.string.tag_delete, result -> {
+            if (result) {
+                binding.tagBox.removeView(chip);
+                SaveRepository.getInstance().removeFunctionTag(tag);
+            }
+        }));
 
         if (functionView.isSelect) {
             chip.setCheckable(true);

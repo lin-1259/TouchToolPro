@@ -129,7 +129,6 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
             FunctionStartAction startAction = (FunctionStartAction) startActions.get(0);
             startAction.executeNext(runnable, context, startAction.getPinByUid(pin.getUid()));
         }
-        function.executeAction.executeNext(runnable, context, pin);
     }
 
     @Override

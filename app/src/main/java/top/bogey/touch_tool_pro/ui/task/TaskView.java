@@ -37,6 +37,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.databinding.ViewTaskBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.custom.CreateFunctionContextDialogBuilder;
 import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
@@ -142,18 +143,25 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
 
         binding.folderButton.setOnClickListener(v -> showTagView());
 
-        binding.addButton.setOnClickListener(v -> AppUtils.showEditDialog(getContext(), R.string.task_add, null, result -> {
-            if (result != null && result.length() > 0) {
-                Task task = new Task();
-                task.setTitle(result.toString());
-                TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
-                if (tab != null && tab.getText() != null) {
-                    String tag = tab.getText().toString();
-                    if (!SaveRepository.NO_TAG.equals(tag)) task.addTag(tag);
-                }
-                task.save();
+        binding.addButton.setOnClickListener(v -> {
+            String tag = null;
+            TabLayout.Tab tab = binding.tabBox.getTabAt(binding.tabBox.getSelectedTabPosition());
+            if (tab != null && tab.getText() != null) {
+                tag = tab.getText().toString();
+                if (SaveRepository.NO_TAG.equals(tag)) tag = null;
             }
-        }));
+            CreateFunctionContextDialogBuilder dialog = new CreateFunctionContextDialogBuilder(requireContext(), SaveRepository.getInstance().getTaskTags(), tag);
+            dialog.setTitle(R.string.task_add);
+            dialog.setCallback(result -> {
+                if (result && !dialog.getTitle().isEmpty()) {
+                    Task task = new Task();
+                    task.setTitle(dialog.getTitle());
+                    task.addTags(dialog.getTags());
+                    task.save();
+                }
+            });
+            dialog.show();
+        });
 
         return binding.getRoot();
     }
@@ -238,6 +246,10 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setNeutralButton(R.string.export_multi_task, (dialog, which) -> {
+                    AppUtils.exportMultiFunctionContexts(requireContext(), view.getMultiSelectActionContext());
+                    dialog.dismiss();
+                })
                 .setView(view)
                 .setTitle(R.string.task_setting_export)
                 .show();

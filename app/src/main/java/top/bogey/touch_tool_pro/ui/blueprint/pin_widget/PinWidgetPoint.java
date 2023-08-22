@@ -36,8 +36,7 @@ public class PinWidgetPoint extends PinWidget<PinPoint> {
                 try {
                     newX = Integer.parseInt(s.toString());
                 } catch (NumberFormatException ignored) {
-                    binding.xEdit.setTextKeepState(String.valueOf(pinObject.getX(context)));
-                    return;
+                    newX = pinObject.getX(context);
                 }
                 if (newX == pinObject.getX(context)) return;
                 pinObject.setPoint(context, newX, pinObject.getY(context));
@@ -51,8 +50,7 @@ public class PinWidgetPoint extends PinWidget<PinPoint> {
                 try {
                     newY = Integer.parseInt(s.toString());
                 } catch (NumberFormatException ignored) {
-                    binding.yEdit.setTextKeepState(String.valueOf(pinObject.getY(context)));
-                    return;
+                    newY = pinObject.getY(context);
                 }
                 if (newY == pinObject.getY(context)) return;
                 pinObject.setPoint(context, pinObject.getX(context), newY);

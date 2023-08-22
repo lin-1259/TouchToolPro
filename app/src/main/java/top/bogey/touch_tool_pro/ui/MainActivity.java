@@ -44,7 +44,7 @@ import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
-    private boolean firstShowTask;
+    private boolean firstShowTask = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -7,10 +7,12 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolAndAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolNotAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolOrAction;
+import top.bogey.touch_tool_pro.bean.action.check.ColorEqualAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistColorAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistNodeAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistTextAction;
+import top.bogey.touch_tool_pro.bean.action.check.ImageContainAction;
 import top.bogey.touch_tool_pro.bean.action.check.InAppCheckAction;
 import top.bogey.touch_tool_pro.bean.action.check.OnBatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.check.OnScreenStateAction;
@@ -52,6 +54,7 @@ import top.bogey.touch_tool_pro.bean.action.normal.TouchAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosFromIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosOffsetAction;
+import top.bogey.touch_tool_pro.bean.action.pos.PosToAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosToIntAction;
 import top.bogey.touch_tool_pro.bean.action.start.AppStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.BatteryStartAction;
@@ -63,7 +66,9 @@ import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
 import top.bogey.touch_tool_pro.bean.action.state.AppStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.BatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.CaptureStateAction;
+import top.bogey.touch_tool_pro.bean.action.state.ColorStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.DateStateAction;
+import top.bogey.touch_tool_pro.bean.action.state.ImageStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.TimeStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringAddAction;
@@ -110,6 +115,8 @@ public enum ActionType {
     BATTERY_STATE,
     SCREEN_STATE,
     CAPTURE_STATE,
+    COLOR_STATE,
+    IMAGE_STATE,
     DATE_STATE,
     TIME_STATE,
 
@@ -119,7 +126,9 @@ public enum ActionType {
     CHECK_EXIST_TEXT,
     CHECK_EXIST_NODE,
     CHECK_EXIST_IMAGE,
+    CHECK_IMAGE,
     CHECK_EXIST_COLOR,
+    CHECK_COLOR,
 
     DELAY,
     LOG,
@@ -161,7 +170,7 @@ public enum ActionType {
     POS_TO_INT,
     POS_OFFSET,
     POS_IN_AREA,
-
+    POS_TO_AREA,
     ;
 
     public String getTitle() {
@@ -192,6 +201,8 @@ public enum ActionType {
             case BATTERY_STATE -> R.string.action_battery_state_title;
             case SCREEN_STATE -> R.string.action_screen_state_title;
             case CAPTURE_STATE -> R.string.action_capture_state_title;
+            case IMAGE_STATE -> R.string.action_image_state_title;
+            case COLOR_STATE -> R.string.action_color_state_title;
             case DATE_STATE -> R.string.action_date_state_title;
             case TIME_STATE -> R.string.action_time_state_title;
 
@@ -202,6 +213,8 @@ public enum ActionType {
             case CHECK_EXIST_NODE -> R.string.action_exist_node_check_title;
             case CHECK_EXIST_IMAGE -> R.string.action_exist_image_check_title;
             case CHECK_EXIST_COLOR -> R.string.action_exist_color_check_title;
+            case CHECK_IMAGE -> R.string.action_image_check_title;
+            case CHECK_COLOR -> R.string.action_color_check_title;
 
             case DELAY -> R.string.action_delay_action_title;
             case LOG -> R.string.action_log_action_title;
@@ -243,6 +256,7 @@ public enum ActionType {
             case POS_TO_INT -> R.string.action_position_to_int_title;
             case POS_OFFSET -> R.string.action_position_offset_title;
             case POS_IN_AREA -> R.string.action_position_in_area_title;
+            case POS_TO_AREA -> R.string.action_position_to_area_title;
             default -> 0;
         };
         if (id == 0) return "";
@@ -280,8 +294,8 @@ public enum ActionType {
             case CHECK_ON_SCREEN_STATE -> R.drawable.icon_screen;
             case CHECK_EXIST_TEXT -> R.drawable.icon_text;
             case CHECK_EXIST_NODE -> R.drawable.icon_widget;
-            case CHECK_EXIST_IMAGE -> R.drawable.icon_image;
-            case CHECK_EXIST_COLOR -> R.drawable.icon_color;
+            case CHECK_EXIST_IMAGE, CHECK_IMAGE, IMAGE_STATE -> R.drawable.icon_image;
+            case CHECK_EXIST_COLOR, CHECK_COLOR, COLOR_STATE -> R.drawable.icon_color;
 
             case DELAY -> R.drawable.icon_delay;
             case LOG -> R.drawable.icon_log;
@@ -331,8 +345,11 @@ public enum ActionType {
             case BATTERY_STATE -> BatteryStateAction.class;
             case SCREEN_STATE -> ScreenStateAction.class;
             case CAPTURE_STATE -> CaptureStateAction.class;
+            case IMAGE_STATE -> ImageStateAction.class;
+            case COLOR_STATE -> ColorStateAction.class;
             case DATE_STATE -> DateStateAction.class;
             case TIME_STATE -> TimeStateAction.class;
+
             case CHECK_IN_APP -> InAppCheckAction.class;
             case CHECK_ON_BATTERY_STATE -> OnBatteryStateAction.class;
             case CHECK_ON_SCREEN_STATE -> OnScreenStateAction.class;
@@ -340,6 +357,8 @@ public enum ActionType {
             case CHECK_EXIST_NODE -> ExistNodeAction.class;
             case CHECK_EXIST_IMAGE -> ExistImageAction.class;
             case CHECK_EXIST_COLOR -> ExistColorAction.class;
+            case CHECK_IMAGE -> ImageContainAction.class;
+            case CHECK_COLOR -> ColorEqualAction.class;
 
             case DELAY -> DelayAction.class;
             case LOG -> LogAction.class;
@@ -381,6 +400,7 @@ public enum ActionType {
             case POS_TO_INT -> PosToIntAction.class;
             case POS_OFFSET -> PosOffsetAction.class;
             case POS_IN_AREA -> PosInAreaAction.class;
+            case POS_TO_AREA -> PosToAreaAction.class;
             default -> Action.class;
         };
     }

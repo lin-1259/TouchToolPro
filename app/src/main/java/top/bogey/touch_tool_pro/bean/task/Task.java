@@ -15,6 +15,8 @@ import top.bogey.touch_tool_pro.bean.action.check.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
+import top.bogey.touch_tool_pro.bean.action.state.ColorStateAction;
+import top.bogey.touch_tool_pro.bean.action.state.ImageStateAction;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
@@ -181,7 +183,9 @@ public class Task extends FunctionContext {
         if (captureActions.size() > 0) return false;
         ArrayList<Action> imageActions = getActionsByClass(ExistImageAction.class);
         ArrayList<Action> colorActions = getActionsByClass(ExistColorAction.class);
-        return imageActions.size() + colorActions.size() > 0;
+        ArrayList<Action> imageStateActions = getActionsByClass(ImageStateAction.class);
+        ArrayList<Action> colorStateActions = getActionsByClass(ColorStateAction.class);
+        return imageActions.size() + colorActions.size() + imageStateActions.size() + colorStateActions.size() > 0;
     }
 
     public long getCreateTime() {

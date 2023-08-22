@@ -96,10 +96,12 @@
     <string name="tag_no">未分类</string>
     <string name="tag_shortcut">快捷方式</string>
     <string name="tag_add">添加新的标签</string>
+    <string name="tag_delete">确认要删除这个标签吗？</string>
 
     <string name="select_all">全选</string>
     <string name="delete_task">删除</string>
     <string name="export_task">导出</string>
+    <string name="export_multi_task">多文件导出</string>
     <string name="export_task_tips">导出任务配置并发送</string>
     <string name="move_task">标签</string>
     <string name="copy_task">复制</string>
@@ -176,18 +178,21 @@
 
 
     <!-- 任务 - 状态 -->
-    <string name="action_app_state_title">获取当前界面</string>
+    <string name="action_app_state_title">当前界面</string>
     <string name="action_app_state_subtitle_where">界面</string>
 
-    <string name="action_battery_state_title">获取电池状态</string>
+    <string name="action_battery_state_title">电池状态</string>
     <string name="action_battery_state_subtitle_state">状态</string>
     <string name="action_battery_state_subtitle_battery">电量</string>
 
     <string name="action_screen_state_title">屏幕状态</string>
     <string name="action_screen_state_subtitle_state">状态</string>
 
-    <string name="action_capture_state_title">录屏服务状态</string>
+    <string name="action_capture_state_title">录屏状态</string>
     <string name="action_capture_state_subtitle_state">开启</string>
+
+    <string name="action_image_state_title">获取图片</string>
+    <string name="action_color_state_title">获取颜色</string>
 
     <string name="action_date_state_title">日期</string>
     <string name="action_date_state_subtitle_year">年</string>
@@ -220,10 +225,16 @@
 
     <string name="action_exist_node_check_title">界面内存在控件</string>
 
+    <string name="action_image_check_title">图片内存在图片</string>
+    <string name="action_image_check_subtitle_other">匹配图片</string>
     <string name="action_exist_image_check_title">界面内存在图片</string>
     <string name="action_exist_image_check_subtitle_similar">相似度</string>
+    <string name="action_exist_image_check_subtitle_with_color">匹配颜色</string>
 
+    <string name="action_color_check_title">颜色对比</string>
+    <string name="action_color_check_subtitle_other">匹配颜色</string>
     <string name="action_exist_color_check_title">界面内存在颜色</string>
+    <string name="action_exist_color_check_subtitle_similar">偏移</string>
 
 
     <!-- 任务 - 动作 -->
@@ -354,6 +365,7 @@
     <string name="action_position_offset_subtitle_offset">偏移</string>
 
     <string name="action_position_in_area_title">位置在区域内</string>
+    <string name="action_position_to_area_title">位置组合为区域</string>
 
     <!-- 针脚 -->
     <string name="pin_execute">执行</string>
@@ -457,7 +469,7 @@
     <string name="task_setting_backup_error">备份任务失败，没有可用来保存文件的应用</string>
 
     <string name="task_setting_import">导入任务</string>
-    <string name="task_setting_export">导入任务</string>
+    <string name="task_setting_export">导出任务</string>
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
 
     <string name="task_setting_log">实时任务日志</string>

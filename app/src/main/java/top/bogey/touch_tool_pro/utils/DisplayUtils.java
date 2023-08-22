@@ -114,4 +114,8 @@ public class DisplayUtils {
             return null;
         }
     }
+
+    public static Bitmap safeCreateBitmap(Bitmap bitmap, Rect rect) {
+        return safeCreateBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height());
+    }
 }

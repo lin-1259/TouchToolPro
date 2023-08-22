@@ -76,7 +76,7 @@ public class FunctionReferenceAction extends Action {
 
     @Override
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        if (pin.isOut() && function != null) {
+        if (pin.isOut() && check(context)) {
             calculate(runnable, context, pin);
             FunctionEndAction endAction = executeFunction.getEndAction();
             if (endAction == null) return pin.getValue();

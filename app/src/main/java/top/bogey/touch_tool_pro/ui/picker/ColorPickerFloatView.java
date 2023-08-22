@@ -174,7 +174,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         this.color = color;
         if (color == null || color.length != 3) return;
 
-        markArea = service.binder.matchColor(showBitmap, color, new Rect());
+        markArea = service.binder.matchColor(showBitmap, color, new Rect(), 5);
         if (markArea != null && markArea.size() > 0) {
             isMarked = true;
 

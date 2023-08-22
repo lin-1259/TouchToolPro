@@ -444,7 +444,7 @@ public class SaveRepository {
             LogInfo logInfo = GsonUtils.getAsObject(json, LogInfo.class, null);
             if (logInfo != null) {
                 builder.append(logInfo.getLogString());
-                builder.append("\n");
+                builder.append("\n\n");
             }
         }
         return builder.toString().trim();

@@ -77,7 +77,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     public Bitmap getBitmap() {
         if (showBitmap != null) {
-            Bitmap bitmap = DisplayUtils.safeCreateBitmap(showBitmap, markArea.left, markArea.top, markArea.width(), markArea.height());
+            Bitmap bitmap = DisplayUtils.safeCreateBitmap(showBitmap, markArea);
             showBitmap.recycle();
             return bitmap;
         }
@@ -91,7 +91,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                 Bitmap bitmap = service.binder.getCurrImage();
                 if (bitmap != null) {
                     showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect());
+                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect(), false);
                     if (rect != null) {
                         markArea = new Rect(rect);
                         isMarked = true;

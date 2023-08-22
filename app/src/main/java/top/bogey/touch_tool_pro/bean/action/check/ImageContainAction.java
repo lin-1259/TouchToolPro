@@ -1,7 +1,6 @@
 package top.bogey.touch_tool_pro.bean.action.check;
 
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 
 import com.google.gson.JsonObject;
 
@@ -10,36 +9,32 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinImage;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.utils.AppUtils;
+import top.bogey.touch_tool_pro.utils.MatchResult;
 
-public class ExistImageAction extends CheckAction{
+public class ImageContainAction extends CheckAction {
     private transient Pin imagePin = new Pin(new PinImage(), R.string.pin_image);
+    private transient Pin otherPin = new Pin(new PinImage(), R.string.action_image_check_subtitle_other);
     private transient Pin similarPin = new Pin(new PinInteger(85), R.string.action_exist_image_check_subtitle_similar);
-    private transient Pin areaPin = new Pin(new PinArea(), R.string.pin_area);
-    private transient Pin posPin = new Pin(new PinPoint(), R.string.pin_point, true);
     private transient Pin colorPin = new Pin(new PinBoolean(), R.string.action_exist_image_check_subtitle_with_color);
 
-    public ExistImageAction() {
-        super(ActionType.CHECK_EXIST_IMAGE);
+    public ImageContainAction() {
+        super(ActionType.CHECK_IMAGE);
         imagePin = addPin(imagePin);
+        otherPin = addPin(otherPin);
         similarPin = addPin(similarPin);
-        areaPin = addPin(areaPin);
-        posPin = addPin(posPin);
         colorPin = addPin(colorPin);
     }
 
-    public ExistImageAction(JsonObject jsonObject) {
+    public ImageContainAction(JsonObject jsonObject) {
         super(jsonObject);
         imagePin = reAddPin(imagePin);
+        otherPin = reAddPin(otherPin);
         similarPin = reAddPin(similarPin);
-        areaPin = reAddPin(areaPin);
-        posPin = reAddPin(posPin);
         colorPin = reAddPin(colorPin);
     }
 
@@ -50,27 +45,17 @@ public class ExistImageAction extends CheckAction{
         PinBoolean result = resultPin.getValue(PinBoolean.class);
         result.setBool(false);
 
-        MainAccessibilityService service = MainApplication.getInstance().getService();
-        if (!service.isCaptureEnabled()) return;
-
+        MainApplication instance = MainApplication.getInstance();
         PinImage image = (PinImage) getPinValue(runnable, context, imagePin);
-        Bitmap bitmap = image.getImage(service);
+        Bitmap bitmap = image.getImage(instance);
         if (bitmap == null) return;
+        PinImage other = (PinImage) getPinValue(runnable, context, otherPin);
+        Bitmap otherBitmap = other.getImage(instance);
+        if (otherBitmap == null) return;
 
         PinInteger similar = (PinInteger) getPinValue(runnable, context, similarPin);
-        PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         PinBoolean withColor = (PinBoolean) getPinValue(runnable, context, colorPin);
-        Rect rect = service.binder.matchImage(bitmap, similar.getValue(), area.getArea(service), withColor.isBool());
-        if (rect == null) return;
-        result.setBool(true);
-        posPin.getValue(PinPoint.class).setPoint(service, rect.centerX(), rect.centerY());
-    }
-
-    public Pin getImagePin() {
-        return imagePin;
-    }
-
-    public Pin getPosPin() {
-        return posPin;
+        MatchResult matchResult = AppUtils.nativeMatchTemplate(bitmap, otherBitmap, withColor.isBool());
+        if (matchResult.value >= similar.getValue()) result.setBool(true);
     }
 }
