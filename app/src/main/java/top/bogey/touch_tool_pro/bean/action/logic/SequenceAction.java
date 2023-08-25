@@ -21,7 +21,8 @@ public class SequenceAction extends NormalAction {
 
     public SequenceAction() {
         super(ActionType.LOGIC_SEQUENCE);
-        secondPin = addPin(secondPin);
+        executePins.add(outPin);
+        executePins.add(secondPin = addPin(secondPin));
         addPin = addPin(addPin);
     }
 

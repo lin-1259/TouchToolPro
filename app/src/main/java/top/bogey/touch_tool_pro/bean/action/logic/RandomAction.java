@@ -26,7 +26,8 @@ public class RandomAction extends NormalAction {
 
     public RandomAction() {
         super(ActionType.LOGIC_RANDOM);
-        secondPin = addPin(secondPin);
+        executePins.add(outPin);
+        executePins.add(secondPin = addPin(secondPin));
         timesPin = addPin(timesPin);
         repeatPin = addPin(repeatPin);
         addPin = addPin(addPin);

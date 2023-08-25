@@ -22,8 +22,8 @@ public class BoolOrAction extends CheckAction {
 
     public BoolOrAction() {
         super(ActionType.BOOL_OR);
-        firstPin = addPin(firstPin);
-        secondPin = addPin(secondPin);
+        boolPins.add(firstPin = addPin(firstPin));
+        boolPins.add(secondPin = addPin(secondPin));
         addPin = addPin(addPin);
     }
 

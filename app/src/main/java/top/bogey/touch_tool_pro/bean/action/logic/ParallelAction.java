@@ -38,7 +38,8 @@ public class ParallelAction extends NormalAction {
         super(ActionType.LOGIC_PARALLEL);
         countPin = addPin(countPin);
         timeoutPin = addPin(timeoutPin);
-        secondPin = addPin(secondPin);
+        executePins.add(outPin);
+        executePins.add(secondPin = addPin(secondPin));
         addPin = addPin(addPin);
         completePin = addPin(completePin);
         falsePin = addPin(falsePin);

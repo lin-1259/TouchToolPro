@@ -67,9 +67,12 @@ public class SelectActionDialog extends FrameLayout {
             });
         }
         if (functionContext instanceof Task task) {
+            ArrayList<Object> objects = new ArrayList<>();
             task.getFunctions().forEach(function -> {
-                if (matchAction(function.getAction(), pinClass, out)) customFunctions.add(function);
+                if (matchAction(function.getAction(), pinClass, out)) objects.add(function);
             });
+            objects.sort((o1, o2) -> collator.compare(((Function) o1).getTitle(), ((Function) o2).getTitle()));
+            customFunctions.addAll(objects);
 
             task.getVars().forEach((key, value) -> {
                 if (value.getClass().isAssignableFrom(pinClass) || pinClass.isAssignableFrom(value.getClass())) {
@@ -79,17 +82,6 @@ public class SelectActionDialog extends FrameLayout {
         }
 
         if (!customFunctions.isEmpty()) {
-            customFunctions.sort((o1, o2) -> {
-                String title1;
-                if (o1 instanceof String s) title1 = s;
-                else title1 = ((Function) o1).getTitle();
-
-                String title2;
-                if (o2 instanceof String s) title2 = s;
-                else title2 = ((Function) o2).getTitle();
-
-                return collator.compare(title1, title2);
-            });
             types.put(ActionMap.CUSTOM, customFunctions);
         }
 

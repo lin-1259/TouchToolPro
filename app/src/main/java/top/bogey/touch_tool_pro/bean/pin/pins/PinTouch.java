@@ -206,6 +206,10 @@ public class PinTouch extends PinScreen {
         });
     }
 
+    public Rect getRecordsArea() {
+        return getRecordsArea(records);
+    }
+
     private Rect getRecordsArea(ArrayList<TouchRecord> records) {
         Rect rect = new Rect();
         records.forEach(record -> record.points.forEach(point -> {
@@ -216,17 +220,17 @@ public class PinTouch extends PinScreen {
                 rect.left = Math.min(point.x, rect.left);
                 rect.right = Math.max(point.x, rect.right);
                 rect.top = Math.min(point.y, rect.top);
-                rect.bottom = Math.min(point.y, rect.bottom);
+                rect.bottom = Math.max(point.y, rect.bottom);
             }
         }));
         return rect;
     }
 
-    private Point getAnchorPoint(Context context) {
+    public Point getAnchorPoint(Context context) {
         float scale = getScale(context);
         Point start = new Point((int) (anchorPoint.x * scale), (int) (anchorPoint.y * scale));
         Point size = DisplayUtils.getScreenSize(context);
-        Rect rect = getRecordsArea(records);
+        Rect rect = getRecordsArea();
         switch (anchor) {
             case TOP_LEFT:
                 break;

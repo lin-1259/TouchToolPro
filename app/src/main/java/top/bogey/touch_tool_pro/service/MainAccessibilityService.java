@@ -45,6 +45,7 @@ import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
@@ -54,6 +55,7 @@ import top.bogey.touch_tool_pro.ui.BaseActivity;
 import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
+import top.bogey.touch_tool_pro.utils.GsonUtils;
 import top.bogey.touch_tool_pro.utils.ResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
@@ -439,6 +441,18 @@ public class MainAccessibilityService extends AccessibilityService {
             startActivity(intent);
         } else {
             activity.showToast(msg);
+        }
+    }
+
+    public void showTouch(PinTouch touch) {
+        BaseActivity activity = MainApplication.getInstance().getValidActivity();
+        if (activity == null) {
+            Intent intent = new Intent(this, InstantActivity.class);
+            intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOUCH, GsonUtils.toJson(touch));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            activity.showTouch(touch);
         }
     }
 

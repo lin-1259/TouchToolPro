@@ -24,8 +24,8 @@ public abstract class IntMoreAction extends Action {
     public IntMoreAction(ActionType type) {
         super(type);
         resultPin = addPin(resultPin);
-        firstPin = addPin(firstPin);
-        secondPin = addPin(secondPin);
+        valuePins.add(firstPin = addPin(firstPin));
+        valuePins.add(secondPin = addPin(secondPin));
         addPin = addPin(addPin);
     }
 

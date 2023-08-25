@@ -24,8 +24,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
+import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
 import top.bogey.touch_tool_pro.utils.ActivityResultCallback;
 import top.bogey.touch_tool_pro.utils.AppUtils;
@@ -217,6 +219,11 @@ public class BaseActivity extends AppCompatActivity {
             }
             view.showToast(msg);
         });
+    }
+
+    public void showTouch(PinTouch touch) {
+        if (touch == null) return;
+        runOnUiThread(() -> new TouchPathFloatView(this, touch).show());
     }
 
     public void restartAccessibilityServiceBySecurePermission() {

@@ -24,8 +24,8 @@ public class StringAddAction extends Action {
     public StringAddAction() {
         super(ActionType.STRING_ADD);
         resultPin = addPin(resultPin);
-        firstPin = addPin(firstPin);
-        secondPin = addPin(secondPin);
+        stringPins.add(firstPin = addPin(firstPin));
+        stringPins.add(secondPin = addPin(secondPin));
         addPin = addPin(addPin);
     }
 

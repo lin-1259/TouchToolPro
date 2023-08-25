@@ -107,10 +107,11 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     }
 
     private LinkedHashMap<ManualStartAction, Task> getActionsByNextTag() {
+        LinkedHashMap<ManualStartAction, Task> actions = new LinkedHashMap<>();
+        if (tags.isEmpty()) return actions;
         int index = tags.indexOf(currTag);
         currTag = tags.get((index + 1) % tags.size());
 
-        LinkedHashMap<ManualStartAction, Task> actions = new LinkedHashMap<>();
         for (Map.Entry<ManualStartAction, Task> entry : manualStartActions.entrySet()) {
             if (entry.getValue().getTags() != null) {
                 if (entry.getValue().getTags().contains(currTag)) actions.put(entry.getKey(), entry.getValue());
@@ -141,19 +142,17 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     }
 
     public void setNeedRemove(boolean needRemove) {
-        post(() -> {
-            for (int i = binding.buttonBox.getChildCount() - 1; i >= 0; i--) {
-                PlayFloatViewItem view = (PlayFloatViewItem) binding.buttonBox.getChildAt(i);
-                if (view.isFree() && needRemove) {
-                    binding.buttonBox.removeView(view);
-                } else {
-                    view.setNeedRemove(needRemove);
-                }
+        for (int i = binding.buttonBox.getChildCount() - 1; i >= 0; i--) {
+            PlayFloatViewItem view = (PlayFloatViewItem) binding.buttonBox.getChildAt(i);
+            if (view.isFree() && needRemove) {
+                binding.buttonBox.removeView(view);
+            } else {
+                view.setNeedRemove(needRemove);
             }
-        });
+        }
     }
 
-    public void onNewActions() {
+    public synchronized void onNewActions() {
         manualStartActions = WorldState.getInstance().getManualStartActions();
         if (manualStartActions.size() > 4) {
             calculateTags(manualStartActions.values());
@@ -166,6 +165,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
     public void showActions(LinkedHashMap<ManualStartAction, Task> actions) {
         HashSet<ManualStartAction> alreadyManualStartActions = new HashSet<>();
+        HashSet<View> needDelete = new HashSet<>();
 
         for (int i = binding.buttonBox.getChildCount() - 1; i >= 0; i--) {
             PlayFloatViewItem view = (PlayFloatViewItem) binding.buttonBox.getChildAt(i);
@@ -175,7 +175,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
                 alreadyManualStartActions.add(view.getStartAction());
             } else {
                 // 没在新列表里的，需要移除
-                if (view.isFree()) binding.buttonBox.removeView(view);
+                if (view.isFree()) needDelete.add(view);
                 else view.setNeedRemove(true);
             }
         }
@@ -185,12 +185,14 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
                 binding.buttonBox.addView(new PlayFloatViewItem(getContext(), task, startAction));
             }
         });
+
+        for (View view : needDelete) {
+            binding.buttonBox.removeView(view);
+        }
     }
 
     public void checkShow() {
-        postDelayed(() -> {
-            if (binding.buttonBox.getChildCount() == 0) dismiss();
-        }, 100);
+        if (binding.buttonBox.getChildCount() == 0) dismiss();
     }
 
     private static class FloatCallback extends FloatBaseCallback {
