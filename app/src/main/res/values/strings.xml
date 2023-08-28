@@ -122,7 +122,6 @@
     <string name="function_pin_hint">针脚名</string>
     <string name="function_just_call">仅获取状态</string>
     <string name="function_fast_end">结束时中止内部执行</string>
-    <string name="function_error_tips">存在%d个错误自定义卡片</string>
     <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
     <string name="attribute_title">任务内变量</string>
@@ -131,6 +130,13 @@
     <string name="attribute_hint">变量名</string>
     <string name="attribute_add">添加变量</string>
     <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>
+
+    <string name="card_error_tips">存在%d个问题卡片</string>
+    <string name="error_exist_action_tips">未连接结果针脚</string>
+    <string name="error_function_reference_action_tips">未找到引用的自定义卡片</string>
+    <string name="error_variable_action_tips">未找到引用的变量</string>
+
+    <string name="warning_wait_if_action_tips">检查间隔过短，可能引起卡顿</string>
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>

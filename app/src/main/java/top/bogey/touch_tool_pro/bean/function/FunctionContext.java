@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
@@ -150,14 +151,12 @@ public abstract class FunctionContext extends IdentityInfo {
         tags = null;
     }
 
-    public boolean check(ArrayList<Action> errors) {
-        boolean flag = true;
+    public ActionCheckResult check() {
         for (Action action : getActions()) {
-            if (action.check(this)) continue;
-            flag = false;
-            if (errors != null) errors.add(action);
+            ActionCheckResult result = action.check(this);
+            if (result.type == ActionCheckResult.ActionResultType.ERROR) return result;
         }
-        return flag;
+        return new ActionCheckResult(ActionCheckResult.ActionResultType.NORMAL, 0);
     }
 
     public abstract void save();

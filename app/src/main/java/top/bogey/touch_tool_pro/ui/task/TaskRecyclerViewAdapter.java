@@ -19,6 +19,7 @@ import java.util.Locale;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
@@ -192,6 +193,14 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
 
             MainAccessibilityService service = MainApplication.getInstance().getService();
             binding.stopButton.setVisibility(service != null && service.isTaskRunning(task) ? View.VISIBLE : View.GONE);
+
+            ActionCheckResult result = task.check();
+            if (result.type == ActionCheckResult.ActionResultType.ERROR) {
+                binding.errorText.setVisibility(View.VISIBLE);
+                binding.errorText.setText(result.tips);
+            } else {
+                binding.errorText.setVisibility(View.GONE);
+            }
 
             binding.getRoot().setChecked(taskView.selectedTasks.containsKey(task.getId()));
         }

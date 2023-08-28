@@ -40,6 +40,7 @@ public class ClickPositionAction extends NormalAction {
 
         MainAccessibilityService service = MainApplication.getInstance().getService();
         service.runGesture(pos.getX(service, offset.getValue()), pos.getY(service, offset.getValue()), time.getRandom(), result -> runnable.resume());
+        service.showTouch(pos.getX(service), pos.getY(service));
         runnable.pause();
         executeNext(runnable, context, outPin);
     }

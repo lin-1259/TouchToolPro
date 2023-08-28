@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
@@ -64,6 +65,14 @@ public class ExistImageAction extends CheckAction{
         if (rect == null) return;
         result.setBool(true);
         posPin.getValue(PinPoint.class).setPoint(service, rect.centerX(), rect.centerY());
+    }
+
+    @Override
+    public ActionCheckResult check(FunctionContext context) {
+        if (resultPin.getLinks().isEmpty()) {
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_exist_action_tips);
+        }
+        return super.check(context);
     }
 
     public Pin getImagePin() {

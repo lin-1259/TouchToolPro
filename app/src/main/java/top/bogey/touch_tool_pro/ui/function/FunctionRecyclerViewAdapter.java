@@ -17,6 +17,7 @@ import java.util.Locale;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewFunctionListItemBinding;
@@ -132,6 +133,14 @@ public class FunctionRecyclerViewAdapter extends RecyclerView.Adapter<FunctionRe
             String tagString = function.getTagString();
             binding.taskTag.setText(tagString);
             binding.taskTag.setVisibility(tagString.isEmpty() ? View.GONE : View.VISIBLE);
+
+            ActionCheckResult result = function.check();
+            if (result.type == ActionCheckResult.ActionResultType.ERROR) {
+                binding.errorText.setVisibility(View.VISIBLE);
+                binding.errorText.setText(result.tips);
+            } else {
+                binding.errorText.setVisibility(View.GONE);
+            }
 
             binding.getRoot().setChecked(functionView.selectedFunctions.containsKey(function.getId()));
         }

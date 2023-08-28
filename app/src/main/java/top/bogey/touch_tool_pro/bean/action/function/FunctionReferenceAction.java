@@ -4,7 +4,9 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
@@ -45,9 +47,12 @@ public class FunctionReferenceAction extends Action {
     }
 
     @Override
-    public boolean check(FunctionContext context) {
+    public ActionCheckResult check(FunctionContext context) {
         function = SaveRepository.getInstance().getFunction(parentId, functionId);
-        return function != null;
+        if (function == null) {
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_function_reference_action_tips);
+        }
+        return super.check(context);
     }
 
     @Override
@@ -76,7 +81,7 @@ public class FunctionReferenceAction extends Action {
 
     @Override
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        if (pin.isOut() && check(context)) {
+        if (pin.isOut() && !isError(context)) {
             calculate(runnable, context, pin);
             FunctionEndAction endAction = executeFunction.getEndAction();
             if (endAction == null) return pin.getValue();

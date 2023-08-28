@@ -34,6 +34,8 @@ public interface ActionInterface {
 
     void removeListener(ActionListener listener);
 
-    boolean check(FunctionContext context);
+    ActionCheckResult check(FunctionContext context);
+
+    boolean isError(FunctionContext context);
 
 }

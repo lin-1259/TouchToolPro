@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
@@ -92,6 +93,14 @@ public class ExistTextAction extends CheckAction {
             }
         }
         return null;
+    }
+
+    @Override
+    public ActionCheckResult check(FunctionContext context) {
+        if (resultPin.getLinks().isEmpty()) {
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_exist_action_tips);
+        }
+        return super.check(context);
     }
 
     public Pin getTextPin() {

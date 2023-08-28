@@ -2,7 +2,9 @@ package top.bogey.touch_tool_pro.bean.action.var;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
@@ -36,9 +38,10 @@ public class GetCommonVariableValue extends Action {
     }
 
     @Override
-    public boolean check(FunctionContext context) {
+    public ActionCheckResult check(FunctionContext context) {
         PinValue value = SaveRepository.getInstance().getVariable(varKey);
-        return value != null;
+        if (value == null) return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_variable_action_tips);
+        return super.check(context);
     }
 
     public String getVarKey() {

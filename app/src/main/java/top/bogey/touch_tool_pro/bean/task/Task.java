@@ -10,6 +10,7 @@ import java.util.UUID;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.check.ExistColorAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
@@ -87,13 +88,15 @@ public class Task extends FunctionContext {
     }
 
     @Override
-    public boolean check(ArrayList<Action> errors) {
-        boolean flag = super.check(errors);
+    public ActionCheckResult check() {
+        ActionCheckResult result = super.check();
+        if (result.type == ActionCheckResult.ActionResultType.ERROR) return result;
+
         for (Function function : getFunctions()) {
-            if (function.check(errors)) continue;
-            flag = false;
+            ActionCheckResult functionResult = function.check();
+            if (functionResult.type == ActionCheckResult.ActionResultType.ERROR) return functionResult;
         }
-        return flag;
+        return result;
     }
 
     @Override

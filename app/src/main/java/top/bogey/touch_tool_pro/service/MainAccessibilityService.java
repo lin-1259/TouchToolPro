@@ -458,6 +458,13 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
+    @SuppressLint("DefaultLocale")
+    public void showTouch(int x, int y) {
+        if (!SettingSave.getInstance().isShowTouch()) return;
+        PinTouch pinTouch = new PinTouch(this, new ArrayList<>(Collections.singleton(new PinTouch.TouchRecord(String.format("500;[%d.%d.0]", x, y)))));
+        showTouch(pinTouch);
+    }
+
     public ArrayList<AccessibilityNodeInfo> getNeedWindowsRoot() {
         ArrayList<AccessibilityNodeInfo> roots = new ArrayList<>();
         List<AccessibilityWindowInfo> windows = getWindows();

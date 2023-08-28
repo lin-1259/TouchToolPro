@@ -2,6 +2,8 @@ package top.bogey.touch_tool_pro.bean.action;
 
 import android.util.Log;
 
+import androidx.annotation.StringRes;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -221,8 +223,13 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
     }
 
     @Override
-    public boolean check(FunctionContext context) {
-        return true;
+    public ActionCheckResult check(FunctionContext context) {
+        return new ActionCheckResult(ActionCheckResult.ActionResultType.NORMAL, 0);
+    }
+
+    @Override
+    public boolean isError(FunctionContext context) {
+        return check(context).type == ActionCheckResult.ActionResultType.ERROR;
     }
 
     @Override

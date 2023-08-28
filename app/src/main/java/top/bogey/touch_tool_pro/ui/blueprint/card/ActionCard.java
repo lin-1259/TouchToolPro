@@ -14,6 +14,7 @@ import java.util.Map;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionListener;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
@@ -105,15 +106,28 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     }
 
     public boolean check() {
-        boolean result = action.check(functionContext);
-        if (result) {
-            setCardBackgroundColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
-            binding.functionButton.setVisibility(action instanceof FunctionReferenceAction ? VISIBLE : GONE);
-        } else {
-            setCardBackgroundColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorErrorContainer, 0));
-            binding.functionButton.setVisibility(GONE);
+        ActionCheckResult result = action.check(functionContext);
+        switch (result.type) {
+            case NORMAL -> {
+                binding.functionButton.setVisibility(action instanceof FunctionReferenceAction ? VISIBLE : GONE);
+                binding.errorText.setVisibility(GONE);
+            }
+            case WARNING -> {
+                binding.functionButton.setVisibility(action instanceof FunctionReferenceAction ? VISIBLE : GONE);
+                binding.errorText.setVisibility(VISIBLE);
+                binding.errorText.setBackgroundColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorErrorContainer, 0));
+                binding.errorText.setTextColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorOnErrorContainer, 0));
+                binding.errorText.setText(result.tips);
+            }
+            case ERROR -> {
+                binding.functionButton.setVisibility(GONE);
+                binding.errorText.setVisibility(VISIBLE);
+                binding.errorText.setBackgroundColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorError, 0));
+                binding.errorText.setTextColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorOnError, 0));
+                binding.errorText.setText(result.tips);
+            }
         }
-        return result;
+        return result.type != ActionCheckResult.ActionResultType.ERROR;
     }
 
     protected void addPinView(Pin pin) {
@@ -176,6 +190,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     public void onPinChanged(Pin pin) {
         PinView pinView = pinViews.get(pin.getId());
         if (pinView != null) pinView.refreshPinUI();
+        check();
     }
 
     public PinView getPinViewById(String id) {

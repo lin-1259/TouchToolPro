@@ -723,7 +723,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
             if (!card.check()) count++;
         }
         if (count == 0) return;
-        Toast.makeText(getContext(), getContext().getString(R.string.function_error_tips, count), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.card_error_tips, count), Toast.LENGTH_SHORT).show();
     }
 
     public void refreshVariableActionPins(Action action) {

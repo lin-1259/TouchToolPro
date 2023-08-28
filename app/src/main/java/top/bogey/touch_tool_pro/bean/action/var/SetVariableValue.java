@@ -2,6 +2,8 @@ package top.bogey.touch_tool_pro.bean.action.var;
 
 import com.google.gson.JsonObject;
 
+import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
@@ -29,16 +31,17 @@ public class SetVariableValue extends NormalAction {
 
     @Override
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        if (!check(context)) return;
+        if (isError(context)) return;
         PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
         context.setVarOnParent(varKey, (PinValue) value.copy());
         executeNext(runnable, context, outPin);
     }
 
     @Override
-    public boolean check(FunctionContext context) {
+    public ActionCheckResult check(FunctionContext context) {
         PinValue value = context.findVar(varKey);
-        return value != null;
+        if (value == null) return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_variable_action_tips);
+        return super.check(context);
     }
 
     public String getVarKey() {

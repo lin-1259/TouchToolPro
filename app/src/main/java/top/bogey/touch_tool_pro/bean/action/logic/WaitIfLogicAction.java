@@ -3,6 +3,7 @@ package top.bogey.touch_tool_pro.bean.action.logic;
 import com.google.gson.JsonObject;
 
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
@@ -53,6 +54,15 @@ public class WaitIfLogicAction extends NormalAction {
         } else {
             executeNext(runnable, context, falsePin);
         }
+    }
+
+    @Override
+    public ActionCheckResult check(FunctionContext context) {
+        PinInteger periodic = periodicPin.getValue(PinInteger.class);
+        if (periodic.getValue() < 50) {
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.WARNING, R.string.warning_wait_if_action_tips);
+        }
+        return super.check(context);
     }
 
     public Pin getConditionPin() {

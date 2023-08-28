@@ -1,6 +1,5 @@
 package top.bogey.touch_tool_pro.ui.custom;
 
-import android.accessibilityservice.GestureDescription;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -15,10 +14,10 @@ import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -33,6 +32,7 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     private final int lineWidth = 10;
 
     private final HashMap<Integer, Path> touchPath = new HashMap<>();
+    private final HashSet<Point> touchPoints = new HashSet<>();
     private final ArrayList<PinTouch.TouchRecord> records;
     private int index;
 
@@ -59,11 +59,15 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     @Override
     protected void dispatchDraw(@NonNull Canvas canvas) {
         super.dispatchDraw(canvas);
+        paint.setStrokeWidth(lineWidth);
         touchPath.forEach((id, path) -> canvas.drawPath(path, paint));
+        paint.setStrokeWidth(2 * lineWidth);
+        touchPoints.forEach(point -> canvas.drawPoint(point.x, point.y, paint));
     }
 
     private void startAni() {
         if (records.size() > index) {
+            touchPoints.clear();
             PinTouch.TouchRecord record = records.get(index);
             record.getPoints().forEach(point -> {
                 Path path = touchPath.get(point.getOwnerId());
@@ -71,15 +75,15 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
                     path = new Path();
                     touchPath.put(point.getOwnerId(), path);
                     path.moveTo(point.x + lineWidth, point.y + lineWidth);
-                } else {
-                    path.lineTo(point.x + lineWidth, point.y + lineWidth);
                 }
+                path.lineTo(point.x + lineWidth, point.y + lineWidth);
+                touchPoints.add(new Point(point.x + lineWidth, point.y + lineWidth));
             });
             index++;
             invalidate();
             postDelayed(this::startAni, record.getTime());
         } else {
-            dismiss();
+            animate().alpha(0).withEndAction(this::dismiss);
         }
     }
 
@@ -95,11 +99,6 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
                 .setAnimator(null)
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .show();
-
-        long time = 0;
-        for (GestureDescription.StrokeDescription stroke : touch.getStrokes(getContext(), 0)) {
-            if (time < stroke.getDuration()) time = stroke.getDuration();
-        }
 
         startAni();
     }
