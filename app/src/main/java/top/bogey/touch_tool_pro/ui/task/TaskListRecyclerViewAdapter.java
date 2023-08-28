@@ -47,10 +47,12 @@ public class TaskListRecyclerViewAdapter extends RecyclerView.Adapter<TaskListRe
     public void setTags(ArrayList<String> tags) {
         this.tags.clear();
         this.tags.addAll(tags);
-        boolean remove = this.tags.remove(SaveRepository.SHORTCUT_TAG);
+        boolean shortcutRemove = this.tags.remove(SaveRepository.SHORTCUT_TAG);
+        boolean noRemove = this.tags.remove(SaveRepository.NO_TAG);
         Collator collator = Collator.getInstance(Locale.CHINA);
         this.tags.sort(collator::compare);
-        if (remove) this.tags.add(SaveRepository.SHORTCUT_TAG);
+        if (shortcutRemove) this.tags.add(SaveRepository.SHORTCUT_TAG);
+        if (noRemove) this.tags.add(SaveRepository.NO_TAG);
         notifyDataSetChanged();
     }
 

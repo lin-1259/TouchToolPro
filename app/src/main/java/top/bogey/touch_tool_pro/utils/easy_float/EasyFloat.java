@@ -101,7 +101,7 @@ public class EasyFloat {
     public static void openInput(EditText editText, String tag) {
         FloatViewHelper helper = getHelper(tag);
         if (helper != null) {
-            helper.params.flags = FOCUSABLE;
+            helper.params.flags = FOCUSABLE | helper.config.flag;
             helper.manager.updateViewLayout(helper.floatViewParent, helper.params);
         }
 
@@ -152,6 +152,11 @@ public class EasyFloat {
 
         public Builder hasEditText(boolean hasEditText) {
             config.hasEditText = hasEditText;
+            return this;
+        }
+
+        public Builder setFlag(int flag) {
+            config.flag = flag;
             return this;
         }
 

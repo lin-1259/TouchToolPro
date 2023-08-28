@@ -31,6 +31,8 @@ public class SettingSave {
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
     private static final String KEEP_ALIVE = "KEEP_ALIVE";
 
+    private static final String SHOW_TOUCH = "SHOW_TOUCH";
+
     private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
     private static final String NIGHT_MODE = "NIGHT_MODE";
     private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";
@@ -146,6 +148,14 @@ public class SettingSave {
             context.stopService(new Intent(context, KeepAliveService.class));
         }
         settingMMKV.encode(KEEP_ALIVE, keepAlive);
+    }
+
+    public boolean isShowTouch() {
+        return settingMMKV.decodeBool(SHOW_TOUCH, false);
+    }
+
+    public void setShowTouch(boolean showTouch) {
+        settingMMKV.encode(SHOW_TOUCH, showTouch);
     }
 
 

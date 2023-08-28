@@ -46,7 +46,7 @@ public class FloatViewHelper {
         }
         params.format = PixelFormat.RGBA_8888;
         params.gravity = Gravity.START | Gravity.TOP;
-        params.flags = EasyFloat.NOT_FOCUSABLE;
+        params.flags = EasyFloat.NOT_FOCUSABLE | config.flag;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             params.layoutInDisplayCutoutMode = LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }

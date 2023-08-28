@@ -34,7 +34,7 @@ public class CreateFunctionContextDialogBuilder extends MaterialAlertDialogBuild
             chip.setCloseIconVisible(false);
 
             chip.setText(tag);
-            chip.setSelected(this.tags.contains(tag));
+            chip.setChecked(this.tags.contains(tag));
             chip.setOnClickListener(v -> {
                 if (this.tags.contains(tag)) {
                     this.tags.remove(tag);

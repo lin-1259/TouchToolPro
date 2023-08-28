@@ -15,6 +15,7 @@ public class FloatConfig {
     FloatAnimator animator = new FloatAnimator();
 
     boolean hasEditText = false;
+    int flag = 0;
 
     SidePattern side = SidePattern.DEFAULT;
     boolean matchWidth = false;

@@ -445,6 +445,8 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showTouch(PinTouch touch) {
+        if (!SettingSave.getInstance().isShowTouch()) return;
+
         BaseActivity activity = MainApplication.getInstance().getValidActivity();
         if (activity == null) {
             Intent intent = new Intent(this, InstantActivity.class);

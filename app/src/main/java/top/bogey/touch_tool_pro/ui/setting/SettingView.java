@@ -122,6 +122,9 @@ public class SettingView extends Fragment {
             });
         });
 
+        binding.showTouchSwitch.setOnClickListener(v -> SettingSave.getInstance().setShowTouch(binding.showTouchSwitch.isChecked()));
+        binding.showTouchSwitch.setChecked(SettingSave.getInstance().isShowTouch());
+
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 View view = group.findViewById(checkedId);

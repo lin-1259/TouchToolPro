@@ -51,7 +51,7 @@ public class FloatViewParent extends FrameLayout {
             if (event != null && event.getAction() == KeyEvent.ACTION_DOWN && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 FloatViewHelper helper = EasyFloat.getHelper(config.tag);
                 if (helper != null) {
-                    helper.params.flags = EasyFloat.NOT_FOCUSABLE;
+                    helper.params.flags = EasyFloat.NOT_FOCUSABLE | config.flag;
                     helper.manager.updateViewLayout(helper.floatViewParent, helper.params);
                 }
             }

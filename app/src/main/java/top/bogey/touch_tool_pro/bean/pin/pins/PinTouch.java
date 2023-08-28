@@ -179,6 +179,10 @@ public class PinTouch extends PinScreen {
         return records;
     }
 
+    public ArrayList<TouchRecord> getRecords() {
+        return records;
+    }
+
     public void setRecords(Context context, PinTouch pinTouch) {
         setRecords(context, pinTouch.getRecords(context), pinTouch.anchor);
     }
