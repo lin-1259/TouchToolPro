@@ -46,22 +46,6 @@
         <item name="cornerSizeBottomLeft">0%</item>
     </style>
 
-    <style name="Theme.TouchTool.ShapeAppearance.TopCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
-        <item name="cornerSizeTopRight">6dp</item>
-        <item name="cornerSizeTopLeft">6dp</item>
-        <item name="cornerSizeBottomLeft">0%</item>
-        <item name="cornerSizeBottomRight">0%</item>
-        <item name="cornerFamily">cut</item>
-    </style>
-
-    <style name="Theme.TouchTool.ShapeAppearance.BottomCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
-        <item name="cornerSizeTopRight">0%</item>
-        <item name="cornerSizeTopLeft">0%</item>
-        <item name="cornerSizeBottomLeft">6dp</item>
-        <item name="cornerSizeBottomRight">6dp</item>
-        <item name="cornerFamily">cut</item>
-    </style>
-
     <style name="Theme.TouchTool.TextAppearance.Hint" parent="TextAppearance.Material3.LabelSmall">
         <item name="android:textSize">5sp</item>
     </style>

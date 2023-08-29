@@ -100,7 +100,7 @@ public class SelectActionDialog extends FrameLayout {
         }
 
         if (!variables.isEmpty()) {
-            customFunctions.sort((o1, o2) -> collator.compare(((VariableInfo) o1).key, ((VariableInfo) o2).key));
+            variables.sort((o1, o2) -> collator.compare(((VariableInfo) o1).key, ((VariableInfo) o2).key));
             types.put(ActionMap.VARIABLE, variables);
         }
 

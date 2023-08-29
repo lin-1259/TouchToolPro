@@ -42,6 +42,7 @@ import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickKeyAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickNodeAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickPositionAction;
+import top.bogey.touch_tool_pro.bean.action.normal.CopyToClipboardAction;
 import top.bogey.touch_tool_pro.bean.action.normal.DelayAction;
 import top.bogey.touch_tool_pro.bean.action.normal.InputAction;
 import top.bogey.touch_tool_pro.bean.action.normal.LogAction;
@@ -142,6 +143,7 @@ public enum ActionType {
     OPEN_APP,
     OPEN_URI,
     PLAY_RINGTONE,
+    COPY,
     RUN_TASK,
     BREAK_TASK,
 
@@ -228,6 +230,7 @@ public enum ActionType {
             case OPEN_APP -> R.string.action_open_app_action_title;
             case OPEN_URI -> R.string.action_open_url_action_title;
             case PLAY_RINGTONE -> R.string.action_play_ringtone_action_title;
+            case COPY -> R.string.action_copy_action_title;
             case RUN_TASK -> R.string.action_do_task_action_title;
             case BREAK_TASK -> R.string.action_break_task_action_title;
 
@@ -309,6 +312,7 @@ public enum ActionType {
             case OPEN_APP -> R.drawable.icon_package_info;
             case OPEN_URI -> R.drawable.icon_uri;
             case PLAY_RINGTONE -> R.drawable.icon_notification;
+            case COPY -> R.drawable.icon_copy;
             case RUN_TASK -> R.drawable.icon_task;
             case BREAK_TASK -> R.drawable.icon_stop;
             default -> 0;
@@ -372,6 +376,7 @@ public enum ActionType {
             case OPEN_APP -> OpenAppAction.class;
             case OPEN_URI -> OpenUriAction.class;
             case PLAY_RINGTONE -> PlayRingtoneAction.class;
+            case COPY -> CopyToClipboardAction.class;
             case RUN_TASK -> RunTaskAction.class;
             case BREAK_TASK -> BreakTaskAction.class;
 

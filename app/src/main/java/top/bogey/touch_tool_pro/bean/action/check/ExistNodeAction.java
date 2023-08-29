@@ -95,7 +95,9 @@ public class ExistNodeAction extends CheckAction {
     @Override
     public ActionCheckResult check(FunctionContext context) {
         if (resultPin.getLinks().isEmpty()) {
-            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_exist_action_tips);
+            if (!posPin.getLinks().isEmpty() || !nodePin.getLinks().isEmpty()) {
+                return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_exist_action_tips);
+            }
         }
         return super.check(context);
     }

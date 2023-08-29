@@ -86,6 +86,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
                     if (rectList != null && rectList.size() > 0) {
                         Rect rect = rectList.get(0);
                         service.runGesture(rect.centerX(), rect.centerY(), 100, null);
+                        service.showTouch(rect.centerX(), rect.centerY());
                     }
                     EasyFloat.show(tag);
                 }, 100);
@@ -105,6 +106,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
                 Rect rect = service.binder.matchImage(pinImage.getImage(context), match[0], new Rect(), false);
                 if (rect != null) {
                     service.runGesture(rect.centerX(), rect.centerY(), 100, null);
+                    service.showTouch(rect.centerX(), rect.centerY());
                 }
             }
         });

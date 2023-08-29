@@ -189,6 +189,11 @@ public class FloatViewHelper {
         return point;
     }
 
+    public void offset(int x, int y) {
+        config.offset.x += x;
+        config.offset.y += y;
+    }
+
     public void initGravity() {
         Rect showSize = getShowRect();
         Point position = getGravityPosition();

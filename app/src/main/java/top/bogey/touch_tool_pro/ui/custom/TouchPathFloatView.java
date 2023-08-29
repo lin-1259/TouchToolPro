@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -18,10 +19,12 @@ import java.util.HashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool_pro.MainApplication;
+import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatGravity;
+import top.bogey.touch_tool_pro.utils.easy_float.FloatViewHelper;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 
 @SuppressLint("ViewConstructor")
@@ -29,7 +32,10 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     private final String tag;
     private final PinTouch touch;
     private final Paint paint;
+
     private final int lineWidth = 10;
+    private final int paddingScale = 4;
+    private final int padding = lineWidth * paddingScale / 2;
 
     private final HashMap<Integer, Path> touchPath = new HashMap<>();
     private final HashSet<Point> touchPoints = new HashSet<>();
@@ -43,7 +49,7 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
         tag = UUID.randomUUID().toString();
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimary, 0));
+        paint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
         paint.setStrokeWidth(lineWidth);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
@@ -52,8 +58,20 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        Rect area = touch.getRecordsArea();
-        setMeasuredDimension(area.width() + 2 * lineWidth, area.height() + 2 * lineWidth);
+        Rect area = touch.getRecordsArea(getContext());
+        setMeasuredDimension(area.width() + paddingScale * lineWidth, area.height() + paddingScale * lineWidth);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (changed) {
+            @SuppressLint("DrawAllocation") int[] location = new int[2];
+            getLocationOnScreen(location);
+            FloatViewHelper helper = EasyFloat.getHelper(tag);
+            helper.offset(-location[0], -location[1]);
+            helper.initGravity();
+        }
     }
 
     @Override
@@ -61,7 +79,7 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
         super.dispatchDraw(canvas);
         paint.setStrokeWidth(lineWidth);
         touchPath.forEach((id, path) -> canvas.drawPath(path, paint));
-        paint.setStrokeWidth(2 * lineWidth);
+        paint.setStrokeWidth(paddingScale * lineWidth);
         touchPoints.forEach(point -> canvas.drawPoint(point.x, point.y, paint));
     }
 
@@ -74,10 +92,10 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
                 if (path == null) {
                     path = new Path();
                     touchPath.put(point.getOwnerId(), path);
-                    path.moveTo(point.x + lineWidth, point.y + lineWidth);
+                    path.moveTo(point.x + padding, point.y + padding);
                 }
-                path.lineTo(point.x + lineWidth, point.y + lineWidth);
-                touchPoints.add(new Point(point.x + lineWidth, point.y + lineWidth));
+                path.lineTo(point.x + padding, point.y + padding);
+                touchPoints.add(new Point(point.x + padding, point.y + padding));
             });
             index++;
             invalidate();
@@ -94,7 +112,7 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
         EasyFloat.with(MainApplication.getInstance().getService())
                 .setLayout(this)
                 .setTag(tag)
-                .setGravity(FloatGravity.TOP_LEFT, point.x - lineWidth, point.y - lineWidth)
+                .setGravity(FloatGravity.TOP_LEFT, point.x - padding, point.y - padding)
                 .setDragEnable(false)
                 .setAnimator(null)
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)

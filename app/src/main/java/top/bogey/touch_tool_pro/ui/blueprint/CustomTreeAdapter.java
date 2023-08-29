@@ -81,7 +81,11 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                         cardLayoutView.addAction(SaveRepository.getInstance().getFunction(functionContext.getId(), info.key));
                     }
                 } else {
-                    cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value);
+                    if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
+                        cardLayoutView.addAction(GetCommonVariableValue.class, info.key, (PinValue) info.value);
+                    } else {
+                        cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value);
+                    }
                 }
             }
         });

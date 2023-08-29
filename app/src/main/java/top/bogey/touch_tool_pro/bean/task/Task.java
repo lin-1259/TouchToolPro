@@ -37,7 +37,7 @@ public class Task extends FunctionContext {
 
     public Task(JsonObject jsonObject) {
         super(jsonObject);
-        functions.addAll(GsonUtils.getAsObject(jsonObject, "functions", TypeToken.getParameterized(HashSet.class, Function.class).getType(), new HashSet<>()));
+        functions.addAll(GsonUtils.getAsObject(jsonObject, "functions", TypeToken.getParameterized(HashSet.class, FunctionContext.class).getType(), new HashSet<>()));
         createTime = GsonUtils.getAsLong(jsonObject, "createTime", System.currentTimeMillis());
     }
 

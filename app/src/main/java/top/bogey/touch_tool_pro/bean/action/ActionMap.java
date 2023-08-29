@@ -82,6 +82,7 @@ public enum ActionMap {
                     ActionType.OPEN_APP,
                     ActionType.OPEN_URI,
                     ActionType.PLAY_RINGTONE,
+                    ActionType.COPY,
                     ActionType.RUN_TASK,
                     ActionType.BREAK_TASK)
             );

@@ -59,6 +59,7 @@ public class PosPickerFloatPreview extends BasePickerFloatView {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 service.runGesture(newPinPoint.getX(context), newPinPoint.getY(context), 100, null);
+                service.showTouch(newPinPoint.getX(context), newPinPoint.getY(context));
             }
         });
 

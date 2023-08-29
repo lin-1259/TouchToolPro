@@ -44,6 +44,7 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
                 } else {
                     service.runGesture(newPinTouch.getStrokes(service, 0), null);
                 }
+                service.showTouch(newPinTouch);
             }
         });
 

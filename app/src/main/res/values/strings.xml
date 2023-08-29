@@ -132,7 +132,7 @@
     <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>
 
     <string name="card_error_tips">存在%d个问题卡片</string>
-    <string name="error_exist_action_tips">未连接结果针脚</string>
+    <string name="error_exist_action_tips">结果针脚未被使用</string>
     <string name="error_function_reference_action_tips">未找到引用的自定义卡片</string>
     <string name="error_variable_action_tips">未找到引用的变量</string>
 
@@ -283,6 +283,8 @@
 
     <string name="action_play_ringtone_action_title">播放铃声</string>
     <string name="action_play_ringtone_action_subtitle_url">铃声</string>
+
+    <string name="action_copy_action_title">写入剪切板</string>
 
     <string name="action_do_task_action_title">执行任务</string>
     <string name="action_do_task_action_subtitle_task">任务</string>

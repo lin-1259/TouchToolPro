@@ -2,8 +2,6 @@ package top.bogey.touch_tool_pro.bean.action;
 
 import android.util.Log;
 
-import androidx.annotation.StringRes;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
