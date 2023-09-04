@@ -221,9 +221,9 @@ public class BaseActivity extends AppCompatActivity {
         });
     }
 
-    public void showTouch(PinTouch touch) {
+    public void showTouch(PinTouch touch, float scale) {
         if (touch == null) return;
-        runOnUiThread(() -> new TouchPathFloatView(this, touch).show());
+        runOnUiThread(() -> new TouchPathFloatView(this, touch, scale).show());
     }
 
     public void restartAccessibilityServiceBySecurePermission() {

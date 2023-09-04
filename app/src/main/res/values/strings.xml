@@ -262,6 +262,7 @@
     <string name="action_system_ability_action_title">系统按键</string>
 
     <string name="action_touch_path_action_title">执行手势</string>
+    <string name="action_touch_path_action_subtitle_scale">手势时间倍率</string>
     <string name="action_touch_path_action_subtitle_offset">随机偏移</string>
 
     <string name="action_input_node_action_title">输入框输入</string>
@@ -395,6 +396,7 @@
     <string name="pin_touch">手势</string>
 
     <string name="pin_long">时间</string>
+    <string name="pin_float">小数</string>
 
     <string name="pin_string">文本</string>
     <string name="pin_string_node_id">控件ID</string>
@@ -483,8 +485,8 @@
     <string name="task_setting_log">实时任务日志</string>
     <string name="task_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
 
-    <string name="task_setting_show_touch">显示手势执行</string>
-    <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势笔画动画</string>
+    <string name="task_setting_show_touch">显示手势轨迹</string>
+    <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势轨迹动画</string>
 
     <string name="theme_setting">界面外观</string>
     <string name="theme_setting_first_show_task">任务主页</string>

@@ -40,11 +40,11 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isServiceEnabled()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    service.runGesture(newPinTouch.getStrokeList(service, 0), null);
+                    service.runGesture(newPinTouch.getStrokeList(service, 1, 0), null);
                 } else {
-                    service.runGesture(newPinTouch.getStrokes(service, 0), null);
+                    service.runGesture(newPinTouch.getStrokes(service, 1, 0), null);
                 }
-                service.showTouch(newPinTouch);
+                service.showTouch(newPinTouch, 1);
             }
         });
 

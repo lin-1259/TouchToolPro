@@ -103,6 +103,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
                 }
             }
         }
+        if (tags.isEmpty()) tags.add(SaveRepository.NO_TAG);
         binding.nextButton.setVisibility(tags.size() > 1 && SettingSave.getInstance().isPlayViewExpand() ? VISIBLE : GONE);
     }
 
@@ -113,8 +114,9 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         currTag = tags.get((index + 1) % tags.size());
 
         for (Map.Entry<ManualStartAction, Task> entry : manualStartActions.entrySet()) {
-            if (entry.getValue().getTags() != null) {
-                if (entry.getValue().getTags().contains(currTag)) actions.put(entry.getKey(), entry.getValue());
+            HashSet<String> currTags = entry.getValue().getTags();
+            if (currTags != null && !currTags.isEmpty()) {
+                if (currTags.contains(currTag)) actions.put(entry.getKey(), entry.getValue());
             } else {
                 if (SaveRepository.NO_TAG.equals(currTag)) actions.put(entry.getKey(), entry.getValue());
             }

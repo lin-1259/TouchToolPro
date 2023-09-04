@@ -26,8 +26,10 @@ public class InstantActivity extends BaseActivity {
     public static final String INTENT_KEY_SHOW_TOUCH = "INTENT_KEY_SHOW_TOUCH";
 
     public static final String INTENT_KEY_DO_ACTION = "INTENT_KEY_DO_ACTION";
+
     public static final String TASK_ID = "TASK_ID";
     public static final String ACTION_ID = "ACTION_ID";
+    public static final String SCALE = "SCALE";
 
 
     @Override
@@ -117,8 +119,9 @@ public class InstantActivity extends BaseActivity {
 
         String touchJson = intent.getStringExtra(INTENT_KEY_SHOW_TOUCH);
         if (touchJson != null && !touchJson.isEmpty()) {
+            float scale = intent.getFloatExtra(SCALE, 1);
             PinTouch touch = (PinTouch) GsonUtils.getAsObject(touchJson, PinObject.class, null);
-            showTouch(touch);
+            showTouch(touch, scale);
         }
 
         String msg = intent.getStringExtra(INTENT_KEY_SHOW_TOAST);

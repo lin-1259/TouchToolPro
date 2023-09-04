@@ -13,8 +13,8 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 
 public class BatteryStartAction extends StartAction {
-    private transient Pin statePin = new Pin(new PinSpinner(R.array.charging_state), R.string.action_battery_start_subtitle_state);
-    private transient Pin valuePin = new Pin(new PinInteger(), R.string.action_battery_start_subtitle_battery);
+    private transient Pin statePin = new Pin(new PinSpinner(R.array.charging_state), R.string.action_battery_start_subtitle_state, true);
+    private transient Pin valuePin = new Pin(new PinInteger(), R.string.action_battery_start_subtitle_battery, true);
 
     public BatteryStartAction() {
         super(ActionType.BATTERY_START);

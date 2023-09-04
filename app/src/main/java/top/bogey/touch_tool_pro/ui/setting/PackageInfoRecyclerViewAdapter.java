@@ -80,11 +80,14 @@ public class PackageInfoRecyclerViewAdapter extends RecyclerView.Adapter<Package
             binding.titleText.setText(packageInfo.getLogString());
         }
 
-        private void copy(CharSequence text) {
-            ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clipData = ClipData.newPlainText(context.getString(R.string.app_name), text);
-            manager.setPrimaryClip(clipData);
-            Toast.makeText(context, R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
+        private void copy(String text) {
+            String[] split = text.split(":");
+            if (split.length == 2) {
+                ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clipData = ClipData.newPlainText(context.getString(R.string.app_name), split[1]);
+                manager.setPrimaryClip(clipData);
+                Toast.makeText(context, R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

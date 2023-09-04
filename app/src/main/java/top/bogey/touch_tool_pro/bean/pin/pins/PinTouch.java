@@ -53,7 +53,7 @@ public class PinTouch extends PinScreen {
         return context.getColor(R.color.TouchPinColor);
     }
 
-    public HashSet<GestureDescription.StrokeDescription> getStrokes(Context context, int offsetPx) {
+    public HashSet<GestureDescription.StrokeDescription> getStrokes(Context context, float timeScale, int offsetPx) {
         float scale = getScale(context);
         Point offset = getAnchorPoint(context);
         ArrayList<Path> paths = new ArrayList<>();
@@ -89,7 +89,7 @@ public class PinTouch extends PinScreen {
         HashSet<GestureDescription.StrokeDescription> strokeSet = new HashSet<>();
         for (int i = 0; i < paths.size(); i++) {
             Path path = paths.get(i);
-            int time = times.get(i);
+            int time = (int) Math.max(1, times.get(i) * timeScale);
             GestureDescription.StrokeDescription strokeDescription = new GestureDescription.StrokeDescription(path, 0, time);
             strokeSet.add(strokeDescription);
         }
@@ -97,7 +97,7 @@ public class PinTouch extends PinScreen {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<HashSet<GestureDescription.StrokeDescription>> getStrokeList(Context context, int offsetPx) {
+    public ArrayList<HashSet<GestureDescription.StrokeDescription>> getStrokeList(Context context, float timeScale, int offsetPx) {
         ArrayList<HashSet<GestureDescription.StrokeDescription>> strokes = new ArrayList<>();
         float scale = getScale(context);
         Point offset = getAnchorPoint(context);
@@ -129,6 +129,7 @@ public class PinTouch extends PinScreen {
                 path.lineTo(x, y);
 
                 int time = Math.max(1, (point.end || isLast) ? 0 : records.get(i + 1).time);
+                time = (int) (time * timeScale);
                 GestureDescription.StrokeDescription description = preStrokeMap.get(point.ownerId);
                 if (description == null) {
                     description = new GestureDescription.StrokeDescription(path, 0, time, !point.end && !isLast);

@@ -87,6 +87,7 @@ public class MainAccessibilityService extends AccessibilityService {
         String packageName = (String) event.getPackageName();
         String className = (String) event.getClassName();
         if (packageName == null || className == null) return;
+        Log.d("TAG", "onAccessibilityEvent: " + packageName + "/" + className);
 
         WorldState worldState = WorldState.getInstance();
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
@@ -444,17 +445,18 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
-    public void showTouch(PinTouch touch) {
+    public void showTouch(PinTouch touch, float scale) {
         if (!SettingSave.getInstance().isShowTouch()) return;
 
         BaseActivity activity = MainApplication.getInstance().getValidActivity();
         if (activity == null) {
             Intent intent = new Intent(this, InstantActivity.class);
             intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOUCH, GsonUtils.toJson(touch));
+            intent.putExtra(InstantActivity.SCALE, scale);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
-            activity.showTouch(touch);
+            activity.showTouch(touch, scale);
         }
     }
 
@@ -462,7 +464,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public void showTouch(int x, int y) {
         if (!SettingSave.getInstance().isShowTouch()) return;
         PinTouch pinTouch = new PinTouch(this, new ArrayList<>(Collections.singleton(new PinTouch.TouchRecord(String.format("500;[%d.%d.0]", x, y)))));
-        showTouch(pinTouch);
+        showTouch(pinTouch, 1);
     }
 
     public ArrayList<AccessibilityNodeInfo> getNeedWindowsRoot() {

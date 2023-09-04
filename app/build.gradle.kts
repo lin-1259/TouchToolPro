@@ -20,7 +20,7 @@ android {
         applicationId = "top.bogey.touch_tool_pro"
         minSdk = 24
         targetSdk = 34
-        versionCode = 36
+        versionCode = 37
         versionName = now
 
         externalNativeBuild {
@@ -47,6 +47,9 @@ android {
 
         debug {
             applicationIdSuffix = ".debug"
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             resValue("string", "app_name", "@string/app_name_debug")
         }
     }

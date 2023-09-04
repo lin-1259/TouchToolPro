@@ -7,7 +7,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -31,6 +30,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 public class TouchPathFloatView extends FrameLayout implements FloatViewInterface {
     private final String tag;
     private final PinTouch touch;
+    private final float timeScale;
     private final Paint paint;
 
     private final int lineWidth = 10;
@@ -42,9 +42,11 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     private final ArrayList<PinTouch.TouchRecord> records;
     private int index;
 
-    public TouchPathFloatView(@NonNull Context context, PinTouch touch) {
+    public TouchPathFloatView(@NonNull Context context, PinTouch touch, float scale) {
         super(context);
         this.touch = touch;
+        timeScale = scale;
+
         records = touch.getRecords();
         tag = UUID.randomUUID().toString();
 
@@ -99,7 +101,7 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
             });
             index++;
             invalidate();
-            postDelayed(this::startAni, record.getTime());
+            postDelayed(this::startAni, (long) (record.getTime() * timeScale));
         } else {
             animate().alpha(0).withEndAction(this::dismiss);
         }

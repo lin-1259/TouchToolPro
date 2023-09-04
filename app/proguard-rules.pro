@@ -20,9 +20,9 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--assumenosideeffects class android.util.Log{
-    public static int d(...);
-}
+#-assumenosideeffects class android.util.Log{
+#    public static int d(...);
+#}
 
 -keep class android.graphics.Point{*;}
 -keep class android.graphics.Rect{*;}

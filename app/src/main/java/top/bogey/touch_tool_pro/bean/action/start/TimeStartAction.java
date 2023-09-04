@@ -14,7 +14,7 @@ import top.bogey.touch_tool_pro.utils.AppUtils;
 public class TimeStartAction extends StartAction {
     private transient Pin datePin = new Pin(new PinLong(PinSubType.DATE, System.currentTimeMillis()), R.string.action_time_start_subtitle_date);
     private transient Pin timePin = new Pin(new PinLong(PinSubType.TIME, System.currentTimeMillis()), R.string.action_time_start_subtitle_time);
-    private transient Pin periodicPin = new Pin(new PinLong(PinSubType.PERIODIC, System.currentTimeMillis()), R.string.action_time_start_subtitle_periodic);
+    private transient Pin periodicPin = new Pin(new PinLong(PinSubType.PERIODIC, 0L), R.string.action_time_start_subtitle_periodic);
 
     public TimeStartAction() {
         super(ActionType.TIME_START);
