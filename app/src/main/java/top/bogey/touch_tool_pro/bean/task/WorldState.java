@@ -27,6 +27,7 @@ import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.BaseActivity;
 import top.bogey.touch_tool_pro.ui.InstantActivity;
+import top.bogey.touch_tool_pro.ui.MainActivity;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -164,7 +165,7 @@ public class WorldState {
         if (isActivityClass(packageName, className)) {
             if (packageName.equals(MainApplication.getInstance().getPackageName())) {
                 setActivityInfo(packageName, className);
-                showManualActionDialog(false);
+                showManualActionDialog(!className.equals(MainActivity.class.getName()));
                 return true;
             } else {
                 if (setActivityInfo(packageName, className)) {

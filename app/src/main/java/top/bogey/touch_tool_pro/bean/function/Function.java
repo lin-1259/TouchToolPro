@@ -56,6 +56,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
 
     public Function newContext(FunctionReferenceAction executeAction) {
         Function copy = new Function();
+        copy.parentId = parentId;
         copy.justCall = justCall;
         copy.fastEnd = fastEnd;
         copy.executeAction = executeAction;
@@ -112,6 +113,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
     @Override
     public FunctionContext getParent() {
         if (parentId == null) return null;
+        if (executeAction != null) return executeAction.getOutContext();
         return SaveRepository.getInstance().getTaskById(parentId);
     }
 

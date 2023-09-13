@@ -141,4 +141,8 @@ public class FunctionReferenceAction extends Action {
     public String getFunctionId() {
         return functionId;
     }
+
+    public FunctionContext getOutContext() {
+        return outContext;
+    }
 }

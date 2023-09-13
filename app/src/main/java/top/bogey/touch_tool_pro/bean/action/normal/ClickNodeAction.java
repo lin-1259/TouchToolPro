@@ -42,14 +42,15 @@ public class ClickNodeAction extends NormalAction {
                 if (parent.performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK)) {
                     runnable.sleep(500);
                     executeNext(runnable, context, outPin);
+                    return;
                 }
             } else {
                 if (parent.performAction(AccessibilityNodeInfo.ACTION_CLICK)) {
                     runnable.sleep(100);
                     executeNext(runnable, context, outPin);
+                    return;
                 }
             }
-            return;
         }
         executeNext(runnable, context, falsePin);
     }

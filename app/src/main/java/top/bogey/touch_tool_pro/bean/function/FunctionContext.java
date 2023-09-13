@@ -91,7 +91,7 @@ public abstract class FunctionContext extends IdentityInfo {
         PinValue var = getVar(key);
         if (var != null) return var;
         FunctionContext parent = getParent();
-        if (parent != null) return parent.getVar(key);
+        if (parent != null) return parent.findVar(key);
         return null;
     }
 
@@ -104,15 +104,9 @@ public abstract class FunctionContext extends IdentityInfo {
     }
 
     public void setVarOnParent(String key, PinValue value) {
-        PinValue var = getVar(key);
-        if (var != null) {
-            addVar(key, value);
-        } else {
-            FunctionContext parent = getParent();
-            if (parent != null) {
-                parent.addVar(key, value);
-            }
-        }
+        FunctionContext parent = findVarParent(key);
+        if (parent == null) return;
+        parent.addVar(key, value);
     }
 
     public HashSet<String> getTags() {
