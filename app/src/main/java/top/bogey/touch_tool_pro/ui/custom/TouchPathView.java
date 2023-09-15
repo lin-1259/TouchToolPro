@@ -88,9 +88,13 @@ public class TouchPathView extends View {
 
     public ArrayList<Point> formatPoints(ArrayList<Point> points) {
         Rect area = new Rect();
+        boolean init = false;
         for (ArrayList<Point> pointPath : paths) {
             Rect rect = DisplayUtils.calculatePointArea(pointPath);
-            if (area.isEmpty() && area.left == 0 && area.top == 0) area.set(rect);
+            if (!init) {
+                area.set(rect);
+                init = true;
+            }
             else {
                 area.left = Math.min(rect.left, area.left);
                 area.right = Math.max(rect.right, area.right);

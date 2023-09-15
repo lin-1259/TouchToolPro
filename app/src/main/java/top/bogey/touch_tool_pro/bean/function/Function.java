@@ -34,6 +34,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
 
     private transient FunctionEndAction endAction;
     private transient FunctionReferenceAction executeAction;
+    private transient FunctionContext outContext;
 
     public Function() {
         super(FunctionType.FUNCTION);
@@ -54,12 +55,13 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         }
     }
 
-    public Function newContext(FunctionReferenceAction executeAction) {
+    public Function newContext(FunctionReferenceAction executeAction, FunctionContext outContext) {
         Function copy = new Function();
         copy.parentId = parentId;
         copy.justCall = justCall;
         copy.fastEnd = fastEnd;
         copy.executeAction = executeAction;
+        copy.outContext = outContext;
         copy.getActions().clear();
         copy.getActions().addAll(getActions());
         copy.getVars().putAll(getVars());
@@ -113,7 +115,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
     @Override
     public FunctionContext getParent() {
         if (parentId == null) return null;
-        if (executeAction != null) return executeAction.getOutContext();
+        if (outContext != null) return outContext;
         return SaveRepository.getInstance().getTaskById(parentId);
     }
 
@@ -143,12 +145,15 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
     @Override
     public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
         if (!justCall) return;
+
+        Function function = (Function) context;
+        function.endAction = null;
         ArrayList<Action> startActions = context.getActionsByClass(FunctionStartAction.class);
         if (startActions.size() > 0) {
             FunctionStartAction startAction = (FunctionStartAction) startActions.get(0);
             for (Pin actionPin : startAction.getPins()) {
                 if (actionPin.isSameValueType(PinExecute.class)) {
-                    execute(runnable, context, actionPin);
+                    startAction.executeNext(runnable, context, actionPin);
                     return;
                 }
             }
@@ -159,7 +164,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
         Function function = (Function) context;
         Pin pinByUid = function.executeAction.getPinByUid(pin.getUid());
-        return function.executeAction.getPinValue(runnable, context, pinByUid);
+        return function.executeAction.getPinValue(runnable, outContext, pinByUid);
     }
 
     public ArrayList<Pin> getPins() {
@@ -223,5 +228,9 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
 
     public void setEndAction(FunctionEndAction endAction) {
         this.endAction = endAction;
+    }
+
+    public FunctionContext getOutContext() {
+        return outContext;
     }
 }

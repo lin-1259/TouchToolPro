@@ -1,20 +1,23 @@
 package top.bogey.touch_tool_pro.ui.custom;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.TimeInterpolator;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.UUID;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -27,7 +30,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.FloatViewHelper;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 
 @SuppressLint("ViewConstructor")
-public class TouchPathFloatView extends FrameLayout implements FloatViewInterface {
+public class TouchPathFloatView extends AppCompatImageView implements FloatViewInterface {
     private final String tag;
     private final PinTouch touch;
     private final float timeScale;
@@ -37,8 +40,9 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     private final int paddingScale = 4;
     private final int padding = lineWidth * paddingScale / 2;
 
-    private final HashMap<Integer, Path> touchPath = new HashMap<>();
-    private final HashSet<Point> touchPoints = new HashSet<>();
+    private Canvas canvas = null;
+
+    private final HashMap<Integer, Point> lastTouch = new HashMap<>();
     private final ArrayList<PinTouch.TouchRecord> records;
     private int index;
 
@@ -61,7 +65,15 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         Rect area = touch.getRecordsArea(getContext());
-        setMeasuredDimension(area.width() + paddingScale * lineWidth, area.height() + paddingScale * lineWidth);
+        int width = area.width() + paddingScale * lineWidth;
+        int height = area.height() + paddingScale * lineWidth;
+        setMeasuredDimension(width, height);
+
+        if (canvas == null) {
+            Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            canvas = new Canvas(bitmap);
+            setImageBitmap(bitmap);
+        }
     }
 
     @Override
@@ -74,37 +86,60 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
             helper.offset(-location[0], -location[1]);
             helper.initGravity();
         }
-    }
-
-    @Override
-    protected void dispatchDraw(@NonNull Canvas canvas) {
-        super.dispatchDraw(canvas);
-        paint.setStrokeWidth(lineWidth);
-        touchPath.forEach((id, path) -> canvas.drawPath(path, paint));
-        paint.setStrokeWidth(paddingScale * lineWidth);
-        touchPoints.forEach(point -> canvas.drawPoint(point.x, point.y, paint));
+        if (index == 0) {
+            index++;
+            startAni();
+        }
     }
 
     private void startAni() {
-        if (records.size() > index) {
-            touchPoints.clear();
-            PinTouch.TouchRecord record = records.get(index);
-            record.getPoints().forEach(point -> {
-                Path path = touchPath.get(point.getOwnerId());
-                if (path == null) {
-                    path = new Path();
-                    touchPath.put(point.getOwnerId(), path);
-                    path.moveTo(point.x + padding, point.y + padding);
-                }
-                path.lineTo(point.x + padding, point.y + padding);
-                touchPoints.add(new Point(point.x + padding, point.y + padding));
-            });
-            index++;
-            invalidate();
-            postDelayed(this::startAni, (long) (record.getTime() * timeScale));
-        } else {
-            animate().alpha(0).withEndAction(this::dismiss);
+        int time = 0;
+        for (PinTouch.TouchRecord record : records) {
+            time += record.getTime();
         }
+
+        ValueAnimator animator = ValueAnimator.ofFloat(1, records.size());
+        animator.setDuration((long) (time * timeScale));
+        animator.addUpdateListener(animation -> {
+            float now = animation.getCurrentPlayTime() / timeScale;
+            int index = 0;
+            int total = 0;
+            for (int i = 0; i < records.size(); i++) {
+                PinTouch.TouchRecord record = records.get(i);
+                total += record.getTime();
+                if (total > now) {
+                    index = i;
+                    break;
+                }
+            }
+            if (index > 0) {
+                PinTouch.TouchRecord lastRecord = records.get(index - 1);
+                PinTouch.TouchRecord record = records.get(index);
+                float value = Math.max((float) animation.getAnimatedValue() - index, 0);
+
+                record.getPoints().forEach(point -> {
+                    PinTouch.PathPoint lastPathPoint = lastRecord.getPointByOwnerId(point.getOwnerId());
+                    if (lastPathPoint == null) {
+                        return;
+                    }
+                    Point lastPoint = lastTouch.computeIfAbsent(point.getOwnerId(), k -> new Point(lastPathPoint.x + padding, lastPathPoint.y + padding));
+                    int x = (int) ((point.x - lastPathPoint.x) * value + lastPathPoint.x + padding);
+                    int y = (int) ((point.y - lastPathPoint.y) * value + lastPathPoint.y + padding);
+                    paint.setStrokeWidth(lineWidth);
+                    canvas.drawLine(lastPoint.x, lastPoint.y, x, y, paint);
+                    lastPoint.set(x, y);
+                });
+                invalidate();
+            }
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                animate().alpha(0).withEndAction(() -> dismiss());
+            }
+        });
+
+        animator.start();
     }
 
     @Override
@@ -119,8 +154,6 @@ public class TouchPathFloatView extends FrameLayout implements FloatViewInterfac
                 .setAnimator(null)
                 .setFlag(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 .show();
-
-        startAni();
     }
 
     @Override

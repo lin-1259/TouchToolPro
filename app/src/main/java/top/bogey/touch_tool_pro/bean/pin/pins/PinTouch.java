@@ -17,6 +17,7 @@ import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -128,8 +129,7 @@ public class PinTouch extends PinScreen {
                 }
                 path.lineTo(x, y);
 
-                int time = Math.max(1, (point.end || isLast) ? 0 : records.get(i + 1).time);
-                time = (int) (time * timeScale);
+                int time = (int) Math.max(1, record.time * timeScale);
                 GestureDescription.StrokeDescription description = preStrokeMap.get(point.ownerId);
                 if (description == null) {
                     description = new GestureDescription.StrokeDescription(path, 0, time, !point.end && !isLast);
@@ -221,17 +221,21 @@ public class PinTouch extends PinScreen {
 
     private Rect getRecordsArea(ArrayList<TouchRecord> records) {
         Rect rect = new Rect();
-        records.forEach(record -> record.points.forEach(point -> {
-            if (rect.isEmpty() && rect.left == 0 && rect.top == 0) {
-                rect.left = rect.right = point.x;
-                rect.top = rect.bottom = point.y;
-            } else {
-                rect.left = Math.min(point.x, rect.left);
-                rect.right = Math.max(point.x, rect.right);
-                rect.top = Math.min(point.y, rect.top);
-                rect.bottom = Math.max(point.y, rect.bottom);
+        boolean init = false;
+        for (TouchRecord record : records) {
+            for (PathPoint point : record.points) {
+                if (!init) {
+                    rect.left = rect.right = point.x;
+                    rect.top = rect.bottom = point.y;
+                    init = true;
+                } else {
+                    rect.left = Math.min(point.x, rect.left);
+                    rect.right = Math.max(point.x, rect.right);
+                    rect.top = Math.min(point.y, rect.top);
+                    rect.bottom = Math.max(point.y, rect.bottom);
+                }
             }
-        }));
+        }
         return rect;
     }
 
@@ -287,6 +291,13 @@ public class PinTouch extends PinScreen {
         public TouchRecord(int time) {
             this.time = time;
             points = new HashSet<>();
+        }
+
+        public TouchRecord(int time, int x, int y, boolean end) {
+            this.time = time;
+            PathPoint point = new PathPoint(0, x, y);
+            point.end = end;
+            points = new HashSet<>(Collections.singleton(point));
         }
 
         public TouchRecord(TouchRecord record) {

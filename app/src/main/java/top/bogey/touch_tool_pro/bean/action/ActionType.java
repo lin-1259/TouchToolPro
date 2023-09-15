@@ -57,6 +57,7 @@ import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosOffsetAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosToAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosToIntAction;
+import top.bogey.touch_tool_pro.bean.action.pos.PosToTouchAction;
 import top.bogey.touch_tool_pro.bean.action.start.AppStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.BatteryStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
@@ -173,6 +174,7 @@ public enum ActionType {
     POS_OFFSET,
     POS_IN_AREA,
     POS_TO_AREA,
+    POS_TO_TOUCH
     ;
 
     public String getTitle() {
@@ -260,6 +262,7 @@ public enum ActionType {
             case POS_OFFSET -> R.string.action_position_offset_title;
             case POS_IN_AREA -> R.string.action_position_in_area_title;
             case POS_TO_AREA -> R.string.action_position_to_area_title;
+            case POS_TO_TOUCH -> R.string.action_position_to_touch_title;
             default -> 0;
         };
         if (id == 0) return "";
@@ -406,6 +409,7 @@ public enum ActionType {
             case POS_OFFSET -> PosOffsetAction.class;
             case POS_IN_AREA -> PosInAreaAction.class;
             case POS_TO_AREA -> PosToAreaAction.class;
+            case POS_TO_TOUCH -> PosToTouchAction.class;
             default -> Action.class;
         };
     }

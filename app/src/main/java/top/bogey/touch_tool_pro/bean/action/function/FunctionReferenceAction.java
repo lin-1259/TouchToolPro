@@ -1,5 +1,7 @@
 package top.bogey.touch_tool_pro.bean.action.function;
 
+import android.util.Log;
+
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -21,8 +23,6 @@ public class FunctionReferenceAction extends Action {
     private final String functionId;
 
     private transient Function function;
-    private transient FunctionContext outContext;
-    private transient Function executeFunction;
 
     private transient boolean synced = false;
 
@@ -57,38 +57,33 @@ public class FunctionReferenceAction extends Action {
 
     @Override
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
+        Log.d("TAG", "execute: " + context);
         if (!synced) sync(context);
         if (function == null) return;
 
-        outContext = context;
-        executeFunction = function.newContext(this);
+        Function executeFunction = function.newContext(this, context);
         function.execute(runnable, executeFunction, pin);
     }
 
     @Override
     public void executeNext(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        super.executeNext(runnable, outContext, getPinByUid(pin.getUid()));
-    }
-
-    @Override
-    public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        outContext = context;
-        if (executeFunction == null) {
-            executeFunction = function.newContext(this);
-        }
-        function.calculate(runnable, executeFunction, pin);
+        Function executeFunction = (Function) context;
+        super.executeNext(runnable, executeFunction.getOutContext(), getPinByUid(pin.getUid()));
     }
 
     @Override
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
+        if (!synced) sync(context);
         if (pin.isOut() && !isError(context)) {
-            calculate(runnable, context, pin);
+            Function executeFunction = function.newContext(this, context);
+            function.calculate(runnable, executeFunction, pin);
+
             FunctionEndAction endAction = executeFunction.getEndAction();
             if (endAction == null) return pin.getValue();
             Pin pinByUid = endAction.getPinByUid(pin.getUid());
             return endAction.getPinValue(runnable, executeFunction, pinByUid);
         }
-        return super.getPinValue(runnable, outContext, pin);
+        return super.getPinValue(runnable, context, pin);
     }
 
     public void sync(FunctionContext context) {
@@ -140,9 +135,5 @@ public class FunctionReferenceAction extends Action {
 
     public String getFunctionId() {
         return functionId;
-    }
-
-    public FunctionContext getOutContext() {
-        return outContext;
     }
 }

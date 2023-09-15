@@ -13,7 +13,7 @@ android {
     ndkVersion = "25.2.9519653"
     buildToolsVersion = "34.0.0"
 
-    val pattern = DateTimeFormatter.ofPattern("yyMMdd.HHmm")
+    val pattern = DateTimeFormatter.ofPattern("yyMMdd_HHmm")
     val now = LocalDateTime.now().format(pattern)
 
     defaultConfig {

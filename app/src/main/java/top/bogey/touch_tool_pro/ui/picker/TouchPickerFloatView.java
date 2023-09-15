@@ -228,7 +228,9 @@ public class TouchPickerFloatView extends BasePickerFloatView {
             binding.bottomRightButton.setX(params.width - binding.bottomRightButton.getWidth());
             binding.bottomRightButton.setY(params.height - binding.bottomRightButton.getHeight());
 
-            binding.buttonBox.setX(markArea.left + ((float) markArea.width() - binding.buttonBox.getWidth()) / 2 - location[0]);
+            float x = markArea.left + (markArea.width() - binding.buttonBox.getWidth()) / 2f - location[0];
+            x = Math.max(Math.min(x, size.x - binding.buttonBox.getWidth()), 0);
+            binding.buttonBox.setX(x);
             if (markArea.bottom + padding * 2 + binding.buttonBox.getHeight() > binding.getRoot().getHeight()) {
                 binding.buttonBox.setY(markArea.top - padding * 2 - binding.buttonBox.getHeight() - location[1]);
             } else {

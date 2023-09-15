@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -212,6 +213,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
+        Point size = DisplayUtils.getScreenSize(getContext());
         binding.markBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         if (isMarked) {
@@ -220,14 +222,16 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             params.height = (int) markArea.height() + 2 * offset;
             binding.markBox.setLayoutParams(params);
 
-            binding.markBox.setX(markArea.left - offset);
-            binding.markBox.setY(markArea.top - offset);
+            binding.markBox.setX(markArea.left - offset - location[0]);
+            binding.markBox.setY(markArea.top - offset - location[1]);
 
-            binding.buttonBox.setX(markArea.left + (markArea.width() - binding.buttonBox.getWidth()) / 2f);
+            float x = markArea.left + (markArea.width() - binding.buttonBox.getWidth()) / 2f - location[0];
+            x = Math.max(Math.min(x, size.x - binding.buttonBox.getWidth()), 0);
+            binding.buttonBox.setX(x);
             if (markArea.bottom + offset * 2 + binding.buttonBox.getHeight() > getHeight()) {
-                binding.buttonBox.setY(markArea.top - offset * 2 - binding.buttonBox.getHeight());
+                binding.buttonBox.setY(markArea.top - offset * 2 - binding.buttonBox.getHeight() - location[1]);
             } else {
-                binding.buttonBox.setY(markArea.bottom + offset * 2);
+                binding.buttonBox.setY(markArea.bottom + offset * 2 - location[1]);
             }
         }
         postInvalidate();

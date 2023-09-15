@@ -115,7 +115,8 @@ public enum ActionMap {
                     ActionType.POS_TO_INT,
                     ActionType.POS_OFFSET,
                     ActionType.POS_IN_AREA,
-                    ActionType.POS_TO_AREA)
+                    ActionType.POS_TO_AREA,
+                    ActionType.POS_TO_TOUCH)
             );
             default -> new ArrayList<>();
         };

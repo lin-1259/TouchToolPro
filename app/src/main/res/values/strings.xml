@@ -375,6 +375,8 @@
 
     <string name="action_position_in_area_title">位置在区域内</string>
     <string name="action_position_to_area_title">位置组合为区域</string>
+    <string name="action_position_to_touch_title">位置组合为手势</string>
+    <string name="action_position_to_touch_subtitle_time">手势时长(ms)</string>
 
     <!-- 针脚 -->
     <string name="pin_execute">执行</string>
