@@ -25,6 +25,7 @@ public class FunctionReferenceAction extends Action {
     private transient Function function;
 
     private transient boolean synced = false;
+    private transient Function executeFunction;
 
     public FunctionReferenceAction(Function function) {
         super(ActionType.CUSTOM);
@@ -60,8 +61,7 @@ public class FunctionReferenceAction extends Action {
         Log.d("TAG", "execute: " + context);
         if (!synced) sync(context);
         if (function == null) return;
-
-        Function executeFunction = function.newContext(this, context);
+        if (executeFunction == null) executeFunction = function.newContext(this, context);
         function.execute(runnable, executeFunction, pin);
     }
 
@@ -75,7 +75,7 @@ public class FunctionReferenceAction extends Action {
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
         if (!synced) sync(context);
         if (pin.isOut() && !isError(context)) {
-            Function executeFunction = function.newContext(this, context);
+            if (executeFunction == null) executeFunction = function.newContext(this, context);
             function.calculate(runnable, executeFunction, pin);
 
             FunctionEndAction endAction = executeFunction.getEndAction();
@@ -112,7 +112,8 @@ public class FunctionReferenceAction extends Action {
             Pin pin = getPinByUid(functionPin.getUid());
             // 如果之前没有，直接复制一份加上
             if (pin == null) {
-                addPin((Pin) functionPin.copy());
+                Pin addPin = addPin((Pin) functionPin.copy());
+                addPin.newInfo();
                 continue;
             }
             // 如果之前有，但值不对，断开所有连接，并复制值

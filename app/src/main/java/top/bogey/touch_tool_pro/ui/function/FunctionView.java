@@ -109,6 +109,7 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
         binding.copyButton.setOnClickListener(v -> {
             selectedFunctions.forEach((id, function) -> {
                 Function copy = (Function) function.copy();
+                copy.newInfo();
                 copy.setTitle(getString(R.string.task_copy_title, copy.getTitle()));
                 copy.save();
             });

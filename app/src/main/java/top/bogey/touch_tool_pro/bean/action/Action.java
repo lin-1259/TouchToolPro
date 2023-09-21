@@ -60,9 +60,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
 
     @Override
     public IdentityInfo copy() {
-        Action copy = GsonUtils.copy(this, Action.class);
-        copy.newInfo();
-        return copy;
+        return GsonUtils.copy(this, Action.class);
     }
 
     @Override
@@ -125,6 +123,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         int count = 0;
         while (tmpPins.size() > remain && count <= 50) {
             Pin copy = (Pin) def.copy();
+            copy.newInfo();
             copy.setTitleId(def.getTitleId());
             pins.add(reAddPin(copy));
             count++;

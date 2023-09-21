@@ -76,6 +76,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
     private float startY = 0;
     private boolean dragOut;
 
+    private boolean isClick = false;
     private boolean isBreakLink = false;
     private AlertDialog dialog;
 
@@ -377,7 +378,12 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
                 if (card == null) continue;
                 PinView pinBaseView = card.getPinViewById(entry.getKey());
                 if (pinBaseView == null) continue;
-                if (matchedPin != null && dragPin.getPin().isCanLink(matchedPin.getPin())) {
+                if (matchedPin != null &&
+                        (
+                                (isBreakLink && dragPin.getPin().isSameValueType(matchedPin.getPin())) ||
+                                        (!isBreakLink && dragPin.getPin().isCanLink(matchedPin.getPin()))
+                        )
+                ) {
                     linePaint.setColor(dragPin.getPin().getValue().getPinColor(getContext()));
                 } else {
                     linePaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorPrimaryInverse, 0));
@@ -535,6 +541,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         if (actionMasked == MotionEvent.ACTION_DOWN) {
             startX = rawX;
             startY = rawY;
+            isClick = true;
             if (editMode) {
                 for (int i = getChildCount() - 1; i >= 0; i--) {
                     ActionCard<?> card = (ActionCard<?>) getChildAt(i);
@@ -578,7 +585,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
             }
         } else if (actionMasked == MotionEvent.ACTION_UP) {
             if (dragState == DRAG_PIN) {
-                if (Math.abs(rawX - startX) * Math.abs(rawY - startY) <= 81) {
+                if (isClick) {
                     if (dragPin != null) {
                         pinRemoveLinks(dragPin);
                     }
@@ -622,6 +629,10 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
             dragY = location[1];
             dragState = DRAG_NONE;
         } else if (actionMasked == MotionEvent.ACTION_MOVE) {
+            if (Math.abs(rawX - startX) * Math.abs(rawY - startY) > 81) {
+                isClick = false;
+            }
+
             if (dragState == DRAG_CARD) {
                 float scaleGridSize = getScaleGridSize();
                 Action action = dragCard.getAction();

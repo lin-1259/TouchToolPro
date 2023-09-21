@@ -63,16 +63,21 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         copy.executeAction = executeAction;
         copy.outContext = outContext;
         copy.getActions().clear();
-        copy.getActions().addAll(getActions());
+        for (Action action : getActions()) {
+            // 动作引用涉及到运行时环境，所以需要准备新环境
+            if (action instanceof FunctionReferenceAction) {
+                copy.addAction((Action) action.copy());
+            } else {
+                copy.addAction(action);
+            }
+        }
         copy.getVars().putAll(getVars());
         return copy;
     }
 
     @Override
     public IdentityInfo copy() {
-        Function copy = (Function) GsonUtils.copy(this, FunctionContext.class);
-        copy.newInfo();
-        return copy;
+        return GsonUtils.copy(this, FunctionContext.class);
     }
 
     @Override

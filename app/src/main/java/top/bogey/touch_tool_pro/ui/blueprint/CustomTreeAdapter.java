@@ -398,6 +398,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 if (subType == TreeNodeSubtype.COMMON_FUNCTION) {
                     Function function = SaveRepository.getInstance().getFunctionById(info.key);
                     copy = (Function) function.copy();
+                    copy.newInfo();
                     copy.save();
                     parentTreeNode = commonFunctionTreeNode;
                 } else {
@@ -405,6 +406,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                     if (functionContext instanceof Task task) {
                         Function function = task.getFunctionById(info.key);
                         copy = (Function) function.copy();
+                        copy.newInfo();
                         task.addFunction(copy);
                         task.save();
                     }

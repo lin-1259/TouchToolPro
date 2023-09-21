@@ -86,7 +86,11 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
             pinViews.forEach((id, pinView) -> pinView.setExpand(action.isExpand()));
         });
 
-        binding.copyButton.setOnClickListener(v -> ((CardLayoutView) getParent()).addAction((Action) action.copy()));
+        binding.copyButton.setOnClickListener(v -> {
+            Action copy = (Action) action.copy();
+            copy.newInfo();
+            ((CardLayoutView) getParent()).addAction(copy);
+        });
 
         binding.removeButton.setOnClickListener(v -> {
             if (needDelete) {

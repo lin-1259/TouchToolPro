@@ -24,6 +24,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -165,7 +166,14 @@ public class MainActivity extends BaseActivity {
             uri = intent.getData();
         }
         if (uri != null) {
-            saveTasks(uri);
+            String path = uri.getPath();
+            if (path != null) {
+                if (path.endsWith("apk.1")) {
+                    AppUtils.installApk(this, uri);
+                } else if (path.endsWith("ttp")) {
+                    saveTasks(uri);
+                }
+            }
         }
 
         setIntent(null);

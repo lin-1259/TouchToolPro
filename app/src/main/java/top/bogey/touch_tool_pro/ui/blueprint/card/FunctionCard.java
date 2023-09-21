@@ -31,7 +31,9 @@ public class FunctionCard extends ActionCard<FunctionInnerAction> {
 
         binding.copyButton.setOnClickListener(v -> {
             if (action instanceof FunctionStartAction) return;
-            ((CardLayoutView) getParent()).addAction((Action) action.copy());
+            Action copy = (Action) action.copy();
+            copy.newInfo();
+            ((CardLayoutView) getParent()).addAction(copy);
         });
 
         binding.removeButton.setOnClickListener(v -> {

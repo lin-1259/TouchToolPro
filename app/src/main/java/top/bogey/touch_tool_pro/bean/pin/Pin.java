@@ -69,9 +69,7 @@ public class Pin extends IdentityInfo {
 
     @Override
     public IdentityInfo copy() {
-        Pin copy = GsonUtils.copy(this, Pin.class);
-        copy.newInfo();
-        return copy;
+        return GsonUtils.copy(this, Pin.class);
     }
 
     @Override

@@ -27,6 +27,7 @@ public class PinWidgetAdd extends PinWidget<PinAdd> {
     public void initBase() {
         binding.addPinButton.setOnClickListener(v -> {
             Pin copy = (Pin) pinObject.getPin().copy();
+            copy.newInfo();
             copy.setTitleId(pinObject.getPin().getTitleId());
             copy.setRemoveAble(true);
             card.addPin(copy, pinObject.getOffset());
