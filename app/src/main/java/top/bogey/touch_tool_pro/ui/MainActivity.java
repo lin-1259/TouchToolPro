@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -177,6 +178,14 @@ public class MainActivity extends BaseActivity {
         }
 
         setIntent(null);
+    }
+
+    public <T extends Fragment> T getCurrFragment(Class<T> tClass) {
+        Fragment navFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+        if (navFragment == null || !navFragment.isAdded()) return null;
+        Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
+        if (tClass.isInstance(fragment)) return tClass.cast(fragment);
+        return null;
     }
 
     public void saveTasks(Uri uri) {

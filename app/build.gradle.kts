@@ -10,7 +10,7 @@ plugins {
 android {
     namespace = "top.bogey.touch_tool_pro"
     compileSdk = 34
-    ndkVersion = "25.2.9519653"
+    ndkVersion = "26.0.10792818"
     buildToolsVersion = "34.0.0"
 
     val pattern = DateTimeFormatter.ofPattern("yyMMdd_HHmm")
@@ -20,7 +20,7 @@ android {
         applicationId = "top.bogey.touch_tool_pro"
         minSdk = 24
         targetSdk = 34
-        versionCode = 37
+        versionCode = 38
         versionName = now
 
         externalNativeBuild {

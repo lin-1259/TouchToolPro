@@ -1,5 +1,8 @@
 package top.bogey.touch_tool_pro.ui.blueprint;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -267,8 +270,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         card.setScaleY(scale);
         float x = action.getX() * getScaleGridSize() + offsetX;
         float y = action.getY() * getScaleGridSize() + offsetY;
-        card.setX(x);
-        card.setY(y);
+        card.setPosition(x, y);
         float width = card.getWidth() * scale;
         float height = card.getHeight() * scale;
         RectF cardArea = new RectF(x, y, x + width, y + height);
@@ -277,6 +279,34 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         } else {
             card.setVisibility(INVISIBLE);
         }
+    }
+
+    public void showCard(int x, int y, Class<? extends Action> actionClass) {
+        float newX = (2 - x) * getScaleGridSize();
+        float newY = (2 - y) * getScaleGridSize();
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+        animator.addUpdateListener(animation -> {
+            float percent = (float) animation.getAnimatedValue();
+            offsetX += (newX - offsetX) * percent;
+            offsetY += (newY - offsetY) * percent;
+            setCardsPosition();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                for (Map.Entry<String, ActionCard<?>> entry : cardMap.entrySet()) {
+                    ActionCard<?> card = entry.getValue();
+                    Action action = card.getAction();
+                    if (action.getX() == x && action.getY() == y) {
+                        if (actionClass.isInstance(action)) {
+                            card.flick();
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        animator.start();
     }
 
     private void showSelectActionDialog() {

@@ -25,7 +25,6 @@ import java.util.Set;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
-import top.bogey.touch_tool_pro.bean.base.LogInfo;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
@@ -38,7 +37,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.FloatViewHelper;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 
 public class LogFloatView extends FrameLayout implements FloatViewInterface, TaskRunningListener {
-    private final HashMap<String, ArrayList<LogInfo>> logs = new LinkedHashMap<>();
+    private final HashMap<String, ArrayList<RuntimeLogInfo>> logs = new LinkedHashMap<>();
     private final HashMap<String, String> tasks = new LinkedHashMap<>();
     private final FloatLogBinding binding;
     private final LogRecyclerViewAdapter adapter;
@@ -73,16 +72,16 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
         });
         binding.expandButton.setOnClickListener(v -> {
             isExpand = false;
-            refreshUI();
+            refreshUI(true);
         });
         binding.showButton.setOnClickListener(v -> {
             isExpand = true;
-            refreshUI();
+            refreshUI(true);
         });
 
         binding.zoomButton.setOnClickListener(v -> {
             isZoom = !isZoom;
-            refreshUI();
+            refreshUI(false);
         });
 
         adapter = new LogRecyclerViewAdapter();
@@ -137,7 +136,7 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
         }
     }
 
-    private void refreshUI() {
+    private void refreshUI(boolean expand) {
         FloatViewHelper helper = EasyFloat.getHelper(LogFloatView.class.getCanonicalName());
 
         Point size = DisplayUtils.getScreenSize(getContext());
@@ -158,10 +157,19 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
         root.setLayoutParams(rootLayoutParams);
         helper.params.width = bgWidth;
         helper.params.height = bgHeight;
+
+        if (expand) {
+            int[] location = new int[2];
+            if (!isExpand) {
+                binding.expandButton.getLocationOnScreen(location);
+                helper.params.x = location[0];
+            } else {
+                binding.showButton.getLocationOnScreen(location);
+                helper.params.x = (int) (location[0] - binding.expandButton.getX());
+            }
+            helper.params.y = location[1];
+        }
         helper.manager.updateViewLayout(helper.floatViewParent, helper.params);
-
-
-        postDelayed(helper::initGravity, 50);
     }
 
     private void checkPosition(float nowY) {
@@ -219,10 +227,9 @@ public class LogFloatView extends FrameLayout implements FloatViewInterface, Tas
     public void onProgress(TaskRunnable runnable, Action action, int progress) {
         post(() -> {
             Task task = runnable.getTask();
-            String log = action.getFullDescription();
-            LogInfo logInfo = new LogInfo(progress, log);
+            RuntimeLogInfo logInfo = new RuntimeLogInfo(progress, action.getFullDescription(), action);
 
-            ArrayList<LogInfo> logInfoList = logs.computeIfAbsent(task.getId(), k -> new ArrayList<>());
+            ArrayList<RuntimeLogInfo> logInfoList = logs.computeIfAbsent(task.getId(), k -> new ArrayList<>());
             logInfoList.add(logInfo);
             tasks.put(task.getId(), task.getTitle());
 

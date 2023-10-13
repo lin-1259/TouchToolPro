@@ -8,7 +8,7 @@ public abstract class SaveReference<T> {
     protected final MMKV mmkv;
     protected final String saveId;
 
-    private T save;
+    protected T save;
     private long lastUseTime;
 
     public SaveReference(MMKV mmkv, String saveId) {
@@ -34,7 +34,6 @@ public abstract class SaveReference<T> {
     public abstract T getOrigin();
 
     public void set(T save) {
-        this.save = save;
         mmkv.encode(saveId, GsonUtils.toJson(save));
     }
 

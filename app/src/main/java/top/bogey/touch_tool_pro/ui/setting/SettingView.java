@@ -40,12 +40,9 @@ public class SettingView extends Fragment {
     public static void resetSwitchState() {
         MainActivity activity = MainApplication.getInstance().getMainActivity();
         if (activity == null) return;
-        Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
-        if (navFragment == null || !navFragment.isAdded()) return;
-        Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-        if (fragment instanceof SettingView) {
-            ((SettingView) fragment).refreshSwitchState();
-        }
+        SettingView currFragment = activity.getCurrFragment(SettingView.class);
+        if (currFragment == null) return;
+        currFragment.refreshSwitchState();
     }
 
     public void refreshSwitchState() {

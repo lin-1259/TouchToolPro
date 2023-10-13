@@ -10,11 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-import top.bogey.touch_tool_pro.bean.base.LogInfo;
 import top.bogey.touch_tool_pro.databinding.FloatLogItemBinding;
+import top.bogey.touch_tool_pro.ui.blueprint.BlueprintView;
 
 public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerViewAdapter.ViewHolder> {
-    private final ArrayList<LogInfo> showLogs = new ArrayList<>();
+    private final ArrayList<RuntimeLogInfo> showLogs = new ArrayList<>();
     private String taskId;
     private RecyclerView recyclerView;
 
@@ -46,7 +46,7 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void addLogs(String taskId, ArrayList<LogInfo> logs) {
+    public void addLogs(String taskId, ArrayList<RuntimeLogInfo> logs) {
         this.taskId = taskId;
         showLogs.clear();
         showLogs.addAll(logs);
@@ -54,14 +54,14 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
         if (recyclerView != null) recyclerView.scrollToPosition(showLogs.size() - 1);
     }
 
-    public void addLog(String taskId, LogInfo log) {
+    public void addLog(String taskId, RuntimeLogInfo log) {
         if (!taskId.equals(this.taskId)) return;
         showLogs.add(log);
         notifyItemInserted(showLogs.size());
         if (recyclerView != null) recyclerView.scrollToPosition(showLogs.size() - 1);
     }
 
-    protected static class ViewHolder extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
         public final FloatLogItemBinding binding;
         private final Context context;
 
@@ -69,10 +69,16 @@ public class LogRecyclerViewAdapter extends RecyclerView.Adapter<LogRecyclerView
             super(binding.getRoot());
             this.binding = binding;
             context = binding.getRoot().getContext();
+
+            binding.showButton.setOnClickListener(v -> {
+                int index = getBindingAdapterPosition();
+                RuntimeLogInfo logInfo = showLogs.get(index);
+                BlueprintView.tryShowCard(logInfo.getX(), logInfo.getY(), logInfo.getActionClass());
+            });
         }
 
         @SuppressLint("DefaultLocale")
-        public void refreshItem(LogInfo log) {
+        public void refreshItem(RuntimeLogInfo log) {
             binding.titleText.setText(log.getLogString());
         }
     }

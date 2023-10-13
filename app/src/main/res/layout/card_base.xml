@@ -73,14 +73,31 @@
 
                 </LinearLayout>
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/editButton"
-                    style="@style/Theme.TouchTool.IconButton"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="4dp"
-                    app:icon="@drawable/icon_edit"
-                    app:iconSize="16dp" />
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/editButton"
+                        style="@style/Theme.TouchTool.IconButton"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:icon="@drawable/icon_edit"
+                        app:iconSize="16dp" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/position"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:alpha="0.5"
+                        android:lines="1"
+                        android:textSize="5sp"
+                        tools:ignore="SmallSp" />
+
+                </FrameLayout>
+
             </LinearLayout>
 
             <LinearLayout

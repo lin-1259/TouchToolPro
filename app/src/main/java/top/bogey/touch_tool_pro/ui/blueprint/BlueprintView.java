@@ -23,6 +23,7 @@ import java.util.Stack;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
@@ -160,12 +161,18 @@ public class BlueprintView extends Fragment {
 
     public static void tryPushActionContext(FunctionContext functionContext) {
         MainActivity activity = MainApplication.getInstance().getMainActivity();
-        Fragment navFragment = activity.getSupportFragmentManager().getPrimaryNavigationFragment();
-        if (navFragment == null || !navFragment.isAdded()) return;
-        Fragment fragment = navFragment.getChildFragmentManager().getPrimaryNavigationFragment();
-        if (fragment instanceof BlueprintView) {
-            ((BlueprintView) fragment).pushActionContext(functionContext);
-        }
+        if (activity == null) return;
+        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
+        if (currFragment == null) return;
+        currFragment.pushActionContext(functionContext);
+    }
+
+    public static void tryShowCard(int x, int y, Class<? extends Action> actionClass) {
+        MainActivity activity = MainApplication.getInstance().getMainActivity();
+        if (activity == null) return;
+        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
+        if (currFragment == null) return;
+        currFragment.binding.cardLayout.showCard(x, y, actionClass);
     }
 
 }

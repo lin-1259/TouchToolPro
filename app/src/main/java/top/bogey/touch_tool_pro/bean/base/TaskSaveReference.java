@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
+import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
@@ -36,6 +37,7 @@ public class TaskSaveReference extends SaveReference<Task> {
     @Override
     public void set(Task save) {
         super.set(save);
+        this.save = (Task) save.copy();
         classHashSet.clear();
         for (Action action : save.getActions()) {
             if (action instanceof StartAction) {

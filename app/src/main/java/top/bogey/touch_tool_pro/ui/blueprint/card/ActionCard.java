@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
 import com.google.android.material.card.MaterialCardView;
 
@@ -42,6 +44,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     protected final HashMap<String, PinView> pinViews = new HashMap<>();
     protected boolean needDelete = false;
 
+    @SuppressLint("SetTextI18n")
     public ActionCard(Context context, FunctionContext functionContext, A action) {
         super(context);
         this.functionContext = functionContext;
@@ -61,6 +64,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
         binding = CardBaseBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.title.setText(action.getTitle());
+        binding.position.setText(action.getX() + ":" + action.getY());
         binding.icon.setImageResource(action.getType().getIcon());
         binding.des.setText(action.getDescription());
         binding.desBox.setVisibility((action.getDescription() == null || action.getDescription().isEmpty()) ? GONE : VISIBLE);
@@ -132,6 +136,21 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
             }
         }
         return result.type != ActionCheckResult.ActionResultType.ERROR;
+    }
+
+    @SuppressLint("SetTextI18n")
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y);
+        binding.position.setText(action.getX() + ":" + action.getY());
+    }
+
+    public void flick() {
+        AlphaAnimation animation = new AlphaAnimation(1, .5f);
+        animation.setDuration(500);
+        animation.setRepeatCount(3);
+        animation.setRepeatMode(Animation.REVERSE);
+        startAnimation(animation);
     }
 
     protected void addPinView(Pin pin) {

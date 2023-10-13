@@ -34,6 +34,7 @@ public class FunctionSaveReference extends SaveReference<Function> {
     @Override
     public void set(Function save) {
         super.set(save);
+        this.save = (Function) save.copy();
         tags.clear();
         if (save.getTags() != null) {
             tags.addAll(save.getTags());
