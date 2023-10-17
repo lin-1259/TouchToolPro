@@ -423,7 +423,7 @@
                         android:layout_marginStart="40dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:text="@string/theme_setting"
+                        android:text="@string/profile_setting"
                         android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
                     <LinearLayout
@@ -452,13 +452,13 @@
                                 android:layout_marginVertical="4dp"
                                 android:layout_marginTop="4dp"
                                 android:layout_marginBottom="4dp"
-                                android:text="@string/theme_setting_first_show_task"
+                                android:text="@string/profile_setting_first_show_task"
                                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/theme_setting_first_show_task_tips"
+                                android:text="@string/profile_setting_first_show_task_tips"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
                         </LinearLayout>
 
@@ -468,6 +468,76 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical" />
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/icon_hand"
+                            android:tint="?attr/colorPrimary" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginVertical="4dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginBottom="4dp"
+                                android:text="@string/profile_setting_first_look_blueprint"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/profile_setting_first_look_blueprint_tips"
+                                android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/lookBlueprintSwitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                style="?attr/materialCardViewFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Large">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/theme_setting"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

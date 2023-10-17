@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     private final ArrayList<PinTouch.TouchRecord> records;
     private PinTouch.TouchAnchor anchor;
     private long lastTime;
+    private final Handler handler;
 
     private float lastX = 0;
     private float lastY = 0;
@@ -64,6 +66,8 @@ public class TouchPickerFloatView extends BasePickerFloatView {
         binding.topRightButton.setOnClickListener(v -> refreshGravityButton(PinTouch.TouchAnchor.TOP_RIGHT));
         binding.bottomLeftButton.setOnClickListener(v -> refreshGravityButton(PinTouch.TouchAnchor.BOTTOM_LEFT));
         binding.bottomRightButton.setOnClickListener(v -> refreshGravityButton(PinTouch.TouchAnchor.BOTTOM_RIGHT));
+
+        handler = new Handler();
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
@@ -154,6 +158,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
                     isMarked = true;
                     int pointerId = event.getPointerId(event.getActionIndex());
                     addTouchRecord(event, pointerId);
+                    supportLongTouch(null);
                 }
             }
             case MotionEvent.ACTION_POINTER_DOWN -> {
@@ -185,9 +190,21 @@ public class TouchPickerFloatView extends BasePickerFloatView {
             record.addPoint(point);
         }
         addRecord(record);
+        supportLongTouch(record.getPoints());
         lastTime = currTime;
     }
 
+    private void supportLongTouch(HashSet<PinTouch.PathPoint> points) {
+        handler.removeCallbacksAndMessages(null);
+        if (points == null) return;
+        handler.postDelayed(() -> {
+            PinTouch.TouchRecord record = new PinTouch.TouchRecord(100);
+            points.forEach(pathPoint -> record.addPoint(new PinTouch.PathPoint(pathPoint)));
+            addRecord(record);
+            lastTime = System.currentTimeMillis();
+            supportLongTouch(points);
+        }, 100);
+    }
 
     private void refreshUI() {
         boolean isInit = true;
@@ -298,12 +315,31 @@ public class TouchPickerFloatView extends BasePickerFloatView {
                 records.clear();
             } else {
                 lastRecord.getPoints().forEach(point -> {
+                    // 新的手势少了点，把之前的点设置为结束点
                     if (record.getPointByOwnerId(point.getOwnerId()) == null) {
                         point.setEnd(true);
                     }
                 });
+
+                ArrayList<Integer> ownerIds = new ArrayList<>();
+                record.getPoints().forEach(point -> {
+                    // 上个点已经结束或者没了，这个点就得移除
+                    PinTouch.PathPoint lastPoint = lastRecord.getPointByOwnerId(point.getOwnerId());
+                    if (lastPoint == null || lastPoint.isEnd()) {
+                        ownerIds.add(point.getOwnerId());
+                    } else {
+                        // 上个点还能接点，但是现在的点不能和上个点位置一致
+                        if (lastPoint.equals(point.x, point.y)) {
+                            point.offset(0, 1);
+                        }
+                    }
+                });
+                for (Integer ownerId : ownerIds) {
+                    record.removePoint(ownerId);
+                }
             }
         }
+        if (record.isEmpty()) return;
         records.add(record);
     }
 

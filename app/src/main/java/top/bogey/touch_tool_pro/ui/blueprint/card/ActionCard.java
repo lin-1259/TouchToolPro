@@ -142,7 +142,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     public void setPosition(float x, float y) {
         setX(x);
         setY(y);
-        binding.position.setText(action.getX() + ":" + action.getY());
+        binding.position.setText(action.getX() + "," + action.getY());
     }
 
     public void flick() {

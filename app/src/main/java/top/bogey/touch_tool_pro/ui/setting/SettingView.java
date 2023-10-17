@@ -136,6 +136,9 @@ public class SettingView extends Fragment {
         binding.showTaskSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstShowTask(binding.showTaskSwitch.isChecked()));
         binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
 
+        binding.lookBlueprintSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstLookBlueprint(binding.lookBlueprintSwitch.isChecked()));
+        binding.lookBlueprintSwitch.setChecked(SettingSave.getInstance().isFirstLookBlueprint());
+
         PackageManager manager = requireContext().getPackageManager();
         try {
             PackageInfo packageInfo = manager.getPackageInfo(requireContext().getPackageName(), 0);

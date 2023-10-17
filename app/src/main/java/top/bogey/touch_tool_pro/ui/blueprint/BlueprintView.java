@@ -29,6 +29,7 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.ViewBlueprintBinding;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class BlueprintView extends Fragment {
     private ViewBlueprintBinding binding;
@@ -110,6 +111,9 @@ public class BlueprintView extends Fragment {
             binding.cardLayout.setEditMode(!editMode);
             binding.lockEditButton.setImageResource(editMode ? R.drawable.icon_hand : R.drawable.icon_edit);
         });
+        boolean lookMode = !SettingSave.getInstance().isFirstLookBlueprint();
+        binding.cardLayout.setEditMode(lookMode);
+        binding.lockEditButton.setImageResource(lookMode ? R.drawable.icon_edit : R.drawable.icon_hand);
 
         pushActionContext(functionContext);
 

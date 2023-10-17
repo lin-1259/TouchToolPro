@@ -490,15 +490,19 @@
     <string name="task_setting_show_touch">显示手势轨迹</string>
     <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势轨迹动画</string>
 
+    <string name="profile_setting">偏好设置</string>
+    <string name="profile_setting_first_show_task">任务主页</string>
+    <string name="profile_setting_first_show_task_tips">打开应用时首页展示任务页而不是主页</string>
+    <string name="profile_setting_first_look_blueprint">默认查看蓝图</string>
+    <string name="profile_setting_first_look_blueprint_tips">打开蓝图时默认为查看模式，而不是编辑模式</string>
+
     <string name="theme_setting">界面外观</string>
-    <string name="theme_setting_first_show_task">任务主页</string>
-    <string name="theme_setting_first_show_task_tips">打开应用时首页展示任务页而不是主页</string>
     <string name="theme_setting_dynamic_color">动态颜色</string>
     <string name="theme_setting_dynamic_color_tips">在支持的Android版本上，开启后应用将使用壁纸颜色作为主色调</string>
     <string name="theme_setting_night_auto">跟随系统</string>
     <string name="theme_setting_night_close">总是关闭</string>
     <string name="theme_setting_night_mode">深色模式</string>
-    <string name="theme_setting_night_open">总是开启</string>
+    <string name="theme_setting_night_open">总是开启</string>/
     <string name="theme_setting_night_time">跟随时间</string>
 
     <string name="app_info_setting">应用信息</string>

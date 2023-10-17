@@ -123,7 +123,7 @@ public class PinTouch extends PinScreen {
                 if (prePoint == null) {
                     path.moveTo(x, y);
                     x++;
-                    y++;
+//                    y++;
                 } else {
                     path.moveTo(prePoint.x, prePoint.y);
                 }
@@ -318,6 +318,19 @@ public class PinTouch extends PinScreen {
 
         public void addPoint(PathPoint point) {
             points.add(point);
+        }
+
+        public void removePoint(int ownerId) {
+            for (PathPoint point : points) {
+                if (point.getOwnerId() == ownerId) {
+                    points.remove(point);
+                    break;
+                }
+            }
+        }
+
+        public boolean isEmpty() {
+            return points.isEmpty();
         }
 
         public PathPoint getPointByOwnerId(int ownerId) {

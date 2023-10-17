@@ -2,7 +2,6 @@ package top.bogey.touch_tool_pro.ui.custom;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -98,25 +97,26 @@ public class TouchPathFloatView extends AppCompatImageView implements FloatViewI
             time += record.getTime();
         }
 
-        ValueAnimator animator = ValueAnimator.ofFloat(1, records.size());
+        ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
         animator.setDuration((long) (time * timeScale));
         animator.addUpdateListener(animation -> {
             float now = animation.getCurrentPlayTime() / timeScale;
             int index = 0;
             int total = 0;
+            float percent = 0;
             for (int i = 0; i < records.size(); i++) {
                 PinTouch.TouchRecord record = records.get(i);
-                total += record.getTime();
-                if (total > now) {
-                    index = i;
+                if (total + record.getTime() > now) {
+                    index = i - 1;
+                    percent = (now - total) / record.getTime();
                     break;
                 }
+                total += record.getTime();
             }
             if (index > 0) {
                 PinTouch.TouchRecord lastRecord = records.get(index - 1);
                 PinTouch.TouchRecord record = records.get(index);
-                float value = Math.max((float) animation.getAnimatedValue() - index, 0);
-
+                float value = percent;
                 record.getPoints().forEach(point -> {
                     PinTouch.PathPoint lastPathPoint = lastRecord.getPointByOwnerId(point.getOwnerId());
                     if (lastPathPoint == null) {
