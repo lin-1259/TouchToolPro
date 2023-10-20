@@ -38,8 +38,11 @@ import top.bogey.touch_tool_pro.bean.task.Task;
 
 public class AppUtils {
     public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, boolean withColor);
-
     public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
+
+    public static native long init(String detModelPath, String recModelPath, String clsModelPath, int useOpencl, int threadNum, String cpuMode);
+    public native float[] forward(long pointer, Bitmap originalImage,int max_size_len, int run_det, int run_cls, int run_rec);
+    public native void release(long pointer);
 
     public static boolean isDebug(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();

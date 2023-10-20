@@ -1,29 +1,79 @@
-cmake_minimum_required(VERSION 3.18.1)
+cmake_minimum_required(VERSION 3.10.2)
 
-include_directories(${CMAKE_SOURCE_DIR})
+set(PaddleLite_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../PaddleLite")
+include_directories(${PaddleLite_DIR}/cxx/include)
 
-add_library(touch_tool SHARED native-lib.cpp)
+set(OpenCV_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../OpenCV/sdk/native/jni")
+find_package(OpenCV REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
 
-add_library(opencv_core STATIC IMPORTED)
-add_library(opencv_imgproc STATIC IMPORTED)
-add_library(cpufeatures STATIC IMPORTED)
-add_library(tegra_hal STATIC IMPORTED)
+aux_source_directory(. SOURCES)
 
-set_target_properties(opencv_core PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libopencv_core.a)
-set_target_properties(opencv_imgproc PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libopencv_imgproc.a)
-set_target_properties(cpufeatures PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libcpufeatures.a)
-set_target_properties(tegra_hal PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libtegra_hal.a)
+set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -ffast-math -Ofast -Os"
+        )
+set(CMAKE_CXX_FLAGS
+        "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden -fdata-sections -ffunction-sections"
+        )
+set(CMAKE_SHARED_LINKER_FLAGS
+        "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--gc-sections -Wl,-z,nocopyreloc")
+
+add_library(native SHARED ${SOURCES})
+
+add_library(paddle_light_api_shared SHARED IMPORTED)
+set_target_properties(paddle_light_api_shared PROPERTIES IMPORTED_LOCATION ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libpaddle_light_api_shared.so)
 
 find_library(log-lib log)
-find_library(jnigraphics-lib jnigraphics)
 
 target_link_libraries(
-        touch_tool
+        native
 
-        opencv_imgproc
-        opencv_core
-        cpufeatures
-        tegra_hal
+        paddle_light_api_shared
+        ${OpenCV_LIBS}
+        GLESv2
+        EGL
 
-        ${jnigraphics-lib}
-        ${log-lib})
+        jnigraphics
+        ${log-lib}
+)
+
+
+add_custom_command(
+        TARGET native
+        POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libc++_shared.so
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libc++_shared.so)
+
+add_custom_command(
+        TARGET native
+        POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libpaddle_light_api_shared.so
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libpaddle_light_api_shared.so)
+
+add_custom_command(
+        TARGET native
+        POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libhiai.so
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libhiai.so)
+
+add_custom_command(
+        TARGET native
+        POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libhiai_ir.so
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libhiai_ir.so)
+
+add_custom_command(
+        TARGET native
+        POST_BUILD
+        COMMAND
+        ${CMAKE_COMMAND} -E copy
+        ${PaddleLite_DIR}/cxx/libs/${ANDROID_ABI}/libhiai_ir_build.so
+        ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libhiai_ir_build.so)

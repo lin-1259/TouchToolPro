@@ -10,7 +10,7 @@ plugins {
 android {
     namespace = "top.bogey.touch_tool_pro"
     compileSdk = 34
-    ndkVersion = "26.0.10792818"
+    ndkVersion = "21.4.7075529"
     buildToolsVersion = "34.0.0"
 
     val pattern = DateTimeFormatter.ofPattern("yyMMdd_HHmm")
@@ -25,8 +25,16 @@ android {
 
         externalNativeBuild {
             cmake {
-                cppFlags += "-std=c++14 -lz"
-                abiFilters += "arm64-v8a"
+                cppFlags.add("-std=c++14")
+                cppFlags.add("-frtti")
+                cppFlags.add("-fexceptions")
+                cppFlags.add("-Wno-format")
+
+                arguments.add("-DANDROID_PLATFORM=android-23")
+                arguments.add("-DANDROID_STL=c++_shared")
+                arguments.add("-DANDROID_ARM_NEON=TRUE")
+
+                abiFilters.add("arm64-v8a")
             }
         }
 
@@ -81,6 +89,8 @@ android {
 }
 
 dependencies {
+    implementation(fileTree(mapOf(Pair("include", listOf("*.jar")), Pair("dir", "libs"))))
+
     implementation(libs.appcompat)
     implementation(libs.material)
 
