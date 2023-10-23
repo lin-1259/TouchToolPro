@@ -22,12 +22,14 @@ public class ImageStateAction extends Action {
 
     public ImageStateAction() {
         super(ActionType.IMAGE_STATE);
+        needCapture = true;
         imagePin = addPin(imagePin);
         areaPin = addPin(areaPin);
     }
 
     public ImageStateAction(JsonObject jsonObject) {
         super(jsonObject);
+        needCapture = true;
         imagePin = reAddPin(imagePin);
         areaPin = reAddPin(areaPin);
     }

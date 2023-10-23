@@ -2,6 +2,10 @@ package top.bogey.touch_tool_pro.bean.action.start;
 
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
@@ -14,7 +18,9 @@ import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class ManualStartAction extends StartAction {
-    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY), R.string.pin_app);
+    private final transient LinkedHashMap<String, ArrayList<String>> apps =
+            new LinkedHashMap<>(Collections.singletonMap(MainApplication.getInstance().getString(R.string.common_package_name), new ArrayList<>()));
+    private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY, apps), R.string.pin_app);
 
     public ManualStartAction() {
         super(ActionType.MANUAL_START);

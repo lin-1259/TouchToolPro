@@ -21,6 +21,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -38,11 +40,8 @@ import top.bogey.touch_tool_pro.bean.task.Task;
 
 public class AppUtils {
     public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, boolean withColor);
-    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
 
-    public static native long init(String detModelPath, String recModelPath, String clsModelPath, int useOpencl, int threadNum, String cpuMode);
-    public native float[] forward(long pointer, Bitmap originalImage,int max_size_len, int run_det, int run_cls, int run_rec);
-    public native void release(long pointer);
+    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
 
     public static boolean isDebug(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
@@ -357,5 +356,44 @@ public class AppUtils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
         intent.setDataAndType(uri, "application/vnd.android.package-archive");
         context.startActivity(intent);
+    }
+
+    public static void copyFileFromAssets(Context context, String from, String to) {
+        if (from == null || from.isEmpty() || to == null || to.isEmpty()) return;
+
+        try (InputStream inputStream = new BufferedInputStream(context.getAssets().open(from));
+             OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(to))) {
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void copyDirFromAssets(Context context, String from, String to) {
+        if (from == null || from.isEmpty() || to == null || to.isEmpty()) return;
+
+        if (!new File(to).exists()) {
+            new File(to).mkdirs();
+        }
+
+        try {
+            String[] files = context.getAssets().list(from);
+            if (files == null) return;
+            for (String fileName : files) {
+                String fromSubPath = from + File.separator + fileName;
+                String toSubPath = to + File.separator + fileName;
+                if (new File(fromSubPath).isDirectory()) {
+                    copyDirFromAssets(context, fromSubPath, toSubPath);
+                } else {
+                    copyFileFromAssets(context, fromSubPath, toSubPath);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

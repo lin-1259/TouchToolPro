@@ -24,6 +24,7 @@ public class ColorStateAction extends Action {
 
     public ColorStateAction() {
         super(ActionType.COLOR_STATE);
+        needCapture = true;
         colorPin = addPin(colorPin);
         posPin = addPin(posPin);
         areaPin = addPin(areaPin);
@@ -31,6 +32,7 @@ public class ColorStateAction extends Action {
 
     public ColorStateAction(JsonObject jsonObject) {
         super(jsonObject);
+        needCapture = true;
         colorPin = reAddPin(colorPin);
         posPin = reAddPin(posPin);
         areaPin = reAddPin(areaPin);

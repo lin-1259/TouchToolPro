@@ -12,6 +12,7 @@ import top.bogey.touch_tool_pro.bean.action.check.ExistColorAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistNodeAction;
 import top.bogey.touch_tool_pro.bean.action.check.ExistTextAction;
+import top.bogey.touch_tool_pro.bean.action.check.ExistTextOcrAction;
 import top.bogey.touch_tool_pro.bean.action.check.ImageContainAction;
 import top.bogey.touch_tool_pro.bean.action.check.InAppCheckAction;
 import top.bogey.touch_tool_pro.bean.action.check.OnBatteryStateAction;
@@ -32,6 +33,7 @@ import top.bogey.touch_tool_pro.bean.action.integer.IntReduceAction;
 import top.bogey.touch_tool_pro.bean.action.integer.IntSmallAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ForLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.IfLogicAction;
+import top.bogey.touch_tool_pro.bean.action.logic.ManualChoiceAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ParallelAction;
 import top.bogey.touch_tool_pro.bean.action.logic.RandomAction;
 import top.bogey.touch_tool_pro.bean.action.logic.SequenceAction;
@@ -71,10 +73,12 @@ import top.bogey.touch_tool_pro.bean.action.state.CaptureStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ColorStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.DateStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ImageStateAction;
+import top.bogey.touch_tool_pro.bean.action.state.OcrTextStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.TimeStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringAddAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringEqualAction;
+import top.bogey.touch_tool_pro.bean.action.state.GetNodeInfoStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringFromValueAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringRegexAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringToIntAction;
@@ -112,6 +116,7 @@ public enum ActionType {
     LOGIC_SEQUENCE,
     LOGIC_RANDOM,
     LOGIC_PARALLEL,
+    LOGIC_MANUAL_CHOICE,
 
     APP_STATE,
     BATTERY_STATE,
@@ -119,13 +124,16 @@ public enum ActionType {
     CAPTURE_STATE,
     COLOR_STATE,
     IMAGE_STATE,
+    OCR_TEXT_STATE,
     DATE_STATE,
     TIME_STATE,
+    NODE_INFO_STATE,
 
     CHECK_IN_APP,
     CHECK_ON_BATTERY_STATE,
     CHECK_ON_SCREEN_STATE,
     CHECK_EXIST_TEXT,
+    CHECK_EXIST_TEXT_OCR,
     CHECK_EXIST_NODE,
     CHECK_EXIST_IMAGE,
     CHECK_IMAGE,
@@ -200,6 +208,7 @@ public enum ActionType {
             case LOGIC_SEQUENCE -> R.string.action_sequence_logic_title;
             case LOGIC_RANDOM -> R.string.action_random_logic_title;
             case LOGIC_PARALLEL -> R.string.action_parallel_logic_title;
+            case LOGIC_MANUAL_CHOICE -> R.string.action_manual_choice_logic_title;
 
             case APP_STATE -> R.string.action_app_state_title;
             case BATTERY_STATE -> R.string.action_battery_state_title;
@@ -207,13 +216,16 @@ public enum ActionType {
             case CAPTURE_STATE -> R.string.action_capture_state_title;
             case IMAGE_STATE -> R.string.action_image_state_title;
             case COLOR_STATE -> R.string.action_color_state_title;
+            case OCR_TEXT_STATE -> R.string.action_ocr_text_state_title;
             case DATE_STATE -> R.string.action_date_state_title;
             case TIME_STATE -> R.string.action_time_state_title;
+            case NODE_INFO_STATE -> R.string.action_get_node_info_title;
 
             case CHECK_IN_APP -> R.string.action_in_app_check_title;
             case CHECK_ON_BATTERY_STATE -> R.string.action_battery_state_check_title;
             case CHECK_ON_SCREEN_STATE -> R.string.action_screen_state_check_title;
             case CHECK_EXIST_TEXT -> R.string.action_exist_text_check_title;
+            case CHECK_EXIST_TEXT_OCR -> R.string.action_exist_text_ocr_check_title;
             case CHECK_EXIST_NODE -> R.string.action_exist_node_check_title;
             case CHECK_EXIST_IMAGE -> R.string.action_exist_image_check_title;
             case CHECK_EXIST_COLOR -> R.string.action_exist_color_check_title;
@@ -280,7 +292,7 @@ public enum ActionType {
             case BATTERY_START -> R.drawable.icon_battery;
             case OUTER_START -> R.drawable.icon_auto_start;
 
-            case LOGIC_IF -> R.drawable.icon_condition;
+            case LOGIC_IF, LOGIC_MANUAL_CHOICE -> R.drawable.icon_condition;
             case LOGIC_WAIT_IF -> R.drawable.icon_wait_condition;
             case LOGIC_FOR -> R.drawable.icon_for_loop;
             case LOGIC_WHILE -> R.drawable.icon_condition_while;
@@ -298,7 +310,7 @@ public enum ActionType {
             case CHECK_IN_APP -> R.drawable.icon_package_info;
             case CHECK_ON_BATTERY_STATE -> R.drawable.icon_battery;
             case CHECK_ON_SCREEN_STATE -> R.drawable.icon_screen;
-            case CHECK_EXIST_TEXT -> R.drawable.icon_text;
+            case CHECK_EXIST_TEXT, CHECK_EXIST_TEXT_OCR, OCR_TEXT_STATE -> R.drawable.icon_text;
             case CHECK_EXIST_NODE -> R.drawable.icon_widget;
             case CHECK_EXIST_IMAGE, CHECK_IMAGE, IMAGE_STATE -> R.drawable.icon_image;
             case CHECK_EXIST_COLOR, CHECK_COLOR, COLOR_STATE -> R.drawable.icon_color;
@@ -347,6 +359,7 @@ public enum ActionType {
             case LOGIC_SEQUENCE -> SequenceAction.class;
             case LOGIC_RANDOM -> RandomAction.class;
             case LOGIC_PARALLEL -> ParallelAction.class;
+            case LOGIC_MANUAL_CHOICE -> ManualChoiceAction.class;
 
             case APP_STATE -> AppStateAction.class;
             case BATTERY_STATE -> BatteryStateAction.class;
@@ -354,13 +367,16 @@ public enum ActionType {
             case CAPTURE_STATE -> CaptureStateAction.class;
             case IMAGE_STATE -> ImageStateAction.class;
             case COLOR_STATE -> ColorStateAction.class;
+            case OCR_TEXT_STATE -> OcrTextStateAction.class;
             case DATE_STATE -> DateStateAction.class;
             case TIME_STATE -> TimeStateAction.class;
+            case NODE_INFO_STATE -> GetNodeInfoStateAction.class;
 
             case CHECK_IN_APP -> InAppCheckAction.class;
             case CHECK_ON_BATTERY_STATE -> OnBatteryStateAction.class;
             case CHECK_ON_SCREEN_STATE -> OnScreenStateAction.class;
             case CHECK_EXIST_TEXT -> ExistTextAction.class;
+            case CHECK_EXIST_TEXT_OCR -> ExistTextOcrAction.class;
             case CHECK_EXIST_NODE -> ExistNodeAction.class;
             case CHECK_EXIST_IMAGE -> ExistImageAction.class;
             case CHECK_EXIST_COLOR -> ExistColorAction.class;

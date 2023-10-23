@@ -20,12 +20,12 @@ android {
         applicationId = "top.bogey.touch_tool_pro"
         minSdk = 24
         targetSdk = 34
-        versionCode = 38
+        versionCode = 40
         versionName = now
 
         externalNativeBuild {
             cmake {
-                cppFlags.add("-std=c++14")
+                cppFlags.add("-std=c++11")
                 cppFlags.add("-frtti")
                 cppFlags.add("-fexceptions")
                 cppFlags.add("-Wno-format")
@@ -33,8 +33,6 @@ android {
                 arguments.add("-DANDROID_PLATFORM=android-23")
                 arguments.add("-DANDROID_STL=c++_shared")
                 arguments.add("-DANDROID_ARM_NEON=TRUE")
-
-                abiFilters.add("arm64-v8a")
             }
         }
 

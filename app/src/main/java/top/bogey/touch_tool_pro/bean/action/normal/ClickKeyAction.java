@@ -43,6 +43,7 @@ public class ClickKeyAction extends NormalAction {
                     service.showToast(service.getString(R.string.device_not_support_snap));
                 }
             }
+            case 5 -> service.performGlobalAction(AccessibilityService.GLOBAL_ACTION_POWER_DIALOG);
         }
         executeNext(runnable, context, outPin);
     }

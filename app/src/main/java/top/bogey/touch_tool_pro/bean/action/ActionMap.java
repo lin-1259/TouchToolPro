@@ -46,7 +46,8 @@ public enum ActionMap {
                     ActionType.LOGIC_WHILE,
                     ActionType.LOGIC_SEQUENCE,
                     ActionType.LOGIC_RANDOM,
-                    ActionType.LOGIC_PARALLEL)
+                    ActionType.LOGIC_PARALLEL,
+                    ActionType.LOGIC_MANUAL_CHOICE)
             );
             case STATE -> new ArrayList<>(Arrays.asList(
                     ActionType.APP_STATE,
@@ -55,11 +56,14 @@ public enum ActionMap {
                     ActionType.CAPTURE_STATE,
                     ActionType.IMAGE_STATE,
                     ActionType.COLOR_STATE,
+                    ActionType.OCR_TEXT_STATE,
                     ActionType.DATE_STATE,
-                    ActionType.TIME_STATE)
+                    ActionType.TIME_STATE,
+                    ActionType.NODE_INFO_STATE)
             );
             case CHECK -> new ArrayList<>(Arrays.asList(
                     ActionType.CHECK_EXIST_TEXT,
+                    ActionType.CHECK_EXIST_TEXT_OCR,
                     ActionType.CHECK_EXIST_NODE,
                     ActionType.CHECK_EXIST_IMAGE,
                     ActionType.CHECK_EXIST_COLOR,

@@ -35,7 +35,7 @@ static paddle::lite_api::PowerMode str_to_cpu_mode(const std::string &cpu_mode) 
     std::string upper_key;
     std::transform(cpu_mode.cbegin(), cpu_mode.cend(), upper_key.begin(),
                    ::toupper);
-    auto index = cpu_mode_map.find(upper_key.c_str());
+    auto index = cpu_mode_map.find(upper_key);
     if (index == cpu_mode_map.end()) {
         LOGE("cpu_mode not found %s", upper_key.c_str());
         return paddle::lite_api::LITE_POWER_HIGH;
@@ -120,7 +120,7 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jcl
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_init(JNIEnv *env, jclass clazz, jstring j_det_model_path, jstring j_rec_model_path, jstring j_cls_model_path, jint j_use_opencl, jint j_thread_num, jstring j_cpu_mode) {
+Java_top_bogey_touch_1tool_1pro_utils_ocr_Predictor_init(JNIEnv *env, jclass clazz, jstring j_det_model_path, jstring j_rec_model_path, jstring j_cls_model_path, jint j_use_opencl, jint j_thread_num, jstring j_cpu_mode) {
     string det_model_path = jstring_to_cpp_string(env, j_det_model_path);
     string rec_model_path = jstring_to_cpp_string(env, j_rec_model_path);
     string cls_model_path = jstring_to_cpp_string(env, j_cls_model_path);
@@ -130,14 +130,14 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_init(JNIEnv *env, jclass clazz, j
     conf.use_opencl = j_use_opencl;
     conf.thread_num = thread_num;
     conf.mode = str_to_cpu_mode(cpu_mode);
-    ppredictor::OCR_PPredictor *orc_predictor = new ppredictor::OCR_PPredictor{conf};
+    auto *orc_predictor = new ppredictor::OCR_PPredictor{conf};
     orc_predictor->init_from_file(det_model_path, rec_model_path, cls_model_path);
     return reinterpret_cast<jlong>(orc_predictor);
 }
 
 extern "C"
 JNIEXPORT jfloatArray JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_forward(JNIEnv *env, jobject thiz, jlong j_pointer, jobject j_original_image, jint j_max_size_len, jint j_run_det, jint j_run_cls, jint j_run_rec) {
+Java_top_bogey_touch_1tool_1pro_utils_ocr_Predictor_forward(JNIEnv *env, jobject thiz, jlong j_pointer, jobject j_original_image, jint j_max_size_len, jint j_run_det, jint j_run_cls, jint j_run_rec) {
     LOGI("begin to run native forward");
     if (j_pointer == 0) {
         LOGE("JAVA pointer is NULL");
@@ -155,12 +155,12 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_forward(JNIEnv *env, jobject thiz
     int run_cls = j_run_cls;
     int run_rec = j_run_rec;
 
-    ppredictor::OCR_PPredictor *ppredictor = (ppredictor::OCR_PPredictor *) j_pointer;
+    auto *predictor = (ppredictor::OCR_PPredictor *) j_pointer;
     std::vector<int64_t> dims_arr;
-    std::vector<ppredictor::OCRPredictResult> results = ppredictor->infer_ocr(origin, max_size_len, run_det, run_cls, run_rec);
+    std::vector<ppredictor::OCRPredictResult> results = predictor->infer_ocr(origin, max_size_len, run_det, run_cls, run_rec);
     LOGI("infer_ocr finished with boxes %ld", results.size());
 
-    // 这里将std::vector<ppredictor::OCRPredictResult> 序列化成
+    // 这里将std::vector<predictor::OCRPredictResult> 序列化成
     // float数组，传输到java层再反序列化
     std::vector<float> float_arr;
     for (const ppredictor::OCRPredictResult &r: results) {
@@ -185,13 +185,13 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_forward(JNIEnv *env, jobject thiz
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_release(JNIEnv *env, jobject thiz, jlong j_pointer) {
+Java_top_bogey_touch_1tool_1pro_utils_ocr_Predictor_release(JNIEnv *env, jobject thiz, jlong j_pointer) {
     if (j_pointer == 0) {
         LOGE("JAVA pointer is NULL");
         return;
     }
-    ppredictor::OCR_PPredictor *ppredictor = (ppredictor::OCR_PPredictor *) j_pointer;
-    delete ppredictor;
+    auto *predictor = (ppredictor::OCR_PPredictor *) j_pointer;
+    delete predictor;
 }
 
 #endif

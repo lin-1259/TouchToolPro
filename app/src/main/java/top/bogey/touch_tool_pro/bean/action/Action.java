@@ -37,6 +37,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
 
     protected final transient ArrayList<Pin> tmpPins = new ArrayList<>();
     protected final transient ArrayList<ActionListener> listeners = new ArrayList<>();
+    public transient boolean needCapture = false;
 
     public Action() {
         this(ActionType.BASE);

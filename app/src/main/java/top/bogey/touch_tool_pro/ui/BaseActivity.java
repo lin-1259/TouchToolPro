@@ -36,7 +36,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class BaseActivity extends AppCompatActivity {
     static {
-        System.loadLibrary("touch_tool");
+        System.loadLibrary("native");
     }
 
     private ActivityResultLauncher<Intent> intentLauncher;

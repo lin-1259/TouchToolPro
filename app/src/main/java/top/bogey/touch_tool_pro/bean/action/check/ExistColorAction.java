@@ -28,6 +28,7 @@ public class ExistColorAction extends CheckAction {
 
     public ExistColorAction() {
         super(ActionType.CHECK_EXIST_COLOR);
+        needCapture = true;
         colorPin = addPin(colorPin);
         areaPin = addPin(areaPin);
         posPin = addPin(posPin);
@@ -36,6 +37,7 @@ public class ExistColorAction extends CheckAction {
 
     public ExistColorAction(JsonObject jsonObject) {
         super(jsonObject);
+        needCapture = true;
         colorPin = reAddPin(colorPin);
         areaPin = reAddPin(areaPin);
         posPin = reAddPin(posPin);

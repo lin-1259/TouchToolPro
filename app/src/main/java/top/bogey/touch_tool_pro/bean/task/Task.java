@@ -184,11 +184,10 @@ public class Task extends FunctionContext {
     public boolean needCaptureService() {
         ArrayList<Action> captureActions = getActionsByClass(CaptureSwitchAction.class);
         if (captureActions.size() > 0) return false;
-        ArrayList<Action> imageActions = getActionsByClass(ExistImageAction.class);
-        ArrayList<Action> colorActions = getActionsByClass(ExistColorAction.class);
-        ArrayList<Action> imageStateActions = getActionsByClass(ImageStateAction.class);
-        ArrayList<Action> colorStateActions = getActionsByClass(ColorStateAction.class);
-        return imageActions.size() + colorActions.size() + imageStateActions.size() + colorStateActions.size() > 0;
+        for (Action action : getActions()) {
+            if (action.needCapture) return true;
+        }
+        return false;
     }
 
     public long getCreateTime() {

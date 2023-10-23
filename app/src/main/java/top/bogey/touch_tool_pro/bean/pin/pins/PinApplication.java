@@ -28,6 +28,11 @@ public class PinApplication extends PinValue {
         super(PinType.APP, subType);
     }
 
+    public PinApplication(PinSubType subType, LinkedHashMap<String, ArrayList<String>> apps) {
+        this(subType);
+        this.apps.putAll(apps);
+    }
+
     public PinApplication(JsonObject jsonObject) {
         super(jsonObject);
         apps.putAll(GsonUtils.getAsObject(jsonObject, "apps", TypeToken.getParameterized(LinkedHashMap.class, String.class, TypeToken.getParameterized(ArrayList.class, String.class).getType()).getType(), new LinkedHashMap<>()));
