@@ -130,10 +130,13 @@ public class SettingSave {
 
     public void setHideBackground(Context context, boolean hide) {
         settingMMKV.encode(HIDE_BACKGROUND, hide);
+        int taskId = MainApplication.getInstance().getMainActivity().getTaskId();
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         if (activityManager != null) {
             List<ActivityManager.AppTask> tasks = activityManager.getAppTasks();
-            if (tasks != null) tasks.forEach(task -> task.setExcludeFromRecents(hide));
+            if (tasks != null) tasks.forEach(task -> {
+                if (task.getTaskInfo().id == taskId) task.setExcludeFromRecents(hide);
+            });
         }
     }
 

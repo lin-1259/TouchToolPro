@@ -8,7 +8,7 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 
-public class TaskRunnable implements Runnable{
+public class TaskRunnable implements Runnable {
     private final Task task;
     private FunctionContext context;
     private final StartAction startAction;
@@ -62,7 +62,8 @@ public class TaskRunnable implements Runnable{
     public void sleep(long time) {
         try {
             Thread.sleep(time);
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
     }
 
     public void pause() {

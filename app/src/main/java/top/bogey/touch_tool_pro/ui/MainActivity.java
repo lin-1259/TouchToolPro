@@ -25,7 +25,6 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -43,6 +42,7 @@ import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
+import top.bogey.touch_tool_pro.utils.ocr.Predictor;
 
 public class MainActivity extends BaseActivity {
     private ActivityMainBinding binding;
@@ -58,11 +58,13 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(binding.toolBar);
 
         runFirstTimes();
+        Predictor.getInstance();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        WorldState.getInstance().enterActivity(getPackageName(), getClass().getName());
 
         NavController controller = Navigation.findNavController(this, R.id.conView);
         NavigationUI.setupWithNavController(binding.menuView, controller);

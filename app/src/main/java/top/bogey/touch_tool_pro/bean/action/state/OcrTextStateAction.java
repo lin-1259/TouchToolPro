@@ -58,11 +58,13 @@ public class OcrTextStateAction extends Action {
         ArrayList<OcrResult> results = Predictor.getInstance().runOcr(bitmap);
 
         PinInteger similar = (PinInteger) getPinValue(runnable, context, similarPin);
-        for (OcrResult result : results) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = results.size() - 1; i >= 0; i--) {
+            OcrResult result = results.get(i);
             if (result.getSimilar() >= similar.getValue()) {
-                text.setValue(result.getLabel());
-                break;
+                builder.append(result.getLabel());
             }
         }
+        text.setValue(builder.toString());
     }
 }

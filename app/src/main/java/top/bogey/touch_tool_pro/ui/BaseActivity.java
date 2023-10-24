@@ -24,15 +24,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import top.bogey.touch_tool_pro.R;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
-import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
-import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
-import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
 import top.bogey.touch_tool_pro.utils.ActivityResultCallback;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
-import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class BaseActivity extends AppCompatActivity {
     static {
@@ -192,38 +187,6 @@ public class BaseActivity extends AppCompatActivity {
             intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(path));
         }
         intentLauncher.launch(intent);
-    }
-
-    public void handlePlayFloatView(int size) {
-        int count = SettingSave.getInstance().isPlayViewVisible() ? size : 0;
-        runOnUiThread(() -> {
-            PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getName());
-            if (count == 0) {
-                if (view != null) view.setNeedRemove(true);
-            } else {
-                if (view == null) {
-                    view = new PlayFloatView(this);
-                    view.show();
-                }
-                view.onNewActions();
-            }
-        });
-    }
-
-    public void showToast(String msg) {
-        runOnUiThread(() -> {
-            ToastFloatView view = (ToastFloatView) EasyFloat.getView(ToastFloatView.class.getCanonicalName());
-            if (view == null) {
-                view = new ToastFloatView(this);
-                view.show();
-            }
-            view.showToast(msg);
-        });
-    }
-
-    public void showTouch(PinTouch touch, float scale) {
-        if (touch == null) return;
-        runOnUiThread(() -> new TouchPathFloatView(this, touch, scale).show());
     }
 
     public void restartAccessibilityServiceBySecurePermission() {

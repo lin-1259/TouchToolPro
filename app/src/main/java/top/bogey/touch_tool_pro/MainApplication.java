@@ -12,18 +12,17 @@ import java.lang.ref.WeakReference;
 
 import top.bogey.touch_tool_pro.service.KeepAliveService;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
-import top.bogey.touch_tool_pro.ui.BaseActivity;
-import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class MainApplication extends Application implements Thread.UncaughtExceptionHandler {
     private static MainApplication application;
 
     private WeakReference<MainActivity> mainActivity = new WeakReference<>(null);
-    private WeakReference<InstantActivity> instantActivity = new WeakReference<>(null);
     private WeakReference<MainAccessibilityService> service = new WeakReference<>(null);
     private WeakReference<KeepAliveService> keepService = new WeakReference<>(null);
+    private WeakReference<KeepAliveFloatView> keepView = new WeakReference<>(null);
 
     private Thread.UncaughtExceptionHandler handler;
 
@@ -44,27 +43,12 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         Thread.setDefaultUncaughtExceptionHandler(this);
     }
 
-
-    public BaseActivity getValidActivity() {
-        MainActivity mainActivity = getMainActivity();
-        if (mainActivity != null) return mainActivity;
-        return getInstantActivity();
-    }
-
     public MainActivity getMainActivity() {
         return mainActivity.get();
     }
 
     public void setMainActivity(MainActivity mainActivity) {
         this.mainActivity = new WeakReference<>(mainActivity);
-    }
-
-    public InstantActivity getInstantActivity() {
-        return instantActivity.get();
-    }
-
-    public void setInstantActivity(InstantActivity instantActivity) {
-        this.instantActivity = new WeakReference<>(instantActivity);
     }
 
     public MainAccessibilityService getService() {
@@ -83,6 +67,13 @@ public class MainApplication extends Application implements Thread.UncaughtExcep
         this.keepService = new WeakReference<>(keepService);
     }
 
+    public KeepAliveFloatView getKeepView() {
+        return keepView.get();
+    }
+
+    public void setKeepView(KeepAliveFloatView keepView) {
+        this.keepView = new WeakReference<>(keepView);
+    }
 
     @Override
     public void uncaughtException(@NonNull Thread t, @NonNull Throwable e) {

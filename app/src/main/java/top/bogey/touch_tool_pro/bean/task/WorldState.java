@@ -2,11 +2,12 @@ package top.bogey.touch_tool_pro.bean.task;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -25,9 +26,10 @@ import top.bogey.touch_tool_pro.bean.action.start.NotifyStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
-import top.bogey.touch_tool_pro.ui.BaseActivity;
-import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
+import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 // 黑板类，记录着当前系统的一些属性
 public class WorldState {
@@ -148,24 +150,31 @@ public class WorldState {
             }
         }
 
-        if (manualStartActions.size() > 0 || existView) {
-            BaseActivity activity = MainApplication.getInstance().getValidActivity();
-            if (activity == null) {
-                Intent intent = new Intent(service, InstantActivity.class);
-                intent.putExtra(InstantActivity.INTENT_KEY_SHOW_PLAY, manualStartActions.size());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                service.startActivity(intent);
-            } else {
-                activity.handlePlayFloatView(manualStartActions.size());
-            }
+        KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+        if (keepView != null) {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (manualStartActions.size() > 0 || existView) {
+                    PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getName());
+                    if (manualStartActions.size() == 0) {
+                        if (view != null) view.setNeedRemove(true);
+                    } else {
+                        if (view == null) {
+                            view = new PlayFloatView(keepView.getContext());
+                            view.show();
+                        }
+                        view.onNewActions();
+                    }
+                }
+            });
         }
     }
 
     public boolean enterActivity(String packageName, String className) {
         if (isActivityClass(packageName, className)) {
             if (packageName.equals(MainApplication.getInstance().getPackageName())) {
-                setActivityInfo(packageName, className);
-                showManualActionDialog(!className.equals(MainActivity.class.getName()));
+                if (setActivityInfo(packageName, className)) {
+                    showManualActionDialog(!className.equals(MainActivity.class.getName()));
+                }
                 return true;
             } else {
                 if (setActivityInfo(packageName, className)) {

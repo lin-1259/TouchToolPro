@@ -12,7 +12,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Path;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -51,15 +53,16 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.bean.task.TaskWorker;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
-import top.bogey.touch_tool_pro.ui.BaseActivity;
-import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
+import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
+import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
-import top.bogey.touch_tool_pro.utils.GsonUtils;
 import top.bogey.touch_tool_pro.utils.ResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
 import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class MainAccessibilityService extends AccessibilityService {
     private SystemEventReceiver systemEventReceiver;
@@ -434,29 +437,25 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     public void showToast(String msg) {
-        BaseActivity activity = MainApplication.getInstance().getValidActivity();
-        if (activity == null) {
-            Intent intent = new Intent(this, InstantActivity.class);
-            intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOAST, msg);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            activity.showToast(msg);
+        KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+        if (keepView != null) {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                ToastFloatView view = (ToastFloatView) EasyFloat.getView(ToastFloatView.class.getCanonicalName());
+                if (view == null) {
+                    view = new ToastFloatView(keepView.getContext());
+                    view.show();
+                }
+                view.showToast(msg);
+            });
         }
     }
 
     public void showTouch(PinTouch touch, float scale) {
         if (!SettingSave.getInstance().isShowTouch()) return;
 
-        BaseActivity activity = MainApplication.getInstance().getValidActivity();
-        if (activity == null) {
-            Intent intent = new Intent(this, InstantActivity.class);
-            intent.putExtra(InstantActivity.INTENT_KEY_SHOW_TOUCH, GsonUtils.toJson(touch));
-            intent.putExtra(InstantActivity.SCALE, scale);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            activity.showTouch(touch, scale);
+        KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+        if (keepView != null) {
+            new Handler(Looper.getMainLooper()).post(() -> new TouchPathFloatView(keepView.getContext(), touch, scale).show());
         }
     }
 

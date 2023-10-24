@@ -1,5 +1,8 @@
 package top.bogey.touch_tool_pro.bean.action.logic;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinAdd;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.ui.BaseActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ManualChoiceFloatView;
 
 public class ManualChoiceAction extends NormalAction {
@@ -60,21 +63,25 @@ public class ManualChoiceAction extends NormalAction {
         AtomicInteger nextIndex = new AtomicInteger(0);
         AtomicReference<ManualChoiceFloatView> floatView = new AtomicReference<>();
 
-        BaseActivity activity = MainApplication.getInstance().getValidActivity();
-        activity.runOnUiThread(() -> {
-            ManualChoiceFloatView view = new ManualChoiceFloatView(activity, items, index -> {
-                if (index < 0) {
-                    runnable.stop();
-                } else {
-                    nextIndex.set(index);
-                    runnable.resume();
-                }
+        KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+        if (keepView != null) {
+            new Handler(Looper.getMainLooper()).post(() -> {
+                ManualChoiceFloatView view = new ManualChoiceFloatView(keepView.getContext(), items, index -> {
+                    if (index < 0) {
+                        runnable.stop();
+                    } else {
+                        nextIndex.set(index);
+                        runnable.resume();
+                    }
+                });
+                floatView.set(view);
+                view.show();
             });
-            floatView.set(view);
-            view.show();
-        });
-        runnable.pause(timeout.getValue());
-        floatView.get().dismiss();
+
+            runnable.pause(timeout.getValue());
+            floatView.get().dismiss();
+        }
+
         executeNext(runnable, context, executePins.get(nextIndex.get()));
     }
 

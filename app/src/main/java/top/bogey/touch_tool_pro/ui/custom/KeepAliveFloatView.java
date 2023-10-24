@@ -43,7 +43,7 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
     }
 
     private void hideMe() {
-        binding.getRoot().animate().alpha(0f);
+        binding.getRoot().animate().alpha(0.01f);
     }
 
     @Override
@@ -63,6 +63,7 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
                 .show();
 
         showMe();
+        MainApplication.getInstance().setKeepView(this);
     }
 
     @Override
@@ -91,6 +92,7 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
         if (service != null) {
             service.removeListener(this);
         }
+        MainApplication.getInstance().setKeepView(null);
         super.onDetachedFromWindow();
     }
 }
