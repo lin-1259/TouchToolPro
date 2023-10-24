@@ -86,7 +86,6 @@ JNIEXPORT jobject JNICALL
 Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jclass clazz, jobject bitmap, jintArray hsvColor, jint offset) {
     Mat src = bitmap_to_cv_mat(env, bitmap);
     if (src.empty()) return nullptr;
-    cvtColor(src, src, COLOR_RGBA2BGR);
     cvtColor(src, src, COLOR_BGR2HSV);
     GaussianBlur(src, src, Size(5, 5), 0);
     erode(src, src, 3);

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -41,8 +42,11 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     private final ArrayList<String> tags = new ArrayList<>();
     private String currTag;
 
+    private final int border;
+
     public PlayFloatView(@NonNull Context context) {
         super(context);
+        border = Math.round(DisplayUtils.dp2px(context, 8));
 
         binding = FloatPlayBinding.inflate(LayoutInflater.from(context), this, true);
         binding.closeButton.setOnClickListener(v -> {
@@ -76,17 +80,38 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         if (!expand) {
             binding.buttonBox.setVisibility(GONE);
             binding.nextButton.setVisibility(GONE);
-            binding.closeButton.setIconResource(R.drawable.icon_down);
+            binding.closeButton.setIconResource(R.drawable.icon_launcher_mono);
             params.height = Math.round(DisplayUtils.dp2px(getContext(), 32));
+            binding.closeButton.setIconSize(params.height);
+            setX((3 * border) * (isInLeft() ? -1 : 1));
         } else {
             binding.buttonBox.setVisibility(VISIBLE);
             binding.nextButton.setVisibility(tags.size() > 1 ? VISIBLE : GONE);
             binding.closeButton.setIconResource(R.drawable.icon_up);
             params.height = Math.round(DisplayUtils.dp2px(getContext(), 24));
+            binding.closeButton.setIconSize(params.height * 3 / 4);
+            setX(0);
         }
         binding.closeButton.setLayoutParams(params);
         binding.getRoot().setAlpha(expand ? 1 : 0.4f);
         SettingSave.getInstance().setPlayViewExpand(expand);
+    }
+
+    private boolean isInLeft() {
+        int[] location = new int[2];
+        getLocationOnScreen(location);
+        Point size = DisplayUtils.getScreenSize(getContext());
+        return location[0] < size.x / 2;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        boolean expand = SettingSave.getInstance().isPlayViewExpand();
+        if (!expand) {
+            PlayFloatView.this.setX((3 * border) * (isInLeft() ? -1 : 1));
+        }
     }
 
     private void calculateTags(Collection<Task> tasks) {
@@ -131,7 +156,6 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
                 .setLayout(this)
                 .setSidePattern(SidePattern.HORIZONTAL)
                 .setGravity(FloatGravity.RIGHT_CENTER, position.x, position.y)
-                .setBorder(20, 20, 0, 0)
                 .setTag(PlayFloatView.class.getName())
                 .setAlwaysShow(true)
                 .setCallback(new FloatCallback())
@@ -197,13 +221,25 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
         if (binding.buttonBox.getChildCount() == 0) dismiss();
     }
 
-    private static class FloatCallback extends FloatBaseCallback {
+    private class FloatCallback extends FloatBaseCallback {
+        @Override
+        public void onDrag(MotionEvent event) {
+            super.onDrag(event);
+            PlayFloatView.this.setX(0);
+        }
+
         @Override
         public void onDragEnd() {
             FloatViewHelper helper = EasyFloat.getHelper(PlayFloatView.class.getName());
             if (helper == null) return;
             Point position = helper.getConfigPosition();
             SettingSave.getInstance().setPlayViewPosition(new Point(position.x, position.y));
+
+
+            boolean expand = SettingSave.getInstance().isPlayViewExpand();
+            if (!expand) {
+                PlayFloatView.this.setX((3 * border) * (isInLeft() ? -1 : 1));
+            }
         }
 
         @Override

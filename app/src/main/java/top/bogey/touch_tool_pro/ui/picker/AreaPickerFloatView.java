@@ -59,7 +59,9 @@ public class AreaPickerFloatView extends BasePickerFloatView {
     @Override
     public void dispatchDraw(@NonNull Canvas canvas) {
         super.dispatchDraw(canvas);
-        canvas.drawRect(area, markPaint);
+        Rect rect = new Rect(area);
+        rect.offset(-location[0], -location[1]);
+        canvas.drawRect(rect, markPaint);
         drawChild(canvas, binding.areaBox, getDrawingTime());
         drawChild(canvas, binding.buttonBox, getDrawingTime());
     }
@@ -159,6 +161,7 @@ public class AreaPickerFloatView extends BasePickerFloatView {
         if (changed) {
             getLocationOnScreen(location);
             initMatchArea();
+            refreshUI();
         }
     }
 }

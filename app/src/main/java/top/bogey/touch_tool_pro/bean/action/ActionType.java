@@ -306,6 +306,7 @@ public enum ActionType {
             case CAPTURE_STATE -> R.drawable.icon_capture;
             case DATE_STATE -> R.drawable.icon_date;
             case TIME_STATE -> R.drawable.icon_time;
+            case NODE_INFO_STATE -> R.drawable.icon_widget;
 
             case CHECK_IN_APP -> R.drawable.icon_package_info;
             case CHECK_ON_BATTERY_STATE -> R.drawable.icon_battery;

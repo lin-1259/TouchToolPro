@@ -160,7 +160,6 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
-        binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         binding.slider.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         postInvalidate();
     }
