@@ -80,11 +80,15 @@ public class Predictor {
         return results;
     }
 
+    public void destroy() {
+        release(nativePointer);
+    }
+
     private void loadModel(Context context) {
         String cacheDirPath = context.getCacheDir() + "/models";
-        AppUtils.copyDirFromAssets(context, "models/ch_PP-OCRv2", cacheDirPath);
-        nativePointer = init(cacheDirPath + File.separator + "det_db.nb",
-                cacheDirPath + File.separator + "rec_crnn.nb",
+        AppUtils.copyDirFromAssets(context, "models", cacheDirPath);
+        nativePointer = init(cacheDirPath + File.separator + "det.nb",
+                cacheDirPath + File.separator + "rec.nb",
                 cacheDirPath + File.separator + "cls.nb",
                 0, 4, "LITE_POWER_HIGH");
     }
@@ -93,7 +97,7 @@ public class Predictor {
         labels.clear();
         labels.add("black");
 
-        try(InputStream inputStream = context.getAssets().open("labels/ppocr_keys_v1.txt")) {
+        try(InputStream inputStream = context.getAssets().open("labels/keys.txt")) {
             int available = inputStream.available();
             byte[] lines = new byte[available];
             inputStream.read(lines);

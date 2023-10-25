@@ -16,6 +16,7 @@ import com.amrdeveloper.treeview.TreeViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeItemBinding;
@@ -25,17 +26,20 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
     private TreeNode selectedNode;
     private final ArrayList<TreeNode> treeNodes = new ArrayList<>();
     private final TreeNodeManager manager;
+    private final ArrayList<AccessibilityNodeInfo> roots;
 
-    public NodePickerTreeAdapter(TreeNodeManager manager, SelectNode picker) {
+
+    public NodePickerTreeAdapter(TreeNodeManager manager, SelectNode picker, ArrayList<AccessibilityNodeInfo> roots) {
         super(null, manager);
         this.manager = manager;
+        this.roots = roots;
         setTreeNodeLongClickListener((treeNode, view) -> {
             AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) treeNode.getValue();
             picker.selectNode(nodeInfo);
             selectedNode = treeNode;
-//            notifyDataSetChanged();
             return true;
         });
+        searchNodes(null);
     }
 
     @Override
@@ -50,13 +54,23 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         return new ViewHolder(FloatPickerNodeItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
     }
 
-    public void setRoots(ArrayList<AccessibilityNodeInfo> roots) {
+    public void searchNodes(String search) {
         treeNodes.clear();
+        Pattern pattern = null;
+        if (search != null && !search.isEmpty()) {
+            pattern = Pattern.compile(search);
+        }
         for (AccessibilityNodeInfo root : roots) {
-            TreeNode rootNode = createTree(root, 0);
-            treeNodes.add(rootNode);
+            if (pattern == null) {
+                TreeNode rootNode = createTree(root, 0);
+                treeNodes.add(rootNode);
+            } else {
+                TreeNode rootNode = searchTree(root, 0, pattern);
+                if (rootNode != null) treeNodes.add(rootNode);
+            }
         }
         updateTreeNodes(treeNodes);
+        if (pattern != null) manager.expandAll();
     }
 
     private TreeNode createTree(AccessibilityNodeInfo root, int level) {
@@ -68,6 +82,33 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
                 node.addChild(createTree(child, level + 1));
             }
         }
+        return node;
+    }
+
+    private TreeNode searchTree(AccessibilityNodeInfo root, int level, Pattern pattern) {
+        TreeNode node = new TreeNode(root, R.layout.float_picker_node_item);
+        node.setLevel(level);
+
+        boolean finded = false;
+        CharSequence text = root.getText();
+        String id = root.getViewIdResourceName();
+        CharSequence className = root.getClassName();
+        if (text != null && pattern.matcher(text).find()) {
+            finded = true;
+        } else if (id != null && pattern.matcher(id).find()) {
+            finded = true;
+        } else if (className != null && pattern.matcher(className).find()) {
+            finded = true;
+        }
+
+        for (int i = 0; i < root.getChildCount(); i++) {
+            AccessibilityNodeInfo child = root.getChild(i);
+            if (child != null) {
+                TreeNode treeNode = searchTree(child, level + 1, pattern);
+                if (treeNode != null) node.addChild(treeNode);
+            }
+        }
+        if (node.getChildren().isEmpty() && !finded) return null;
         return node;
     }
 

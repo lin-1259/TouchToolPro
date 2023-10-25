@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
@@ -31,6 +32,8 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.TextChangedListener;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class NodePickerFloatView extends BasePickerFloatView implements NodePickerTreeAdapter.SelectNode {
@@ -61,9 +64,8 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         MainAccessibilityService service = MainApplication.getInstance().getService();
         rootNodes = service.getNeedWindowsRoot();
 
-        adapter = new NodePickerTreeAdapter(new TreeNodeManager(), this);
+        adapter = new NodePickerTreeAdapter(new TreeNodeManager(), this, rootNodes);
         binding.widgetRecyclerView.setAdapter(adapter);
-        adapter.setRoots(rootNodes);
 
         binding.saveButton.setOnClickListener(v -> {
             if (pinNode instanceof PinNodePath pinNodePath) {
@@ -78,6 +80,17 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         binding.detailButton.setOnClickListener(v -> {
             BottomSheetBehavior<FrameLayout> sheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+
+        binding.searchEdit.addTextChangedListener(new TextChangedListener() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s == null) {
+                    adapter.searchNodes(null);
+                } else {
+                    adapter.searchNodes(s.toString());
+                }
+            }
         });
 
         binding.backButton.setOnClickListener(v -> dismiss());
@@ -97,16 +110,14 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     public void selectNode(AccessibilityNodeInfo nodeInfo) {
         selectNode = nodeInfo;
 
-        binding.markBox.setVisibility(INVISIBLE);
-        binding.idTitle.setVisibility(INVISIBLE);
-        binding.detailButton.setVisibility(GONE);
+        binding.markBox.setVisibility(GONE);
+        binding.idTitle.setVisibility(GONE);
 
         if (selectNode != null) {
             selectId = selectNode.getViewIdResourceName();
 
             binding.markBox.setVisibility(VISIBLE);
             binding.idTitle.setVisibility(VISIBLE);
-            binding.detailButton.setVisibility(VISIBLE);
 
             binding.idTitle.setText(selectId);
             binding.idTitle.setVisibility(selectId == null ? INVISIBLE : VISIBLE);
@@ -143,6 +154,19 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             }
         }
         showNodeView((AccessibilityNodeInfo) null);
+    }
+
+    @Override
+    public void show() {
+        EasyFloat.with(MainApplication.getInstance().getService())
+                .setLayout(this)
+                .setTag(tag)
+                .setDragEnable(false)
+                .hasEditText(true)
+                .setMatch(true, true)
+                .setCallback(floatCallback)
+                .setAnimator(null)
+                .show();
     }
 
     @Override

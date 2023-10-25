@@ -29,6 +29,7 @@ import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 // 黑板类，记录着当前系统的一些属性
@@ -155,7 +156,7 @@ public class WorldState {
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (manualStartActions.size() > 0 || existView) {
                     PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getName());
-                    if (manualStartActions.size() == 0) {
+                    if (manualStartActions.size() == 0 || !SettingSave.getInstance().isPlayViewVisible()) {
                         if (view != null) view.setNeedRemove(true);
                     } else {
                         if (view == null) {

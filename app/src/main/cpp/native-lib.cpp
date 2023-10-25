@@ -54,8 +54,8 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, 
     if (src.empty() || tmp.empty()) return createMatchResult(env, 0, 0, 0, 0, 0);
 
     if (!withColor) {
-        cvtColor(src, src, COLOR_RGBA2GRAY);
-        cvtColor(tmp, tmp, COLOR_RGBA2GRAY);
+        cvtColor(src, src, COLOR_BGR2GRAY);
+        cvtColor(tmp, tmp, COLOR_BGR2GRAY);
     }
     resize(src, src, Size(src.cols / scale, src.rows / scale));
     resize(tmp, tmp, Size(tmp.cols / scale, tmp.rows / scale));

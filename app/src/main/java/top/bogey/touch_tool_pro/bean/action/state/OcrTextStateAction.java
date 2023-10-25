@@ -60,7 +60,7 @@ public class OcrTextStateAction extends Action {
 
         results.sort((o1, o2) -> {
             int topOffset = -(o1.getArea().top - o2.getArea().top);
-            if (Math.abs(topOffset) <= 5) {
+            if (Math.abs(topOffset) <= 10) {
                 return -(o1.getArea().left - o2.getArea().left);
             } else {
                 return topOffset;

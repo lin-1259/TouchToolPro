@@ -27,6 +27,7 @@ public class SettingSave {
 
     private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
     private final static String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";
+    private final static String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";
     private final static String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
     private static final String KEEP_ALIVE = "KEEP_ALIVE";
@@ -121,6 +122,14 @@ public class SettingSave {
 
     public void setPlayViewPosition(Point position) {
         settingMMKV.encode(PLAY_VIEW_POSITION, position);
+    }
+
+    public Point getChoiceViewPosition() {
+        return settingMMKV.decodeParcelable(CHOICE_VIEW_POSITION, Point.class, new Point());
+    }
+
+    public void setChoiceViewPosition(Point position) {
+        settingMMKV.encode(CHOICE_VIEW_POSITION, position);
     }
 
 
