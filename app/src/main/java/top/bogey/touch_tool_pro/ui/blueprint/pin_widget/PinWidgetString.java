@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
@@ -147,14 +148,10 @@ public class PinWidgetString extends PinWidget<PinString> {
     }
 
     private String getRingtoneName(String path) {
-        if (path != null) {
-            Pattern compile = Pattern.compile(".+/(.+?)\\..+");
-            Matcher matcher = compile.matcher(path);
-            if (matcher.find()) {
-                return matcher.group(1);
-            }
-        }
-        return path;
+        Uri uri = Uri.parse(path);
+        Ringtone ringtone = RingtoneManager.getRingtone(getContext(), uri);
+        if (ringtone == null) return null;
+        return ringtone.getTitle(getContext());
     }
 
     @Override

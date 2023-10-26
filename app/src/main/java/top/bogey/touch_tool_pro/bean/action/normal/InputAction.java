@@ -45,7 +45,7 @@ public class InputAction extends NormalAction {
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinNode node = (PinNode) getPinValue(runnable, context, nodePin);
         boolean result = false;
-        if (node.getNode() != null && node.getNode().isEditable()) {
+        if (node.getNode() != null) {
             PinString text = (PinString) getPinValue(runnable, context, textPin);
             String value = text.getValue();
             if (value != null && !value.isEmpty()) {

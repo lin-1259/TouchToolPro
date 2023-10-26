@@ -64,7 +64,7 @@ public class ExistNodeAction extends CheckAction {
             PinString id = (PinString) getPinValue(runnable, context, idPin);
             for (AccessibilityNodeInfo root : roots) {
                 List<AccessibilityNodeInfo> children = root.findAccessibilityNodeInfosByViewId(id.getValue());
-                if (children.size() == 1) {
+                if (!children.isEmpty()) {
                     AccessibilityNodeInfo child = children.get(0);
                     Rect rect = new Rect();
                     child.getBoundsInScreen(rect);

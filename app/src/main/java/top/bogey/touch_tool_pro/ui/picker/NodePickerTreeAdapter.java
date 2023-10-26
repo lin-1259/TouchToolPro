@@ -5,7 +5,6 @@ import android.content.res.ColorStateList;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.NonNull;
 
@@ -21,20 +20,21 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeItemBinding;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 
 public class NodePickerTreeAdapter extends TreeViewAdapter {
     private TreeNode selectedNode;
     private final ArrayList<TreeNode> treeNodes = new ArrayList<>();
     private final TreeNodeManager manager;
-    private final ArrayList<AccessibilityNodeInfo> roots;
+    private final ArrayList<NodePickerItemInfo> roots;
 
 
-    public NodePickerTreeAdapter(TreeNodeManager manager, SelectNode picker, ArrayList<AccessibilityNodeInfo> roots) {
+    public NodePickerTreeAdapter(TreeNodeManager manager, SelectNode picker, ArrayList<NodePickerItemInfo> roots) {
         super(null, manager);
         this.manager = manager;
         this.roots = roots;
         setTreeNodeLongClickListener((treeNode, view) -> {
-            AccessibilityNodeInfo nodeInfo = (AccessibilityNodeInfo) treeNode.getValue();
+            NodePickerItemInfo nodeInfo = (NodePickerItemInfo) treeNode.getValue();
             picker.selectNode(nodeInfo);
             selectedNode = treeNode;
             return true;
@@ -60,7 +60,7 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         if (search != null && !search.isEmpty()) {
             pattern = Pattern.compile(search);
         }
-        for (AccessibilityNodeInfo root : roots) {
+        for (NodePickerItemInfo root : roots) {
             if (pattern == null) {
                 TreeNode rootNode = createTree(root, 0);
                 treeNodes.add(rootNode);
@@ -73,11 +73,10 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         if (pattern != null) manager.expandAll();
     }
 
-    private TreeNode createTree(AccessibilityNodeInfo root, int level) {
+    private TreeNode createTree(NodePickerItemInfo root, int level) {
         TreeNode node = new TreeNode(root, R.layout.float_picker_node_item);
         node.setLevel(level);
-        for (int i = 0; i < root.getChildCount(); i++) {
-            AccessibilityNodeInfo child = root.getChild(i);
+        for (NodePickerItemInfo child : root.children) {
             if (child != null) {
                 node.addChild(createTree(child, level + 1));
             }
@@ -85,24 +84,20 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         return node;
     }
 
-    private TreeNode searchTree(AccessibilityNodeInfo root, int level, Pattern pattern) {
+    private TreeNode searchTree(NodePickerItemInfo root, int level, Pattern pattern) {
         TreeNode node = new TreeNode(root, R.layout.float_picker_node_item);
         node.setLevel(level);
 
         boolean finded = false;
-        CharSequence text = root.getText();
-        String id = root.getViewIdResourceName();
-        CharSequence className = root.getClassName();
-        if (text != null && pattern.matcher(text).find()) {
+        if (root.text != null && pattern.matcher(root.text).find()) {
             finded = true;
-        } else if (id != null && pattern.matcher(id).find()) {
+        } else if (root.id != null && pattern.matcher(root.id).find()) {
             finded = true;
-        } else if (className != null && pattern.matcher(className).find()) {
+        } else if (root.cls != null && pattern.matcher(root.cls).find()) {
             finded = true;
         }
 
-        for (int i = 0; i < root.getChildCount(); i++) {
-            AccessibilityNodeInfo child = root.getChild(i);
+        for (NodePickerItemInfo child : root.children) {
             if (child != null) {
                 TreeNode treeNode = searchTree(child, level + 1, pattern);
                 if (treeNode != null) node.addChild(treeNode);
@@ -112,7 +107,7 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         return node;
     }
 
-    public void setSelectedNode(AccessibilityNodeInfo node) {
+    public void setSelectedNode(NodePickerItemInfo node) {
         collapseAll();
         if (node == null) {
             selectedNode = null;
@@ -160,11 +155,11 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         }
 
         public void refreshItem(TreeNode node) {
-            AccessibilityNodeInfo value = (AccessibilityNodeInfo) node.getValue();
+            NodePickerItemInfo value = (NodePickerItemInfo) node.getValue();
             binding.titleText.setText(getNodeTitle(value));
 
             int color;
-            if (value.isClickable()) {
+            if (value.isUsable()) {
                 color = DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimary, 0);
             } else {
                 color = DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorOnSurface, 0);
@@ -180,24 +175,22 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
             }
         }
 
-        private String getNodeTitle(AccessibilityNodeInfo node) {
+        private String getNodeTitle(NodePickerItemInfo node) {
             StringBuilder builder = new StringBuilder();
-            builder.append(node.getClassName());
-            CharSequence text = node.getText();
-            if (text != null && text.length() > 0) {
+            builder.append(node.cls);
+            if (node.text != null && !node.text.isEmpty()) {
                 builder.append(" | ");
-                builder.append(text);
+                builder.append(node.text);
             }
 
-            String resourceName = node.getViewIdResourceName();
-            if (resourceName != null && !resourceName.isEmpty()) {
-                String[] split = resourceName.split(":");
+            if (node.id != null && !node.id.isEmpty()) {
+                String[] split = node.id.split(":");
                 if (split.length > 1) {
                     builder.append(" [ ");
                     builder.append(split[1]);
                     builder.append(" ]");
                 } else {
-                    builder.append(resourceName);
+                    builder.append(node.id);
                 }
             }
 
@@ -206,6 +199,6 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
     }
 
     public interface SelectNode {
-        void selectNode(AccessibilityNodeInfo nodeInfo);
+        void selectNode(NodePickerItemInfo info);
     }
 }

@@ -8,14 +8,17 @@ import androidx.annotation.NonNull;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
+import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 
 public class PinNodePath extends PinString {
 
@@ -43,9 +46,9 @@ public class PinNodePath extends PinString {
             AccessibilityNodeInfo child = null;
             for (String path : paths) {
                 if (path.isEmpty()) continue;
-                NodePath nodePath = new NodePath(path.trim(), params);
                 if (child == null) child = root;
                 else {
+                    NodePath nodePath = new NodePath(path.trim(), params);
                     child = nodePath.getChildNode(child);
                     if (child == null) break;
                 }
@@ -60,6 +63,30 @@ public class PinNodePath extends PinString {
     @Override
     public int getPinColor(Context context) {
         return context.getColor(R.color.NodePathPinColor);
+    }
+
+    public void setValue(NodePickerItemInfo info) {
+        if (info == null) {
+            value = null;
+            return;
+        }
+
+        LinkedList<NodePath> paths = new LinkedList<>();
+        while (info != null) {
+            paths.addFirst(new NodePath(info));
+            info = info.parent;
+            if (paths.size() > Byte.MAX_VALUE) {
+                value = null;
+                return;
+            }
+        }
+
+        StringBuilder builder = new StringBuilder();
+        paths.forEach(path -> {
+            builder.append(path.toString());
+            builder.append("\n");
+        });
+        value = builder.toString().trim();
     }
 
     public void setValue(AccessibilityNodeInfo node) {
@@ -90,8 +117,8 @@ public class PinNodePath extends PinString {
 
     public static class NodePath {
         private String cls;
+        private int index = 1;
         private String id;
-        private int index;
 
         public NodePath(AccessibilityNodeInfo node) {
             cls = node.getClassName().toString();
@@ -106,74 +133,118 @@ public class PinNodePath extends PinString {
                         break;
                     }
                 }
+            }
+        }
 
-                List<AccessibilityNodeInfo> nodeInfoList = parent.findAccessibilityNodeInfosByViewId(id);
-                // id在路径中不唯一，就无法根据id去获取节点
-                if (nodeInfoList.size() != 1) id = null;
-            } else {
-                id = null;
+        public NodePath(NodePickerItemInfo info) {
+            cls = info.cls;
+            id = info.id;
+
+            if (info.parent != null) {
+                ArrayList<NodePickerItemInfo> children = info.parent.children;
+                for (int i = 0; i < children.size(); i++) {
+                    NodePickerItemInfo child = children.get(i);
+                    if (child != null && child.equals(info)) {
+                        index = i + 1;
+                        break;
+                    }
+                }
             }
         }
 
         public NodePath(String path, HashMap<String, Integer> params) {
-            Pattern pattern = Pattern.compile("^([a-zA-Z0-9.]+)(\\[*.*?]*)$");
-            Matcher matcher = pattern.matcher(path);
-            if (matcher.find()) {
-                cls = matcher.group(1);
-                try {
+            Pattern pattern = Pattern.compile("^([a-zA-Z0-9.]+)$");
+            // 代表没有任何额外信息的节点
+            if (pattern.matcher(path).find()) {
+                cls = path;
+            } else {
+                pattern = Pattern.compile("^(.+?)(\\[.+])$");
+                Matcher matcher = pattern.matcher(path);
+                if (matcher.find()) {
+                    cls = matcher.group(1);
                     String detail = matcher.group(2);
-                    if (detail != null) {
-                        String[] strings = detail.split("\\[");
-                        for (String string : strings) {
-                            if (string.isEmpty()) continue;
-                            string = string.replace("]", "");
-                            try {
-                                index = Integer.parseInt(string);
-                            } catch (NumberFormatException ignored) {
-                                if (string.contains("id=")) {
-                                    id = string.replace("id=", "");
-                                } else {
-                                    if (params != null) {
-                                        string = string.replace("{", "");
-                                        string = string.replace("}", "");
-                                        Integer integer = params.get(string);
-                                        index = integer == null ? 0 : integer;
+                    if (detail == null) return;
+
+                    String[] strings = detail.split("\\[");
+                    for (String string : strings) {
+                        if (string.isEmpty()) continue;
+                        List<String> regexes = Arrays.asList("id=(.+)]", "(\\d+)]", "\\{(\\s*)\\}]");
+                        for (int i = 0; i < regexes.size(); i++) {
+                            String regex = regexes.get(i);
+                            pattern = Pattern.compile(regex);
+                            matcher = pattern.matcher(string);
+                            if (matcher.find()) {
+                                switch (i) {
+                                    case 0 -> id = matcher.group(1);
+                                    case 1 -> index = Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
+                                    case 2 -> {
+                                        Integer integer = params.get(matcher.group(1));
+                                        index = integer == null ? 1 : integer;
                                     }
                                 }
+                                break;
                             }
                         }
                     }
-                } catch (IndexOutOfBoundsException ignored) {
                 }
             }
         }
 
+        private boolean checkId(AccessibilityNodeInfo node) {
+            if (id == null || id.isEmpty()) return false;
+            return id.equals(node.getViewIdResourceName());
+        }
+
+        private boolean checkClass(AccessibilityNodeInfo node) {
+            return cls.contentEquals(node.getClassName());
+        }
+
         public AccessibilityNodeInfo getChildNode(AccessibilityNodeInfo root) {
             AccessibilityNodeInfo child = null;
-            if (id != null) {
-                List<AccessibilityNodeInfo> nodes = root.findAccessibilityNodeInfosByViewId(id);
-                if (nodes.size() > 0) {
-                    child = nodes.get(0);
-                }
-            } else {
-                try {
-                    child = root.getChild(index - 1);
-                } catch (Exception ignored) {
+            // 类型一定得匹配上
+            // 先根据层级，id，类型获取
+            if (index > 0 && index <= root.getChildCount()) {
+                AccessibilityNodeInfo node = root.getChild(index - 1);
+                if (node != null) {
+                    if (checkId(node) && checkClass(node)) child = node;
                 }
             }
-            // 从id或层级拿的子节点需要判断类型是不是一样的
-            if (child != null && child.getClassName().equals(cls)) {
-                return child;
-            } else {
-                // 否则就获取第一个匹配的上cls的节点
+
+            // 获取失败了，就根据id和类型去获取
+            if (child == null) {
                 for (int i = 0; i < root.getChildCount(); i++) {
-                    AccessibilityNodeInfo nodeInfo = root.getChild(i);
-                    if (nodeInfo != null && nodeInfo.getClassName().equals(cls)) {
-                        return nodeInfo;
+                    AccessibilityNodeInfo node = root.getChild(i);
+                    if (node == null) continue;
+                    if (checkId(node) && checkClass(node)) {
+                        child = node;
+                        break;
                     }
                 }
             }
-            return null;
+
+            // 再不行就根据层级和类型去获取
+            if (child == null) {
+                if (index > 0 && index <= root.getChildCount()) {
+                    AccessibilityNodeInfo node = root.getChild(index - 1);
+                    if (node != null) {
+                        if (checkClass(node)) child = node;
+                    }
+                }
+            }
+
+            // 实在不行就随便获取一个吧
+            if (child == null) {
+                for (int i = 0; i < root.getChildCount(); i++) {
+                    AccessibilityNodeInfo node = root.getChild(i);
+                    if (node == null) continue;
+                    if (checkClass(node)) {
+                        child = node;
+                        break;
+                    }
+                }
+            }
+
+            return child;
         }
 
         @NonNull

@@ -49,7 +49,7 @@ public class PinWidgetNodePath extends PinWidget<PinNodePath> {
     }
 
     private void refreshDynamicPin(String path) {
-        Pattern pattern = Pattern.compile("\\[\\{(\\S*?)\\}]");
+        Pattern pattern = Pattern.compile("\\[\\{(\\S*)\\}]");
         Matcher matcher = pattern.matcher(path);
         HashSet<String> keys = new HashSet<>();
         while (matcher.find()) {

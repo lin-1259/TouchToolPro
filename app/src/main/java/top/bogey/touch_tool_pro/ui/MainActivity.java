@@ -12,6 +12,7 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -38,10 +39,13 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.databinding.ActivityMainBinding;
+import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool_pro.utils.ocr.Predictor;
 
 public class MainActivity extends BaseActivity {
@@ -77,6 +81,12 @@ public class MainActivity extends BaseActivity {
             } else {
                 hideBottomNavigation();
             }
+
+            if (id == R.id.function) {
+                new Handler().postDelayed(() -> {
+                    controller.navigate(R.id.setting);
+                }, 2000);
+            }
         });
 
         if (firstShowTask && SettingSave.getInstance().isFirstShowTask()) {
@@ -107,6 +117,17 @@ public class MainActivity extends BaseActivity {
 
         SettingSave.getInstance().init(this);
         WorldState.getInstance().resetAppMap(this);
+
+        MainAccessibilityService.serviceEnabled.observe(this, aBoolean -> {
+            if (MainApplication.getInstance().getService() == null) return;
+            if (aBoolean) {
+                KeepAliveFloatView floatView = new KeepAliveFloatView(this);
+                floatView.show();
+            } else {
+                EasyFloat.dismiss(KeepAliveFloatView.class.getCanonicalName());
+            }
+        });
+
         handleIntent(getIntent());
         sendShortcuts();
     }

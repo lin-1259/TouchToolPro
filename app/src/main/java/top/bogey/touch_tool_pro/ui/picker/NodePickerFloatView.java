@@ -22,7 +22,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -32,6 +31,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
@@ -44,8 +44,8 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     private final Paint markPaint;
     private final int[] location = new int[2];
 
-    private final ArrayList<AccessibilityNodeInfo> rootNodes;
-    private AccessibilityNodeInfo selectNode;
+    private final ArrayList<NodePickerItemInfo> rootNodes = new ArrayList<>();
+    private NodePickerItemInfo selectNode;
     private String selectId;
 
     public NodePickerFloatView(@NonNull Context context, PickerCallback callback, PinString pinNode) {
@@ -61,8 +61,12 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         markPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
 
         binding = FloatPickerNodeBinding.inflate(LayoutInflater.from(context), this, true);
+
         MainAccessibilityService service = MainApplication.getInstance().getService();
-        rootNodes = service.getNeedWindowsRoot();
+        ArrayList<AccessibilityNodeInfo> windowsRoot = service.getNeedWindowsRoot();
+        for (AccessibilityNodeInfo nodeInfo : windowsRoot) {
+            rootNodes.add(new NodePickerItemInfo(nodeInfo));
+        }
 
         adapter = new NodePickerTreeAdapter(new TreeNodeManager(), this, rootNodes);
         binding.widgetRecyclerView.setAdapter(adapter);
@@ -95,10 +99,12 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
 
         binding.backButton.setOnClickListener(v -> dismiss());
 
-        binding.markBox.setOnClickListener(v -> showNodeView((AccessibilityNodeInfo) null));
+        binding.markBox.setOnClickListener(v -> showNodeView((NodePickerItemInfo) null));
 
         if (pinNode instanceof PinNodePath pinNodePath) {
-            selectNode = pinNodePath.getNode(rootNodes);
+            AccessibilityNodeInfo node = pinNodePath.getNode(windowsRoot);
+            if (node == null) selectNode = null;
+            else selectNode = new NodePickerItemInfo(node);
             showNodeView(selectNode);
         } else {
             selectId = pinNode.getValue();
@@ -107,14 +113,14 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     }
 
     @Override
-    public void selectNode(AccessibilityNodeInfo nodeInfo) {
+    public void selectNode(NodePickerItemInfo nodeInfo) {
         selectNode = nodeInfo;
 
         binding.markBox.setVisibility(GONE);
         binding.idTitle.setVisibility(GONE);
 
         if (selectNode != null) {
-            selectId = selectNode.getViewIdResourceName();
+            selectId = selectNode.id;
 
             binding.markBox.setVisibility(VISIBLE);
             binding.idTitle.setVisibility(VISIBLE);
@@ -122,9 +128,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             binding.idTitle.setText(selectId);
             binding.idTitle.setVisibility(selectId == null ? INVISIBLE : VISIBLE);
 
-            Rect rect = new Rect();
-
-            selectNode.getBoundsInScreen(rect);
+            Rect rect = selectNode.rect;
             ViewGroup.LayoutParams params = binding.markBox.getLayoutParams();
             params.width = rect.width();
             params.height = rect.height();
@@ -135,25 +139,25 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         postInvalidate();
     }
 
-    public void showNodeView(AccessibilityNodeInfo nodeInfo) {
+    public void showNodeView(NodePickerItemInfo nodeInfo) {
         selectNode(nodeInfo);
         adapter.setSelectedNode(nodeInfo);
     }
 
     public void showNodeView(String nodeId) {
         if (nodeId == null || nodeId.isEmpty()) {
-            showNodeView((AccessibilityNodeInfo) null);
+            showNodeView((NodePickerItemInfo) null);
             return;
         }
-        for (AccessibilityNodeInfo root : rootNodes) {
-            List<AccessibilityNodeInfo> nodes = root.findAccessibilityNodeInfosByViewId(nodeId);
+        for (NodePickerItemInfo root : rootNodes) {
+            ArrayList<NodePickerItemInfo> nodes = root.findChildrenById(nodeId);
             if (nodes.size() == 1) {
-                AccessibilityNodeInfo node = nodes.get(0);
+                NodePickerItemInfo node = nodes.get(0);
                 showNodeView(node);
                 break;
             }
         }
-        showNodeView((AccessibilityNodeInfo) null);
+        showNodeView((NodePickerItemInfo) null);
     }
 
     @Override
@@ -178,9 +182,8 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         canvas.saveLayer(getLeft(), getTop(), getRight(), getBottom(), gridPaint);
         for (int i = rootNodes.size() - 1; i >= 0; i--) {
             canvas.save();
-            AccessibilityNodeInfo rootNode = rootNodes.get(i);
-            Rect bounds = new Rect();
-            rootNode.getBoundsInScreen(bounds);
+            NodePickerItemInfo rootNode = rootNodes.get(i);
+            Rect bounds = new Rect(rootNode.rect);
             if (bounds.width() != getWidth() || bounds.height() != getHeight()) {
                 bounds.offset(-location[0], -location[1]);
                 canvas.drawRect(bounds, markPaint);
@@ -208,26 +211,23 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         drawChild(canvas, binding.bottomSheet, drawingTime);
     }
 
-    private void drawNode(Canvas canvas, AccessibilityNodeInfo nodeInfo) {
+    private void drawNode(Canvas canvas, NodePickerItemInfo nodeInfo) {
         if (nodeInfo == null) return;
 
-        Rect bounds = new Rect();
-        nodeInfo.getBoundsInScreen(bounds);
+        Rect bounds = new Rect(nodeInfo.rect);
         bounds.offset(-location[0], -location[1]);
 
-        boolean touchAble = nodeInfo.isClickable() || nodeInfo.isEditable() || nodeInfo.isCheckable() || nodeInfo.isLongClickable();
-
-        if (!touchAble && nodeInfo.isVisibleToUser()) {
+        if (!nodeInfo.isUsable() && nodeInfo.visible) {
             gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), com.google.android.material.R.attr.colorSecondary, 0));
             gridPaint.setStrokeWidth(1);
             canvas.drawRect(bounds, gridPaint);
         }
 
-        for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            drawNode(canvas, nodeInfo.getChild(i));
+        for (NodePickerItemInfo child : nodeInfo.children) {
+            drawNode(canvas, child);
         }
 
-        if (touchAble && nodeInfo.isVisibleToUser()) {
+        if (nodeInfo.isUsable()) {
             gridPaint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
             gridPaint.setStrokeWidth(3);
             bounds.offset(2, 2);
@@ -244,7 +244,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         float y = event.getRawY();
 
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            AccessibilityNodeInfo node = getNodeIn((int) x, (int) y);
+            NodePickerItemInfo node = getNodeIn((int) x, (int) y);
             if (node != null) {
                 showNodeView(node);
             }
@@ -253,17 +253,17 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     }
 
     @Nullable
-    private AccessibilityNodeInfo getNodeIn(int x, int y) {
+    private NodePickerItemInfo getNodeIn(int x, int y) {
         if (rootNodes == null || rootNodes.size() == 0) return null;
-        HashMap<AccessibilityNodeInfo, Integer> infoMap = new HashMap<>();
+        HashMap<NodePickerItemInfo, Integer> infoMap = new HashMap<>();
         for (int i = 0; i < rootNodes.size(); i++) {
-            AccessibilityNodeInfo rootNode = rootNodes.get(i);
+            NodePickerItemInfo rootNode = rootNodes.get(i);
             findNodeIn(infoMap, (rootNodes.size() - i) * Short.MAX_VALUE, rootNode, x, y);
         }
 
         int deep = 0;
-        AccessibilityNodeInfo node = null;
-        for (Map.Entry<AccessibilityNodeInfo, Integer> entry : infoMap.entrySet()) {
+        NodePickerItemInfo node = null;
+        for (Map.Entry<NodePickerItemInfo, Integer> entry : infoMap.entrySet()) {
             // 深度最深
             if (deep < entry.getValue()) {
                 deep = entry.getValue();
@@ -273,14 +273,12 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         return node;
     }
 
-    private void findNodeIn(HashMap<AccessibilityNodeInfo, Integer> infoHashSet, int deep, @NonNull AccessibilityNodeInfo nodeInfo, int x, int y) {
-        if (nodeInfo.getChildCount() == 0) return;
-        for (int i = 0; i < nodeInfo.getChildCount(); i++) {
-            AccessibilityNodeInfo child = nodeInfo.getChild(i);
+    private void findNodeIn(HashMap<NodePickerItemInfo, Integer> infoHashSet, int deep, @NonNull NodePickerItemInfo nodeInfo, int x, int y) {
+        if (nodeInfo.children.isEmpty()) return;
+        for (NodePickerItemInfo child : nodeInfo.children) {
             if (child != null) {
-                Rect rect = new Rect();
-                child.getBoundsInScreen(rect);
-                if (rect.contains(x, y) && child.isVisibleToUser()) {
+                Rect rect = new Rect(child.rect);
+                if (rect.contains(x, y) && child.visible) {
                     infoHashSet.put(child, deep);
                 }
                 findNodeIn(infoHashSet, deep + 1, child, x, y);
@@ -294,6 +292,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
 
         if (changed) {
             getLocationOnScreen(location);
+            selectNode(selectNode);
         }
     }
 }

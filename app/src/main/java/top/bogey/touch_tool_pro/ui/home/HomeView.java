@@ -29,11 +29,9 @@ import top.bogey.touch_tool_pro.databinding.ViewHomeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.BaseActivity;
 import top.bogey.touch_tool_pro.ui.MainActivity;
-import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
-import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 
 public class HomeView extends Fragment {
@@ -108,12 +106,6 @@ public class HomeView extends Fragment {
 
         MainAccessibilityService.serviceEnabled.observe(getViewLifecycleOwner(), aBoolean -> {
             if (MainApplication.getInstance().getService() == null) return;
-            if (aBoolean) {
-                KeepAliveFloatView floatView = new KeepAliveFloatView(requireContext());
-                floatView.show();
-            } else {
-                EasyFloat.dismiss(KeepAliveFloatView.class.getCanonicalName());
-            }
             binding.serviceTitle.setText(aBoolean ? R.string.service_on : R.string.service_off);
             setServiceChecked(aBoolean);
         });
