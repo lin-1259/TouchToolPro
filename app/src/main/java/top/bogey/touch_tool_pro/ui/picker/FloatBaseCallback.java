@@ -35,7 +35,7 @@ public class FloatBaseCallback implements FloatCallback {
             MainActivity activity = MainApplication.getInstance().getMainActivity();
             if (activity != null) {
                 ActivityManager manager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-                manager.moveTaskToFront(activity.getTaskId(), ActivityManager.MOVE_TASK_WITH_HOME);
+                manager.moveTaskToFront(activity.getTaskId(), ActivityManager.MOVE_TASK_NO_USER_ACTION);
             }
         }
     }

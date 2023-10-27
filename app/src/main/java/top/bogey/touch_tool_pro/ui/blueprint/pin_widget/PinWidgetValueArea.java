@@ -63,7 +63,7 @@ public class PinWidgetValueArea extends PinWidget<PinValueArea> {
         binding.lockButton.setOnClickListener(v -> {
             locked = !locked;
             binding.highEdit.setEnabled(!locked);
-            binding.highEdit.setText(binding.minEdit.getText());
+            binding.highEdit.setText(binding.lowEdit.getText());
             binding.lockButton.setChecked(locked);
             binding.lockButton.setIconResource(locked ? R.drawable.icon_lock : R.drawable.icon_unlock);
         });

@@ -81,12 +81,6 @@ public class MainActivity extends BaseActivity {
             } else {
                 hideBottomNavigation();
             }
-
-            if (id == R.id.function) {
-                new Handler().postDelayed(() -> {
-                    controller.navigate(R.id.setting);
-                }, 2000);
-            }
         });
 
         if (firstShowTask && SettingSave.getInstance().isFirstShowTask()) {

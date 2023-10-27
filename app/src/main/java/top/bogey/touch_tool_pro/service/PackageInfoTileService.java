@@ -6,6 +6,7 @@ import android.view.View;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.setting.PackageInfoFloatView;
 import top.bogey.touch_tool_pro.ui.setting.SettingView;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -18,11 +19,11 @@ public class PackageInfoTileService extends TileService {
         super.onClick();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            MainActivity activity = MainApplication.getInstance().getMainActivity();
-            if (activity != null) {
+            KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+            if (keepView != null) {
                 View view = EasyFloat.getView(PackageInfoFloatView.class.getName());
                 if (view == null) {
-                    new PackageInfoFloatView(activity).show();
+                    new PackageInfoFloatView(keepView.getContext()).show();
                 } else {
                     EasyFloat.dismiss(PackageInfoFloatView.class.getName());
                 }

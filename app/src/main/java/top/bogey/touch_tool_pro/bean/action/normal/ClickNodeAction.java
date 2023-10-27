@@ -57,9 +57,7 @@ public class ClickNodeAction extends NormalAction {
 
     private AccessibilityNodeInfo getClickAbleParent(AccessibilityNodeInfo node) {
         if (node == null) return null;
-        if (node.isVisibleToUser()) {
-            if (node.isClickable() || node.isEditable() || node.isCheckable() || node.isLongClickable()) return node;
-        }
+        if (node.isClickable() || node.isEditable() || node.isCheckable() || node.isLongClickable()) return node;
         return getClickAbleParent(node.getParent());
     }
 

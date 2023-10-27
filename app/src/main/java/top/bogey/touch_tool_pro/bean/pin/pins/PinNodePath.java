@@ -191,8 +191,11 @@ public class PinNodePath extends PinString {
         }
 
         private boolean checkId(AccessibilityNodeInfo node) {
-            if (id == null || id.isEmpty()) return false;
-            return id.equals(node.getViewIdResourceName());
+            String resourceName = node.getViewIdResourceName();
+            if ((id == null || id.isEmpty()) && (resourceName == null || resourceName.isEmpty())) {
+                return true;
+            }
+            return Objects.equals(id, resourceName);
         }
 
         private boolean checkClass(AccessibilityNodeInfo node) {

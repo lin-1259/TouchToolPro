@@ -5,7 +5,7 @@ import android.service.quicksettings.TileService;
 import android.view.View;
 
 import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.setting.LogFloatView;
 import top.bogey.touch_tool_pro.ui.setting.SettingView;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -17,11 +17,11 @@ public class LogTileService extends TileService {
         super.onClick();
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            MainActivity activity = MainApplication.getInstance().getMainActivity();
-            if (activity != null) {
+            KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
+            if (keepView != null) {
                 View view = EasyFloat.getView(LogFloatView.class.getName());
                 if (view == null) {
-                    new LogFloatView(activity).show();
+                    new LogFloatView(keepView.getContext()).show();
                 } else {
                     EasyFloat.dismiss(LogFloatView.class.getName());
                 }
