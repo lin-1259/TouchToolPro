@@ -4,6 +4,7 @@
     <string-array name="action_type">
         <item>自定义</item>
         <item>变量</item>
+        <item>现有卡片</item>
         <item>开始动作</item>
         <item>逻辑动作</item>
         <item>获取状态</item>
@@ -28,6 +29,7 @@
         <item>多应用</item>
         <item>多应用或导出活动</item>
         <item>多应用或全部活动</item>
+        <item>分享的应用或活动</item>
     </string-array>
 
     <string-array name="long_value_type">
@@ -58,5 +60,9 @@
         <item>打开 电源菜单</item>
     </string-array>
 
+    <string-array name="share_type">
+        <item>文字</item>
+        <item>文件</item>
+    </string-array>
 
 </resources>

@@ -4,6 +4,6 @@
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="4dp"
     android:layout_height="4dp"
-    android:alpha="0"
+    android:alpha="0.01"
     app:cardBackgroundColor="?attr/colorPrimaryLight"
     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />

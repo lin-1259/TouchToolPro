@@ -22,7 +22,7 @@ public class IntAddAction extends IntMoreAction {
         PinInteger result = resultPin.getValue(PinInteger.class);
 
         int total = 0;
-        for (Pin valuePin : valuePins) {
+        for (Pin valuePin : calculateMorePins()) {
             PinInteger value = (PinInteger) getPinValue(runnable, context, valuePin);
             total += value.getValue();
         }

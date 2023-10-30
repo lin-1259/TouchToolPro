@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionMorePinInterface;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
@@ -21,14 +22,13 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
-public class ParallelAction extends NormalAction {
+public class ParallelAction extends NormalAction implements ActionMorePinInterface {
     protected transient Pin countPin = new Pin(new PinInteger(1), R.string.action_parallel_logic_subtitle_condition);
     protected transient Pin timeoutPin = new Pin(new PinInteger(5000), R.string.action_parallel_logic_subtitle_timeout);
 
     private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin, 3), R.string.action_subtitle_add_execute, true);
-    private final transient ArrayList<Pin> executePins = new ArrayList<>();
 
     private transient Pin completePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
     private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, true);
@@ -38,8 +38,7 @@ public class ParallelAction extends NormalAction {
         super(ActionType.LOGIC_PARALLEL);
         countPin = addPin(countPin);
         timeoutPin = addPin(timeoutPin);
-        executePins.add(outPin);
-        executePins.add(secondPin = addPin(secondPin));
+        secondPin = addPin(secondPin);
         addPin = addPin(addPin);
         completePin = addPin(completePin);
         falsePin = addPin(falsePin);
@@ -49,9 +48,8 @@ public class ParallelAction extends NormalAction {
         super(jsonObject);
         countPin = reAddPin(countPin);
         timeoutPin = reAddPin(timeoutPin);
-        executePins.add(outPin);
-        executePins.add(secondPin = reAddPin(secondPin));
-        executePins.addAll(reAddPin(morePin, 3));
+        secondPin = reAddPin(secondPin);
+        reAddPin(morePin, 3);
         addPin = reAddPin(addPin);
         completePin = reAddPin(completePin);
         falsePin = reAddPin(falsePin);
@@ -65,7 +63,7 @@ public class ParallelAction extends NormalAction {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         CountDownLatch latch = new CountDownLatch(count.getValue() > 0 ? count.getValue() : 1);
         ArrayList<TaskRunnable> runnableList = new ArrayList<>();
-        for (Pin executePin : executePins) {
+        for (Pin executePin : calculateMorePins()) {
             TaskRunnable taskRunnable = service.runTask(runnable.getTask(), new InnerStartAction(executePin), context, new TaskRunningListener() {
                 @Override
                 public void onStart(TaskRunnable run) {
@@ -95,5 +93,18 @@ public class ParallelAction extends NormalAction {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public ArrayList<Pin> calculateMorePins() {
+        ArrayList<Pin> pins = new ArrayList<>();
+        pins.add(outPin);
+        boolean start = false;
+        for (Pin pin : getPins()) {
+            if (pin == secondPin) start = true;
+            if (pin == addPin) start = false;
+            if (start) pins.add(pin);
+        }
+        return pins;
     }
 }

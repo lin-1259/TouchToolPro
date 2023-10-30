@@ -1,9 +1,11 @@
 package top.bogey.touch_tool_pro.ui.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.ViewAppItemBinding;
@@ -29,14 +32,16 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
     private final boolean single;
     private final boolean all;
+    private final boolean share;
 
     private final boolean showActivity;
 
-    public AppRecyclerViewAdapter(HashMap<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single, boolean all, boolean showActivity) {
+    public AppRecyclerViewAdapter(HashMap<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single, boolean all, boolean share, boolean showActivity) {
         this.selectedActivities = selectedActivities;
         this.callback = callback;
         this.single = single;
         this.all = all;
+        this.share = share;
         this.showActivity = showActivity;
     }
 
@@ -90,7 +95,11 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 }
             }
             if (flag) {
-                apps.add(i, newApp);
+                if (i > apps.size()) {
+                    apps.add(newApp);
+                } else {
+                    apps.add(i, newApp);
+                }
                 notifyItemInserted(i);
             }
         }
@@ -152,7 +161,21 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             ArrayList<String> activityNameList = new ArrayList<>();
             ArrayList<String> list = selectedActivities.get(info.packageName);
             if (list != null) activityNameList.addAll(list);
-            SelectActivityDialog view = new SelectActivityDialog(context, activities, single, activityNameList);
+            SelectActivityDialog view;
+            if (share) {
+                ArrayList<String> shareActivities = new ArrayList<>();
+                PackageManager manager = context.getPackageManager();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("*/*");
+                intent.setPackage(info.packageName);
+                List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+                for (ResolveInfo resolveInfo : infoList) {
+                    shareActivities.add(resolveInfo.activityInfo.name);
+                }
+                view = new SelectActivityDialog(context, shareActivities, single, activityNameList);
+            } else {
+                view = new SelectActivityDialog(context, activities, single, activityNameList);
+            }
             new MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.picker_app_title_select_activity)
                     .setNegativeButton(R.string.cancel, null)

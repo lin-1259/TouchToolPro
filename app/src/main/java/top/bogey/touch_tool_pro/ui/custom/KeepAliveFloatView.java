@@ -15,6 +15,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.databinding.FloatKeepAliveBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatGravity;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
@@ -35,6 +36,8 @@ public class KeepAliveFloatView extends FrameLayout implements FloatViewInterfac
     }
 
     public void showMe() {
+        boolean showStart = SettingSave.getInstance().isShowStart();
+        if (!showStart) return;
         post(() -> {
             binding.getRoot().animate().alpha(0.5f);
             handler.removeCallbacksAndMessages(null);

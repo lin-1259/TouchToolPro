@@ -1,6 +1,10 @@
 package top.bogey.touch_tool_pro.ui.app;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.LayoutInflater;
@@ -14,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
@@ -28,6 +33,7 @@ public class AppView extends BottomSheetDialogFragment {
 
     private CharSequence searchText = "";
     private boolean showSystem = false;
+    private boolean single;
 
     public AppView(HashMap<String, ArrayList<String>> packages, PinSubType mode, ResultCallback callback) {
         this.packages = packages;
@@ -39,9 +45,10 @@ public class AppView extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewAppBinding binding = ViewAppBinding.inflate(inflater, container, false);
-        boolean single = mode == PinSubType.SINGLE || mode == PinSubType.SINGLE_ACTIVITY || mode == PinSubType.SINGLE_ALL_ACTIVITY;
+        single = mode == PinSubType.SINGLE || mode == PinSubType.SINGLE_ACTIVITY || mode == PinSubType.SINGLE_ALL_ACTIVITY || mode == PinSubType.SHARE_ACTIVITY;
         boolean all = mode == PinSubType.SINGLE_ALL_ACTIVITY || mode == PinSubType.MULTI_ALL_ACTIVITY;
         boolean withActivity = mode != PinSubType.SINGLE && mode != PinSubType.MULTI;
+        boolean share = mode == PinSubType.SHARE_ACTIVITY;
         AppRecyclerViewAdapter adapter = new AppRecyclerViewAdapter(packages, result -> {
             if (single) {
                 if (callback != null) {
@@ -50,24 +57,43 @@ public class AppView extends BottomSheetDialogFragment {
                     dismiss();
                 }
             }
-        }, single, all, withActivity);
+        }, single, all, share, withActivity);
         binding.appIconBox.setAdapter(adapter);
-        adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
+        adapter.refreshApps(searchApps());
 
         binding.exchangeButton.setOnClickListener(v -> {
             showSystem = !showSystem;
-            adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
+            adapter.refreshApps(searchApps());
         });
+        binding.exchangeButton.setVisibility(share ? View.GONE : View.VISIBLE);
 
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 searchText = s;
-                adapter.refreshApps(WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single));
+                adapter.refreshApps(searchApps());
             }
         });
 
         return binding.getRoot();
+    }
+
+    private ArrayList<PackageInfo> searchApps() {
+        if (mode == PinSubType.SHARE_ACTIVITY) {
+            ArrayList<PackageInfo> packageList = new ArrayList<>();
+            PackageManager manager = requireContext().getPackageManager();
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("*/*");
+            List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+            for (ResolveInfo info : infoList) {
+                PackageInfo packageInfo = WorldState.getInstance().getPackage(info.activityInfo.packageName);
+                if (packageInfo == null) continue;
+                packageList.add(packageInfo);
+            }
+            return packageList;
+        } else {
+            return WorldState.getInstance().findPackageList(requireContext(), showSystem, searchText, single);
+        }
     }
 
     @Override

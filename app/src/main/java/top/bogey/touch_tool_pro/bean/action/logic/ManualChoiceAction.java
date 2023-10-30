@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
+import top.bogey.touch_tool_pro.bean.action.ActionMorePinInterface;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
@@ -23,27 +24,24 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ManualChoiceFloatView;
 
-public class ManualChoiceAction extends NormalAction {
+public class ManualChoiceAction extends NormalAction implements ActionMorePinInterface {
     private transient Pin outTimePin = new Pin(new PinInteger(60000), R.string.action_wait_condition_logic_subtitle_timeout);
     private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_execute);
-    private final transient ArrayList<Pin> executePins = new ArrayList<>();
 
     public ManualChoiceAction() {
         super(ActionType.LOGIC_MANUAL_CHOICE);
         outTimePin = addPin(outTimePin);
-        executePins.add(outPin);
-        executePins.add(secondPin = addPin(secondPin));
+        secondPin = addPin(secondPin);
         addPin = addPin(addPin);
     }
 
     public ManualChoiceAction(JsonObject jsonObject) {
         super(jsonObject);
         outTimePin = reAddPin(outTimePin);
-        executePins.add(outPin);
-        executePins.add(secondPin = reAddPin(secondPin));
-        executePins.addAll(reAddPin(morePin, 1));
+        secondPin = reAddPin(secondPin);
+        reAddPin(morePin, 1);
         addPin = reAddPin(addPin);
     }
 
@@ -51,9 +49,9 @@ public class ManualChoiceAction extends NormalAction {
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinInteger timeout = (PinInteger) getPinValue(runnable, context, outTimePin);
 
+        ArrayList<Pin> pins = calculateMorePins();
         ArrayList<String> items = new ArrayList<>();
-        for (int i = 0; i < executePins.size(); i++) {
-            Pin executePin = executePins.get(i);
+        for (Pin executePin : pins) {
             Action nextAction = getNextAction(context, executePin);
             if (nextAction != null) {
                 items.add(nextAction.getValidDescription());
@@ -82,12 +80,25 @@ public class ManualChoiceAction extends NormalAction {
             floatView.get().dismiss();
         }
 
-        executeNext(runnable, context, executePins.get(nextIndex.get()));
+        executeNext(runnable, context, pins.get(nextIndex.get()));
     }
 
     private static Action getNextAction(FunctionContext context, Pin pin) {
         Pin linkedPin = pin.getLinkedPin(context);
         if (linkedPin == null) return null;
         return context.getActionById(linkedPin.getActionId());
+    }
+
+    @Override
+    public ArrayList<Pin> calculateMorePins() {
+        ArrayList<Pin> pins = new ArrayList<>();
+        pins.add(outPin);
+        boolean start = false;
+        for (Pin pin : getPins()) {
+            if (pin == secondPin) start = true;
+            if (pin == addPin) start = false;
+            if (start) pins.add(pin);
+        }
+        return pins;
     }
 }

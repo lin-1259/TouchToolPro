@@ -53,6 +53,7 @@ import top.bogey.touch_tool_pro.bean.action.normal.OpenUriAction;
 import top.bogey.touch_tool_pro.bean.action.normal.PlayRingtoneAction;
 import top.bogey.touch_tool_pro.bean.action.normal.RunTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ScreenSwitchAction;
+import top.bogey.touch_tool_pro.bean.action.normal.ShareAction;
 import top.bogey.touch_tool_pro.bean.action.normal.TouchAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosFromIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
@@ -72,13 +73,13 @@ import top.bogey.touch_tool_pro.bean.action.state.BatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.CaptureStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ColorStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.DateStateAction;
+import top.bogey.touch_tool_pro.bean.action.state.GetNodeInfoStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ImageStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.OcrTextStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.state.TimeStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringAddAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringEqualAction;
-import top.bogey.touch_tool_pro.bean.action.state.GetNodeInfoStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringFromValueAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringRegexAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringToIntAction;
@@ -153,6 +154,7 @@ public enum ActionType {
     OPEN_URI,
     PLAY_RINGTONE,
     COPY,
+    SHARE,
     RUN_TASK,
     BREAK_TASK,
 
@@ -182,8 +184,7 @@ public enum ActionType {
     POS_OFFSET,
     POS_IN_AREA,
     POS_TO_AREA,
-    POS_TO_TOUCH
-    ;
+    POS_TO_TOUCH;
 
     public String getTitle() {
         int id = switch (this) {
@@ -245,6 +246,7 @@ public enum ActionType {
             case OPEN_URI -> R.string.action_open_url_action_title;
             case PLAY_RINGTONE -> R.string.action_play_ringtone_action_title;
             case COPY -> R.string.action_copy_action_title;
+            case SHARE -> R.string.action_share_action_title;
             case RUN_TASK -> R.string.action_do_task_action_title;
             case BREAK_TASK -> R.string.action_break_task_action_title;
 
@@ -329,6 +331,7 @@ public enum ActionType {
             case OPEN_URI -> R.drawable.icon_uri;
             case PLAY_RINGTONE -> R.drawable.icon_notification;
             case COPY -> R.drawable.icon_copy;
+            case SHARE -> R.drawable.icon_export;
             case RUN_TASK -> R.drawable.icon_task;
             case BREAK_TASK -> R.drawable.icon_stop;
             default -> 0;
@@ -397,6 +400,7 @@ public enum ActionType {
             case OPEN_URI -> OpenUriAction.class;
             case PLAY_RINGTONE -> PlayRingtoneAction.class;
             case COPY -> CopyToClipboardAction.class;
+            case SHARE -> ShareAction.class;
             case RUN_TASK -> RunTaskAction.class;
             case BREAK_TASK -> BreakTaskAction.class;
 

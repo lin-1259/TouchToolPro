@@ -43,9 +43,9 @@ public class AppUtils {
 
     public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
 
-    public static boolean isDebug(Context context) {
+    public static boolean isRelease(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();
-        return applicationInfo != null && ((applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0);
+        return (applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == 0;
     }
 
     public static void showDialog(Context context, int msg, ResultCallback callback) {
@@ -291,6 +291,7 @@ public class AppUtils {
         try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
             String json = GsonUtils.gson.toJson(functionContexts);
             fileOutputStream.write(json.getBytes());
+            fileOutputStream.flush();
 
             Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".file_provider", file);
             Intent intent = new Intent(Intent.ACTION_SEND);

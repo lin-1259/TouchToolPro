@@ -37,7 +37,6 @@ public class TaskSaveReference extends SaveReference<Task> {
     @Override
     public void set(Task save) {
         super.set(save);
-        this.save = (Task) save.copy();
         classHashSet.clear();
         for (Action action : save.getActions()) {
             if (action instanceof StartAction) {

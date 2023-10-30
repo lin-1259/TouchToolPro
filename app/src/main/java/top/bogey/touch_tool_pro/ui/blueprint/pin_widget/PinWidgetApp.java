@@ -74,6 +74,7 @@ public class PinWidgetApp extends PinWidget<PinApplication> {
             case MULTI -> 3;
             case MULTI_ACTIVITY -> 4;
             case MULTI_ALL_ACTIVITY -> 5;
+            case SHARE_ACTIVITY -> 6;
             default -> 0;
         };
     }
@@ -85,6 +86,7 @@ public class PinWidgetApp extends PinWidget<PinApplication> {
             case 3 -> PinSubType.MULTI;
             case 4 -> PinSubType.MULTI_ACTIVITY;
             case 5 -> PinSubType.MULTI_ALL_ACTIVITY;
+            case 6 -> PinSubType.SHARE_ACTIVITY;
             default -> PinSubType.SINGLE;
         };
     }

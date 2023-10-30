@@ -21,6 +21,9 @@
         <intent>
             <action android:name="android.intent.action.MAIN" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+        </intent>
     </queries>
 
     <application

@@ -6,19 +6,22 @@
     android:layout_height="24dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:clipChildren="false"
+        android:maxWidth="192dp"
+        android:minHeight="24dp"
         app:hintTextAppearance="@style/Theme.TouchTool.TextAppearance.Hint"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editText"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:breakStrategy="simple"
+            android:inputType="text"
             android:maxLines="1"
+            android:minHeight="20dp"
             android:paddingHorizontal="8dp"
             android:paddingVertical="0dp"
             android:textSize="9sp"

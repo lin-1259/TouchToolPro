@@ -27,12 +27,13 @@ public class SettingSave {
 
     private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
     private final static String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";
-    private final static String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";
     private final static String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";
+    private final static String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
     private static final String KEEP_ALIVE = "KEEP_ALIVE";
 
     private static final String SHOW_TOUCH = "SHOW_TOUCH";
+    private static final String SHOW_START = "SHOW_START";
 
     private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
     private static final String FIRST_LOOK_BLUEPRINT = "FIRST_LOOK_BLUEPRINT";
@@ -170,6 +171,15 @@ public class SettingSave {
 
     public void setShowTouch(boolean showTouch) {
         settingMMKV.encode(SHOW_TOUCH, showTouch);
+    }
+
+
+    public boolean isShowStart() {
+        return settingMMKV.decodeBool(SHOW_START, true);
+    }
+
+    public void setShowStart(boolean showStart) {
+        settingMMKV.encode(SHOW_START, showStart);
     }
 
 

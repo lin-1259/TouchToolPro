@@ -113,7 +113,7 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
                     }
                     notifyItemChanged(index);
                 } else {
-                    if (!AppUtils.isDebug(context)) {
+                    if (AppUtils.isRelease(context)) {
                         MainAccessibilityService service = MainApplication.getInstance().getService();
                         if (service == null || !service.isServiceConnected()) {
                             Toast.makeText(context, R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();

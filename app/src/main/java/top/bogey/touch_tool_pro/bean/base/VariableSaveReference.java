@@ -21,10 +21,4 @@ public class VariableSaveReference extends SaveReference<PinValue>{
     public PinValue getOrigin() {
         return (PinValue) GsonUtils.getAsObject(mmkv.decodeString(saveId), PinObject.class, null);
     }
-
-    @Override
-    public void set(PinValue save) {
-        super.set(save);
-        this.save = (PinValue) save.copy();
-    }
 }

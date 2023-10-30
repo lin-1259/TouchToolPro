@@ -93,6 +93,8 @@ public class SettingView extends Fragment {
         binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
         binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
 
+
+
         binding.taskBackupButton.setOnClickListener(v -> {
             HandleFunctionContextView view = new HandleFunctionContextView(requireContext());
             new MaterialAlertDialogBuilder(requireContext())
@@ -122,6 +124,18 @@ public class SettingView extends Fragment {
         binding.showTouchSwitch.setOnClickListener(v -> SettingSave.getInstance().setShowTouch(binding.showTouchSwitch.isChecked()));
         binding.showTouchSwitch.setChecked(SettingSave.getInstance().isShowTouch());
 
+        binding.showTaskSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstShowTask(binding.showTaskSwitch.isChecked()));
+        binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
+
+        binding.lookBlueprintSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstLookBlueprint(binding.lookBlueprintSwitch.isChecked()));
+        binding.lookBlueprintSwitch.setChecked(SettingSave.getInstance().isFirstLookBlueprint());
+
+        binding.startViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setShowStart(binding.startViewVisibleSwitch.isChecked()));
+        binding.startViewVisibleSwitch.setChecked(SettingSave.getInstance().isShowStart());
+
+
+
+
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 View view = group.findViewById(checkedId);
@@ -133,11 +147,8 @@ public class SettingView extends Fragment {
         binding.dynamicColorSwitch.setOnClickListener(v -> SettingSave.getInstance().setDynamicColor(requireContext(), binding.dynamicColorSwitch.isChecked()));
         binding.dynamicColorSwitch.setChecked(SettingSave.getInstance().isDynamicColor());
 
-        binding.showTaskSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstShowTask(binding.showTaskSwitch.isChecked()));
-        binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
 
-        binding.lookBlueprintSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstLookBlueprint(binding.lookBlueprintSwitch.isChecked()));
-        binding.lookBlueprintSwitch.setChecked(SettingSave.getInstance().isFirstLookBlueprint());
+
 
         PackageManager manager = requireContext().getPackageManager();
         try {

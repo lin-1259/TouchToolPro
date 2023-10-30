@@ -25,9 +25,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.Pin;

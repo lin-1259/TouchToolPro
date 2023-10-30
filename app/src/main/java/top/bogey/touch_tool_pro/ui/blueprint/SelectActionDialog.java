@@ -27,6 +27,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.DialogSelectActionBinding;
+import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 
 @SuppressLint("ViewConstructor")
 public class SelectActionDialog extends FrameLayout {
@@ -102,6 +103,27 @@ public class SelectActionDialog extends FrameLayout {
         if (!variables.isEmpty()) {
             variables.sort((o1, o2) -> collator.compare(((VariableInfo) o1).key, ((VariableInfo) o2).key));
             types.put(ActionMap.VARIABLE, variables);
+        }
+
+        ArrayList<Object> cards = new ArrayList<>();
+        layoutView.getCardMap().forEach((id, card) -> {
+            if (matchAction(card.getAction(), pinClass, out)) {
+                cards.add(card);
+            }
+        });
+
+
+        if (!cards.isEmpty()) {
+            cards.sort((o1, o2) -> {
+                ActionCard<?> card1 = (ActionCard<?>) o1;
+                ActionCard<?> card2 = (ActionCard<?>) o2;
+                if (card1.getAction().getY() == card2.getAction().getY()) {
+                    return card2.getAction().getX() - card1.getAction().getX();
+                } else {
+                    return card2.getAction().getY() - card1.getAction().getY();
+                }
+            });
+            types.put(ActionMap.EXIST_CARD, cards);
         }
 
         SelectActionTreeAdapter adapter = new SelectActionTreeAdapter(layoutView, new TreeNodeManager(), types);

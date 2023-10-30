@@ -332,7 +332,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         if (dialog != null) dialog.dismiss();
     }
 
-    private boolean tryLinkDragPin(Action action) {
+    public boolean tryLinkDragPin(Action action) {
         if (dragPin != null) {
             Pin pin = action.getFirstPinByClass(dragPin.getPin().getPinClass(), dragOut);
             if (pin != null) {
@@ -755,6 +755,10 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
 
     public HashMap<ActionType, Action> getTmpActions() {
         return tmpActions;
+    }
+
+    public LinkedHashMap<String, ActionCard<?>> getCardMap() {
+        return cardMap;
     }
 
     public void checkCards() {

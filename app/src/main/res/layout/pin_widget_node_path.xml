@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:breakStrategy="simple"
+            android:inputType="textMultiLine"
             android:maxLines="5"
             android:minHeight="20dp"
             android:paddingHorizontal="8dp"

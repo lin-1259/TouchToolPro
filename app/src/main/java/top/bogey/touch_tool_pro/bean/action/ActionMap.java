@@ -11,6 +11,7 @@ import top.bogey.touch_tool_pro.R;
 public enum ActionMap {
     CUSTOM,
     VARIABLE,
+    EXIST_CARD,
 
     START,
     LOGIC,
@@ -87,6 +88,7 @@ public enum ActionMap {
                     ActionType.OPEN_URI,
                     ActionType.PLAY_RINGTONE,
                     ActionType.COPY,
+                    ActionType.SHARE,
                     ActionType.RUN_TASK,
                     ActionType.BREAK_TASK)
             );

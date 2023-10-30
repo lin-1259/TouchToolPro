@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
@@ -27,6 +28,7 @@ import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
+import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class SelectActionTreeAdapter extends TreeViewAdapter {
@@ -52,6 +54,8 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                     } else {
                         cardLayoutView.addAction(variableInfo.out ? GetVariableValue.class : SetVariableValue.class, variableInfo.key, variableInfo.value);
                     }
+                } else if (node.getValue() instanceof ActionCard<?> card) {
+                    cardLayoutView.tryLinkDragPin(card.getAction());
                 }
                 cardLayoutView.dismissDialog();
             }
@@ -112,6 +116,7 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
             itemBinding.icon.setVisibility(View.VISIBLE);
         }
 
+        @SuppressLint("SetTextI18n")
         public void refreshItem(TreeNode node) {
             int level = node.getLevel();
             if (level == 0) {
@@ -129,11 +134,16 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                     }
                 } else if (node.getValue() instanceof Function function) {
                     itemBinding.title.setText(function.getTitle());
+                    itemBinding.icon.setImageResource(0);
                 } else if (node.getValue() instanceof SelectActionDialog.VariableInfo variableInfo) {
                     itemBinding.title.setText(variableInfo.key);
                     if (variableInfo.from == 1) itemBinding.icon.setImageResource(R.drawable.icon_stop);
                     else if (variableInfo.from == 2) itemBinding.icon.setImageResource(R.drawable.icon_play);
                     else itemBinding.icon.setImageResource(0);
+                } else if (node.getValue() instanceof ActionCard<?> card) {
+                    Action action = card.getAction();
+                    itemBinding.title.setText(action.getTitle() + "(" + action.getX() + "," + action.getY() + ")");
+                    itemBinding.icon.setImageResource(action.getType().getIcon());
                 }
 
                 ViewGroup.LayoutParams params = itemBinding.space.getLayoutParams();
