@@ -29,7 +29,6 @@ import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
-import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class SelectActionTreeAdapter extends TreeViewAdapter {
     private final TreeNodeManager manager;
@@ -145,10 +144,6 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                     itemBinding.title.setText(action.getTitle() + "(" + action.getX() + "," + action.getY() + ")");
                     itemBinding.icon.setImageResource(action.getType().getIcon());
                 }
-
-                ViewGroup.LayoutParams params = itemBinding.space.getLayoutParams();
-                params.width = (int) (DisplayUtils.dp2px(context, 8) * level);
-                itemBinding.space.setLayoutParams(params);
             }
         }
     }

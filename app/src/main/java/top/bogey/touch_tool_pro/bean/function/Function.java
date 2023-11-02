@@ -55,6 +55,21 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         }
     }
 
+    public Function(Function function, FunctionReferenceAction executeAction, FunctionContext outContext) {
+        super(FunctionType.FUNCTION);
+        action = null;
+        parentId = function.getParentId();
+        justCall = function.isJustCall();
+        fastEnd = function.isFastEnd();
+        for (Action act : function.getActions()) {
+            addAction(act);
+        }
+        getVars().putAll(function.getVars());
+
+        this.executeAction = executeAction;
+        this.outContext = outContext;
+    }
+
     public Function newContext(FunctionReferenceAction executeAction, FunctionContext outContext) {
         Function copy = new Function();
         copy.parentId = parentId;
@@ -64,12 +79,7 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         copy.outContext = outContext;
         copy.getActions().clear();
         for (Action action : getActions()) {
-            // 动作引用涉及到运行时环境，所以需要准备新环境
-            if (action instanceof FunctionReferenceAction) {
-                copy.addAction((Action) action.copy());
-            } else {
-                copy.addAction(action);
-            }
+            copy.addAction((Action) action.copy());
         }
         copy.getVars().putAll(getVars());
         return copy;

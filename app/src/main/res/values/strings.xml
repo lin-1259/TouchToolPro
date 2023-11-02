@@ -212,6 +212,7 @@
     <string name="action_time_state_subtitle_hour">时</string>
     <string name="action_time_state_subtitle_minute">分</string>
     <string name="action_time_state_subtitle_second">秒</string>
+    <string name="action_time_state_subtitle_timestamp">时间戳</string>
 
     <string name="action_get_node_info_title">获取控件信息</string>
 

@@ -16,12 +16,14 @@ public class TimeStateAction extends Action {
     private transient Pin hourPin = new Pin(new PinInteger(), R.string.action_time_state_subtitle_hour, true);
     private transient Pin minutePin = new Pin(new PinInteger(), R.string.action_time_state_subtitle_minute, true);
     private transient Pin secondPin = new Pin(new PinInteger(), R.string.action_time_state_subtitle_second, true);
+    private transient Pin timestampPin = new Pin(new PinInteger(), R.string.action_time_state_subtitle_timestamp, true);
 
     public TimeStateAction() {
         super(ActionType.TIME_STATE);
         hourPin = addPin(hourPin);
         minutePin = addPin(minutePin);
         secondPin = addPin(secondPin);
+        timestampPin = addPin(timestampPin);
     }
 
     public TimeStateAction(JsonObject jsonObject) {
@@ -29,6 +31,7 @@ public class TimeStateAction extends Action {
         hourPin = reAddPin(hourPin);
         minutePin = reAddPin(minutePin);
         secondPin = reAddPin(secondPin);
+        timestampPin = reAddPin(timestampPin);
     }
 
     @Override
@@ -38,5 +41,6 @@ public class TimeStateAction extends Action {
         hourPin.getValue(PinInteger.class).setValue(calendar.get(Calendar.HOUR_OF_DAY));
         minutePin.getValue(PinInteger.class).setValue(calendar.get(Calendar.MINUTE));
         secondPin.getValue(PinInteger.class).setValue(calendar.get(Calendar.SECOND));
+        timestampPin.getValue(PinInteger.class).setValue((int) (calendar.getTimeInMillis() / 1000));
     }
 }

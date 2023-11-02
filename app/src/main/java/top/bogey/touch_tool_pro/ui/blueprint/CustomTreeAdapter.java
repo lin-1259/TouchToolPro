@@ -478,9 +478,9 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 TreeNode treeNode = manager.get(index);
                 TreeNodeInfo info = (TreeNodeInfo) treeNode.getValue();
                 if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
-                    cardLayoutView.addAction(GetCommonVariableValue.class, info.key, (PinValue) info.value);
+                    cardLayoutView.addAction(GetCommonVariableValue.class, info.key, (PinValue) info.value.copy());
                 } else {
-                    cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value);
+                    cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value.copy());
                 }
             });
 
@@ -489,9 +489,9 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 TreeNode treeNode = manager.get(index);
                 TreeNodeInfo info = (TreeNodeInfo) treeNode.getValue();
                 if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
-                    cardLayoutView.addAction(SetCommonVariableValue.class, info.key, (PinValue) info.value);
+                    cardLayoutView.addAction(SetCommonVariableValue.class, info.key, (PinValue) info.value.copy());
                 } else {
-                    cardLayoutView.addAction(SetVariableValue.class, info.key, (PinValue) info.value);
+                    cardLayoutView.addAction(SetVariableValue.class, info.key, (PinValue) info.value.copy());
                 }
             });
 

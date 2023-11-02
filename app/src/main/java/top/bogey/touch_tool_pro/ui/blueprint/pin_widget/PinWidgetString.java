@@ -75,11 +75,7 @@ public class PinWidgetString extends PinWidget<PinString> {
                 binding.pickButton.setOnClickListener(v -> {
                     ClipboardManager manager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 
-                    String ttp =
-                            "ttp://do_action?" +
-                                    TASK_ID + "=" + card.getFunctionContext().getId() +
-                                    "&" +
-                                    ACTION_ID + "=" + card.getAction().getId();
+                    String ttp = "ttp://do_action?" + TASK_ID + "=" + card.getFunctionContext().getId() + "&" + ACTION_ID + "=" + card.getAction().getId();
 
                     ClipData clipData = ClipData.newPlainText(context.getString(R.string.app_name), ttp);
                     manager.setPrimaryClip(clipData);
@@ -98,11 +94,7 @@ public class PinWidgetString extends PinWidget<PinString> {
                             intent.putExtra(InstantActivity.INTENT_KEY_DO_ACTION, true);
                             intent.putExtra(TASK_ID, card.getFunctionContext().getId());
                             intent.putExtra(ACTION_ID, card.getAction().getId());
-                            ShortcutInfo shortcut = new ShortcutInfo.Builder(context, card.getAction().getId())
-                                    .setShortLabel(card.getFunctionContext().getTitle())
-                                    .setIcon(Icon.createWithResource(context, R.drawable.icon_shortcut))
-                                    .setIntent(intent)
-                                    .build();
+                            ShortcutInfo shortcut = new ShortcutInfo.Builder(context, card.getAction().getId()).setShortLabel(card.getFunctionContext().getTitle()).setIcon(Icon.createWithResource(context, R.drawable.icon_shortcut)).setIntent(intent).build();
                             shortcutManager.requestPinShortcut(shortcut, null);
                             return;
                         }

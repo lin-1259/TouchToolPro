@@ -43,6 +43,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
     private String currTag;
 
     private final int border;
+    private static final int SCALE = 2;
 
     public PlayFloatView(@NonNull Context context) {
         super(context);
@@ -83,7 +84,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
             binding.closeButton.setIconResource(R.drawable.icon_launcher_mono);
             params.height = Math.round(DisplayUtils.dp2px(getContext(), 32));
             binding.closeButton.setIconSize(params.height);
-            setX((3 * border) * (isInLeft() ? -1 : 1));
+            setX((SCALE * border) * (isInLeft() ? -1 : 1));
         } else {
             binding.buttonBox.setVisibility(VISIBLE);
             binding.nextButton.setVisibility(tags.size() > 1 ? VISIBLE : GONE);
@@ -110,7 +111,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
         boolean expand = SettingSave.getInstance().isPlayViewExpand();
         if (!expand) {
-            PlayFloatView.this.setX((3 * border) * (isInLeft() ? -1 : 1));
+            PlayFloatView.this.setX((SCALE * border) * (isInLeft() ? -1 : 1));
         }
     }
 
@@ -238,7 +239,7 @@ public class PlayFloatView extends FrameLayout implements FloatViewInterface {
 
             boolean expand = SettingSave.getInstance().isPlayViewExpand();
             if (!expand) {
-                PlayFloatView.this.setX((3 * border) * (isInLeft() ? -1 : 1));
+                PlayFloatView.this.setX((SCALE * border) * (isInLeft() ? -1 : 1));
             }
         }
 

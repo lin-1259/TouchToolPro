@@ -28,21 +28,24 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
     private transient Pin outTimePin = new Pin(new PinInteger(60000), R.string.action_wait_condition_logic_subtitle_timeout);
     private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
-    private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_execute);
+    private transient Pin addPin = new Pin(new PinAdd(morePin, 2), R.string.action_subtitle_add_execute);
+    private transient Pin endPin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
 
     public ManualChoiceAction() {
         super(ActionType.LOGIC_MANUAL_CHOICE);
         outTimePin = addPin(outTimePin);
         secondPin = addPin(secondPin);
         addPin = addPin(addPin);
+        endPin = addPin(endPin);
     }
 
     public ManualChoiceAction(JsonObject jsonObject) {
         super(jsonObject);
         outTimePin = reAddPin(outTimePin);
         secondPin = reAddPin(secondPin);
-        reAddPin(morePin, 1);
+        reAddPin(morePin, 2);
         addPin = reAddPin(addPin);
+        endPin = reAddPin(endPin);
     }
 
     @Override
@@ -58,19 +61,15 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
             }
         }
 
-        AtomicInteger nextIndex = new AtomicInteger(0);
+        AtomicInteger nextIndex = new AtomicInteger(-1);
         AtomicReference<ManualChoiceFloatView> floatView = new AtomicReference<>();
 
         KeepAliveFloatView keepView = MainApplication.getInstance().getKeepView();
         if (keepView != null) {
             new Handler(Looper.getMainLooper()).post(() -> {
                 ManualChoiceFloatView view = new ManualChoiceFloatView(keepView.getContext(), items, index -> {
-                    if (index < 0) {
-                        runnable.stop();
-                    } else {
-                        nextIndex.set(index);
-                        runnable.resume();
-                    }
+                    nextIndex.set(index);
+                    runnable.resume();
                 });
                 floatView.set(view);
                 view.show();
@@ -80,7 +79,11 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
             floatView.get().dismiss();
         }
 
-        executeNext(runnable, context, pins.get(nextIndex.get()));
+        if (nextIndex.get() == -1) {
+            executeNext(runnable, context, endPin);
+        } else {
+            executeNext(runnable, context, pins.get(nextIndex.get()));
+        }
     }
 
     private static Action getNextAction(FunctionContext context, Pin pin) {
