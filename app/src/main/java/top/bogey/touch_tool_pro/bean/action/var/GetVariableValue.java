@@ -33,7 +33,7 @@ public class GetVariableValue extends Action {
     public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinValue value = context.findVar(varKey);
         if (value == null) return;
-        valuePin.setValue(value);
+        valuePin.setValue(value.copy());
     }
 
     @Override

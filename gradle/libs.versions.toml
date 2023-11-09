@@ -1,7 +1,7 @@
 [versions]
-agp = "8.1.2"
+agp = "8.1.3"
 
-nav = "2.7.4"
+nav = "2.7.5"
 
 appcompat = "1.6.1"
 material = "1.10.0"

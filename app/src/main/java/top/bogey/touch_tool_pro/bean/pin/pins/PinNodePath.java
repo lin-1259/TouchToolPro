@@ -168,7 +168,7 @@ public class PinNodePath extends PinString {
                     String[] strings = detail.split("\\[");
                     for (String string : strings) {
                         if (string.isEmpty()) continue;
-                        List<String> regexes = Arrays.asList("id=(.+)]", "(\\d+)]", "\\{(\\s*)\\}]");
+                        List<String> regexes = Arrays.asList("id=(.+)]", "(\\d+)]", "\\{(\\S*)\\}]");
                         for (int i = 0; i < regexes.size(); i++) {
                             String regex = regexes.get(i);
                             pattern = Pattern.compile(regex);

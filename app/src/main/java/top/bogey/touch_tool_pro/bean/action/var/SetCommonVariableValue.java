@@ -34,7 +34,7 @@ public class SetCommonVariableValue extends NormalAction {
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         if (isError(context)) return;
         PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
-        SaveRepository.getInstance().setVariable(varKey, value);
+        SaveRepository.getInstance().setVariable(varKey, (PinValue) value.copy());
         executeNext(runnable, context, outPin);
     }
 

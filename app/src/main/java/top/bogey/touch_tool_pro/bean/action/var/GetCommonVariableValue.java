@@ -34,7 +34,7 @@ public class GetCommonVariableValue extends Action {
     public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinValue value = SaveRepository.getInstance().getVariable(varKey);
         if (value == null) return;
-        valuePin.setValue(value);
+        valuePin.setValue(value.copy());
     }
 
     @Override
