@@ -284,6 +284,7 @@ public class PinTouch extends PinScreen {
         TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
     }
 
+    // time;[x.y.t,x.y.t]
     public static class TouchRecord {
         private final int time;
         private final HashSet<PathPoint> points;

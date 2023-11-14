@@ -31,13 +31,11 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     private final PinColor pinColor;
 
     private final FloatPickerColorBinding binding;
-    private MainAccessibilityService service;
-
     private final Paint bitmapPaint;
-    private Bitmap showBitmap;
     private final int[] location = new int[2];
-
     private final Paint markPaint;
+    private MainAccessibilityService service;
+    private Bitmap showBitmap;
     private List<Rect> markArea = new ArrayList<>();
     private int[] color;
 
@@ -82,7 +80,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         postDelayed(() -> {
             EasyFloat.show(tag);
             if (service != null && service.isCaptureEnabled()) {
-                Bitmap bitmap = service.binder.getCurrImage();
+                Bitmap bitmap = service.getCurrImage();
                 if (bitmap != null) {
                     Point size = DisplayUtils.getScreenSize(getContext());
                     if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
@@ -169,11 +167,11 @@ public class ColorPickerFloatView extends BasePickerFloatView {
     }
 
     private void matchColor(int[] color, int currMin, int currMax) {
-        if (service == null || !service.isCaptureEnabled() || service.binder == null) return;
+        if (service == null || !service.isCaptureEnabled()) return;
         this.color = color;
         if (color == null || color.length != 3) return;
 
-        markArea = service.binder.matchColor(showBitmap, color, new Rect(), 5);
+        markArea = DisplayUtils.matchColor(showBitmap, color, new Rect(), 5);
         if (markArea != null && markArea.size() > 0) {
             isMarked = true;
 

@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinTask extends PinValue{
+public class PinTask extends PinValue {
     private String taskId;
     private String startId;
 
@@ -51,13 +51,13 @@ public class PinTask extends PinValue{
         return taskId;
     }
 
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
     public Task getTask() {
         if (taskId == null) return null;
         return SaveRepository.getInstance().getTaskById(taskId);
-    }
-
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
     }
 
     public String getStartId() {

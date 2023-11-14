@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
-public class PinExecute extends PinObject{
+public class PinExecute extends PinObject {
     public PinExecute() {
         super(PinType.EXECUTE);
     }

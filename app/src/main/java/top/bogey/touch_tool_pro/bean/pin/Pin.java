@@ -26,14 +26,13 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class Pin extends IdentityInfo {
+    private final HashMap<String, String> links = new HashMap<>();
+    private final transient HashSet<PinListener> listeners = new HashSet<>();
     private PinObject value;
     private boolean out;
     private boolean removeAble;
-    private final HashMap<String, String> links = new HashMap<>();
-
     private transient String actionId;
     private transient int titleId;
-    private final transient HashSet<PinListener> listeners = new HashSet<>();
 
     public Pin(PinObject value) {
         this(value, 0);
@@ -197,14 +196,14 @@ public class Pin extends IdentityInfo {
         return value;
     }
 
-    public <T extends PinObject> T getValue(Class<T> tClass) {
-        return tClass.cast(value);
-    }
-
     public void setValue(PinObject value) {
         if (value == null) return;
         this.value = value;
         listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onValueChanged(value));
+    }
+
+    public <T extends PinObject> T getValue(Class<T> tClass) {
+        return tClass.cast(value);
     }
 
     public boolean isOut() {

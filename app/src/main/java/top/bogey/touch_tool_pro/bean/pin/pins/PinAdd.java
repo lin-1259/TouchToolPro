@@ -9,7 +9,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinAdd extends PinObject{
+public class PinAdd extends PinObject {
     private final Pin pin;
     private int offset = 1;
 

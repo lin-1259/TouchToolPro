@@ -11,7 +11,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
-public class OpenUriAction extends NormalAction{
+public class OpenUriAction extends NormalAction {
     private transient Pin uriPin = new Pin(new PinString(), R.string.action_open_url_action_subtitle_url);
 
     public OpenUriAction() {

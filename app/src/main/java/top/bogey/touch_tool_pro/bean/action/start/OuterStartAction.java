@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class OuterStartAction extends StartAction{
+public class OuterStartAction extends StartAction {
     private transient Pin urlPin = new Pin(new PinString(PinSubType.URL), R.string.action_outer_start_subtitle_url);
     private transient Pin shortcutPin = new Pin(new PinString(PinSubType.SHORTCUT), R.string.action_outer_start_subtitle_shortcut);
 

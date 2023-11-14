@@ -49,7 +49,8 @@ public class PinArea extends PinScreen {
                 area.right = Integer.parseInt(Objects.requireNonNull(matcher.group(3)));
                 area.bottom = Integer.parseInt(Objects.requireNonNull(matcher.group(4)));
                 return true;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return false;
     }

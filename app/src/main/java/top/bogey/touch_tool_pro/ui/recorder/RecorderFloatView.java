@@ -162,6 +162,11 @@ public class RecorderFloatView extends BasePickerFloatView {
         });
     }
 
+    private static void addLink(Pin pin1, Pin pin2) {
+        pin1.addLink(pin2);
+        pin2.addLink(pin1);
+    }
+
     private int getDelay() {
         if (delayStartTime == 0) return 0;
         return (int) (System.currentTimeMillis() - delayStartTime);
@@ -314,11 +319,6 @@ public class RecorderFloatView extends BasePickerFloatView {
         return index;
     }
 
-    private static void addLink(Pin pin1, Pin pin2) {
-        pin1.addLink(pin2);
-        pin2.addLink(pin1);
-    }
-
     @Override
     public void show() {
         if (EasyFloat.getView(tag) != null) {
@@ -347,7 +347,7 @@ public class RecorderFloatView extends BasePickerFloatView {
 
             Pin delayPin = delayAction.getDelayPin();
             delayPin.getValue(PinValueArea.class).setLow(delay);
-             delayPin.getValue(PinValueArea.class).setHigh(delay);
+            delayPin.getValue(PinValueArea.class).setHigh(delay);
 
             addLink(delayAction.getOutPin(), inPin);
             inPin = delayAction.getInPin();

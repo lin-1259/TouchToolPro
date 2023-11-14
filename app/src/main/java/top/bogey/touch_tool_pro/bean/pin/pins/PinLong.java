@@ -9,7 +9,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinLong extends PinNumber<Long>{
+public class PinLong extends PinNumber<Long> {
 
     public PinLong() {
         super(PinType.LONG, 0L);

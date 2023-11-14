@@ -32,28 +32,25 @@ import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
 public class FunctionView extends Fragment implements TaskSaveChangedListener, FunctionSaveChangedListener {
-    private ViewFunctionBinding binding;
-    private FunctionListRecyclerViewAdapter adapter;
-
-    private final LinkedHashMap<String, String> taskTitleMap = new LinkedHashMap<>();
     final HashMap<String, Function> selectedFunctions = new HashMap<>();
+    private final LinkedHashMap<String, String> taskTitleMap = new LinkedHashMap<>();
     Task task;
     boolean isSelect = false;
-
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
-            unSelectAll();
-            hideBottomBar();
-        }
-    };
+    private ViewFunctionBinding binding;
+    private FunctionListRecyclerViewAdapter adapter;
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         SaveRepository.getInstance().removeTaskListener(this);
         SaveRepository.getInstance().removeFunctionListener(this);
-    }
+    }    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            unSelectAll();
+            hideBottomBar();
+        }
+    };
 
     @Nullable
     @Override
@@ -298,4 +295,6 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
     public void onRemoved(Task value) {
         reCalculateTags();
     }
+
+
 }

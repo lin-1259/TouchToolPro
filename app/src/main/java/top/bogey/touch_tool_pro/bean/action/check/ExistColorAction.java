@@ -19,6 +19,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class ExistColorAction extends CheckAction {
     private transient Pin colorPin = new Pin(new PinColor(), R.string.pin_color);
@@ -59,7 +60,7 @@ public class ExistColorAction extends CheckAction {
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         PinInteger offset = (PinInteger) getPinValue(runnable, context, offsetPin);
-        List<Rect> rectList = service.binder.matchColor(color.getColor(), area.getArea(service), offset.getValue());
+        List<Rect> rectList = DisplayUtils.matchColor(service.getCurrImage(), color.getColor(), area.getArea(service), offset.getValue());
         if (rectList == null || rectList.isEmpty()) return;
 
         result.setBool(true);

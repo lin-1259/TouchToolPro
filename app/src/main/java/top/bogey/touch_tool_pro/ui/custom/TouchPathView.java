@@ -19,10 +19,9 @@ import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class TouchPathView extends View {
     private final HashSet<ArrayList<Point>> paths = new HashSet<>();
-
-    private Paint paint;
     private final Point size = new Point();
     private final int lineWidth = 5;
+    private Paint paint;
     private boolean isInit = true;
 
     public TouchPathView(Context context) {
@@ -94,8 +93,7 @@ public class TouchPathView extends View {
             if (!init) {
                 area.set(rect);
                 init = true;
-            }
-            else {
+            } else {
                 area.left = Math.min(rect.left, area.left);
                 area.right = Math.max(rect.right, area.right);
                 area.top = Math.min(rect.top, area.top);

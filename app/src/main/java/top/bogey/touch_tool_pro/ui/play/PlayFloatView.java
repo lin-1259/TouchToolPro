@@ -35,15 +35,13 @@ import top.bogey.touch_tool_pro.utils.easy_float.SidePattern;
 
 @SuppressLint("ViewConstructor")
 public class PlayFloatView extends FrameLayout implements FloatViewInterface {
-    private final FloatPlayBinding binding;
-    private boolean clickFirst = false;
-
-    private LinkedHashMap<ManualStartAction, Task> manualStartActions;
-    private final ArrayList<String> tags = new ArrayList<>();
-    private String currTag;
-
-    private final int border;
     private static final int SCALE = 2;
+    private final FloatPlayBinding binding;
+    private final ArrayList<String> tags = new ArrayList<>();
+    private final int border;
+    private boolean clickFirst = false;
+    private LinkedHashMap<ManualStartAction, Task> manualStartActions;
+    private String currTag;
 
     public PlayFloatView(@NonNull Context context) {
         super(context);

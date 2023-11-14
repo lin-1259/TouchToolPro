@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 
-public class PinValue extends PinObject{
+public class PinValue extends PinObject {
     public PinValue() {
         this(PinType.VALUE);
     }

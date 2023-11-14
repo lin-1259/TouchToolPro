@@ -27,17 +27,14 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class Action extends IdentityInfo implements ActionInterface, ActionExecuteInterface {
+    protected final transient ArrayList<Pin> tmpPins = new ArrayList<>();
+    protected final transient ArrayList<ActionListener> listeners = new ArrayList<>();
     private final ActionType type;
-
     private final ArrayList<Pin> pins = new ArrayList<>();
-
+    public transient boolean needCapture = false;
     private int x;
     private int y;
     private boolean expand = true;
-
-    protected final transient ArrayList<Pin> tmpPins = new ArrayList<>();
-    protected final transient ArrayList<ActionListener> listeners = new ArrayList<>();
-    public transient boolean needCapture = false;
 
     public Action() {
         this(ActionType.BASE);
@@ -274,6 +271,21 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         return type;
     }
 
+    public static class ActionDeserializer implements JsonDeserializer<Action> {
+        @Override
+        public Action deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject jsonObject = json.getAsJsonObject();
+            ActionType type = GsonUtils.getAsObject(jsonObject, "type", ActionType.class, ActionType.BASE);
+            Class<? extends Action> actionClass = type.getActionClass();
+            try {
+                Constructor<? extends Action> constructor = actionClass.getConstructor(JsonObject.class);
+                return constructor.newInstance(jsonObject);
+            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     private class ActionPinListener implements PinListener {
         private final Pin pin;
 
@@ -299,21 +311,6 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         @Override
         public void onTitleChanged(String title) {
             listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onPinChanged(pin));
-        }
-    }
-
-    public static class ActionDeserializer implements JsonDeserializer<Action> {
-        @Override
-        public Action deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            JsonObject jsonObject = json.getAsJsonObject();
-            ActionType type = GsonUtils.getAsObject(jsonObject, "type", ActionType.class, ActionType.BASE);
-            Class<? extends Action> actionClass = type.getActionClass();
-            try {
-                Constructor<? extends Action> constructor = actionClass.getConstructor(JsonObject.class);
-                return constructor.newInstance(jsonObject);
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }

@@ -17,10 +17,10 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class RandomAction extends NormalAction implements ActionMorePinInterface {
-    private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
+    private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
     protected transient Pin timesPin = new Pin(new PinInteger(1), R.string.action_random_logic_subtitle_times);
     protected transient Pin repeatPin = new Pin(new PinBoolean(false), R.string.action_random_logic_subtitle_repeat);
-    private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
+    private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin, 2), R.string.action_subtitle_add_execute, true);
     private transient Pin completePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
 

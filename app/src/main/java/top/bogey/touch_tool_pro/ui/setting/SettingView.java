@@ -3,6 +3,7 @@ package top.bogey.touch_tool_pro.ui.setting;
 import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,18 +32,18 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 public class SettingView extends Fragment {
     private ViewSettingBinding binding;
 
-    @Override
-    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-        resetSwitchState();
-    }
-
     public static void resetSwitchState() {
         MainActivity activity = MainApplication.getInstance().getMainActivity();
         if (activity == null) return;
         SettingView currFragment = activity.getCurrFragment(SettingView.class);
         if (currFragment == null) return;
         currFragment.refreshSwitchState();
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        resetSwitchState();
     }
 
     public void refreshSwitchState() {
@@ -57,6 +58,11 @@ public class SettingView extends Fragment {
         binding = ViewSettingBinding.inflate(inflater, container, false);
 
         binding.playViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setPlayViewVisible(binding.playViewVisibleSwitch.isChecked()));
+        binding.resetPlayViewPos.setOnClickListener(v -> {
+            SettingSave.getInstance().setPlayViewPosition(new Point());
+            SettingSave.getInstance().setChoiceViewPosition(new Point());
+            Toast.makeText(getContext(), R.string.task_setting_play_view_visible_reset, Toast.LENGTH_SHORT).show();
+        });
         binding.showPackageInfoSwitch.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service == null || !service.isServiceEnabled()) {
@@ -92,7 +98,6 @@ public class SettingView extends Fragment {
 
         binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
         binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
-
 
 
         binding.taskBackupButton.setOnClickListener(v -> {
@@ -134,8 +139,6 @@ public class SettingView extends Fragment {
         binding.startViewVisibleSwitch.setChecked(SettingSave.getInstance().isShowStart());
 
 
-
-
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 View view = group.findViewById(checkedId);
@@ -148,8 +151,6 @@ public class SettingView extends Fragment {
         binding.dynamicColorSwitch.setChecked(SettingSave.getInstance().isDynamicColor());
 
 
-
-
         PackageManager manager = requireContext().getPackageManager();
         try {
             PackageInfo packageInfo = manager.getPackageInfo(requireContext().getPackageName(), 0);
@@ -158,8 +159,8 @@ public class SettingView extends Fragment {
             e.printStackTrace();
         }
 
-        binding.updateButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=U_kZLwSTyLm3X-2bpVQiRqGJ-5i7cUwu&authKey=gu%2FK7YV87TVtmj50KuSer%2BRXdrfB330UxcHpL6ZmUXEkxZ2joJR%2FMHK21ms8Y5QK&noverify=0&group_code=529463048"));
-        binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://github.com/mr-bogey/TouchToolPro"));
+        binding.updateButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), getString(R.string.app_info_join_qq_url)));
+        binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), getString(R.string.app_info_join_github_url)));
 
         binding.thankButton.setOnClickListener(v -> AppUtils.showDialog(getContext(), R.string.app_info_setting_thank_text, null));
 

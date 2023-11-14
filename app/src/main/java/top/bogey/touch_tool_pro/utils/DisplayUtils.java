@@ -1,5 +1,6 @@
 package top.bogey.touch_tool_pro.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class DisplayUtils {
     public static int getAttrColor(Context context, int id, int defValue) {
@@ -57,6 +60,7 @@ public class DisplayUtils {
         return 0;
     }
 
+    @SuppressLint({"InternalInsetResource", "DiscouragedApi"})
     public static int getStatusBarHeight(Context context) {
         int id = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
         if (id > 0) return context.getResources().getDimensionPixelSize(id);
@@ -110,12 +114,60 @@ public class DisplayUtils {
         height = Math.min(height, bitmapHeight - y);
         try {
             return Bitmap.createBitmap(bitmap, x, y, width, height);
-        } catch (OutOfMemoryError ignored) {
+        } catch (Throwable ignored) {
             return null;
         }
     }
 
     public static Bitmap safeCreateBitmap(Bitmap bitmap, Rect rect) {
         return safeCreateBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height());
+    }
+
+    public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp);
+
+    public static synchronized Rect matchImage(Bitmap sourceBitmap, Bitmap matchBitmap, int matchValue, Rect area) {
+        if (sourceBitmap == null || matchBitmap == null) return null;
+
+        Bitmap bitmap = null;
+        if (!(area.isEmpty())) {
+            sourceBitmap = safeCreateBitmap(sourceBitmap, area);
+            bitmap = sourceBitmap;
+            if (bitmap == null) return null;
+        }
+
+        MatchResult matchResult = nativeMatchTemplate(sourceBitmap, matchBitmap);
+        if (bitmap != null) bitmap.recycle();
+
+        if (Math.min(100, matchValue) > matchResult.value) return null;
+        matchResult.rect.offset(area.left, area.top);
+        return matchResult.rect;
+    }
+
+    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
+
+    public static synchronized List<Rect> matchColor(Bitmap sourceBitmap, int[] color, Rect area, int offset) {
+        if (sourceBitmap == null) return null;
+
+        Bitmap bitmap = null;
+        if (!(area.isEmpty())) {
+            sourceBitmap = safeCreateBitmap(sourceBitmap, area);
+            bitmap = sourceBitmap;
+            if (bitmap == null) return null;
+        }
+
+        List<MatchResult> matchResults = nativeMatchColor(sourceBitmap, color, offset);
+        if (bitmap != null) bitmap.recycle();
+
+        if (matchResults != null) {
+            matchResults.sort(Comparator.comparingInt(MatchResult::getValue));
+            List<Rect> rectList = new ArrayList<>();
+            for (int i = matchResults.size() - 1; i >= 0; i--) {
+                MatchResult matchResult = matchResults.get(i);
+                matchResult.rect.offset(area.left, area.top);
+                rectList.add(matchResult.rect);
+            }
+            return rectList;
+        }
+        return null;
     }
 }

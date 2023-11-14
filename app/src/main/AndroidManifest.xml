@@ -14,12 +14,18 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
     <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
 
     <queries>
         <intent>
             <action android:name="android.intent.action.MAIN" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
         </intent>
         <intent>
             <action android:name="android.intent.action.SEND" />
@@ -60,7 +66,7 @@
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.TouchTool.Transparent"/>
+            android:theme="@style/Theme.TouchTool.Transparent" />
 
         <activity
             android:name=".ui.MainActivity"
@@ -80,10 +86,10 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
 
-                <data android:scheme="content"/>
-                <data android:pathPattern=".*\\.ttp"/>
-                <data android:pathPattern=".*\\.apk\\.*"/>
-                <data android:mimeType="*/*"/>
+                <data android:scheme="content" />
+                <data android:pathPattern=".*\\.ttp" />
+                <data android:pathPattern=".*\\.apk\\.*" />
+                <data android:mimeType="*/*" />
             </intent-filter>
 
             <intent-filter>

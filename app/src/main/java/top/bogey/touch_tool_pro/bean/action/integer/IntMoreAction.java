@@ -15,10 +15,10 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public abstract class IntMoreAction extends Action implements ActionMorePinInterface {
+    private final transient Pin morePin = new Pin(new PinInteger(), R.string.pin_int);
     protected transient Pin resultPin = new Pin(new PinInteger(), R.string.pin_int, true);
     private transient Pin firstPin = new Pin(new PinInteger(), R.string.pin_int);
     private transient Pin secondPin = new Pin(new PinInteger(), R.string.pin_int);
-    private final transient Pin morePin = new Pin(new PinInteger(), R.string.pin_int);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_pin);
 
     public IntMoreAction(ActionType type) {

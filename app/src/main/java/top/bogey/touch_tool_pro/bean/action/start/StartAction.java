@@ -13,10 +13,10 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinSpinner;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public abstract class StartAction extends Action {
+    protected transient Pin breakPin = new Pin(new PinBoolean(false), R.string.action_start_subtitle_break);
     private transient Pin executePin = new Pin(new PinExecute(), R.string.action_subtitle_execute, true);
     private transient Pin enablePin = new Pin(new PinBoolean(true), R.string.action_start_subtitle_enable);
     private transient Pin restartPin = new Pin(new PinSpinner(R.array.restart_type), R.string.action_start_subtitle_restart);
-    protected transient Pin breakPin = new Pin(new PinBoolean(false), R.string.action_start_subtitle_break);
 
     public StartAction(ActionType type) {
         super(type);

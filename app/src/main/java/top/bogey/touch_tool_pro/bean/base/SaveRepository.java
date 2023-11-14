@@ -29,22 +29,16 @@ import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class SaveRepository {
-    private static SaveRepository repository;
-
-    private final Handler handler;
-
     public final static String SHORTCUT_TAG = MainApplication.getInstance().getString(R.string.tag_shortcut);
     public final static String NO_TAG = MainApplication.getInstance().getString(R.string.tag_no);
-
     private final static MMKV taskMMKV = MMKV.mmkvWithID("TASK_DB", MMKV.SINGLE_PROCESS_MODE);
     private final static MMKV functionMMKV = MMKV.mmkvWithID("FUNCTION_DB", MMKV.SINGLE_PROCESS_MODE);
     private final static MMKV variableMMKV = MMKV.mmkvWithID("VARIABLE_DB", MMKV.SINGLE_PROCESS_MODE);
-
     private final static MMKV loggerMMKV = MMKV.mmkvWithID("LOG_DB", MMKV.MULTI_PROCESS_MODE);
-
     private final static MMKV taskTagsMMKV = MMKV.mmkvWithID("TASK_TAGS", MMKV.SINGLE_PROCESS_MODE);
     private final static MMKV functionTagsMMKV = MMKV.mmkvWithID("FUNCTION_TAGS", MMKV.SINGLE_PROCESS_MODE);
-
+    private static SaveRepository repository;
+    private final Handler handler;
     private final LinkedHashMap<String, TaskSaveReference> tasks = new LinkedHashMap<>();
     private final HashSet<TaskSaveChangedListener> taskListeners = new HashSet<>();
 
@@ -62,18 +56,18 @@ public class SaveRepository {
         readAllVariables();
     }
 
-    private void check() {
-        tasks.forEach((taskId, taskReference) -> taskReference.check());
-        functions.forEach((functionId, functionReference) -> functionReference.check());
-        variables.forEach((variableKey, variableReference) -> variableReference.check());
-        handler.postDelayed(this::check, 5 * 60 * 1000);
-    }
-
     public static SaveRepository getInstance() {
         if (repository == null) {
             repository = new SaveRepository();
         }
         return repository;
+    }
+
+    private void check() {
+        tasks.forEach((taskId, taskReference) -> taskReference.check());
+        functions.forEach((functionId, functionReference) -> functionReference.check());
+        variables.forEach((variableKey, variableReference) -> variableReference.check());
+        handler.postDelayed(this::check, 5 * 60 * 1000);
     }
 
     //----------------------------------------------- 任务 ------------------------------------------------

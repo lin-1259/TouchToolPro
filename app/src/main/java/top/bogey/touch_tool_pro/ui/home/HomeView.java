@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.LayoutInflater;
@@ -164,6 +165,11 @@ public class HomeView extends Fragment {
             manager.setPrimaryClip(clipData);
             Toast.makeText(requireContext(), R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.space.setVisibility(View.GONE);
+            binding.captureServiceButton.setVisibility(View.GONE);
+        }
 
         return binding.getRoot();
     }

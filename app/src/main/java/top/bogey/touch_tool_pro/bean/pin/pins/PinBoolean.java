@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinBoolean extends PinValue{
+public class PinBoolean extends PinValue {
     private boolean bool = false;
 
     public PinBoolean() {

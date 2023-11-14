@@ -15,8 +15,8 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class SequenceAction extends NormalAction implements ActionMorePinInterface {
-    private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
+    private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_execute, true);
 
     public SequenceAction() {

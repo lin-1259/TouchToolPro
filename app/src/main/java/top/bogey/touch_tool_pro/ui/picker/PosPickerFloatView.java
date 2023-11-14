@@ -20,13 +20,10 @@ public class PosPickerFloatView extends BasePickerFloatView {
     private final FloatPickerPosBinding binding;
 
     private final Point point;
-
-    int[] location = new int[2];
-
     private final Paint paint;
-    private boolean isMarked;
-
     private final int padding;
+    int[] location = new int[2];
+    private boolean isMarked;
     private boolean isInit = true;
 
     public PosPickerFloatView(@NonNull Context context, PickerCallback callback, PinPoint pinPoint) {

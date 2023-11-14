@@ -25,9 +25,9 @@ import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ManualChoiceFloatView;
 
 public class ManualChoiceAction extends NormalAction implements ActionMorePinInterface {
+    private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin outTimePin = new Pin(new PinInteger(60000), R.string.action_wait_condition_logic_subtitle_timeout);
     private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
-    private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin, 2), R.string.action_subtitle_add_execute);
     private transient Pin endPin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
 
@@ -46,6 +46,12 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
         reAddPin(morePin, 2);
         addPin = reAddPin(addPin);
         endPin = reAddPin(endPin);
+    }
+
+    private static Action getNextAction(FunctionContext context, Pin pin) {
+        Pin linkedPin = pin.getLinkedPin(context);
+        if (linkedPin == null) return null;
+        return context.getActionById(linkedPin.getActionId());
     }
 
     @Override
@@ -84,12 +90,6 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
         } else {
             executeNext(runnable, context, pins.get(nextIndex.get()));
         }
-    }
-
-    private static Action getNextAction(FunctionContext context, Pin pin) {
-        Pin linkedPin = pin.getLinkedPin(context);
-        if (linkedPin == null) return null;
-        return context.getActionById(linkedPin.getActionId());
     }
 
     @Override

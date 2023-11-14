@@ -82,7 +82,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             if (service != null && service.isCaptureEnabled()) {
                 EasyFloat.hide(tag);
                 postDelayed(() -> {
-                    List<Rect> rectList = service.binder.matchColor(pinColor.getColor(), new Rect(), 5);
+                    List<Rect> rectList = DisplayUtils.matchColor(service.getCurrImage(), pinColor.getColor(), new Rect(), 5);
                     if (rectList != null && rectList.size() > 0) {
                         Rect rect = rectList.get(0);
                         service.runGesture(rect.centerX(), rect.centerY(), 100, null);
@@ -103,7 +103,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
         binding.matchButton.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service != null && service.isCaptureEnabled()) {
-                Rect rect = service.binder.matchImage(pinImage.getImage(context), match[0], new Rect(), false);
+                Rect rect = DisplayUtils.matchImage(service.getCurrImage(), pinImage.getImage(context), match[0], new Rect());
                 if (rect != null) {
                     service.runGesture(rect.centerX(), rect.centerY(), 100, null);
                     service.showTouch(rect.centerX(), rect.centerY());

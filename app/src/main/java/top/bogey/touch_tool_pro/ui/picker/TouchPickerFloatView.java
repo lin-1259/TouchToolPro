@@ -28,20 +28,16 @@ public class TouchPickerFloatView extends BasePickerFloatView {
     private final FloatPickerTouchBinding binding;
 
     private final ArrayList<PinTouch.TouchRecord> records;
-    private PinTouch.TouchAnchor anchor;
-    private long lastTime;
     private final Handler handler;
-
-    private float lastX = 0;
-    private float lastY = 0;
-
-    int[] location = new int[2];
-
     private final Paint paint;
     private final Rect realArea = new Rect();
-    private boolean isMarked;
-
     private final int padding;
+    int[] location = new int[2];
+    private PinTouch.TouchAnchor anchor;
+    private long lastTime;
+    private float lastX = 0;
+    private float lastY = 0;
+    private boolean isMarked;
     private boolean isInit = true;
 
     private boolean isClick = false;

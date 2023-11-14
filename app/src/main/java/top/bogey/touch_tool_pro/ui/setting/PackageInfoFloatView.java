@@ -26,15 +26,6 @@ public class PackageInfoFloatView extends FrameLayout implements FloatViewInterf
     private boolean isToBottom = false;
     private boolean isToTop = true;
 
-    @Override
-    protected void onDetachedFromWindow() {
-        MainAccessibilityService service = MainApplication.getInstance().getService();
-        if (service != null) {
-            service.removeEnterListener(this);
-        }
-        super.onDetachedFromWindow();
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     public PackageInfoFloatView(@NonNull Context context) {
         super(context);
@@ -76,6 +67,15 @@ public class PackageInfoFloatView extends FrameLayout implements FloatViewInterf
         if (service != null) {
             service.addEnterListener(this);
         }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) {
+            service.removeEnterListener(this);
+        }
+        super.onDetachedFromWindow();
     }
 
     private void checkPosition(float nowY) {

@@ -19,9 +19,8 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class FunctionReferenceAction extends Action {
-    private String parentId;
     private final String functionId;
-
+    private String parentId;
     private transient Function function;
 
     private transient boolean synced = false;

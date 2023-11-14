@@ -15,7 +15,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
-public class OpenAppAction extends NormalAction{
+public class OpenAppAction extends NormalAction {
     private transient Pin appPin = new Pin(new PinApplication(PinSubType.SINGLE_ACTIVITY), R.string.pin_app);
 
     public OpenAppAction() {

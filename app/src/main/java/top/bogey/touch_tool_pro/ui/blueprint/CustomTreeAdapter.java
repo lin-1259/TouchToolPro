@@ -231,12 +231,53 @@ public class CustomTreeAdapter extends TreeViewAdapter {
         return functionContext;
     }
 
+    private enum TreeNodeType {
+        TYPE, SUBTYPE, NODE
+    }
+
+    private enum TreeNodeSubtype {
+        COMMON_FUNCTION, FUNCTION, COMMON_ATTR, ATTR, FUNCTION_ATTR
+    }
+
+    private static class TreeNodeInfo {
+        // 类型
+        private final TreeNodeType type;
+        private final TreeNodeSubtype subType;
+        // 变量名或方法id
+        private String key;
+        // 变量对象
+        private PinObject value;
+        // 方法名
+        private String title;
+
+
+        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String key, PinObject value) {
+            this.type = type;
+            this.subType = subType;
+            this.key = key;
+            this.value = value;
+        }
+
+        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String key, String title) {
+            this.type = type;
+            this.subType = subType;
+            this.key = key;
+            this.title = title;
+        }
+
+        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String title) {
+            this.type = type;
+            this.subType = subType;
+            this.title = title;
+        }
+    }
+
     protected class ViewHolder extends TreeViewHolder {
+        private final Context context;
         private ViewCardListTypeItemBinding typeBinding;
         private ViewCardListSubtypeItemBinding subtypeBinding;
         private ViewCardListItemBinding itemBinding;
         private ViewCardListAttrItemBinding attrBinding;
-        private final Context context;
 
         public ViewHolder(@NonNull ViewCardListTypeItemBinding binding) {
             super(binding.getRoot());
@@ -584,47 +625,6 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 params.width = (int) (DisplayUtils.dp2px(context, 8) * level);
                 space.setLayoutParams(params);
             }
-        }
-    }
-
-    private enum TreeNodeType {
-        TYPE, SUBTYPE, NODE
-    }
-
-    private enum TreeNodeSubtype {
-        COMMON_FUNCTION, FUNCTION, COMMON_ATTR, ATTR, FUNCTION_ATTR
-    }
-
-    private static class TreeNodeInfo {
-        // 类型
-        private final TreeNodeType type;
-        private final TreeNodeSubtype subType;
-        // 变量名或方法id
-        private String key;
-        // 变量对象
-        private PinObject value;
-        // 方法名
-        private String title;
-
-
-        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String key, PinObject value) {
-            this.type = type;
-            this.subType = subType;
-            this.key = key;
-            this.value = value;
-        }
-
-        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String key, String title) {
-            this.type = type;
-            this.subType = subType;
-            this.key = key;
-            this.title = title;
-        }
-
-        public TreeNodeInfo(TreeNodeType type, TreeNodeSubtype subType, String title) {
-            this.type = type;
-            this.subType = subType;
-            this.title = title;
         }
     }
 }

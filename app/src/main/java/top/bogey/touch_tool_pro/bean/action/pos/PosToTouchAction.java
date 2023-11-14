@@ -18,10 +18,10 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArea;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class PosToTouchAction extends Action implements ActionMorePinInterface {
+    private final transient Pin morePin = new Pin(new PinPoint(), R.string.pin_point);
     private transient Pin touchPin = new Pin(new PinTouch(), R.string.pin_touch, true);
     private transient Pin firstPin = new Pin(new PinPoint(), R.string.pin_point);
     private transient Pin secondPin = new Pin(new PinPoint(), R.string.pin_point);
-    private final transient Pin morePin = new Pin(new PinPoint(), R.string.pin_point);
     private transient Pin addPin = new Pin(new PinAdd(morePin, 2), R.string.action_subtitle_add_pin, true);
     private transient Pin timePin = new Pin(new PinValueArea(10, 60000, 10, 300, 300), R.string.action_position_to_touch_subtitle_time);
 
@@ -59,6 +59,7 @@ public class PosToTouchAction extends Action implements ActionMorePinInterface {
         }
         touchPin.getValue(PinTouch.class).setRecords(instance, records);
     }
+
     @Override
     public ArrayList<Pin> calculateMorePins() {
         ArrayList<Pin> pins = new ArrayList<>();

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.databinding.FloatManualChoiceExecuteBinding;
 import top.bogey.touch_tool_pro.ui.picker.FloatBaseCallback;
-import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 import top.bogey.touch_tool_pro.utils.easy_float.FloatGravity;

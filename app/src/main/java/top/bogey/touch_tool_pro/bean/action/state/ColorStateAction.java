@@ -43,7 +43,7 @@ public class ColorStateAction extends Action {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (!service.isCaptureEnabled()) return;
 
-        Bitmap image = service.binder.getCurrImage();
+        Bitmap image = service.getCurrImage();
         if (image == null) return;
 
         PinPoint pos = (PinPoint) getPinValue(runnable, context, posPin);

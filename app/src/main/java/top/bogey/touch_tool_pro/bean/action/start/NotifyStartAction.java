@@ -16,7 +16,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
-public class NotifyStartAction extends StartAction{
+public class NotifyStartAction extends StartAction {
     private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI), R.string.pin_app);
     private transient Pin matchPin = new Pin(new PinString(), R.string.action_notification_start_subtitle_text);
     private transient Pin noticePin = new Pin(new PinString(), R.string.action_notification_start_subtitle_notice, true);

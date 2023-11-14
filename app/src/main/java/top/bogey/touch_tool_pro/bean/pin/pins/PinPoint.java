@@ -14,7 +14,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinPoint extends PinScreen{
+public class PinPoint extends PinScreen {
     private int x;
     private int y;
 
@@ -49,7 +49,8 @@ public class PinPoint extends PinScreen{
                 x = Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
                 y = Integer.parseInt(Objects.requireNonNull(matcher.group(2)));
                 return true;
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return false;
     }

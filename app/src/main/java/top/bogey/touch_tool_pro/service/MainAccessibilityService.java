@@ -11,7 +11,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.graphics.Path;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -20,6 +22,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -35,9 +38,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -65,23 +71,20 @@ import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class MainAccessibilityService extends AccessibilityService {
-    private SystemEventReceiver systemEventReceiver;
-
     // 服务
     public static final MutableLiveData<Boolean> serviceConnected = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
-
     // 截屏
     public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
-    public MainCaptureService.CaptureServiceBinder binder = null;
-    private ServiceConnection connection = null;
-    public ResultCallback captureResultCallback;
-
     // 任务
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 30, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final HashSet<EnterActivityListener> enterActivityListeners = new HashSet<>();
+    public ResultCallback captureResultCallback;
+    private SystemEventReceiver systemEventReceiver;
+    private MainCaptureService.CaptureServiceBinder binder = null;
+    private ServiceConnection connection = null;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -163,6 +166,7 @@ public class MainAccessibilityService extends AccessibilityService {
         SettingSave.getInstance().setServiceEnabled(enabled);
 
         if (isServiceEnabled()) {
+            WorldState.getInstance().resetAppMap(this);
             for (Task task : SaveRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
                 for (Action action : task.getActionsByClass(TimeStartAction.class)) {
                     TimeStartAction startAction = (TimeStartAction) action;
@@ -174,7 +178,6 @@ public class MainAccessibilityService extends AccessibilityService {
         } else {
             WorkManager.getInstance(this).cancelAllWork();
             stopAllTask();
-            WorldState.getInstance().showManualActionDialog(false);
         }
     }
 
@@ -244,8 +247,8 @@ public class MainAccessibilityService extends AccessibilityService {
     public boolean isTaskRunning(Task task) {
         if (task == null) return false;
         for (TaskRunnable taskRunnable : runnableSet) {
-            if (task.equals(taskRunnable.getTask())) {
-                return true;
+            if (task.getId().equals(taskRunnable.getTask().getId())) {
+                return !taskRunnable.isInterrupt();
             }
         }
         return false;
@@ -254,8 +257,8 @@ public class MainAccessibilityService extends AccessibilityService {
     public boolean isTaskRunning(Task task, StartAction startAction) {
         if (startAction == null) return isTaskRunning(task);
         for (TaskRunnable taskRunnable : runnableSet) {
-            if (task.equals(taskRunnable.getTask()) && startAction.equals(taskRunnable.getStartAction())) {
-                return true;
+            if (task.getId().equals(taskRunnable.getTask().getId()) && startAction.getId().equals(taskRunnable.getStartAction().getId())) {
+                return !taskRunnable.isInterrupt();
             }
         }
         return false;
@@ -263,7 +266,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
     public void stopTask(Task task) {
         for (TaskRunnable taskRunnable : runnableSet) {
-            if (task.equals(taskRunnable.getTask())) {
+            if (task.getId().equals(taskRunnable.getTask().getId())) {
                 taskRunnable.stop();
             }
         }
@@ -277,7 +280,6 @@ public class MainAccessibilityService extends AccessibilityService {
     }
 
     //-----------------------------------录屏----------------------------------
-
     public void callStartCaptureFailed() {
         if (captureResultCallback != null) captureResultCallback.onResult(false);
     }
@@ -332,10 +334,45 @@ public class MainAccessibilityService extends AccessibilityService {
         captureEnabled.postValue(false);
     }
 
+    //-----------------------------------录屏图片----------------------------------
     public boolean isCaptureEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return true;
         return isServiceEnabled() && Boolean.TRUE.equals(captureEnabled.getValue());
     }
 
+    public synchronized Bitmap getCurrImage() {
+        if (!isCaptureEnabled()) return null;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            AtomicReference<Bitmap> bitmapReference = new AtomicReference<>(null);
+            CountDownLatch latch = new CountDownLatch(1);
+            takeScreenshot(0, Executors.newSingleThreadExecutor(), new TakeScreenshotCallback() {
+                @Override
+                public void onSuccess(@NonNull ScreenshotResult screenshot) {
+                    Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshot.getHardwareBuffer(), screenshot.getColorSpace());
+                    // 复制bitmap
+                    if (bitmap != null) {
+                        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+                        bitmapReference.set(bitmap);
+                    }
+                    latch.countDown();
+                }
+
+                @Override
+                public void onFailure(int errorCode) {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await();
+                return bitmapReference.get();
+            } catch (InterruptedException ignored) {
+                return null;
+            }
+        } else {
+            return binder.getCurrImage();
+        }
+    }
 
     //-----------------------------------定时----------------------------------
 
@@ -415,7 +452,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
                 boolean exist = false;
                 for (Action startAction : startActions) {
-                    if (timeStartAction.equals(startAction)) {
+                    if (timeStartAction.getId().equals(startAction.getId())) {
                         exist = true;
                         break;
                     }

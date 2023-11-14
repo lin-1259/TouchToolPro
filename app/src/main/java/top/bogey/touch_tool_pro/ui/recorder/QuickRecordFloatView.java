@@ -25,10 +25,9 @@ public class QuickRecordFloatView extends BasePickerFloatView {
     private final RecorderFloatView recorderFloatView;
     private final Paint paint;
     private final int[] location = new int[2];
-
+    private final Handler handler;
     private ArrayList<PinTouch.TouchRecord> records;
     private long lastTime;
-    private final Handler handler;
 
     public QuickRecordFloatView(Context context, RecorderFloatView recorderFloatView) {
         super(context, null);

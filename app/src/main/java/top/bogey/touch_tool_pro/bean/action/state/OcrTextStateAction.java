@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -54,7 +53,7 @@ public class OcrTextStateAction extends Action {
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         Rect areaArea = area.getArea(service);
-        Bitmap currImage = service.binder.getCurrImage();
+        Bitmap currImage = service.getCurrImage();
         Bitmap bitmap = DisplayUtils.safeCreateBitmap(currImage, areaArea);
         ArrayList<OcrResult> results = Predictor.getInstance().runOcr(bitmap);
 

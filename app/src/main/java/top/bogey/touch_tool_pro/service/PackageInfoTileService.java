@@ -5,7 +5,6 @@ import android.service.quicksettings.TileService;
 import android.view.View;
 
 import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.setting.PackageInfoFloatView;
 import top.bogey.touch_tool_pro.ui.setting.SettingView;

@@ -28,14 +28,14 @@ public class PosPickerFloatPreview extends BasePickerFloatView {
         binding.xEdit.setText(String.valueOf(pinPoint.getX(context)));
         binding.yEdit.setText(String.valueOf(pinPoint.getY(context)));
 
-        binding.xEdit.addTextChangedListener(new TextChangedListener(){
+        binding.xEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null && s.length() > 0) newPinPoint.setPoint(context, Integer.parseInt(s.toString()), newPinPoint.getY(context));
             }
         });
 
-        binding.yEdit.addTextChangedListener(new TextChangedListener(){
+        binding.yEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
                 if (s != null && s.length() > 0) newPinPoint.setPoint(context, newPinPoint.getX(context), Integer.parseInt(s.toString()));

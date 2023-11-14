@@ -30,12 +30,10 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningListene
 
     private final Task task;
     private final ManualStartAction startAction;
+    private final String title;
     private TaskRunnable runnable;
-
     private boolean playing = false;
     private boolean needRemove = false;
-
-    private final String title;
 
     public PlayFloatViewItem(@NonNull Context context, Task task, ManualStartAction startAction) {
         super(context);
@@ -74,7 +72,11 @@ public class PlayFloatViewItem extends FrameLayout implements TaskRunningListene
         if (service != null && service.isServiceConnected()) {
             if (playing) {
                 if (runnable != null) {
-                    runnable.stop();
+                    if (runnable.isInterrupt()) {
+                        onEnd(runnable);
+                    } else {
+                        runnable.stop();
+                    }
                 }
             } else {
                 runnable = service.runTask(task, startAction, (FunctionContext) task.copy(), this);

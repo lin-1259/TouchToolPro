@@ -65,32 +65,26 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
     private final RectF show = new RectF();
 
     private final LinkedHashMap<String, ActionCard<?>> cardMap = new LinkedHashMap<>();
-    private FunctionContext functionContext;
-
-    private int dragState = DRAG_NONE;
     private final HashMap<String, String> dragLinks = new HashMap<>();
+    private final ScaleGestureDetector detector;
+    private final HashMap<ActionType, Action> tmpActions = new HashMap<>();
+    private FunctionContext functionContext;
+    private int dragState = DRAG_NONE;
     private ActionCard<?> dragCard = null;
     private PinView dragPin = null;
     private PinView matchedPin = null;
-
     private float dragX = 0;
     private float dragY = 0;
     private float startX = 0;
     private float startY = 0;
     private boolean dragOut;
-
     private boolean isClick = false;
     private boolean isBreakLink = false;
     private AlertDialog dialog;
-
     private float offsetX = 0;
     private float offsetY = 0;
-
     private float scale = 1f;
-    private final ScaleGestureDetector detector;
-
     private boolean editMode = true;
-    private final HashMap<ActionType, Action> tmpActions = new HashMap<>();
 
     public CardLayoutView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -102,8 +96,6 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
 
         gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         gridPaint.setStrokeWidth(1);
-        gridPaint.setStrokeCap(Paint.Cap.ROUND);
-        gridPaint.setStrokeJoin(Paint.Join.ROUND);
         gridPaint.setStyle(Paint.Style.STROKE);
         gridPaint.setColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorPrimary, 0));
         gridPaint.setAlpha(40);
@@ -176,25 +168,6 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
             return new FunctionCard(getContext(), function, innerAction);
         }
         return new ActionCard<>(getContext(), functionContext, action);
-    }
-
-    public void setFunctionContext(FunctionContext functionContext) {
-        this.functionContext = functionContext;
-        offsetX = 0;
-        offsetY = 0;
-        scale = 1f;
-        cardMap.clear();
-        removeAllViews();
-        for (Action action : functionContext.getActions()) {
-            if (action instanceof FunctionReferenceAction) {
-                ((FunctionReferenceAction) action).sync(functionContext);
-            }
-            ActionCard<?> card = newCard(functionContext, action);
-            setCardPosition(card);
-            addView(card);
-            cardMap.put(action.getId(), card);
-        }
-        checkCards();
     }
 
     public void addAction(Action action) {
@@ -751,6 +724,25 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
 
     public FunctionContext getFunctionContext() {
         return functionContext;
+    }
+
+    public void setFunctionContext(FunctionContext functionContext) {
+        this.functionContext = functionContext;
+        offsetX = 0;
+        offsetY = 0;
+        scale = 1f;
+        cardMap.clear();
+        removeAllViews();
+        for (Action action : functionContext.getActions()) {
+            if (action instanceof FunctionReferenceAction) {
+                ((FunctionReferenceAction) action).sync(functionContext);
+            }
+            ActionCard<?> card = newCard(functionContext, action);
+            setCardPosition(card);
+            addView(card);
+            cardMap.put(action.getId(), card);
+        }
+        checkCards();
     }
 
     public HashMap<ActionType, Action> getTmpActions() {

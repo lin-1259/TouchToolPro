@@ -14,7 +14,6 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
-import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 
 public class TouchAction extends NormalAction {
     private transient Pin touchPin = new Pin(new PinTouch(), R.string.pin_touch);

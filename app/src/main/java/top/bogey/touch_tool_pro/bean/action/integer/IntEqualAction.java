@@ -11,7 +11,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class IntEqualAction extends IntCheckAction{
+public class IntEqualAction extends IntCheckAction {
     public IntEqualAction() {
         super(ActionType.INT_EQUAL);
     }

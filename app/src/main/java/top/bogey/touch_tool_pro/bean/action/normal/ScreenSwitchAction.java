@@ -16,7 +16,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
-public class ScreenSwitchAction extends NormalAction{
+public class ScreenSwitchAction extends NormalAction {
     private transient Pin screenPin = new Pin(new PinBoolean(true), R.string.action_screen_action_subtitle_state);
 
     public ScreenSwitchAction() {

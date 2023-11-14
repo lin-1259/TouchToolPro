@@ -30,14 +30,6 @@ public class BatteryStateAction extends Action {
         valuePin = reAddPin(valuePin);
     }
 
-    @Override
-    public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        int state = WorldState.getInstance().getBatteryState();
-        int percent = WorldState.getInstance().getBatteryPercent();
-        statePin.getValue(PinSpinner.class).setIndex(stateToIndex(state));
-        valuePin.getValue(PinInteger.class).setValue(percent);
-    }
-
     public static int stateToIndex(int state) {
         return switch (state) {
             case BatteryManager.BATTERY_STATUS_CHARGING -> 0;
@@ -45,5 +37,13 @@ public class BatteryStateAction extends Action {
             case BatteryManager.BATTERY_STATUS_FULL -> 3;
             default -> 1;
         };
+    }
+
+    @Override
+    public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
+        int state = WorldState.getInstance().getBatteryState();
+        int percent = WorldState.getInstance().getBatteryPercent();
+        statePin.getValue(PinSpinner.class).setIndex(stateToIndex(state));
+        valuePin.getValue(PinInteger.class).setValue(percent);
     }
 }

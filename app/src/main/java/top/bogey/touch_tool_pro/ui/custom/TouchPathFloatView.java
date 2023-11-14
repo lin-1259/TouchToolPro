@@ -38,11 +38,9 @@ public class TouchPathFloatView extends AppCompatImageView implements FloatViewI
     private final int lineWidth = 10;
     private final int paddingScale = 4;
     private final int padding = lineWidth * paddingScale / 2;
-
-    private Canvas canvas = null;
-
     private final HashMap<Integer, Point> lastTouch = new HashMap<>();
     private final ArrayList<PinTouch.TouchRecord> records;
+    private Canvas canvas = null;
     private int index;
 
     public TouchPathFloatView(@NonNull Context context, PinTouch touch, float scale) {
@@ -92,54 +90,62 @@ public class TouchPathFloatView extends AppCompatImageView implements FloatViewI
     }
 
     private void startAni() {
-        int time = 0;
-        for (PinTouch.TouchRecord record : records) {
-            time += record.getTime();
-        }
-
-        ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
-        animator.setDuration((long) (time * timeScale));
-        animator.addUpdateListener(animation -> {
-            float now = animation.getCurrentPlayTime() / timeScale;
-            int index = 0;
-            int total = 0;
-            float percent = 0;
-            for (int i = 0; i < records.size(); i++) {
-                PinTouch.TouchRecord record = records.get(i);
-                if (total + record.getTime() > now) {
-                    index = i - 1;
-                    percent = (now - total) / record.getTime();
-                    break;
-                }
-                total += record.getTime();
+        if (records.size() == 1) {
+            PinTouch.TouchRecord record = records.get(0);
+            paint.setStrokeWidth(lineWidth * 2);
+            record.getPoints().forEach(point -> canvas.drawCircle(point.x + padding, point.y + padding, lineWidth, paint));
+            postDelayed(() -> animate().alpha(0).withEndAction(this::dismiss), record.getTime());
+        } else {
+            int time = 0;
+            for (PinTouch.TouchRecord record : records) {
+                time += record.getTime();
             }
-            if (index > 0) {
-                PinTouch.TouchRecord lastRecord = records.get(index - 1);
-                PinTouch.TouchRecord record = records.get(index);
-                float value = percent;
-                record.getPoints().forEach(point -> {
-                    PinTouch.PathPoint lastPathPoint = lastRecord.getPointByOwnerId(point.getOwnerId());
-                    if (lastPathPoint == null) {
-                        return;
+
+            ValueAnimator animator = ValueAnimator.ofFloat(0, 1);
+            animator.setDuration((long) (time * timeScale));
+            animator.addUpdateListener(animation -> {
+                float now = animation.getCurrentPlayTime() / timeScale;
+                int index = 0;
+                int total = 0;
+                float percent = 0;
+                for (int i = 0; i < records.size(); i++) {
+                    PinTouch.TouchRecord record = records.get(i);
+                    if (total + record.getTime() > now) {
+                        index = i;
+                        percent = (now - total) / record.getTime();
+                        break;
                     }
-                    Point lastPoint = lastTouch.computeIfAbsent(point.getOwnerId(), k -> new Point(lastPathPoint.x + padding, lastPathPoint.y + padding));
-                    int x = (int) ((point.x - lastPathPoint.x) * value + lastPathPoint.x + padding);
-                    int y = (int) ((point.y - lastPathPoint.y) * value + lastPathPoint.y + padding);
-                    paint.setStrokeWidth(lineWidth);
-                    canvas.drawLine(lastPoint.x, lastPoint.y, x, y, paint);
-                    lastPoint.set(x, y);
-                });
-                invalidate();
-            }
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                animate().alpha(0).withEndAction(() -> dismiss());
-            }
-        });
+                    total += record.getTime();
+                }
 
-        animator.start();
+                if (index > 0) {
+                    PinTouch.TouchRecord lastRecord = records.get(index - 1);
+                    PinTouch.TouchRecord record = records.get(index);
+                    float value = percent;
+                    record.getPoints().forEach(point -> {
+                        PinTouch.PathPoint lastPathPoint = lastRecord.getPointByOwnerId(point.getOwnerId());
+                        if (lastPathPoint == null) {
+                            return;
+                        }
+                        Point lastPoint = lastTouch.computeIfAbsent(point.getOwnerId(), k -> new Point(lastPathPoint.x + padding, lastPathPoint.y + padding));
+                        int x = (int) ((point.x - lastPathPoint.x) * value + lastPathPoint.x + padding);
+                        int y = (int) ((point.y - lastPathPoint.y) * value + lastPathPoint.y + padding);
+                        paint.setStrokeWidth(lineWidth);
+                        canvas.drawLine(lastPoint.x, lastPoint.y, x, y, paint);
+                        lastPoint.set(x, y);
+                    });
+                }
+                invalidate();
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    animate().alpha(0).withEndAction(() -> dismiss());
+                }
+            });
+
+            animator.start();
+        }
     }
 
     @Override

@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public abstract class PinScreen extends PinValue{
+public abstract class PinScreen extends PinValue {
     private int screen = 1080;
 
     public PinScreen(PinType type) {
@@ -37,11 +37,11 @@ public abstract class PinScreen extends PinValue{
         return DisplayUtils.getScreen(context) * 1f / screen;
     }
 
-    public void setScreen(Context context) {
-        screen = DisplayUtils.getScreen(context);
-    }
-
     public int getScreen() {
         return screen;
+    }
+
+    public void setScreen(Context context) {
+        screen = DisplayUtils.getScreen(context);
     }
 }

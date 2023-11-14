@@ -5,7 +5,7 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class InnerStartAction extends StartAction{
+public class InnerStartAction extends StartAction {
     private final transient Pin pin;
 
     public InnerStartAction(Pin pin) {

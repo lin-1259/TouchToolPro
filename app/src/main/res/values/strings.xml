@@ -241,7 +241,6 @@
     <string name="action_image_check_subtitle_other">匹配图片</string>
     <string name="action_exist_image_check_title">界面内存在图片</string>
     <string name="action_exist_image_check_subtitle_similar">相似度</string>
-    <string name="action_exist_image_check_subtitle_with_color">匹配颜色</string>
 
     <string name="action_color_check_title">颜色对比</string>
     <string name="action_color_check_subtitle_other">匹配颜色</string>
@@ -499,7 +498,8 @@
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
 
     <string name="task_setting_play_view_visible">显示手动执行</string>
-    <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置</string>
+    <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置(点击此处重置悬浮窗位置)</string>
+    <string name="task_setting_play_view_visible_reset">重置完成</string>
 
     <string name="task_setting_log">实时任务日志</string>
     <string name="task_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
@@ -529,6 +529,8 @@
     <string name="app_info_setting_version_update">在QQ群查看最新版本</string>
     <string name="app_info_setting_thank">贡献者</string>
     <string name="app_info_setting_thank_text">墨汀 - 测试与反馈\n喝茶君 - 视频教程\n鸣得毛 - 各种自定义卡分享\nLumiaGG - 编程指导</string>
+    <string name="app_info_join_qq_url">https://jq.qq.com/?_wv=1027&amp;k=c1HOe3Gk</string>
+    <string name="app_info_join_github_url">https://github.com/mr-bogey/TouchToolPro</string>
 
     <string name="work_add">设置定时任务，开始时间是：%1$s</string>
     <string name="periodic_work_add">设置间隔定时任务，开始时间是：%1$s，间隔%2$s</string>

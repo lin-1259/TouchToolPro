@@ -18,9 +18,9 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class StringRegexAction extends CheckAction implements ActionMorePinInterface {
+    private final transient Pin morePin = new Pin(new PinString(), R.string.action_string_regex_subtitle_match_result, true);
     private transient Pin textPin = new Pin(new PinString(), R.string.pin_string);
     private transient Pin matchPin = new Pin(new PinString(), R.string.action_string_regex_subtitle_match);
-    private final transient Pin morePin = new Pin(new PinString(), R.string.action_string_regex_subtitle_match_result, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_pin, true);
 
     public StringRegexAction() {
@@ -57,7 +57,7 @@ public class StringRegexAction extends CheckAction implements ActionMorePinInter
         Matcher matcher = pattern.matcher(text.getValue());
         if (matcher.find()) {
             result.setBool(true);
-            for (int i = 1; i <= matcher.groupCount() ; i++) {
+            for (int i = 1; i <= matcher.groupCount(); i++) {
                 int index = i - 1;
                 if (pins.size() > index) {
                     Pin stringPin = pins.get(index);

@@ -7,10 +7,10 @@ import java.util.UUID;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public abstract class IdentityInfo {
-    private String uid;
-    private String id;
     protected String title;
     protected String description;
+    private String uid;
+    private String id;
 
     public IdentityInfo() {
         uid = UUID.randomUUID().toString();
@@ -56,6 +56,10 @@ public abstract class IdentityInfo {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getFullDescription() {
         if (getDescription() == null) return getTitle();
         return getTitle() + " - " + getDescription();
@@ -64,9 +68,5 @@ public abstract class IdentityInfo {
     public String getValidDescription() {
         if (getDescription() == null) return getTitle();
         return getDescription();
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

@@ -27,18 +27,14 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class ImagePickerFloatView extends BasePickerFloatView {
-    private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG}
-
     private final PinImage pinImage;
-
     private final FloatPickerImageBinding binding;
-    private MainAccessibilityService service;
-
     private final Paint bitmapPaint;
-    private Bitmap showBitmap;
     private final int[] location = new int[2];
-
     private final Paint markPaint;
+    private final int offset;
+    private MainAccessibilityService service;
+    private Bitmap showBitmap;
     private Rect markArea = new Rect();
 
     private AdjustMode adjustMode = AdjustMode.NONE;
@@ -46,8 +42,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
     private int lastX = 0;
     private int lastY = 0;
-
-    private final int offset;
 
     public ImagePickerFloatView(Context context, PickerCallback callback, PinImage pinImage) {
         super(context, callback);
@@ -88,11 +82,11 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     public void realShow(int delay) {
         postDelayed(() -> {
             EasyFloat.show(tag);
-            if (service != null && service.isCaptureEnabled() && service.binder != null) {
-                Bitmap bitmap = service.binder.getCurrImage();
+            if (service != null && service.isCaptureEnabled()) {
+                Bitmap bitmap = service.getCurrImage();
                 if (bitmap != null) {
                     showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                    Rect rect = service.binder.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect(), false);
+                    Rect rect = DisplayUtils.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect());
                     if (rect != null) {
                         markArea = new Rect(rect);
                         isMarked = true;
@@ -246,6 +240,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             refreshUI();
         }
     }
+
+    private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG}
 
     protected class ImagePickerCallback extends FloatBaseCallback {
         private boolean first = true;

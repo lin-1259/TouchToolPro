@@ -10,7 +10,7 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 
-public class PinNode extends PinValue{
+public class PinNode extends PinValue {
     private AccessibilityNodeInfo node;
 
     public PinNode() {

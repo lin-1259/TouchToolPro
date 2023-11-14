@@ -9,7 +9,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArea;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class DelayAction extends NormalAction{
+public class DelayAction extends NormalAction {
     private transient Pin delayPin = new Pin(new PinValueArea(10, 60000, 10, 300, 300), R.string.action_delay_action_subtitle_time);
 
     public DelayAction() {

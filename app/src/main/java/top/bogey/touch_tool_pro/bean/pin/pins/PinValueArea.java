@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinValueArea extends PinValue{
+public class PinValueArea extends PinValue {
     private int min = 10;
     private int max = 60000;
     private int step = 10;

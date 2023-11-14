@@ -42,20 +42,7 @@ import top.bogey.touch_tool_pro.ui.setting.HandleFunctionContextView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 
 public class TaskView extends Fragment implements TaskSaveChangedListener, TaskRunningListener {
-    private ViewTaskBinding binding;
-    private TaskListRecyclerViewAdapter adapter;
-
     final HashMap<String, Task> selectedTasks = new HashMap<>();
-    boolean isSelect = false;
-
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
-        @Override
-        public void handleOnBackPressed() {
-            unSelectAll();
-            hideBottomBar();
-        }
-    };
-
     private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
@@ -77,6 +64,15 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
                 return true;
             }
             return false;
+        }
+    };
+    boolean isSelect = false;
+    private ViewTaskBinding binding;
+    private TaskListRecyclerViewAdapter adapter;    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+        @Override
+        public void handleOnBackPressed() {
+            unSelectAll();
+            hideBottomBar();
         }
     };
 
@@ -308,4 +304,6 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
     public void onRemoved(Task value) {
         reCalculateTags();
     }
+
+
 }

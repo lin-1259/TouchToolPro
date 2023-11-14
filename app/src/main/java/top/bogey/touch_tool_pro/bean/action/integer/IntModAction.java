@@ -8,7 +8,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class IntModAction extends IntAction{
+public class IntModAction extends IntAction {
     public IntModAction() {
         super(ActionType.INT_MOD);
     }

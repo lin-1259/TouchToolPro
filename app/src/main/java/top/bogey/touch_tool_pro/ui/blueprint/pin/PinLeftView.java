@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
-public class PinLeftView extends PinView{
+public class PinLeftView extends PinView {
     private final PinLeftBinding binding;
 
     public PinLeftView(@NonNull Context context, ActionCard<?> card, Pin pin) {

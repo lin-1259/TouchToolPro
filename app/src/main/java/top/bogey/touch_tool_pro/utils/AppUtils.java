@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.PowerManager;
 import android.provider.Settings;
@@ -30,7 +29,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -39,9 +37,6 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 
 public class AppUtils {
-    public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp, boolean withColor);
-
-    public static native List<MatchResult> nativeMatchColor(Bitmap bitmap, int[] hsvColor, int offset);
 
     public static boolean isRelease(Context context) {
         ApplicationInfo applicationInfo = context.getApplicationInfo();

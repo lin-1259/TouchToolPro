@@ -197,12 +197,12 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         return action;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
-
     public String getParentId() {
         return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
     }
 
     public boolean isJustCall() {

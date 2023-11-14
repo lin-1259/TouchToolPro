@@ -13,9 +13,8 @@ public class FloatViewParent extends FrameLayout {
     private final FloatConfig config;
 
     public LayoutCallback layoutCallback = null;
-    private boolean isCreated = false;
-
     public TouchCallback touchCallback = null;
+    private boolean isCreated = false;
 
     public FloatViewParent(@NonNull Context context, FloatConfig config) {
         super(context, null, 0);

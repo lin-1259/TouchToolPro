@@ -22,20 +22,13 @@ import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
 public class AreaPickerFloatView extends BasePickerFloatView {
-    private enum AdjustMode {NONE, DRAG, LEFT, RIGHT, TOP, BOTTOM}
-
     private final Rect area;
-
     private final FloatPickerAreaBinding binding;
-
     private final Paint markPaint;
     private final int[] location = new int[2];
-
     private AdjustMode adjustMode = AdjustMode.NONE;
-
     private int lastX = 0;
     private int lastY = 0;
-
     public AreaPickerFloatView(Context context, PickerCallback callback, PinArea pinArea) {
         super(context, callback);
         area = pinArea.getArea(context);
@@ -164,4 +157,6 @@ public class AreaPickerFloatView extends BasePickerFloatView {
             refreshUI();
         }
     }
+
+    private enum AdjustMode {NONE, DRAG, LEFT, RIGHT, TOP, BOTTOM}
 }

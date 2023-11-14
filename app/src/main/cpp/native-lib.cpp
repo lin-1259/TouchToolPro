@@ -46,25 +46,24 @@ static paddle::lite_api::PowerMode str_to_cpu_mode(const std::string &cpu_mode) 
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, jclass clazz, jobject bitmap, jobject temp, jboolean withColor) {
+Java_top_bogey_touch_1tool_1pro_utils_DisplayUtils_nativeMatchTemplate(JNIEnv *env, jclass clazz, jobject bitmap, jobject temp) {
     int scale = 2;
 
     Mat src = bitmap_to_cv_mat(env, bitmap);
     Mat tmp = bitmap_to_cv_mat(env, temp);
     if (src.empty() || tmp.empty()) return createMatchResult(env, 0, 0, 0, 0, 0);
 
-    if (!withColor) {
-        cvtColor(src, src, COLOR_BGR2GRAY);
-        cvtColor(tmp, tmp, COLOR_BGR2GRAY);
-    }
+    cvtColor(src, src, COLOR_BGR2GRAY);
+    cvtColor(tmp, tmp, COLOR_BGR2GRAY);
+
     resize(src, src, Size(src.cols / scale, src.rows / scale));
     resize(tmp, tmp, Size(tmp.cols / scale, tmp.rows / scale));
-
     int resultCol = src.cols - tmp.cols + 1;
     int resultRow = src.rows - tmp.rows + 1;
 
     Mat result;
     result.create(resultCol, resultRow, CV_32FC1);
+
     matchTemplate(src, tmp, result, TM_CCOEFF_NORMED);
 
     double minVal = -1;
@@ -83,7 +82,7 @@ Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchTemplate(JNIEnv *env, 
 
 extern "C"
 JNIEXPORT jobject JNICALL
-Java_top_bogey_touch_1tool_1pro_utils_AppUtils_nativeMatchColor(JNIEnv *env, jclass clazz, jobject bitmap, jintArray hsvColor, jint offset) {
+Java_top_bogey_touch_1tool_1pro_utils_DisplayUtils_nativeMatchColor(JNIEnv *env, jclass clazz, jobject bitmap, jintArray hsvColor, jint offset) {
     Mat src = bitmap_to_cv_mat(env, bitmap);
     if (src.empty()) return nullptr;
     cvtColor(src, src, COLOR_BGR2HSV);

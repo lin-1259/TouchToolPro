@@ -96,9 +96,9 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
     }
 
     protected static class ViewHolder extends TreeViewHolder {
+        private final Context context;
         private ViewCardListTypeItemBinding typeBinding;
         private ViewCardListItemBinding itemBinding;
-        private final Context context;
 
         public ViewHolder(@NonNull ViewCardListTypeItemBinding binding) {
             super(binding.getRoot());

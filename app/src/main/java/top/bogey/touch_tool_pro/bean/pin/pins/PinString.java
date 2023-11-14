@@ -11,7 +11,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
-public class PinString extends PinValue{
+public class PinString extends PinValue {
     protected String value = "";
 
     public PinString() {

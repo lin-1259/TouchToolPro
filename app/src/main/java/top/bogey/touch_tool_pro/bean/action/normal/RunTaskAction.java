@@ -12,7 +12,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinTask;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class RunTaskAction extends NormalAction{
+public class RunTaskAction extends NormalAction {
     private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, true);
     private transient Pin taskPin = new Pin(new PinTask());
 

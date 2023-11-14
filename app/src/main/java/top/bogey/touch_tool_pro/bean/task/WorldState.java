@@ -2,10 +2,12 @@ package top.bogey.touch_tool_pro.bean.task;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -37,17 +39,13 @@ public class WorldState {
     private static WorldState helper;
 
     private final LinkedHashMap<String, PackageInfo> appMap = new LinkedHashMap<>();
-
+    private final LinkedHashMap<ManualStartAction, Task> manualStartActions = new LinkedHashMap<>();
     private String packageName;
     private String activityName;
-
     private String notificationPackage;
     private String notificationText;
-
     private int batteryPercent;
     private int batteryState;
-
-    private final LinkedHashMap<ManualStartAction, Task> manualStartActions = new LinkedHashMap<>();
 
     public static WorldState getInstance() {
         if (helper == null) helper = new WorldState();
@@ -108,6 +106,32 @@ public class WorldState {
                 }
             }
         }
+        return packages;
+    }
+
+    public ArrayList<PackageInfo> findSharePackageList(Context context, boolean system, CharSequence find) {
+        ArrayList<PackageInfo> packages = new ArrayList<>();
+
+        PackageManager manager = context.getPackageManager();
+        Pattern pattern = null;
+        if (!(find == null || find.length() == 0)) {
+            pattern = Pattern.compile(find.toString().toLowerCase());
+        }
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("*/*");
+        List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+        for (ResolveInfo info : infoList) {
+            PackageInfo packageInfo = appMap.get(info.activityInfo.packageName);
+            if (packageInfo == null) continue;
+            if (system || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
+                CharSequence title = packageInfo.applicationInfo.loadLabel(manager);
+                if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(packageInfo.packageName.toLowerCase()).find()) {
+                    packages.add(packageInfo);
+                }
+            }
+        }
+
         return packages;
     }
 

@@ -11,13 +11,9 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
-import top.bogey.touch_tool_pro.bean.action.check.ExistColorAction;
-import top.bogey.touch_tool_pro.bean.action.check.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
-import top.bogey.touch_tool_pro.bean.action.state.ColorStateAction;
-import top.bogey.touch_tool_pro.bean.action.state.ImageStateAction;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
@@ -43,9 +39,9 @@ public class Task extends FunctionContext {
 
     @Override
     public IdentityInfo copy() {
-        try{
+        try {
             return GsonUtils.copy(this, FunctionContext.class);
-        } catch (OutOfMemoryError error) {
+        } catch (Throwable error) {
             error.printStackTrace();
         }
         return null;

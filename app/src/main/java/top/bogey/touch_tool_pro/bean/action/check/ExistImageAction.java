@@ -18,13 +18,13 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
-public class ExistImageAction extends CheckAction{
+public class ExistImageAction extends CheckAction {
     private transient Pin imagePin = new Pin(new PinImage(), R.string.pin_image);
     private transient Pin similarPin = new Pin(new PinInteger(85), R.string.action_exist_image_check_subtitle_similar);
     private transient Pin areaPin = new Pin(new PinArea(), R.string.pin_area);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.pin_point, true);
-    private transient Pin colorPin = new Pin(new PinBoolean(), R.string.action_exist_image_check_subtitle_with_color);
 
     public ExistImageAction() {
         super(ActionType.CHECK_EXIST_IMAGE);
@@ -33,7 +33,6 @@ public class ExistImageAction extends CheckAction{
         similarPin = addPin(similarPin);
         areaPin = addPin(areaPin);
         posPin = addPin(posPin);
-        colorPin = addPin(colorPin);
     }
 
     public ExistImageAction(JsonObject jsonObject) {
@@ -43,7 +42,6 @@ public class ExistImageAction extends CheckAction{
         similarPin = reAddPin(similarPin);
         areaPin = reAddPin(areaPin);
         posPin = reAddPin(posPin);
-        colorPin = reAddPin(colorPin);
     }
 
     @Override
@@ -62,8 +60,7 @@ public class ExistImageAction extends CheckAction{
 
         PinInteger similar = (PinInteger) getPinValue(runnable, context, similarPin);
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
-        PinBoolean withColor = (PinBoolean) getPinValue(runnable, context, colorPin);
-        Rect rect = service.binder.matchImage(bitmap, similar.getValue(), area.getArea(service), withColor.isBool());
+        Rect rect = DisplayUtils.matchImage(service.getCurrImage(), bitmap, similar.getValue(), area.getArea(service));
         if (rect == null) return;
         result.setBool(true);
         posPin.getValue(PinPoint.class).setPoint(service, rect.centerX(), rect.centerY());

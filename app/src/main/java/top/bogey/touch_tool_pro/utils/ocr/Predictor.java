@@ -16,6 +16,14 @@ import top.bogey.touch_tool_pro.utils.AppUtils;
 
 public class Predictor {
     private static Predictor predictor;
+    private final Vector<String> labels = new Vector<>();
+    private long nativePointer;
+    private boolean warmup = false;
+
+    private Predictor(Context context) {
+        loadModel(context);
+        loadLabels(context);
+    }
 
     public static Predictor getInstance() {
         if (predictor == null) {
@@ -24,15 +32,7 @@ public class Predictor {
         return predictor;
     }
 
-    private long nativePointer;
-    private boolean warmup = false;
-
-    private final Vector<String> labels = new Vector<>();
-
-    private Predictor(Context context) {
-        loadModel(context);
-        loadLabels(context);
-    }
+    public static native long init(String detModelPath, String recModelPath, String clsModelPath, int useOpencl, int threadNum, String cpuMode);
 
     public ArrayList<OcrResult> runOcr(Bitmap image) {
         if (image == null) return null;
@@ -97,7 +97,7 @@ public class Predictor {
         labels.clear();
         labels.add("black");
 
-        try(InputStream inputStream = context.getAssets().open("labels/keys.txt")) {
+        try (InputStream inputStream = context.getAssets().open("labels/keys.txt")) {
             int available = inputStream.available();
             byte[] lines = new byte[available];
             inputStream.read(lines);
@@ -110,7 +110,7 @@ public class Predictor {
         }
     }
 
-    public static native long init(String detModelPath, String recModelPath, String clsModelPath, int useOpencl, int threadNum, String cpuMode);
     public native float[] forward(long pointer, Bitmap originalImage, int max_size_len, int run_det, int run_cls, int run_rec);
+
     public native void release(long pointer);
 }

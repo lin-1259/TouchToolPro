@@ -19,14 +19,12 @@ import android.widget.EditText;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class FloatViewHelper {
-    Context context;
-    FloatConfig config;
-
-    FloatTouchUtils touchUtils = null;
     public WindowManager manager = null;
     public LayoutParams params = null;
     public FloatViewParent floatViewParent = null;
-
+    Context context;
+    FloatConfig config;
+    FloatTouchUtils touchUtils = null;
     Boolean isPortrait = null;
 
     public FloatViewHelper(Context context, FloatConfig config) {

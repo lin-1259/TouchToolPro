@@ -12,7 +12,6 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -96,7 +95,7 @@ public class MainActivity extends BaseActivity {
                     .setMessage(R.string.report_running_error_tips)
                     .setPositiveButton(R.string.report_running_error_copy_and_join, (dialog, which) -> {
                         dialog.dismiss();
-                        AppUtils.gotoUrl(this, "https://jq.qq.com/?_wv=1027&k=c1HOe3Gk");
+                        AppUtils.gotoUrl(this, getString(R.string.app_info_join_qq_url));
                         copyError(runningError);
                     })
                     .setNegativeButton(R.string.report_running_error_copy, (dialog, which) -> {
@@ -110,7 +109,6 @@ public class MainActivity extends BaseActivity {
         }
 
         SettingSave.getInstance().init(this);
-        WorldState.getInstance().resetAppMap(this);
 
         MainAccessibilityService.serviceEnabled.observe(this, aBoolean -> {
             if (MainApplication.getInstance().getService() == null) return;

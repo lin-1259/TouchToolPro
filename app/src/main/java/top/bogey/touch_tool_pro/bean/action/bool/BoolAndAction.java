@@ -15,9 +15,9 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class BoolAndAction extends CheckAction implements ActionMorePinInterface {
+    private final transient Pin morePin = new Pin(new PinBoolean(), R.string.pin_boolean);
     private transient Pin firstPin = new Pin(new PinBoolean(), R.string.pin_boolean);
     private transient Pin secondPin = new Pin(new PinBoolean(), R.string.pin_boolean);
-    private final transient Pin morePin = new Pin(new PinBoolean(), R.string.pin_boolean);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_pin);
 
     public BoolAndAction() {

@@ -23,10 +23,10 @@ import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 
 public class NodePickerTreeAdapter extends TreeViewAdapter {
-    private TreeNode selectedNode;
     private final ArrayList<TreeNode> treeNodes = new ArrayList<>();
     private final TreeNodeManager manager;
     private final ArrayList<NodePickerItemInfo> roots;
+    private TreeNode selectedNode;
 
 
     public NodePickerTreeAdapter(TreeNodeManager manager, SelectNode picker, ArrayList<NodePickerItemInfo> roots) {
@@ -138,6 +138,10 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         return null;
     }
 
+    public interface SelectNode {
+        void selectNode(NodePickerItemInfo info);
+    }
+
     protected class ViewHolder extends TreeViewHolder {
         private final FloatPickerNodeItemBinding binding;
         private final Context context;
@@ -196,9 +200,5 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
 
             return builder.toString();
         }
-    }
-
-    public interface SelectNode {
-        void selectNode(NodePickerItemInfo info);
     }
 }

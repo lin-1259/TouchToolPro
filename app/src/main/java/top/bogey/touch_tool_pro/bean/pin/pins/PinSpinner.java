@@ -16,8 +16,8 @@ import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class PinSpinner extends PinValue {
-    private int index;
     private final ArrayList<String> arrays = new ArrayList<>();
+    private int index;
     private transient @ArrayRes int array;
 
     public PinSpinner() {
@@ -74,6 +74,10 @@ public class PinSpinner extends PinValue {
         return array;
     }
 
+    public void setArray(int array) {
+        this.array = array;
+    }
+
     public String[] getArray(Context context) {
         if (array == 0) {
             String[] arrays = new String[this.arrays.size()];
@@ -81,10 +85,6 @@ public class PinSpinner extends PinValue {
             return arrays;
         }
         return context.getResources().getStringArray(array);
-    }
-
-    public void setArray(int array) {
-        this.array = array;
     }
 
     public void setArrays(ArrayList<String> arrays) {

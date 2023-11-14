@@ -2,13 +2,10 @@ package top.bogey.touch_tool_pro.bean.action.check;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.view.Display;
-import android.view.accessibility.AccessibilityNodeInfo;
 
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -19,8 +16,6 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinNode;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
@@ -65,7 +60,7 @@ public class ExistTextOcrAction extends CheckAction {
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         Rect areaArea = area.getArea(service);
-        Bitmap currImage = service.binder.getCurrImage();
+        Bitmap currImage = service.getCurrImage();
         Bitmap bitmap = DisplayUtils.safeCreateBitmap(currImage, areaArea);
         ArrayList<OcrResult> results = Predictor.getInstance().runOcr(bitmap);
 

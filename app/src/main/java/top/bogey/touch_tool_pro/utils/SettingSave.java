@@ -40,13 +40,11 @@ public class SettingSave {
 
     private static final String NIGHT_MODE = "NIGHT_MODE";
     private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";
-
+    private static final MMKV settingMMKV = MMKV.defaultMMKV();
+    private static SettingSave settingSave;
     private boolean isAppliedDynamicColor = false;
     private boolean isDynamicColor = true;
     private final DynamicColorsOptions options = new DynamicColorsOptions.Builder().setPrecondition((activity, theme) -> isDynamicColor).build();
-
-    private static SettingSave settingSave;
-    private static final MMKV settingMMKV = MMKV.defaultMMKV();
 
     public static SettingSave getInstance() {
         if (settingSave == null) settingSave = new SettingSave();

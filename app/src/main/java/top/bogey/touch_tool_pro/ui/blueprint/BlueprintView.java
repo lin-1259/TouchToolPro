@@ -32,19 +32,31 @@ import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class BlueprintView extends Fragment {
-    private ViewBlueprintBinding binding;
     private final Stack<FunctionContext> functionContextStack = new Stack<>();
+    private ViewBlueprintBinding binding;
     private ActionSideSheetDialog dialog;
     private Task task;
 
-    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+    public static void tryPushActionContext(FunctionContext functionContext) {
+        MainActivity activity = MainApplication.getInstance().getMainActivity();
+        if (activity == null) return;
+        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
+        if (currFragment == null) return;
+        currFragment.pushActionContext(functionContext);
+    }    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
         @Override
         public void handleOnBackPressed() {
             popActionContext();
         }
     };
 
-    private final MenuProvider menuProvider = new MenuProvider() {
+    public static void tryShowCard(int x, int y, Class<? extends Action> actionClass) {
+        MainActivity activity = MainApplication.getInstance().getMainActivity();
+        if (activity == null) return;
+        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
+        if (currFragment == null) return;
+        currFragment.binding.cardLayout.showCard(x, y, actionClass);
+    }    private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
             menuInflater.inflate(R.menu.menu_task_detail, menu);
@@ -163,20 +175,8 @@ public class BlueprintView extends Fragment {
         super.onDestroy();
     }
 
-    public static void tryPushActionContext(FunctionContext functionContext) {
-        MainActivity activity = MainApplication.getInstance().getMainActivity();
-        if (activity == null) return;
-        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
-        if (currFragment == null) return;
-        currFragment.pushActionContext(functionContext);
-    }
 
-    public static void tryShowCard(int x, int y, Class<? extends Action> actionClass) {
-        MainActivity activity = MainApplication.getInstance().getMainActivity();
-        if (activity == null) return;
-        BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
-        if (currFragment == null) return;
-        currFragment.binding.cardLayout.showCard(x, y, actionClass);
-    }
+
+
 
 }
