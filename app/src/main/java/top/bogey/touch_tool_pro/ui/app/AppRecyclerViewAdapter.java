@@ -22,11 +22,11 @@ import java.util.List;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.ViewAppItemBinding;
-import top.bogey.touch_tool_pro.utils.ResultCallback;
+import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 
 public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerViewAdapter.ViewHolder> {
     private final HashMap<String, ArrayList<String>> selectedActivities;
-    private final ResultCallback callback;
+    private final BooleanResultCallback callback;
 
     private final ArrayList<PackageInfo> apps = new ArrayList<>();
 
@@ -36,7 +36,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
 
     private final boolean showActivity;
 
-    public AppRecyclerViewAdapter(HashMap<String, ArrayList<String>> selectedActivities, ResultCallback callback, boolean single, boolean all, boolean share, boolean showActivity) {
+    public AppRecyclerViewAdapter(HashMap<String, ArrayList<String>> selectedActivities, BooleanResultCallback callback, boolean single, boolean all, boolean share, boolean showActivity) {
         this.selectedActivities = selectedActivities;
         this.callback = callback;
         this.single = single;
@@ -110,7 +110,6 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
         private final Context context;
 
         private final String commonPkgName;
-        private final ArrayList<String> activities = new ArrayList<>();
         private PackageInfo info;
 
         public ViewHolder(ViewAppItemBinding binding) {
@@ -161,21 +160,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
             ArrayList<String> activityNameList = new ArrayList<>();
             ArrayList<String> list = selectedActivities.get(info.packageName);
             if (list != null) activityNameList.addAll(list);
-            SelectActivityDialog view;
-            if (share) {
-                ArrayList<String> shareActivities = new ArrayList<>();
-                PackageManager manager = context.getPackageManager();
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("*/*");
-                intent.setPackage(info.packageName);
-                List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
-                for (ResolveInfo resolveInfo : infoList) {
-                    shareActivities.add(resolveInfo.activityInfo.name);
-                }
-                view = new SelectActivityDialog(context, shareActivities, single, activityNameList);
-            } else {
-                view = new SelectActivityDialog(context, activities, single, activityNameList);
-            }
+            SelectActivityDialog view = new SelectActivityDialog(context, getAllActivities(), single, activityNameList);
             new MaterialAlertDialogBuilder(context)
                     .setTitle(R.string.picker_app_title_select_activity)
                     .setNegativeButton(R.string.cancel, null)
@@ -189,18 +174,33 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                     .show();
         }
 
-        public void refreshView(PackageInfo packageInfo) {
-            Log.d("TAG", "refreshView: " + getAbsoluteAdapterPosition());
-            info = packageInfo;
-            activities.clear();
-
-            if (info.activities != null) {
-                for (ActivityInfo activityInfo : info.activities) {
-                    if (all || activityInfo.exported) {
-                        activities.add(activityInfo.name);
+        private HashMap<String, String> getAllActivities() {
+            HashMap<String, String> allActivities = new HashMap<>();
+            if (share) {
+                PackageManager manager = context.getPackageManager();
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("*/*");
+                intent.setPackage(info.packageName);
+                List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
+                for (ResolveInfo resolveInfo : infoList) {
+                    CharSequence label = resolveInfo.loadLabel(manager);
+                    allActivities.put(resolveInfo.activityInfo.name, label.toString());
+                }
+            } else {
+                if (info.activities != null) {
+                    for (ActivityInfo activityInfo : info.activities) {
+                        if (all || activityInfo.exported) {
+                            allActivities.put(activityInfo.name, activityInfo.name);
+                        }
                     }
                 }
             }
+            return allActivities;
+        }
+
+        public void refreshView(PackageInfo packageInfo) {
+            Log.d("TAG", "refreshView: " + getAbsoluteAdapterPosition());
+            info = packageInfo;
 
             PackageManager manager = context.getPackageManager();
             binding.pkgName.setText(packageInfo.packageName);
@@ -230,7 +230,7 @@ public class AppRecyclerViewAdapter extends RecyclerView.Adapter<AppRecyclerView
                 binding.selectAppButton.setText(String.valueOf(list.size()));
                 binding.selectAppButton.setIcon(null);
             }
-            binding.selectAppButton.setVisibility(((!showActivity) || isCommon || activities.size() == 0) ? View.GONE : View.VISIBLE);
+            binding.selectAppButton.setVisibility(((!showActivity) || isCommon) ? View.GONE : View.VISIBLE);
         }
     }
 }

@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
-import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
+import top.bogey.touch_tool_pro.ui.picker.NodePickerItemInfo;
 
 public class PinNodePath extends PinString {
 

@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.databinding.DialogSelectActivityBinding;
@@ -18,13 +19,13 @@ import top.bogey.touch_tool_pro.utils.TextChangedListener;
 public class SelectActivityDialog extends FrameLayout {
     private final SelectActivityRecyclerViewAdapter adapter;
 
-    public SelectActivityDialog(@NonNull Context context, ArrayList<String> activityNameList, boolean single, ArrayList<String> selectedNameList) {
+    public SelectActivityDialog(@NonNull Context context, HashMap<String, String> activityNameMap, boolean single, ArrayList<String> selectedNameList) {
         super(context);
         DialogSelectActivityBinding binding = DialogSelectActivityBinding.inflate(LayoutInflater.from(context), this, true);
 
-        adapter = new SelectActivityRecyclerViewAdapter(single, selectedNameList);
+        adapter = new SelectActivityRecyclerViewAdapter(single, activityNameMap, selectedNameList);
         binding.activityBox.setAdapter(adapter);
-        adapter.refreshActivityNames(activityNameList);
+        adapter.refreshActivityNames(new ArrayList<>(activityNameMap.keySet()));
 
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
@@ -32,16 +33,20 @@ public class SelectActivityDialog extends FrameLayout {
                 if (s != null) {
                     String searchText = s.toString();
                     if (searchText.isEmpty()) {
-                        adapter.refreshActivityNames(activityNameList);
+                        adapter.refreshActivityNames(new ArrayList<>(activityNameMap.keySet()));
                     } else {
                         Pattern pattern = Pattern.compile(searchText.toLowerCase());
-                        ArrayList<String> newActivityNameList = new ArrayList<>();
-                        for (String activityName : activityNameList) {
-                            if (pattern.matcher(activityName.toLowerCase()).find()) {
-                                newActivityNameList.add(activityName);
+                        ArrayList<String> list = new ArrayList<>();
+
+                        activityNameMap.forEach((k, v) -> {
+                            if (pattern.matcher(k.toLowerCase()).find()) {
+                                list.add(k);
+                            } else if (pattern.matcher(v.toLowerCase()).find()) {
+                                list.add(k);
                             }
-                        }
-                        adapter.refreshActivityNames(newActivityNameList);
+                        });
+
+                        adapter.refreshActivityNames(list);
                     }
                 }
             }

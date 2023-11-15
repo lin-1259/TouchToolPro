@@ -110,6 +110,7 @@ public class DisplayUtils {
         y = Math.max(y, 0);
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
+        if (x >= bitmapWidth || y >= bitmapHeight) return null;
         width = Math.min(width, bitmapWidth - x);
         height = Math.min(height, bitmapHeight - y);
         try {

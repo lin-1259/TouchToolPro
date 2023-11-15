@@ -19,20 +19,20 @@ import java.util.HashMap;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.databinding.ViewAppBinding;
-import top.bogey.touch_tool_pro.utils.ResultCallback;
+import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
 public class AppView extends BottomSheetDialogFragment {
     private final HashMap<String, ArrayList<String>> packages;
     private final PinSubType mode;
-    private ResultCallback callback;
+    private BooleanResultCallback callback;
 
     private CharSequence searchText = "";
     private boolean showSystem = false;
     private boolean single;
     private boolean share;
 
-    public AppView(HashMap<String, ArrayList<String>> packages, PinSubType mode, ResultCallback callback) {
+    public AppView(HashMap<String, ArrayList<String>> packages, PinSubType mode, BooleanResultCallback callback) {
         this.packages = packages;
         this.mode = mode;
         this.callback = callback;

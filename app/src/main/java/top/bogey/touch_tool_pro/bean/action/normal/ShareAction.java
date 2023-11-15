@@ -62,10 +62,13 @@ public class ShareAction extends NormalAction {
 
             int type = ((PinSpinner) getPinValue(runnable, context, typePin)).getIndex();
             Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setPackage(packageName);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            if (activity != null) intent.setClassName(packageName, activity);
+            if (!MainApplication.getInstance().getString(R.string.common_package_name).equals(packageName)) {
+                intent.setPackage(packageName);
+                if (activity != null) intent.setClassName(packageName, activity);
+            }
+            
             switch (type) {
                 case 0 -> {
                     intent.setType("text/plain");

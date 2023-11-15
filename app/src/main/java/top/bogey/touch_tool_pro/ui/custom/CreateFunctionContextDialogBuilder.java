@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.DialogCreateFunctionContextBinding;
 import top.bogey.touch_tool_pro.databinding.ViewTagListItemBinding;
-import top.bogey.touch_tool_pro.utils.ResultCallback;
+import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 
 public class CreateFunctionContextDialogBuilder extends MaterialAlertDialogBuilder {
     private final DialogCreateFunctionContextBinding binding;
     private final ArrayList<String> tags = new ArrayList<>();
-    private ResultCallback callback;
+    private BooleanResultCallback callback;
 
     public CreateFunctionContextDialogBuilder(@NonNull Context context, ArrayList<String> tags, String current) {
         super(context);
@@ -55,7 +55,7 @@ public class CreateFunctionContextDialogBuilder extends MaterialAlertDialogBuild
         });
     }
 
-    public void setCallback(ResultCallback callback) {
+    public void setCallback(BooleanResultCallback callback) {
         this.callback = callback;
     }
 

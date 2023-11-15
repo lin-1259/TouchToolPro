@@ -81,6 +81,10 @@ public class PinImage extends PinScreen {
 
     public void setImage(Bitmap image) {
         bitmap = image;
+        if (image == null) {
+            this.image = null;
+            return;
+        }
 
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
             image.compress(Bitmap.CompressFormat.WEBP, 50, stream);

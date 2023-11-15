@@ -56,7 +56,7 @@ public class WorldState {
     public void resetAppMap(Context context) {
         LinkedHashMap<String, PackageInfo> map = new LinkedHashMap<>();
         PackageManager manager = context.getPackageManager();
-        List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES);
+        List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES | PackageManager.MATCH_UNINSTALLED_PACKAGES | PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
         for (PackageInfo packageInfo : packages) {
             if (packageInfo.activities != null && packageInfo.activities.length > 0) {
                 map.put(packageInfo.packageName, packageInfo);
@@ -112,6 +112,12 @@ public class WorldState {
     public ArrayList<PackageInfo> findSharePackageList(Context context, boolean system, CharSequence find) {
         ArrayList<PackageInfo> packages = new ArrayList<>();
 
+        if (find == null || find.length() == 0) {
+            PackageInfo info = new PackageInfo();
+            info.packageName = context.getString(R.string.common_package_name);
+            packages.add(info);
+        }
+
         PackageManager manager = context.getPackageManager();
         Pattern pattern = null;
         if (!(find == null || find.length() == 0)) {
@@ -124,6 +130,7 @@ public class WorldState {
         for (ResolveInfo info : infoList) {
             PackageInfo packageInfo = appMap.get(info.activityInfo.packageName);
             if (packageInfo == null) continue;
+            if (packageInfo.packageName.equals(context.getPackageName())) continue;
             if (system || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
                 CharSequence title = packageInfo.applicationInfo.loadLabel(manager);
                 if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(packageInfo.packageName.toLowerCase()).find()) {

@@ -11,15 +11,18 @@ import com.google.android.material.radiobutton.MaterialRadioButton;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class SelectActivityRecyclerViewAdapter extends RecyclerView.Adapter<SelectActivityRecyclerViewAdapter.ViewHolder> {
     private final ArrayList<String> activityNames = new ArrayList<>();
+    private final HashMap<String, String> activityNamesMap;
     private final ArrayList<String> selectedActivityNames;
     private final boolean single;
 
-    public SelectActivityRecyclerViewAdapter(boolean single, ArrayList<String> selectedActivityNames) {
+    public SelectActivityRecyclerViewAdapter(boolean single, HashMap<String, String> activityNamesMap, ArrayList<String> selectedActivityNames) {
         this.single = single;
+        this.activityNamesMap = activityNamesMap;
         this.selectedActivityNames = selectedActivityNames;
     }
 
@@ -128,12 +131,16 @@ public class SelectActivityRecyclerViewAdapter extends RecyclerView.Adapter<Sele
         }
 
         public void refreshView(String activityName) {
+            String showText = activityNamesMap.get(activityName);
+            if (showText == null) {
+                showText = activityName;
+            }
             if (radioButton != null) {
-                radioButton.setText(activityName);
+                radioButton.setText(showText);
                 radioButton.setChecked(selectedActivityNames.contains(activityName));
             }
             if (checkBox != null) {
-                checkBox.setText(activityName);
+                checkBox.setText(showText);
                 checkBox.setChecked(selectedActivityNames.contains(activityName));
             }
         }

@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.utils;
+package top.bogey.touch_tool_pro.ui.picker;
 
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -6,7 +6,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import java.util.ArrayList;
 
 public class NodePickerItemInfo {
-    public String cls;
+    public String cls = "unknown";
     public String id;
     public String text;
     public boolean clickable;
@@ -19,17 +19,21 @@ public class NodePickerItemInfo {
     public ArrayList<NodePickerItemInfo> children = new ArrayList<>();
 
     public NodePickerItemInfo(AccessibilityNodeInfo nodeInfo) {
+        CharSequence className = nodeInfo.getClassName();
+        if (className != null) cls = className.toString();
 
-        cls = nodeInfo.getClassName().toString();
         id = nodeInfo.getViewIdResourceName();
+
         CharSequence nodeInfoText = nodeInfo.getText();
         if (nodeInfoText != null) text = nodeInfoText.toString();
+
         clickable = nodeInfo.isClickable();
         checkable = nodeInfo.isCheckable();
         editable = nodeInfo.isEditable();
         longClickable = nodeInfo.isLongClickable();
         visible = nodeInfo.isVisibleToUser();
         nodeInfo.getBoundsInScreen(rect);
+
         for (int i = 0; i < nodeInfo.getChildCount(); i++) {
             AccessibilityNodeInfo child = nodeInfo.getChild(i);
             if (child == null) {

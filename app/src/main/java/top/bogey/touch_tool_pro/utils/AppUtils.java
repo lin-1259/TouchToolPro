@@ -43,11 +43,11 @@ public class AppUtils {
         return (applicationInfo.flags & ApplicationInfo.FLAG_DEBUGGABLE) == 0;
     }
 
-    public static void showDialog(Context context, int msg, ResultCallback callback) {
+    public static void showDialog(Context context, int msg, BooleanResultCallback callback) {
         showDialog(context, context.getString(msg), callback);
     }
 
-    public static void showDialog(Context context, String msg, ResultCallback callback) {
+    public static void showDialog(Context context, String msg, BooleanResultCallback callback) {
         new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.dialog_title)
                 .setMessage(msg)
@@ -62,7 +62,7 @@ public class AppUtils {
                 .show();
     }
 
-    public static void showEditDialog(Context context, @StringRes int title, CharSequence defaultValue, EditCallback callback) {
+    public static void showEditDialog(Context context, @StringRes int title, CharSequence defaultValue, EditResultCallback callback) {
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_text_input, null);
         TextInputEditText editText = view.findViewById(R.id.titleEdit);
         editText.setText(defaultValue);

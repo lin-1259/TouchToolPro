@@ -64,24 +64,21 @@ import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
 import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
-import top.bogey.touch_tool_pro.utils.ResultCallback;
+import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
 import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 public class MainAccessibilityService extends AccessibilityService {
-    // 服务
     public static final MutableLiveData<Boolean> serviceConnected = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
-    // 截屏
     public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
-    // 任务
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 30, TimeUnit.SECONDS, new TaskQueue<>(20));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final HashSet<EnterActivityListener> enterActivityListeners = new HashSet<>();
-    public ResultCallback captureResultCallback;
+    public BooleanResultCallback captureResultCallback;
     private SystemEventReceiver systemEventReceiver;
     private MainCaptureService.CaptureServiceBinder binder = null;
     private ServiceConnection connection = null;
@@ -311,7 +308,7 @@ public class MainAccessibilityService extends AccessibilityService {
         }
     }
 
-    public void startCaptureService(boolean moveBack, ResultCallback callback) {
+    public void startCaptureService(boolean moveBack, BooleanResultCallback callback) {
         if (binder == null) {
             captureResultCallback = callback;
             Intent intent = new Intent(this, PermissionActivity.class);
@@ -352,7 +349,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshot.getHardwareBuffer(), screenshot.getColorSpace());
                     // 复制bitmap
                     if (bitmap != null) {
-                        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+                        bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                         bitmapReference.set(bitmap);
                     }
                     latch.countDown();
@@ -517,7 +514,7 @@ public class MainAccessibilityService extends AccessibilityService {
         return roots;
     }
 
-    public void runGesture(int x, int y, int time, ResultCallback callback) {
+    public void runGesture(int x, int y, int time, BooleanResultCallback callback) {
         if (x >= 0 && y >= 0 && time > 0) {
             Path path = new Path();
             path.moveTo(x, y);
@@ -527,7 +524,7 @@ public class MainAccessibilityService extends AccessibilityService {
         if (callback != null) callback.onResult(false);
     }
 
-    public void runGesture(HashSet<GestureDescription.StrokeDescription> strokes, ResultCallback callback) {
+    public void runGesture(HashSet<GestureDescription.StrokeDescription> strokes, BooleanResultCallback callback) {
         if (strokes == null || strokes.isEmpty()) {
             if (callback != null) callback.onResult(false);
             return;
@@ -550,15 +547,15 @@ public class MainAccessibilityService extends AccessibilityService {
         }, null);
     }
 
-    public void runGesture(ArrayList<HashSet<GestureDescription.StrokeDescription>> strokeList, ResultCallback callback) {
+    public void runGesture(ArrayList<HashSet<GestureDescription.StrokeDescription>> strokeList, BooleanResultCallback callback) {
         new GestureHandler(strokeList, callback).dispatchGesture();
     }
 
     private class GestureHandler {
         private final ArrayList<HashSet<GestureDescription.StrokeDescription>> strokeList;
-        private final ResultCallback callback;
+        private final BooleanResultCallback callback;
 
-        public GestureHandler(ArrayList<HashSet<GestureDescription.StrokeDescription>> strokeList, ResultCallback callback) {
+        public GestureHandler(ArrayList<HashSet<GestureDescription.StrokeDescription>> strokeList, BooleanResultCallback callback) {
             this.strokeList = strokeList;
             this.callback = callback;
         }

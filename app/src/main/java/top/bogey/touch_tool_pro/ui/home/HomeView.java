@@ -166,11 +166,6 @@ public class HomeView extends Fragment {
             Toast.makeText(requireContext(), R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            binding.space.setVisibility(View.GONE);
-            binding.captureServiceButton.setVisibility(View.GONE);
-        }
-
         return binding.getRoot();
     }
 

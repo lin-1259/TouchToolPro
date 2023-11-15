@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeItemBinding;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
-import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 
 public class NodePickerTreeAdapter extends TreeViewAdapter {
     private final ArrayList<TreeNode> treeNodes = new ArrayList<>();

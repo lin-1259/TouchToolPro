@@ -31,7 +31,6 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
-import top.bogey.touch_tool_pro.utils.NodePickerItemInfo;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
