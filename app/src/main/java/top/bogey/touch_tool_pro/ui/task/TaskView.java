@@ -31,6 +31,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
+import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
@@ -232,7 +233,7 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
 
     private void exportSelectTasks() {
         if (selectedTasks.size() == 0) return;
-        HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new ArrayList<>(selectedTasks.values()));
+        HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new HashMap<>(selectedTasks), Task.class);
         if (view.isEmpty()) return;
         view.switchState(true);
 

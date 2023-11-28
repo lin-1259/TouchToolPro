@@ -55,6 +55,39 @@ public class HandleFunctionContextView extends FrameLayout {
         switchState(true);
     }
 
+    // 导出
+    public HandleFunctionContextView(@NonNull Context context, HashMap<String, FunctionContext> contextMap, Class<? extends FunctionContext> contextClass) {
+        super(context);
+        SaveRepository.getInstance().getAllTasks().forEach(task -> tasks.put(task.getId(), task));
+        SaveRepository.getInstance().getAllFunctions().forEach(function -> functions.put(function.getId(), function));
+
+        // 计算引用
+        HashMap<String, Task> taskMap = new HashMap<>();
+        HashMap<String, Function> functionMap = new HashMap<>();
+        ArrayList<FunctionContext> functionContexts = new ArrayList<>();
+        functionContexts.addAll(tasks.values());
+        functionContexts.addAll(functions.values());
+        searchContext(functionContexts, taskMap, functionMap);
+
+        // 计算必须的
+        HashSet<String> requireTaskIds = new HashSet<>();
+        HashSet<String> requireFunctionIds = new HashSet<>();
+        if (contextClass.equals(Task.class)) {
+            searchAllRequireIdsInTasks(contextMap.keySet(), requireTaskIds, requireFunctionIds);
+        } else {
+            searchAllRequireIdsInFunctions(contextMap.keySet(), requireTaskIds, requireFunctionIds);
+        }
+
+        // 提取必须的并初始化
+        taskMap.clear();
+        functionMap.clear();
+        requireTaskIds.forEach(id -> taskMap.put(id, tasks.get(id)));
+        requireFunctionIds.forEach(id -> functionMap.put(id, functions.get(id)));
+        initUI(taskMap, functionMap);
+
+        switchState(true);
+    }
+
     // 导入
     public HandleFunctionContextView(@NonNull Context context, ArrayList<FunctionContext> functionContexts) {
         super(context);

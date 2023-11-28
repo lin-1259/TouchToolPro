@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -44,7 +46,9 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
         super.onDestroyView();
         SaveRepository.getInstance().removeTaskListener(this);
         SaveRepository.getInstance().removeFunctionListener(this);
-    }    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+    }
+
+    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
         @Override
         public void handleOnBackPressed() {
             unSelectAll();
@@ -103,17 +107,7 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
 
         binding.moveButton.setOnClickListener(v -> showTagView());
 
-        binding.copyButton.setOnClickListener(v -> {
-            selectedFunctions.forEach((id, function) -> {
-                Function copy = (Function) function.copy();
-                copy.newInfo();
-                copy.setTitle(getString(R.string.task_copy_title, copy.getTitle()));
-                copy.save();
-            });
-
-            unSelectAll();
-            hideBottomBar();
-        });
+        binding.copyButton.setOnClickListener(v -> copySelectTasks());
 
         binding.cancelButton.setOnClickListener(v -> {
             unSelectAll();
@@ -247,9 +241,49 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
         functionTagView.show(requireActivity().getSupportFragmentManager(), null);
     }
 
+    private void copySelectTasks() {
+        ArrayList<String> keys = new ArrayList<>(taskTitleMap.keySet());
+        ArrayList<String> values = new ArrayList<>(taskTitleMap.values());
+        String[] names = new String[values.size()];
+        values.toArray(names);
+        new MaterialAlertDialogBuilder(requireContext())
+                .setPositiveButton(R.string.enter, (dialog, which) -> {
+                    int position = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    if (position != AdapterView.INVALID_POSITION) {
+                        String taskId = keys.get(position);
+                        if (taskId.equals(getString(R.string.common_package_name))) {
+                            selectedFunctions.forEach((id, function) -> {
+                                Function copy = (Function) function.copy();
+                                copy.newInfo();
+                                copy.setParentId(null);
+                                copy.setTitle(getString(R.string.task_copy_title, copy.getTitle()));
+                                copy.save();
+                            });
+                        } else {
+                            Task taskById = SaveRepository.getInstance().getTaskById(taskId);
+                            if (taskById != null) {
+                                selectedFunctions.forEach((id, function) -> {
+                                    Function copy = (Function) function.copy();
+                                    copy.newInfo();
+                                    copy.setTitle(getString(R.string.task_copy_title, copy.getTitle()));
+                                    taskById.addFunction(copy);
+                                });
+                                taskById.save();
+                            }
+                        }
+                    }
+                    unSelectAll();
+                    hideBottomBar();
+                })
+                .setNegativeButton(R.string.cancel, null)
+                .setSingleChoiceItems(names, 0, null)
+                .setTitle(R.string.copy_to)
+                .show();
+    }
+
     private void exportSelectTasks() {
         if (selectedFunctions.size() == 0) return;
-        HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new ArrayList<>(selectedFunctions.values()));
+        HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new HashMap<>(selectedFunctions), Function.class);
         if (view.isEmpty()) return;
         view.switchState(true);
 
