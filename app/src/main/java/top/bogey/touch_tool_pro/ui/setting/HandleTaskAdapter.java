@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.task.Task;
@@ -17,12 +20,15 @@ import top.bogey.touch_tool_pro.databinding.DialogHandleActionContextItemBinding
 
 public class HandleTaskAdapter extends RecyclerView.Adapter<HandleTaskAdapter.ViewHolder> {
     private final HandleFunctionContextView handleView;
-    private final ArrayList<Task> tasks;
-    private final ArrayList<Task> selectedTasks = new ArrayList<>();
+    private final HashMap<String, Task> tasks;
+    private final ArrayList<String> keys;
+    private final HashMap<String, Task> selectedTasks = new HashMap<>();
+    private final HashMap<String, Task> requiredTasks = new HashMap<>();
 
-    public HandleTaskAdapter(HandleFunctionContextView handleView, ArrayList<Task> tasks) {
+    public HandleTaskAdapter(HandleFunctionContextView handleView, HashMap<String, Task> tasks) {
         this.handleView = handleView;
         this.tasks = tasks;
+        keys = new ArrayList<>(tasks.keySet());
     }
 
     @NonNull
@@ -33,43 +39,65 @@ public class HandleTaskAdapter extends RecyclerView.Adapter<HandleTaskAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.refreshItem(tasks.get(position));
+        String key = keys.get(position);
+        holder.refreshItem(Objects.requireNonNull(tasks.get(key)));
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return keys.size();
     }
 
-    public ArrayList<Task> getSelectedTasks() {
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+    }
+
+    public HashMap<String, Task> getAllSelectedTasks() {
+        HashMap<String, Task> hashMap = new HashMap<>();
+        hashMap.putAll(requiredTasks);
+        hashMap.putAll(selectedTasks);
+        return hashMap;
+    }
+
+    public HashMap<String, Task> getSelectedTasks() {
         return selectedTasks;
     }
 
     public void selectAll(boolean all) {
         selectedTasks.clear();
         if (all) {
-            selectedTasks.addAll(tasks);
+            selectedTasks.putAll(tasks);
         }
-        refreshCheckBox();
-        notifyDataSetChanged();
+        handleView.refreshSelectRequire();
     }
 
     public void selectNotExist() {
         SaveRepository repository = SaveRepository.getInstance();
-        tasks.forEach(task -> {
-            Task taskById = repository.getTaskById(task.getId());
-            if (taskById == null) selectedTasks.add(task);
+        tasks.forEach((id, task) -> {
+            Task taskById = repository.getTaskById(id);
+            if (taskById == null) selectedTasks.put(id, task);
+        });
+        handleView.refreshSelectRequire();
+    }
+
+    public void setRequiredTasks(HashSet<String> taskIds) {
+        requiredTasks.clear();
+        taskIds.forEach(id -> {
+            Task task = tasks.get(id);
+            if (task != null) requiredTasks.put(id, task);
         });
         refreshCheckBox();
         notifyDataSetChanged();
     }
 
     public void refreshCheckBox() {
+        HashMap<String, Task> map = getAllSelectedTasks();
         if (tasks.isEmpty()) {
             handleView.setTaskCheck(-1);
-        } else if (selectedTasks.isEmpty()) {
+        } else if (map.isEmpty()) {
             handleView.setTaskCheck(MaterialCheckBox.STATE_UNCHECKED);
-        } else if (selectedTasks.size() == tasks.size()) {
+        } else if (map.size() == tasks.size()) {
             handleView.setTaskCheck(MaterialCheckBox.STATE_CHECKED);
         } else {
             handleView.setTaskCheck(MaterialCheckBox.STATE_INDETERMINATE);
@@ -95,18 +123,29 @@ public class HandleTaskAdapter extends RecyclerView.Adapter<HandleTaskAdapter.Vi
 
         private void selectActionContext(boolean select) {
             int index = getBindingAdapterPosition();
-            Task task = tasks.get(index);
+            String key = keys.get(index);
+            Task task = tasks.get(key);
             if (select) {
-                if (!selectedTasks.contains(task)) selectedTasks.add(task);
+                selectedTasks.put(key, task);
             } else {
-                selectedTasks.remove(task);
+                selectedTasks.remove(key);
             }
-            refreshCheckBox();
+            handleView.refreshSelectRequire();
         }
 
         public void refreshItem(Task task) {
             binding.nameTitle.setText(task.getTitle());
-            binding.checkBox.setChecked(selectedTasks.contains(task));
+
+            if (selectedTasks.containsKey(task.getId())) {
+                binding.checkBox.setChecked(true);
+                binding.checkBox.setEnabled(true);
+            } else if (requiredTasks.containsKey(task.getId())) {
+                binding.checkBox.setChecked(true);
+                binding.checkBox.setEnabled(false);
+            } else {
+                binding.checkBox.setChecked(false);
+                binding.checkBox.setEnabled(true);
+            }
         }
     }
 }

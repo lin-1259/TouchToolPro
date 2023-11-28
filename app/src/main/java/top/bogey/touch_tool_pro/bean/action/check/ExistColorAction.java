@@ -1,10 +1,12 @@
 package top.bogey.touch_tool_pro.bean.action.check;
 
+import android.graphics.Bitmap;
 import android.graphics.Rect;
 
 import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -58,9 +60,10 @@ public class ExistColorAction extends CheckAction {
         PinColor color = (PinColor) getPinValue(runnable, context, colorPin);
         if (color.getColor() == null) return;
 
+        Bitmap currImage = runnable.getCurrImage(service);
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         PinInteger offset = (PinInteger) getPinValue(runnable, context, offsetPin);
-        List<Rect> rectList = DisplayUtils.matchColor(service.getCurrImage(), color.getColor(), area.getArea(service), offset.getValue());
+        List<Rect> rectList = DisplayUtils.matchColor(currImage, color.getColor(), area.getArea(service), offset.getValue());
         if (rectList == null || rectList.isEmpty()) return;
 
         result.setBool(true);

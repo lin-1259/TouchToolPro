@@ -64,11 +64,6 @@ public class ShareAction extends NormalAction {
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            if (!MainApplication.getInstance().getString(R.string.common_package_name).equals(packageName)) {
-                intent.setPackage(packageName);
-                if (activity != null) intent.setClassName(packageName, activity);
-            }
-            
             switch (type) {
                 case 0 -> {
                     intent.setType("text/plain");
@@ -80,10 +75,20 @@ public class ShareAction extends NormalAction {
                     } else {
                         intent.setType("text/*");
                     }
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     intent.putExtra(Intent.EXTRA_STREAM, valueToCacheFile(instance, value));
                 }
             }
-            instance.startActivity(intent);
+
+            if (!instance.getString(R.string.common_package_name).equals(packageName)) {
+                intent.setPackage(packageName);
+                if (activity != null) intent.setClassName(packageName, activity);
+                instance.startActivity(intent);
+            } else {
+                Intent chooser = Intent.createChooser(intent, "");
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                instance.startActivity(chooser);
+            }
         }
 
         executeNext(runnable, context, outPin);

@@ -7,155 +7,179 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
+import java.util.Set;
 
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.normal.RunTaskAction;
+import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTask;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.DialogHandleActionContextBinding;
 
 public class HandleFunctionContextView extends FrameLayout {
-    private final DialogHandleActionContextBinding binding;
-    private final HandleTaskAdapter taskAdapter;
-    private final HandleFunctionAdapter functionAdapter;
+    private DialogHandleActionContextBinding binding;
+    private HandleTaskAdapter taskAdapter;
+    private HandleFunctionAdapter functionAdapter;
 
-    private final ArrayList<Task> tasks = new ArrayList<>();
-    private final ArrayList<Function> functions = new ArrayList<>();
+    private final HashMap<String, Task> tasks = new HashMap<>();
+    private final HashMap<String, Function> functions = new HashMap<>();
 
+    private final HashMap<String, HashSet<String>> taskRequireFunctionIds = new HashMap<>();
+    private final HashMap<String, HashSet<String>> taskRequireTaskIds = new HashMap<>();
+    private final HashMap<String, HashSet<String>> functionRequireFunctionIds = new HashMap<>();
+    private final HashMap<String, HashSet<String>> functionRequireTaskIds = new HashMap<>();
+
+    // 导出
     public HandleFunctionContextView(@NonNull Context context) {
-        this(context, SaveRepository.getInstance().getAllTasks(), SaveRepository.getInstance().getAllFunctions());
+        super(context);
+        SaveRepository.getInstance().getAllTasks().forEach(task -> tasks.put(task.getId(), task));
+        SaveRepository.getInstance().getAllFunctions().forEach(function -> functions.put(function.getId(), function));
+
+        HashMap<String, Task> taskMap = new HashMap<>();
+        HashMap<String, Function> functionMap = new HashMap<>();
+        ArrayList<FunctionContext> functionContexts = new ArrayList<>();
+        functionContexts.addAll(tasks.values());
+        functionContexts.addAll(functions.values());
+        searchContext(functionContexts, taskMap, functionMap);
+        initUI(taskMap, functionMap);
+
         switchState(true);
-        tasks.addAll(SaveRepository.getInstance().getAllTasks());
-        functions.addAll(SaveRepository.getInstance().getAllFunctions());
     }
 
     // 导入
-    public HandleFunctionContextView(@NonNull Context context, ArrayList<FunctionContext> actionContexts) {
-        this(context, getTasks(actionContexts), getFunctions(actionContexts));
-        actionContexts.forEach(actionContext -> {
-            if (actionContext instanceof Task task) {
-                tasks.add(task);
-            } else if (actionContext instanceof Function function) {
-                functions.add(function);
-            }
-        });
-    }
-
-    public HandleFunctionContextView(@NonNull Context context, ArrayList<Task> tasks, ArrayList<Function> functions) {
+    public HandleFunctionContextView(@NonNull Context context, ArrayList<FunctionContext> functionContexts) {
         super(context);
-        binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(context), this, true);
 
-        ArrayList<String> taskTags = SaveRepository.getInstance().getTaskTags();
-        tasks.forEach(task -> {
-            if (task.getTags() == null) return;
-            HashSet<String> set = new HashSet<>(task.getTags());
-            set.forEach(tag -> {
-                if (!taskTags.contains(tag)) task.removeTag(tag);
-            });
-        });
-        taskAdapter = new HandleTaskAdapter(this, new ArrayList<>(tasks));
-        binding.tasksBox.setAdapter(taskAdapter);
-
-        ArrayList<String> functionTags = SaveRepository.getInstance().getFunctionTags();
-        functions.forEach(function -> {
-            if (function.getTags() == null) return;
-            HashSet<String> set = new HashSet<>(function.getTags());
-            set.forEach(tag -> {
-                if (!functionTags.contains(tag)) function.removeTag(tag);
-            });
-        });
-        functionAdapter = new HandleFunctionAdapter(this, new ArrayList<>(functions));
-        binding.functionsBox.setAdapter(functionAdapter);
-
-        binding.taskCheckBox.setOnClickListener(v -> taskAdapter.selectAll(binding.taskCheckBox.isChecked()));
-        binding.functionCheckBox.setOnClickListener(v -> functionAdapter.selectAll(binding.functionCheckBox.isChecked()));
-    }
-
-
-    private static void searchTask(LinkedHashMap<String, Task> tasks, HashSet<FunctionContext> contexts) {
-        contexts.forEach(context -> {
-            HashSet<FunctionContext> newContexts = new HashSet<>();
-
-            for (Action action : context.getActionsByClass(RunTaskAction.class)) {
-                RunTaskAction taskAction = (RunTaskAction) action;
-                Pin taskPin = taskAction.getTaskPin();
-                if (taskPin.getLinks().isEmpty()) {
-                    Task task = taskPin.getValue(PinTask.class).getTask();
-                    if (task != null && tasks.get(task.getId()) == null) {
-                        tasks.put(task.getId(), task);
-                        newContexts.add(task);
-                    }
-                }
-            }
-
-            if (context instanceof Task task) {
-                newContexts.addAll(task.getFunctions());
-            }
-            searchTask(tasks, newContexts);
-        });
-    }
-
-    private static ArrayList<Task> getTasks(ArrayList<FunctionContext> contexts) {
-        LinkedHashMap<String, Task> tasks = new LinkedHashMap<>();
-        for (FunctionContext context : contexts) {
-            if (context instanceof Task task) {
+        functionContexts.forEach(functionContext -> {
+            if (functionContext instanceof Task task) {
                 tasks.put(task.getId(), task);
-            }
-        }
-        searchTask(tasks, new HashSet<>(tasks.values()));
-        return new ArrayList<>(tasks.values());
-    }
-
-    private static void searchFunction(LinkedHashMap<String, Function> functions, HashSet<FunctionContext> contexts) {
-        contexts.forEach(context -> {
-            HashSet<FunctionContext> newContexts = new HashSet<>();
-
-            for (Action action : context.getActionsByClass(FunctionReferenceAction.class)) {
-                FunctionReferenceAction referenceAction = (FunctionReferenceAction) action;
-                if (referenceAction.getParentId() == null || referenceAction.getParentId().isEmpty()) {
-                    Function function = SaveRepository.getInstance().getFunctionById(referenceAction.getFunctionId());
-                    if (function != null && functions.get(function.getId()) == null) {
-                        functions.put(function.getId(), function);
-                        newContexts.add(function);
-                    }
-                }
-            }
-
-            for (Action action : context.getActionsByClass(RunTaskAction.class)) {
-                RunTaskAction taskAction = (RunTaskAction) action;
-                Pin taskPin = taskAction.getTaskPin();
-                if (taskPin.getLinks().isEmpty()) {
-                    Task task = taskPin.getValue(PinTask.class).getTask();
-                    if (task != null) {
-                        newContexts.add(task);
-                    }
-                }
-            }
-
-            if (context instanceof Task task) {
-                newContexts.addAll(task.getFunctions());
-            }
-            searchFunction(functions, newContexts);
-        });
-    }
-
-    private static ArrayList<Function> getFunctions(ArrayList<FunctionContext> contexts) {
-        LinkedHashMap<String, Function> functions = new LinkedHashMap<>();
-        for (FunctionContext context : contexts) {
-            if (context instanceof Function function) {
+            } else if (functionContext instanceof Function function) {
                 functions.put(function.getId(), function);
             }
-        }
-        searchFunction(functions, new HashSet<>(contexts));
-        return new ArrayList<>(functions.values());
+        });
+
+        HashMap<String, Task> taskMap = new HashMap<>();
+        HashMap<String, Function> functionMap = new HashMap<>();
+        searchContext(functionContexts, taskMap, functionMap);
+        initUI(taskMap, functionMap);
+
+        binding.importMoreBox.setVisibility(VISIBLE);
+    }
+
+    private void initUI(HashMap<String, Task> tasks, HashMap<String, Function> functions) {
+        binding = DialogHandleActionContextBinding.inflate(LayoutInflater.from(getContext()), this, true);
+        binding.taskCheckBox.setOnClickListener(v -> taskAdapter.selectAll(binding.taskCheckBox.isChecked()));
+        binding.functionCheckBox.setOnClickListener(v -> functionAdapter.selectAll(binding.functionCheckBox.isChecked()));
+
+        taskAdapter = new HandleTaskAdapter(this, tasks);
+        binding.tasksBox.setAdapter(taskAdapter);
+
+        functionAdapter = new HandleFunctionAdapter(this, functions);
+        binding.functionsBox.setAdapter(functionAdapter);
+    }
+
+    private void searchContext(ArrayList<FunctionContext> contexts, HashMap<String, Task> taskMap, HashMap<String, Function> functionMap) {
+        contexts.forEach(context -> {
+            if (context instanceof Task task) {
+                taskMap.put(task.getId(), task);
+                searchContextInActions(task, task.getActions(), taskMap, functionMap);
+                task.getFunctions().forEach(function -> searchContextInActions(task, function.getActions(), taskMap, functionMap));
+            } else if (context instanceof Function function) {
+                functionMap.put(function.getId(), function);
+                searchContextInActions(function, function.getActions(), taskMap, functionMap);
+            }
+        });
+    }
+
+    // 搜索任务内动作或任务内方法的动作
+    private void searchContextInActions(FunctionContext context, HashSet<Action> actions, HashMap<String, Task> taskMap, HashMap<String, Function> functionMap) {
+        HashMap<String, HashSet<String>> requireTaskIds = context instanceof Task ? taskRequireTaskIds : functionRequireTaskIds;
+        HashMap<String, HashSet<String>> requireFunctionIds = context instanceof Task ? taskRequireFunctionIds : functionRequireFunctionIds;
+        HashSet<String> taskIds = requireTaskIds.computeIfAbsent(context.getId(), k -> new HashSet<>());
+        HashSet<String> functionIds = requireFunctionIds.computeIfAbsent(context.getId(), k->new HashSet<>());
+
+        actions.forEach(action -> {
+            if (action instanceof RunTaskAction runTaskAction) {
+                Pin taskPin = runTaskAction.getTaskPin();
+                if (taskPin.getLinks().isEmpty()) {
+                    PinTask pinTask = taskPin.getValue(PinTask.class);
+                    Task runTask = tasks.get(pinTask.getTaskId());
+                    // 未采集过的任务
+                    if (runTask != null && !taskIds.contains(runTask.getId())) {
+                        taskMap.put(runTask.getId(), runTask);
+                        requireTaskIds.computeIfAbsent(context.getId(), k -> new HashSet<>()).add(runTask.getId());
+                        searchContextInActions(runTask, runTask.getActions(), taskMap, functionMap);
+                        runTask.getFunctions().forEach(function -> searchContextInActions(runTask, function.getActions(), taskMap, functionMap));
+                    }
+                }
+            } else if (action instanceof FunctionReferenceAction referenceAction) {
+                // 通用方法，需要记录依赖。只判断通用方法，任务内方法有额外判断
+                if (referenceAction.getParentId() == null || referenceAction.getParentId().isEmpty()) {
+                    Function function = functions.get(referenceAction.getFunctionId());
+                    // 未采集过的方法
+                    if (function != null && !functionIds.contains(function.getId())) {
+                        functionMap.put(function.getId(), function);
+                        requireFunctionIds.computeIfAbsent(context.getId(), k -> new HashSet<>()).add(function.getId());
+                        searchContextInActions(function, function.getActions(), taskMap, functionMap);
+                    }
+                }
+            }
+        });
+    }
+
+    public void refreshSelectRequire() {
+        HashSet<String> requireTaskIds = new HashSet<>();
+        HashSet<String> requireFunctionIds = new HashSet<>();
+
+        HashMap<String, Task> selectedTasks = taskAdapter.getSelectedTasks();
+        HashMap<String, Function> selectedFunctions = functionAdapter.getSelectedFunctions();
+        searchAllRequireIdsInTasks(selectedTasks.keySet(), requireTaskIds, requireFunctionIds);
+        searchAllRequireIdsInFunctions(selectedFunctions.keySet(), requireTaskIds, requireFunctionIds);
+        taskAdapter.setRequiredTasks(requireTaskIds);
+        functionAdapter.setRequireFunctions(requireFunctionIds);
+    }
+
+    public void searchAllRequireIdsInTasks(Set<String> checkTaskIds, HashSet<String> requireTaskIds, HashSet<String> requireFunctionIds) {
+        checkTaskIds.forEach(taskId -> {
+            // 检查过的任务不再检查
+            if (requireTaskIds.contains(taskId)) return;
+            // 添加依赖
+            requireTaskIds.add(taskId);
+
+            // 检查当前id的依赖
+            HashSet<String> taskIds = taskRequireTaskIds.get(taskId);
+            if (taskIds != null) {
+                searchAllRequireIdsInTasks(taskIds, requireTaskIds, requireFunctionIds);
+            }
+
+            HashSet<String> functionIds = taskRequireFunctionIds.get(taskId);
+            if (functionIds != null) searchAllRequireIdsInFunctions(functionIds, requireTaskIds, requireFunctionIds);
+        });
+    }
+
+    public void searchAllRequireIdsInFunctions(Set<String> checkFunctionIds, HashSet<String> requireTaskIds, HashSet<String> requireFunctionIds) {
+        checkFunctionIds.forEach(functionId -> {
+            // 检查过的方法不再检查
+            if (requireFunctionIds.contains(functionId)) return;
+            // 添加依赖
+            requireFunctionIds.add(functionId);
+
+            // 检查当前方法的依赖
+            HashSet<String> ids = functionRequireTaskIds.get(functionId);
+            if (ids != null) searchAllRequireIdsInTasks(ids, requireTaskIds, requireFunctionIds);
+
+            ids = functionRequireFunctionIds.get(functionId);
+            if (ids != null) searchAllRequireIdsInFunctions(ids, requireTaskIds, requireFunctionIds);
+        });
     }
 
     public void switchState(boolean export) {
@@ -186,35 +210,79 @@ public class HandleFunctionContextView extends FrameLayout {
         }
     }
 
-    public ArrayList<FunctionContext> getSelectActionContext() {
-        ArrayList<FunctionContext> list = new ArrayList<>();
-        list.addAll(taskAdapter.getSelectedTasks());
-        list.addAll(functionAdapter.getSelectedFunctions());
-        return list;
-    }
+    public void importSelectFunctionContext() {
+        boolean importTag = binding.importTag.isChecked();
+        boolean importCommonAttr = binding.importCommonAttr.isChecked();
 
-    public ArrayList<ArrayList<FunctionContext>> getMultiSelectActionContext() {
-        ArrayList<ArrayList<FunctionContext>> list = new ArrayList<>();
-        ArrayList<Task> selectedTasks = taskAdapter.getSelectedTasks();
-        ArrayList<Function> selectedFunctions = functionAdapter.getSelectedFunctions();
-        for (Task selectedTask : selectedTasks) {
-            if (tasks.contains(selectedTask)) {
-                ArrayList<FunctionContext> part = new ArrayList<>();
-                LinkedHashMap<String, Task> partTasks = new LinkedHashMap<>();
-                partTasks.put(selectedTask.getId(), selectedTask);
-                searchTask(partTasks, new HashSet<>(Collections.singleton(selectedTask)));
-
-                ArrayList<Function> partFunctions = getFunctions(new ArrayList<>(partTasks.values()));
-                for (int i = partFunctions.size() - 1; i >= 0; i--) {
-                    Function function = partFunctions.get(i);
-                    if (!selectedFunctions.contains(function)) partFunctions.remove(i);
+        HashMap<String, Task> selectedTasks = taskAdapter.getAllSelectedTasks();
+        HashMap<String, Function> selectedFunctions = functionAdapter.getAllSelectedFunctions();
+        selectedTasks.forEach((id, task) -> {
+            HashSet<String> tags = task.getTags();
+            if (tags != null) {
+                if (importTag) {
+                    tags.forEach(tag -> {
+                        if (tag.equals(SaveRepository.SHORTCUT_TAG)) return;
+                        SaveRepository.getInstance().addTaskTag(tag);
+                    });
+                } else {
+                    ArrayList<String> taskTags = SaveRepository.getInstance().getTaskTags();
+                    HashSet<String> set = new HashSet<>(tags);
+                    set.forEach(tag -> {
+                        if (!taskTags.contains(tag)) task.removeTag(tag);
+                    });
                 }
+            }
+            task.save();
+        });
 
-                part.addAll(partTasks.values());
-                part.addAll(partFunctions);
-                list.add(part);
+        selectedFunctions.forEach((id, function) -> {
+            HashSet<String> tags = function.getTags();
+            if (tags != null) {
+                if (importTag) {
+                    tags.forEach(tag -> SaveRepository.getInstance().addFunctionTag(tag));
+                } else {
+                    ArrayList<String> functionTags = SaveRepository.getInstance().getFunctionTags();
+                    HashSet<String> set = new HashSet<>(tags);
+                    set.forEach(tag -> {
+                        if (!functionTags.contains(tag)) function.removeTag(tag);
+                    });
+                }
+            }
+            function.save();
+        });
+
+        if (importCommonAttr) {
+            HashMap<String, PinValue> commonVar = new HashMap<>();
+            searchCommonVar(new HashSet<>(selectedTasks.values()), commonVar);
+            searchCommonVar(new HashSet<>(selectedFunctions.values()), commonVar);
+            if (!commonVar.isEmpty()) {
+                commonVar.forEach((key, value) -> SaveRepository.getInstance().addVariable(key, value));
             }
         }
+    }
+
+    private void searchCommonVar(Set<FunctionContext> contexts, HashMap<String, PinValue> commonVar) {
+        contexts.forEach(context -> {
+            context.getActions().forEach(action -> {
+                if (action instanceof GetCommonVariableValue getValue) {
+                    commonVar.put(getValue.getVarKey(), getValue.getValue());
+                } else if (action instanceof SetCommonVariableValue setValue) {
+                    commonVar.put(setValue.getVarKey(), setValue.getValue());
+                }
+            });
+
+            if (context instanceof Task task) {
+                searchCommonVar(new HashSet<>(task.getFunctions()), commonVar);
+            }
+        });
+    }
+
+    public ArrayList<FunctionContext> getSelectFunctionContext() {
+        ArrayList<FunctionContext> list = new ArrayList<>();
+        HashMap<String, Task> selectedTasks = taskAdapter.getAllSelectedTasks();
+        HashMap<String, Function> selectedFunctions = functionAdapter.getAllSelectedFunctions();
+        list.addAll(selectedTasks.values());
+        list.addAll(selectedFunctions.values());
         return list;
     }
 

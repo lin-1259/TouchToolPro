@@ -488,6 +488,8 @@
     <string name="task_setting_title">任务设置</string>
     <string name="task_setting_task">任务</string>
     <string name="task_setting_function">自定义卡片</string>
+    <string name="task_setting_include_tag">导入任务标签</string>
+    <string name="task_setting_include_common_attr">导入全局变量</string>
 
     <string name="task_setting_backup">备份任务</string>
     <string name="task_setting_backup_tips">选择需要备份的任务配置和通用自定义卡片到你选择的文件夹中</string>

@@ -51,4 +51,8 @@ public class GetCommonVariableValue extends Action {
     public void setValue(PinValue value) {
         valuePin.setValue(value);
     }
+
+    public PinValue getValue() {
+        return valuePin.getValue(PinValue.class);
+    }
 }

@@ -199,6 +199,7 @@ public class PinNodePath extends PinString {
         }
 
         private boolean checkClass(AccessibilityNodeInfo node) {
+            if (cls == null) return false;
             return cls.contentEquals(node.getClassName());
         }
 

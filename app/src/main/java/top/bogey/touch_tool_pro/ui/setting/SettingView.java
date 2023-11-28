@@ -104,7 +104,7 @@ public class SettingView extends Fragment {
             HandleFunctionContextView view = new HandleFunctionContextView(requireContext());
             new MaterialAlertDialogBuilder(requireContext())
                     .setPositiveButton(R.string.enter, (dialog, which) -> {
-                        ArrayList<FunctionContext> functionContexts = view.getSelectActionContext();
+                        ArrayList<FunctionContext> functionContexts = view.getSelectFunctionContext();
                         AppUtils.backupFunctionContexts(requireContext(), functionContexts);
                         dialog.dismiss();
                     })

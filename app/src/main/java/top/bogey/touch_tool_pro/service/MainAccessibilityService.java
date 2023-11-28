@@ -38,12 +38,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -69,6 +67,7 @@ import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
 import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
+import top.bogey.touch_tool_pro.utils.ocr.BitmapResultCallback;
 
 public class MainAccessibilityService extends AccessibilityService {
     public static final MutableLiveData<Boolean> serviceConnected = new MutableLiveData<>(false);
@@ -82,6 +81,7 @@ public class MainAccessibilityService extends AccessibilityService {
     private SystemEventReceiver systemEventReceiver;
     private MainCaptureService.CaptureServiceBinder binder = null;
     private ServiceConnection connection = null;
+    private Bitmap lastBitmap = null;
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -337,12 +337,13 @@ public class MainAccessibilityService extends AccessibilityService {
         return isServiceEnabled() && Boolean.TRUE.equals(captureEnabled.getValue());
     }
 
-    public synchronized Bitmap getCurrImage() {
-        if (!isCaptureEnabled()) return null;
+    public void getCurrImage(BitmapResultCallback callback) {
+        if (!isCaptureEnabled()) {
+            callback.onResult(null);
+            return;
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            AtomicReference<Bitmap> bitmapReference = new AtomicReference<>(null);
-            CountDownLatch latch = new CountDownLatch(1);
             takeScreenshot(0, Executors.newSingleThreadExecutor(), new TakeScreenshotCallback() {
                 @Override
                 public void onSuccess(@NonNull ScreenshotResult screenshot) {
@@ -350,24 +351,18 @@ public class MainAccessibilityService extends AccessibilityService {
                     // 复制bitmap
                     if (bitmap != null) {
                         bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                        bitmapReference.set(bitmap);
+                        lastBitmap = bitmap;
+                        callback.onResult(bitmap);
                     }
-                    latch.countDown();
                 }
 
                 @Override
                 public void onFailure(int errorCode) {
-                    latch.countDown();
+                    callback.onResult(lastBitmap);
                 }
             });
-            try {
-                latch.await();
-                return bitmapReference.get();
-            } catch (InterruptedException ignored) {
-                return null;
-            }
         } else {
-            return binder.getCurrImage();
+            callback.onResult(binder.getCurrImage());
         }
     }
 

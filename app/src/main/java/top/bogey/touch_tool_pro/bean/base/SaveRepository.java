@@ -322,6 +322,7 @@ public class SaveRepository {
         return null;
     }
 
+    // 仅设置
     public void setVariable(String key, PinValue value) {
         VariableSaveReference reference = variables.get(key);
         if (reference != null) {

@@ -238,14 +238,10 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
 
         new MaterialAlertDialogBuilder(requireContext())
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
-                    AppUtils.exportFunctionContexts(requireContext(), view.getSelectActionContext());
+                    AppUtils.exportFunctionContexts(requireContext(), view.getSelectFunctionContext());
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
-                .setNeutralButton(R.string.export_multi_task, (dialog, which) -> {
-                    AppUtils.exportMultiFunctionContexts(requireContext(), view.getMultiSelectActionContext());
-                    dialog.dismiss();
-                })
                 .setView(view)
                 .setTitle(R.string.task_setting_export)
                 .show();

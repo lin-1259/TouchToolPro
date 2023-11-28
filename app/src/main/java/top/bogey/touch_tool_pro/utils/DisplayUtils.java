@@ -73,6 +73,7 @@ public class DisplayUtils {
 
     public static int[] getHsvColor(Bitmap bitmap, int x, int y) {
         if (bitmap == null) return new int[]{0, 0, 0};
+        if (x < 0 || x >= bitmap.getWidth() || y < 0 || y >= bitmap.getHeight()) return new int[]{0, 0, 0};
         int pixel = bitmap.getPixel(x, y);
         int red = (pixel & 0x00ff0000) >> 16;
         int green = (pixel & 0x0000ff00) >> 8;
@@ -111,11 +112,13 @@ public class DisplayUtils {
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
         if (x >= bitmapWidth || y >= bitmapHeight) return null;
+        width = Math.max(width, 1);
+        height = Math.max(height, 1);
         width = Math.min(width, bitmapWidth - x);
         height = Math.min(height, bitmapHeight - y);
         try {
             return Bitmap.createBitmap(bitmap, x, y, width, height);
-        } catch (Throwable ignored) {
+        } catch (Exception | Error ignored) {
             return null;
         }
     }

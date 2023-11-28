@@ -83,17 +83,17 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         postDelayed(() -> {
             EasyFloat.show(tag);
             if (service != null && service.isCaptureEnabled()) {
-                Bitmap bitmap = service.getCurrImage();
-                if (bitmap != null) {
-                    showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                    Rect rect = DisplayUtils.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect());
-                    if (rect != null) {
-                        markArea = new Rect(rect);
-                        isMarked = true;
+                service.getCurrImage(bitmap -> post(() -> {
+                    if (bitmap != null) {
+                        showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
+                        Rect rect = DisplayUtils.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect());
+                        if (rect != null) {
+                            markArea = new Rect(rect);
+                            isMarked = true;
+                        }
+                        refreshUI();
                     }
-                    refreshUI();
-                    bitmap.recycle();
-                }
+                }));
             }
         }, delay);
     }
@@ -250,8 +250,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         public void onShow(String tag) {
             if (first) {
                 super.onShow("");
-                ImagePickerFloatView.this.onShow();
                 first = false;
+                ImagePickerFloatView.this.onShow();
             }
         }
     }

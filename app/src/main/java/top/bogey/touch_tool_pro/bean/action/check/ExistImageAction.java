@@ -58,9 +58,10 @@ public class ExistImageAction extends CheckAction {
         Bitmap bitmap = image.getImage(service);
         if (bitmap == null) return;
 
+        Bitmap currImage = runnable.getCurrImage(service);
         PinInteger similar = (PinInteger) getPinValue(runnable, context, similarPin);
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
-        Rect rect = DisplayUtils.matchImage(service.getCurrImage(), bitmap, similar.getValue(), area.getArea(service));
+        Rect rect = DisplayUtils.matchImage(currImage, bitmap, similar.getValue(), area.getArea(service));
         if (rect == null) return;
         result.setBool(true);
         posPin.getValue(PinPoint.class).setPoint(service, rect.centerX(), rect.centerY());

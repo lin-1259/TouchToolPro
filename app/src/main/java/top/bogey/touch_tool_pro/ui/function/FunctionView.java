@@ -255,7 +255,7 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
 
         new MaterialAlertDialogBuilder(requireContext())
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
-                    AppUtils.exportFunctionContexts(requireContext(), view.getSelectActionContext());
+                    AppUtils.exportFunctionContexts(requireContext(), view.getSelectFunctionContext());
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())

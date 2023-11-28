@@ -39,7 +39,7 @@ public class ImageStateAction extends Action {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (!service.isCaptureEnabled()) return;
 
-        Bitmap image = service.getCurrImage();
+        Bitmap image = runnable.getCurrImage(service);
         if (image == null) return;
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.UUID;
 
-import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
@@ -41,7 +39,7 @@ public class Task extends FunctionContext {
     public IdentityInfo copy() {
         try {
             return GsonUtils.copy(this, FunctionContext.class);
-        } catch (Throwable error) {
+        } catch (Exception | Error error) {
             error.printStackTrace();
         }
         return null;
@@ -61,26 +59,6 @@ public class Task extends FunctionContext {
                 if (referenceAction.getParentId() != null && !referenceAction.getParentId().isEmpty()) ((FunctionReferenceAction) action).setParentId(getId());
             }
         });
-    }
-
-    @Override
-    public String getDescription() {
-        StringBuilder builder = new StringBuilder();
-        for (Action action : getActionsByClass(StartAction.class)) {
-            StartAction startAction = (StartAction) action;
-            String title = startAction.getTitle();
-            if (title == null) continue;
-            builder.append(title);
-            builder.append("(");
-            if (startAction.isEnable()) {
-                builder.append(MainApplication.getInstance().getString(R.string.action_start_subtitle_enable_true));
-            } else {
-                builder.append(MainApplication.getInstance().getString(R.string.action_start_subtitle_enable_false));
-            }
-            builder.append(")");
-            builder.append("\n");
-        }
-        return builder.toString().trim();
     }
 
     @Override

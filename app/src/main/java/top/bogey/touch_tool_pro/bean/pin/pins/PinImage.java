@@ -66,7 +66,7 @@ public class PinImage extends PinScreen {
                         this.bitmap = bitmap;
                     }
                     return this.bitmap;
-                } catch (Throwable ignored) {
+                } catch (Exception | Error ignored) {
                 }
             }
             return null;

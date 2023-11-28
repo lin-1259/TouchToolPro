@@ -1,12 +1,16 @@
 package top.bogey.touch_tool_pro.bean.task;
 
+import android.graphics.Bitmap;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
+import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class TaskRunnable implements Runnable {
     private final Task task;
@@ -34,7 +38,7 @@ public class TaskRunnable implements Runnable {
             if (!action.checkReady(this, context)) return;
             listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onStart(this));
             action.execute(this, context, null);
-        } catch (Throwable e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onEnd(this));
@@ -46,6 +50,16 @@ public class TaskRunnable implements Runnable {
         progress++;
         listeners.stream().filter(Objects::nonNull).forEach(listener -> listener.onProgress(this, action, progress));
         checkStop();
+    }
+
+    public Bitmap getCurrImage(MainAccessibilityService service) {
+        AtomicReference<Bitmap> bitmapReference = new AtomicReference<>();
+        service.getCurrImage(bitmap -> {
+            bitmapReference.set(bitmap);
+            resume();
+        });
+        pause();
+        return bitmapReference.get();
     }
 
     public void checkStop() {

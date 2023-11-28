@@ -174,7 +174,7 @@ public class MainCaptureService extends Service {
                 Bitmap bitmap = Bitmap.createBitmap(width + (rowStride - pixelStride * width) / pixelStride, height, Bitmap.Config.ARGB_8888);
                 bitmap.copyPixelsFromBuffer(buffer);
                 return bitmap;
-            } catch (Throwable ignored) {
+            } catch (Exception | Error ignored) {
             }
             return null;
         }

@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
@@ -17,12 +20,15 @@ import top.bogey.touch_tool_pro.databinding.DialogHandleActionContextItemBinding
 
 public class HandleFunctionAdapter extends RecyclerView.Adapter<HandleFunctionAdapter.ViewHolder> {
     private final HandleFunctionContextView handleView;
-    private final ArrayList<Function> functions;
-    private final ArrayList<Function> selectedFunctions = new ArrayList<>();
+    private final HashMap<String, Function> functions;
+    private final ArrayList<String> keys;
+    private final HashMap<String, Function> selectedFunctions = new HashMap<>();
+    private final HashMap<String, Function> requireFunctions = new HashMap<>();
 
-    public HandleFunctionAdapter(HandleFunctionContextView handleView, ArrayList<Function> functions) {
+    public HandleFunctionAdapter(HandleFunctionContextView handleView, HashMap<String, Function> functions) {
         this.handleView = handleView;
         this.functions = functions;
+        keys = new ArrayList<>(functions.keySet());
     }
 
     @NonNull
@@ -33,43 +39,60 @@ public class HandleFunctionAdapter extends RecyclerView.Adapter<HandleFunctionAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.refreshItem(functions.get(position));
+        String key = keys.get(position);
+        holder.refreshItem(Objects.requireNonNull(functions.get(key)));
     }
 
     @Override
     public int getItemCount() {
-        return functions.size();
+        return keys.size();
     }
 
-    public ArrayList<Function> getSelectedFunctions() {
+    public HashMap<String, Function> getAllSelectedFunctions() {
+        HashMap<String, Function> hashMap = new HashMap<>();
+        hashMap.putAll(requireFunctions);
+        hashMap.putAll(selectedFunctions);
+        return hashMap;
+    }
+
+    public HashMap<String, Function> getSelectedFunctions() {
         return selectedFunctions;
     }
 
     public void selectAll(boolean all) {
         selectedFunctions.clear();
         if (all) {
-            selectedFunctions.addAll(functions);
+            selectedFunctions.putAll(functions);
         }
-        refreshCheckBox();
-        notifyDataSetChanged();
+        handleView.refreshSelectRequire();
     }
 
     public void selectNotExist() {
         SaveRepository repository = SaveRepository.getInstance();
-        functions.forEach(function -> {
-            Function functionById = repository.getFunctionById(function.getId());
-            if (functionById == null) selectedFunctions.add(function);
+        functions.forEach((id, function) -> {
+            Function functionById = repository.getFunctionById(id);
+            if (functionById == null) selectedFunctions.put(id, function);
+        });
+        handleView.refreshSelectRequire();
+    }
+
+    public void setRequireFunctions(HashSet<String> functionIds) {
+        requireFunctions.clear();
+        functionIds.forEach(id -> {
+            Function function = functions.get(id);
+            if (function != null) requireFunctions.put(id, function);
         });
         refreshCheckBox();
         notifyDataSetChanged();
     }
 
     public void refreshCheckBox() {
+        HashMap<String, Function> map = getAllSelectedFunctions();
         if (functions.isEmpty()) {
             handleView.setFunctionCheck(-1);
-        } else if (selectedFunctions.isEmpty()) {
+        } else if (map.isEmpty()) {
             handleView.setFunctionCheck(MaterialCheckBox.STATE_UNCHECKED);
-        } else if (selectedFunctions.size() == functions.size()) {
+        } else if (map.size() == functions.size()) {
             handleView.setFunctionCheck(MaterialCheckBox.STATE_CHECKED);
         } else {
             handleView.setFunctionCheck(MaterialCheckBox.STATE_INDETERMINATE);
@@ -95,18 +118,30 @@ public class HandleFunctionAdapter extends RecyclerView.Adapter<HandleFunctionAd
 
         private void selectActionContext(boolean select) {
             int index = getBindingAdapterPosition();
-            Function function = functions.get(index);
+            String key = keys.get(index);
+            Function function = functions.get(key);
             if (select) {
-                if (!selectedFunctions.contains(function)) selectedFunctions.add(function);
+                selectedFunctions.put(key, function);
             } else {
-                selectedFunctions.remove(function);
+                selectedFunctions.remove(key);
             }
-            refreshCheckBox();
+            requireFunctions.clear();
+            handleView.refreshSelectRequire();
         }
 
         public void refreshItem(Function function) {
             binding.nameTitle.setText(function.getTitle());
-            binding.checkBox.setChecked(selectedFunctions.contains(function));
+
+            if (selectedFunctions.containsKey(function.getId())) {
+                binding.checkBox.setChecked(true);
+                binding.checkBox.setEnabled(true);
+            } else if (requireFunctions.containsKey(function.getId())) {
+                binding.checkBox.setChecked(true);
+                binding.checkBox.setEnabled(false);
+            } else {
+                binding.checkBox.setChecked(false);
+                binding.checkBox.setEnabled(true);
+            }
         }
     }
 }

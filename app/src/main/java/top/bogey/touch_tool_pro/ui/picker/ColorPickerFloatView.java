@@ -80,16 +80,16 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         postDelayed(() -> {
             EasyFloat.show(tag);
             if (service != null && service.isCaptureEnabled()) {
-                Bitmap bitmap = service.getCurrImage();
-                if (bitmap != null) {
-                    Point size = DisplayUtils.getScreenSize(getContext());
-                    if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
-                        showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
-                        matchColor(pinColor.getColor(), pinColor.getMin(getContext()), pinColor.getMax(getContext()));
+                service.getCurrImage(bitmap -> post(() -> {
+                    if (bitmap != null) {
+                        Point size = DisplayUtils.getScreenSize(getContext());
+                        if (bitmap.getWidth() >= size.x && bitmap.getHeight() >= size.y) {
+                            showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
+                            matchColor(pinColor.getColor(), pinColor.getMin(getContext()), pinColor.getMax(getContext()));
+                        }
+                        refreshUI();
                     }
-                    refreshUI();
-                    bitmap.recycle();
-                }
+                }));
             }
         }, delay);
     }
@@ -223,8 +223,8 @@ public class ColorPickerFloatView extends BasePickerFloatView {
         public void onShow(String tag) {
             if (first) {
                 super.onShow("");
-                ColorPickerFloatView.this.onShow();
                 first = false;
+                ColorPickerFloatView.this.onShow();
             }
         }
     }

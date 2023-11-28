@@ -53,9 +53,10 @@ public class OcrTextStateAction extends Action {
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         Rect areaArea = area.getArea(service);
-        Bitmap currImage = service.getCurrImage();
+        Bitmap currImage = runnable.getCurrImage(service);
         Bitmap bitmap = DisplayUtils.safeCreateBitmap(currImage, areaArea);
         ArrayList<OcrResult> results = Predictor.getInstance().runOcr(bitmap);
+        if (results == null) return;
 
         results.sort((o1, o2) -> {
             int topOffset = -(o1.getArea().top - o2.getArea().top);

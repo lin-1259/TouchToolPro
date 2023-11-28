@@ -28,6 +28,7 @@ public class ExistTextOcrAction extends CheckAction {
     private transient Pin textPin = new Pin(new PinString(), R.string.pin_string);
     private transient Pin areaPin = new Pin(new PinArea(), R.string.pin_area);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.pin_point, true);
+    private transient Pin fullTextPin = new Pin(new PinString(), R.string.pin_string, true);
 
     public ExistTextOcrAction() {
         super(ActionType.CHECK_EXIST_TEXT_OCR);
@@ -35,6 +36,7 @@ public class ExistTextOcrAction extends CheckAction {
         textPin = addPin(textPin);
         areaPin = addPin(areaPin);
         posPin = addPin(posPin);
+        fullTextPin = addPin(fullTextPin);
     }
 
     public ExistTextOcrAction(JsonObject jsonObject) {
@@ -43,6 +45,7 @@ public class ExistTextOcrAction extends CheckAction {
         textPin = reAddPin(textPin);
         areaPin = reAddPin(areaPin);
         posPin = reAddPin(posPin);
+        fullTextPin = reAddPin(fullTextPin);
     }
 
     @Override
@@ -51,6 +54,8 @@ public class ExistTextOcrAction extends CheckAction {
 
         PinBoolean result = resultPin.getValue(PinBoolean.class);
         result.setBool(false);
+        PinString fullText = fullTextPin.getValue(PinString.class);
+        fullText.setValue("");
 
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (!service.isCaptureEnabled()) return;
@@ -60,14 +65,16 @@ public class ExistTextOcrAction extends CheckAction {
 
         PinArea area = (PinArea) getPinValue(runnable, context, areaPin);
         Rect areaArea = area.getArea(service);
-        Bitmap currImage = service.getCurrImage();
+        Bitmap currImage = runnable.getCurrImage(service);
         Bitmap bitmap = DisplayUtils.safeCreateBitmap(currImage, areaArea);
         ArrayList<OcrResult> results = Predictor.getInstance().runOcr(bitmap);
+        if (results == null) return;
 
         Pattern pattern = Pattern.compile(text.getValue());
         for (OcrResult ocrResult : results) {
             if (pattern.matcher(ocrResult.getLabel()).find()) {
                 result.setBool(true);
+                fullText.setValue(ocrResult.getLabel());
                 Rect rect = ocrResult.getArea();
                 rect.offset(areaArea.left, areaArea.top);
                 PinPoint value = posPin.getValue(PinPoint.class);

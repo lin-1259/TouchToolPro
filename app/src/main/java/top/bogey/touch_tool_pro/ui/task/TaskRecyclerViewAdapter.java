@@ -24,6 +24,7 @@ import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
 import top.bogey.touch_tool_pro.bean.task.Task;
+import top.bogey.touch_tool_pro.databinding.ViewTaskListItemActionBinding;
 import top.bogey.touch_tool_pro.databinding.ViewTaskListItemBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.AppUtils;
@@ -179,9 +180,19 @@ public class TaskRecyclerViewAdapter extends RecyclerView.Adapter<TaskRecyclerVi
         public void refreshItem(Task task) {
             binding.taskName.setText(task.getTitle());
 
-            String description = task.getDescription();
-            binding.taskDes.setText(description);
-            binding.taskDes.setVisibility(description.isEmpty() ? View.GONE : View.VISIBLE);
+            binding.actionsBox.removeAllViews();
+            for (Action action : task.getActionsByClass(StartAction.class)) {
+                StartAction startAction = (StartAction) action;
+                String title = startAction.getFullDescription();
+                if (title == null) continue;
+                ViewTaskListItemActionBinding itemBinding = ViewTaskListItemActionBinding.inflate(LayoutInflater.from(context), binding.actionsBox, true);
+                itemBinding.taskDesc.setText(title);
+                itemBinding.enableSwitch.setChecked(startAction.isEnable());
+                itemBinding.enableSwitch.setOnClickListener(v -> {
+                    ((StartAction) action).setEnable(itemBinding.enableSwitch.isChecked());
+                    task.save();
+                });
+            }
 
             binding.timeText.setText(AppUtils.formatDateLocalDate(context, task.getCreateTime()));
 

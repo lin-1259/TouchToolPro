@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity {
 
         new MaterialAlertDialogBuilder(this)
                 .setPositiveButton(R.string.enter, (dialog, which) -> {
-                    view.getSelectActionContext().forEach(FunctionContext::save);
+                    view.importSelectFunctionContext();
                     dialog.dismiss();
                 })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
