@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -283,6 +284,14 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
 
     private void exportSelectTasks() {
         if (selectedFunctions.size() == 0) return;
+        for (Map.Entry<String, Function> entry : selectedFunctions.entrySet()) {
+            Function function = entry.getValue();
+            if (function.getParentId() != null || !function.getParentId().isEmpty()) {
+                Toast.makeText(getContext(), R.string.export_function_error_tips, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
         HandleFunctionContextView view = new HandleFunctionContextView(requireContext(), new HashMap<>(selectedFunctions), Function.class);
         if (view.isEmpty()) return;
         view.switchState(true);

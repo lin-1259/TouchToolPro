@@ -97,7 +97,7 @@ public enum PinType {
 
     public boolean canCustom() {
         return switch (this) {
-            case OBJECT, EXECUTE, ADD, FLOAT -> false;
+            case OBJECT, EXECUTE, ADD -> false;
             default -> true;
         };
     }

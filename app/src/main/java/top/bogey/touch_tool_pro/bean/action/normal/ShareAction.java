@@ -97,9 +97,9 @@ public class ShareAction extends NormalAction {
     private Uri valueToCacheFile(Context context, PinValue value) {
         File file;
         if (value instanceof PinImage) {
-            file = new File(context.getCacheDir(), "image.jpg");
+            file = new File(context.getCacheDir(), System.currentTimeMillis() + ".jpg");
         } else {
-            file = new File(context.getCacheDir(), "text.txt");
+            file = new File(context.getCacheDir(), System.currentTimeMillis() + "text.txt");
         }
         if (!file.exists()) {
             try {

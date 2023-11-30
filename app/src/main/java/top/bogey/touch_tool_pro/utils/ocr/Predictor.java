@@ -85,11 +85,11 @@ public class Predictor {
     }
 
     private void loadModel(Context context) {
-        String cacheDirPath = context.getCacheDir() + "/models";
-        AppUtils.copyDirFromAssets(context, "models", cacheDirPath);
-        nativePointer = init(cacheDirPath + File.separator + "det.nb",
-                cacheDirPath + File.separator + "rec.nb",
-                cacheDirPath + File.separator + "cls.nb",
+        String modelDir = context.getFilesDir() + "/models";
+        AppUtils.copyDirFromAssets(context, "models", modelDir);
+        nativePointer = init(modelDir + File.separator + "det.nb",
+                modelDir + File.separator + "rec.nb",
+                modelDir + File.separator + "cls.nb",
                 0, 4, "LITE_POWER_HIGH");
     }
 

@@ -121,7 +121,8 @@ public class AppUtils {
             Intent intent = Intent.parseUri(scheme, Intent.URI_INTENT_SCHEME | Intent.URI_ANDROID_APP_SCHEME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -130,7 +131,8 @@ public class AppUtils {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -140,7 +142,8 @@ public class AppUtils {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setData(Uri.parse("package:" + context.getPackageName()));
             context.startActivity(intent);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -391,5 +394,42 @@ public class AppUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static long getFileSize(File file) {
+        long size = 0;
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File listFile : files) {
+                    size += getFileSize(listFile);
+                }
+            }
+        } else {
+            size = file.length();
+        }
+        return size;
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String getFileSizeString(File file) {
+        long fileSize = getFileSize(file);
+        double kb = fileSize / 1024.0;
+        if (kb < 1024) return String.format("%.1fK",kb);
+        double m = kb / 1024;
+        return String.format("%.1fM",m);
+    }
+
+    public static boolean deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File listFile : files) {
+                    boolean result = deleteFile(listFile);
+                    if (!result) return false;
+                }
+            }
+        }
+        return file.delete();
     }
 }

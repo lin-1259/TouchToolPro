@@ -23,13 +23,19 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
+import androidx.work.WorkQuery;
+
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,11 +44,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Unit;
+import kotlin.coroutines.Continuation;
+import kotlin.coroutines.CoroutineContext;
+import kotlinx.coroutines.flow.Flow;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
@@ -333,7 +344,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
     //-----------------------------------录屏图片----------------------------------
     public boolean isCaptureEnabled() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return true;
+        if (SettingSave.getInstance().isUseTakeCapture() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) return true;
         return isServiceEnabled() && Boolean.TRUE.equals(captureEnabled.getValue());
     }
 
@@ -343,7 +354,7 @@ public class MainAccessibilityService extends AccessibilityService {
             return;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (SettingSave.getInstance().isUseTakeCapture() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             takeScreenshot(0, Executors.newSingleThreadExecutor(), new TakeScreenshotCallback() {
                 @Override
                 public void onSuccess(@NonNull ScreenshotResult screenshot) {
@@ -373,6 +384,7 @@ public class MainAccessibilityService extends AccessibilityService {
         if (!isServiceEnabled()) return;
 
         WorkManager workManager = WorkManager.getInstance(this);
+
         long timeMillis = System.currentTimeMillis();
         long startTime = startAction.getStartTime();
         long periodic = startAction.getPeriodic();

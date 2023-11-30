@@ -99,6 +99,12 @@ public class SettingView extends Fragment {
         binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
         binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
 
+        binding.cleanCache.setOnClickListener(v -> {
+            AppUtils.deleteFile(requireContext().getCacheDir());
+            binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
+        });
+        binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
+
 
         binding.taskBackupButton.setOnClickListener(v -> {
             HandleFunctionContextView view = new HandleFunctionContextView(requireContext());
@@ -132,11 +138,15 @@ public class SettingView extends Fragment {
         binding.showTaskSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstShowTask(binding.showTaskSwitch.isChecked()));
         binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
 
+
         binding.lookBlueprintSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstLookBlueprint(binding.lookBlueprintSwitch.isChecked()));
         binding.lookBlueprintSwitch.setChecked(SettingSave.getInstance().isFirstLookBlueprint());
 
         binding.startViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setShowStart(binding.startViewVisibleSwitch.isChecked()));
         binding.startViewVisibleSwitch.setChecked(SettingSave.getInstance().isShowStart());
+
+        binding.useTakeCaptureSwitch.setOnClickListener(v -> SettingSave.getInstance().setUseTakeCapture(binding.useTakeCaptureSwitch.isChecked()));
+        binding.useTakeCaptureSwitch.setChecked(SettingSave.getInstance().isUseTakeCapture());
 
 
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {

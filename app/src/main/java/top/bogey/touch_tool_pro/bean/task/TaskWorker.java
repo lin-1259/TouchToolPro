@@ -4,6 +4,7 @@ import static top.bogey.touch_tool_pro.ui.InstantActivity.ACTION_ID;
 import static top.bogey.touch_tool_pro.ui.InstantActivity.TASK_ID;
 
 import android.content.Context;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
@@ -39,5 +40,17 @@ public class TaskWorker extends Worker {
             service.runTask(task, (TimeStartAction) action);
         }
         return Result.success();
+    }
+
+    @Override
+    public void onStopped() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Data inputData = getInputData();
+            Task task = SaveRepository.getInstance().getTaskById(inputData.getString(TASK_ID));
+            if (task != null) {
+                SaveRepository.getInstance().addLog(task.getId(), MainApplication.getInstance().getString(R.string.work_stop, String.valueOf(getStopReason())));
+            }
+        }
+        super.onStopped();
     }
 }

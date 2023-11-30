@@ -37,6 +37,7 @@ public class SettingSave {
 
     private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
     private static final String FIRST_LOOK_BLUEPRINT = "FIRST_LOOK_BLUEPRINT";
+    private static final String USE_TAKE_CAPTURE = "USE_TAKE_CAPTURE";
 
     private static final String NIGHT_MODE = "NIGHT_MODE";
     private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";
@@ -223,6 +224,15 @@ public class SettingSave {
 
     public void setFirstLookBlueprint(boolean firstLookBlueprint) {
         settingMMKV.encode(FIRST_LOOK_BLUEPRINT, firstLookBlueprint);
+    }
+
+
+    public boolean isUseTakeCapture() {
+        return settingMMKV.decodeBool(USE_TAKE_CAPTURE, true);
+    }
+
+    public void setUseTakeCapture(boolean useTakeCapture) {
+        settingMMKV.encode(USE_TAKE_CAPTURE, useTakeCapture);
     }
 
 }
