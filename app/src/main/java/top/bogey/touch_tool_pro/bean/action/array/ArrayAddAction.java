@@ -16,18 +16,15 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class ArrayAddAction extends ArrayNormalAction {
-    private transient Pin falsePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_false, true);
     private transient Pin valuePin = new Pin(new PinString(), R.string.action_array_subtitle_element);
 
     public ArrayAddAction() {
         super(ActionType.ARRAY_ADD);
-        falsePin = addPin(falsePin);
         valuePin = addPin(valuePin);
     }
 
     public ArrayAddAction(JsonObject jsonObject) {
         super(jsonObject);
-        falsePin = reAddPin(falsePin);
         valuePin = reAddPin(valuePin, getPinType());
     }
 
@@ -37,7 +34,7 @@ public class ArrayAddAction extends ArrayNormalAction {
         PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
         ArrayList<PinValue> values = array.getValues();
         values.add(value);
-        executeNext(runnable, context, falsePin);
+        executeNext(runnable, context, outPin);
     }
 
     @Override
