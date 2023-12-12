@@ -18,11 +18,13 @@ import java.util.Objects;
 import java.util.UUID;
 
 import top.bogey.touch_tool_pro.MainApplication;
+import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionInterface;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class Pin extends IdentityInfo {
@@ -247,6 +249,9 @@ public class Pin extends IdentityInfo {
         String title = super.getTitle();
         if (title != null && !title.isEmpty()) return title;
         if (titleId == 0) return "";
+        if (value instanceof PinValueArray array) {
+            return array.getPinType().getTitle() + MainApplication.getInstance().getString(titleId);
+        }
         return MainApplication.getInstance().getString(titleId);
     }
 

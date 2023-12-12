@@ -42,4 +42,19 @@ public abstract class PinNumber<T extends Number> extends PinValue {
     public void setValue(T value) {
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinNumber<?> pinNumber = (PinNumber<?>) o;
+
+        return value.equals(pinNumber.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
 }

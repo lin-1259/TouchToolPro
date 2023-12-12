@@ -16,6 +16,7 @@
     <color name="TaskPinColor">#0088FF</color>
     <color name="TouchPinColor">#008888</color>
     <color name="ValueAreaPinColor">#00BBBB</color>
+    <color name="ArrayPinColor">#00BBFF</color>
 
     <color name="LauncherBackgroundColor">#FAFAFA</color>
     <color name="HalfAlpha">#88000000</color>

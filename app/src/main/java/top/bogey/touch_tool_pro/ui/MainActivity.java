@@ -28,6 +28,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -184,7 +185,8 @@ public class MainActivity extends BaseActivity {
         if (uri != null) {
             String path = uri.getPath();
             if (path != null) {
-                if (path.endsWith("apk.1")) {
+                Pattern pattern = Pattern.compile("apk\\.\\d$");
+                if (pattern.matcher(path).find()) {
                     AppUtils.installApk(this, uri);
                 } else if (path.endsWith("ttp")) {
                     saveTasks(uri);
@@ -226,6 +228,8 @@ public class MainActivity extends BaseActivity {
             ArrayList<Task> tasks = SaveRepository.getInstance().getTasksByTag(SaveRepository.SHORTCUT_TAG);
             int count = 0;
             for (Task task : tasks) {
+                if (!task.isEnable()) continue;
+
                 Intent intent = new Intent(this, InstantActivity.class);
                 intent.setAction(Intent.ACTION_VIEW);
 

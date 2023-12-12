@@ -22,10 +22,12 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinTask;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArea;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidget;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetAdd;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetApp;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetArea;
+import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetArray;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetBoolean;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetColor;
 import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidgetFloat;
@@ -48,6 +50,7 @@ public enum PinType {
     ADD,
 
     VALUE,
+    VALUE_ARRAY,
 
     BOOLEAN,
 
@@ -91,6 +94,7 @@ public enum PinType {
             case APP -> R.string.pin_app;
             case IMAGE -> R.string.pin_image;
             case COLOR -> R.string.pin_color;
+            case VALUE_ARRAY -> R.string.pin_value_array;
             default -> R.string.pin_value;
         });
     }
@@ -124,6 +128,7 @@ public enum PinType {
             case APP -> PinApplication.class;
             case IMAGE -> PinImage.class;
             case COLOR -> PinColor.class;
+            case VALUE_ARRAY -> PinValueArray.class;
             default -> null;
         };
     }
@@ -146,6 +151,7 @@ public enum PinType {
             case APP -> PinWidgetApp.class;
             case IMAGE -> PinWidgetImage.class;
             case COLOR -> PinWidgetColor.class;
+            case VALUE_ARRAY -> PinWidgetArray.class;
             default -> null;
         };
     }

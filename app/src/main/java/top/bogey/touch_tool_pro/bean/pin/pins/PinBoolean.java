@@ -53,4 +53,19 @@ public class PinBoolean extends PinValue {
     public void setBool(boolean bool) {
         this.bool = bool;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinBoolean that = (PinBoolean) o;
+
+        return bool == that.bool;
+    }
+
+    @Override
+    public int hashCode() {
+        return (bool ? 1 : 0);
+    }
 }

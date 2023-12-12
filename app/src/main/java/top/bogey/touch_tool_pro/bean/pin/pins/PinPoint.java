@@ -91,4 +91,22 @@ public class PinPoint extends PinScreen {
     public int getY(Context context, int offsetPx) {
         return (int) Math.max(0, Math.random() * 2 * offsetPx - offsetPx + getY(context));
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinPoint pinPoint = (PinPoint) o;
+
+        if (x != pinPoint.x) return false;
+        return y == pinPoint.y;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = x;
+        result = 31 * result + y;
+        return result;
+    }
 }

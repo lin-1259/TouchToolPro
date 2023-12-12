@@ -84,7 +84,10 @@ public class PosPickerFloatView extends BasePickerFloatView {
     private void refreshUI() {
         binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         if (isMarked) {
-            binding.buttonBox.setX(point.x - binding.buttonBox.getWidth() / 2f - location[0]);
+            Point size = DisplayUtils.getScreenSize(getContext());
+            float x = point.x - binding.buttonBox.getWidth() / 2f - location[0];
+            x = Math.max(0, Math.min(size.x - binding.buttonBox.getWidth(), x));
+            binding.buttonBox.setX(x);
             if (point.y + padding * 2 + binding.buttonBox.getHeight() > binding.getRoot().getHeight()) {
                 binding.buttonBox.setY(point.y - padding * 2 - binding.buttonBox.getHeight() - location[1]);
             } else {

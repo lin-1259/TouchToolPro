@@ -57,6 +57,7 @@
     <string name="capture_service_off">录屏已关闭</string>
     <string name="capture_service_des">屏幕录制服务，开启之后能够使用图片点击与检测功能</string>
     <string name="capture_service_on_tips">当前任务需要检测图片，请开启屏幕录制</string>
+    <string name="capture_service_open_tips">当前设置为优先使用无障碍截屏，无需打开录屏</string>
 
     <string name="play_tile_service_title">手动悬浮窗</string>
     <string name="package_tile_service_title">当前活动</string>
@@ -215,7 +216,6 @@
     <string name="action_time_state_subtitle_second">秒</string>
     <string name="action_time_state_subtitle_timestamp">时间戳</string>
 
-    <string name="action_get_node_info_title">获取控件信息</string>
 
     <!-- 任务 - 检测 -->
     <string name="action_check_subtitle_result">结果</string>
@@ -231,11 +231,13 @@
     <string name="action_screen_state_check_subtitle_state">状态</string>
     <string name="action_screen_state_check_subtitle_check_state">待测状态</string>
 
+    <string name="action_exist_texts_check_title">界面内所有文本</string>
     <string name="action_exist_text_check_title">界面内存在文本</string>
     <string name="action_exist_text_check_subtitle_just">屏幕内</string>
 
     <string name="action_exist_text_ocr_check_title">界面内存在文本(OCR)</string>
 
+    <string name="action_exist_nodes_check_title">界面内所有控件</string>
     <string name="action_exist_node_check_title">界面内存在控件</string>
 
     <string name="action_image_check_title">图片内存在图片</string>
@@ -245,6 +247,7 @@
 
     <string name="action_color_check_title">颜色对比</string>
     <string name="action_color_check_subtitle_other">匹配颜色</string>
+    <string name="action_exist_colors_check_title">界面内所有颜色</string>
     <string name="action_exist_color_check_title">界面内存在颜色</string>
     <string name="action_exist_color_check_subtitle_similar">偏移</string>
 
@@ -310,6 +313,7 @@
     <!-- 任务 - 逻辑 -->
     <string name="action_logic_subtitle_false">未达成</string>
     <string name="action_logic_subtitle_complete">结束</string>
+    <string name="action_logic_subtitle_break">提前终止</string>
 
     <string name="action_condition_logic_title">如果…就…</string>
 
@@ -324,7 +328,6 @@
     <string name="action_for_loop_logic_subtitle_end">结束值</string>
 
     <string name="action_condition_while_logic_title">条件循环执行</string>
-    <string name="action_condition_while_logic_subtitle_break">提前终止</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
     <string name="action_sequence_condition_logic_title">顺序条件执行</string>
@@ -390,14 +393,34 @@
     <string name="action_position_to_touch_title">位置组合为手势</string>
     <string name="action_position_to_touch_subtitle_time">手势时长(ms)</string>
 
+    <!-- 任务 - 控件 -->
+    <string name="action_get_node_info_title">获取控件信息</string>
+    <string name="action_get_node_children_title">获取控件子节点</string>
+
+    <!-- 任务 - array -->
+    <string name="action_array_subtitle_element">成员</string>
+    <string name="action_array_get_title">获取数组成员</string>
+    <string name="action_array_set_title">设置数组成员</string>
+    <string name="action_array_make_title">构建数组</string>
+    <string name="action_array_add_title">添加数组成员</string>
+    <string name="action_array_insert_title">插入数组成员</string>
+    <string name="action_array_remove_title">移除数组成员</string>
+    <string name="action_array_clear_title">清理数组</string>
+    <string name="action_array_size_title">获取数组大小</string>
+    <string name="action_array_append_title">合并数组</string>
+    <string name="action_array_index_of_title">成员位置</string>
+    <string name="action_array_for_title">遍历数组成员</string>
+
     <!-- 针脚 -->
     <string name="pin_execute">执行</string>
 
     <string name="pin_value">对象</string>
+    <string name="pin_value_array">数组</string>
 
     <string name="pin_boolean">条件</string>
 
     <string name="pin_int">数值</string>
+    <string name="pin_index">序号</string>
     <string name="pin_value_area">数值区域</string>
     <string name="pin_value_area_low">最低</string>
     <string name="pin_value_area_high">最高</string>
@@ -473,7 +496,6 @@
 
     <!-- 设置 -->
     <string name="app_setting_title">应用设置</string>
-
     <string name="app_setting_show_task_start">显示任务运行提示</string>
     <string name="app_setting_show_task_start_tips">任务开始运行时，在屏幕顶部中间位置显示一个小圆点提示</string>
     <string name="app_setting_hide_background">隐藏后台</string>
@@ -490,22 +512,17 @@
     <string name="task_setting_function">自定义卡片</string>
     <string name="task_setting_include_tag">导入任务标签</string>
     <string name="task_setting_include_common_attr">导入全局变量</string>
-
     <string name="task_setting_backup">备份任务</string>
     <string name="task_setting_backup_tips">选择需要备份的任务配置和通用自定义卡片到你选择的文件夹中</string>
     <string name="task_setting_backup_error">备份任务失败，没有可用来保存文件的应用</string>
-
     <string name="task_setting_import">导入任务</string>
     <string name="task_setting_export">导出任务</string>
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
-
     <string name="task_setting_play_view_visible">显示手动执行</string>
     <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置(点击此处重置悬浮窗位置)</string>
     <string name="task_setting_play_view_visible_reset">重置完成</string>
-
     <string name="task_setting_log">实时任务日志</string>
     <string name="task_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
-
     <string name="task_setting_show_touch">显示手势轨迹</string>
     <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势轨迹动画</string>
 

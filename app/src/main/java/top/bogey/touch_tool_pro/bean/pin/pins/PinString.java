@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import java.util.Objects;
+
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
@@ -69,5 +71,20 @@ public class PinString extends PinValue {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinString pinString = (PinString) o;
+
+        return Objects.equals(value, pinString.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value != null ? value.hashCode() : 0;
     }
 }

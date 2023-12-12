@@ -15,13 +15,17 @@ public enum ActionMap {
 
     START,
     LOGIC,
-    STATE,
-    CHECK,
-    NORMAL,
-    BOOL,
+    EXECUTE,
+
     STRING,
-    INT,
+    IMAGE,
+    NODE,
+    COLOR,
+    BOOL,
+    NUMBER,
     POINT,
+    ARRAY,
+    OTHER,
     ;
 
     public String getTitle() {
@@ -38,8 +42,9 @@ public enum ActionMap {
                     ActionType.TIME_START,
                     ActionType.NOTIFY_START,
                     ActionType.BATTERY_START,
-                    ActionType.OUTER_START)
-            );
+                    ActionType.OUTER_START
+            ));
+
             case LOGIC -> new ArrayList<>(Arrays.asList(
                     ActionType.LOGIC_IF,
                     ActionType.LOGIC_WAIT_IF,
@@ -48,33 +53,10 @@ public enum ActionMap {
                     ActionType.LOGIC_SEQUENCE,
                     ActionType.LOGIC_RANDOM,
                     ActionType.LOGIC_PARALLEL,
-                    ActionType.LOGIC_MANUAL_CHOICE)
-            );
-            case STATE -> new ArrayList<>(Arrays.asList(
-                    ActionType.APP_STATE,
-                    ActionType.BATTERY_STATE,
-                    ActionType.SCREEN_STATE,
-                    ActionType.CAPTURE_STATE,
-                    ActionType.IMAGE_STATE,
-                    ActionType.COLOR_STATE,
-                    ActionType.OCR_TEXT_STATE,
-                    ActionType.DATE_STATE,
-                    ActionType.TIME_STATE,
-                    ActionType.NODE_INFO_STATE)
-            );
-            case CHECK -> new ArrayList<>(Arrays.asList(
-                    ActionType.CHECK_EXIST_TEXT,
-                    ActionType.CHECK_EXIST_TEXT_OCR,
-                    ActionType.CHECK_EXIST_NODE,
-                    ActionType.CHECK_EXIST_IMAGE,
-                    ActionType.CHECK_EXIST_COLOR,
-                    ActionType.CHECK_IMAGE,
-                    ActionType.CHECK_COLOR,
-                    ActionType.CHECK_IN_APP,
-                    ActionType.CHECK_ON_BATTERY_STATE,
-                    ActionType.CHECK_ON_SCREEN_STATE)
-            );
-            case NORMAL -> new ArrayList<>(Arrays.asList(
+                    ActionType.LOGIC_MANUAL_CHOICE
+            ));
+
+            case EXECUTE -> new ArrayList<>(Arrays.asList(
                     ActionType.DELAY,
                     ActionType.LOG,
                     ActionType.CLICK_POSITION,
@@ -90,21 +72,49 @@ public enum ActionMap {
                     ActionType.COPY,
                     ActionType.SHARE,
                     ActionType.RUN_TASK,
-                    ActionType.BREAK_TASK)
-            );
-            case BOOL -> new ArrayList<>(Arrays.asList(
-                    ActionType.BOOL_OR,
-                    ActionType.BOOL_AND,
-                    ActionType.BOOL_NOT)
-            );
+                    ActionType.BREAK_TASK
+            ));
+
             case STRING -> new ArrayList<>(Arrays.asList(
+                    ActionType.CHECK_EXIST_TEXT,
+                    ActionType.CHECK_EXIST_TEXTS,
+                    ActionType.CHECK_EXIST_TEXT_OCR,
+                    ActionType.OCR_TEXT_STATE,
+
                     ActionType.STRING_FROM_VALUE,
                     ActionType.STRING_TO_INT,
                     ActionType.STRING_ADD,
                     ActionType.STRING_EQUAL,
-                    ActionType.STRING_REGEX)
-            );
-            case INT -> new ArrayList<>(Arrays.asList(
+                    ActionType.STRING_REGEX
+            ));
+
+            case IMAGE -> new ArrayList<>(Arrays.asList(
+                    ActionType.CHECK_EXIST_IMAGE,
+                    ActionType.CHECK_IMAGE,
+                    ActionType.IMAGE_STATE
+            ));
+
+            case NODE -> new ArrayList<>(Arrays.asList(
+                    ActionType.CHECK_EXIST_NODE,
+                    ActionType.CHECK_EXIST_NODES,
+                    ActionType.NODE_INFO_STATE,
+                    ActionType.NODE_CHILDREN
+            ));
+
+            case COLOR -> new ArrayList<>(Arrays.asList(
+                    ActionType.CHECK_EXIST_COLOR,
+                    ActionType.CHECK_EXIST_COLORS,
+                    ActionType.CHECK_COLOR,
+                    ActionType.COLOR_STATE
+            ));
+
+            case BOOL -> new ArrayList<>(Arrays.asList(
+                    ActionType.BOOL_OR,
+                    ActionType.BOOL_AND,
+                    ActionType.BOOL_NOT
+            ));
+
+            case NUMBER -> new ArrayList<>(Arrays.asList(
                     ActionType.INT_ADD,
                     ActionType.INT_REDUCE,
                     ActionType.INT_MULTI,
@@ -114,16 +124,44 @@ public enum ActionMap {
                     ActionType.INT_LARGE,
                     ActionType.INT_SMALL,
                     ActionType.INT_IN_AREA,
-                    ActionType.INT_RANDOM)
-            );
+                    ActionType.INT_RANDOM
+            ));
+
             case POINT -> new ArrayList<>(Arrays.asList(
                     ActionType.POS_FROM_INT,
                     ActionType.POS_TO_INT,
                     ActionType.POS_OFFSET,
                     ActionType.POS_IN_AREA,
                     ActionType.POS_TO_AREA,
-                    ActionType.POS_TO_TOUCH)
-            );
+                    ActionType.POS_TO_TOUCH
+            ));
+
+            case ARRAY -> new ArrayList<>(Arrays.asList(
+                    ActionType.ARRAY_FOR,
+                    ActionType.ARRAY_MAKE,
+                    ActionType.ARRAY_ADD,
+                    ActionType.ARRAY_INSERT,
+                    ActionType.ARRAY_REMOVE,
+                    ActionType.ARRAY_GET,
+                    ActionType.ARRAY_SET,
+                    ActionType.ARRAY_CLEAR,
+                    ActionType.ARRAY_SIZE,
+                    ActionType.ARRAY_APPEND,
+                    ActionType.ARRAY_INDEX_OF
+            ));
+
+            case OTHER -> new ArrayList<>(Arrays.asList(
+                    ActionType.CHECK_IN_APP,
+                    ActionType.CHECK_ON_BATTERY_STATE,
+                    ActionType.CHECK_ON_SCREEN_STATE,
+                    ActionType.APP_STATE,
+                    ActionType.BATTERY_STATE,
+                    ActionType.SCREEN_STATE,
+                    ActionType.CAPTURE_STATE,
+                    ActionType.DATE_STATE,
+                    ActionType.TIME_STATE
+            ));
+
             default -> new ArrayList<>();
         };
     }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
+import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 
 public interface ActionInterface {
@@ -13,7 +14,11 @@ public interface ActionInterface {
 
     Pin reAddPin(Pin def);
 
+    Pin reAddPin(Pin def, PinType type);
+
     ArrayList<Pin> reAddPin(Pin def, int remain);
+
+    ArrayList<Pin> reAddPin(Pin def, int remain, PinType type);
 
     boolean removePin(Pin pin);
 

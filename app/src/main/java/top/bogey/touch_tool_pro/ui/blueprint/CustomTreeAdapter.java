@@ -25,11 +25,10 @@ import java.util.HashSet;
 import java.util.Locale;
 
 import top.bogey.touch_tool_pro.R;
-import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
@@ -84,7 +83,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                     if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
                         cardLayoutView.addAction(GetCommonVariableValue.class, info.key, (PinValue) info.value);
                     } else {
-                        cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value);
+                        cardLayoutView.addAction(GetLocalVariableValue.class, info.key, (PinValue) info.value);
                     }
                 }
             }
@@ -521,7 +520,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
                     cardLayoutView.addAction(GetCommonVariableValue.class, info.key, (PinValue) info.value.copy());
                 } else {
-                    cardLayoutView.addAction(GetVariableValue.class, info.key, (PinValue) info.value.copy());
+                    cardLayoutView.addAction(GetLocalVariableValue.class, info.key, (PinValue) info.value.copy());
                 }
             });
 
@@ -532,7 +531,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                 if (info.subType == TreeNodeSubtype.COMMON_ATTR) {
                     cardLayoutView.addAction(SetCommonVariableValue.class, info.key, (PinValue) info.value.copy());
                 } else {
-                    cardLayoutView.addAction(SetVariableValue.class, info.key, (PinValue) info.value.copy());
+                    cardLayoutView.addAction(SetLocalVariableValue.class, info.key, (PinValue) info.value.copy());
                 }
             });
 
@@ -560,23 +559,8 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                             if (functionContext == null) return;
                             functionContext.addVar(info.key, pinValue);
                             functionContext.save();
-
-                            for (Action action : cardLayoutView.getFunctionContext().getActionsByClass(GetVariableValue.class)) {
-                                GetVariableValue getValue = (GetVariableValue) action;
-                                if (getValue.getVarKey().equals(info.key)) {
-                                    getValue.setValue((PinValue) pinValue.copy());
-                                    cardLayoutView.refreshVariableActionPins(getValue);
-                                }
-                            }
-
-                            for (Action action : cardLayoutView.getFunctionContext().getActionsByClass(SetVariableValue.class)) {
-                                SetVariableValue setValue = (SetVariableValue) action;
-                                if (setValue.getVarKey().equals(info.key)) {
-                                    setValue.setValue((PinValue) pinValue.copy());
-                                    cardLayoutView.refreshVariableActionPins(setValue);
-                                }
-                            }
                         }
+                        cardLayoutView.refreshVariableAction(info.key, pinValue);
                     } catch (IllegalAccessException | InstantiationException e) {
                         throw new RuntimeException(e);
                     }

@@ -115,6 +115,11 @@ public class HomeView extends Fragment {
             if (code == Activity.RESULT_OK) {
                 MainAccessibilityService service = MainApplication.getInstance().getService();
                 if (service != null && service.isServiceConnected()) {
+                    if (SettingSave.getInstance().isUseTakeCapture() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        Toast.makeText(getContext(), R.string.capture_service_open_tips, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
                     if (service.isCaptureEnabled()) {
                         service.stopCaptureService();
                     } else {

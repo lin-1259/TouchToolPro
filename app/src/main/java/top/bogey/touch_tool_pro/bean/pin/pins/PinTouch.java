@@ -280,8 +280,28 @@ public class PinTouch extends PinScreen {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinTouch pinTouch = (PinTouch) o;
+
+        if (!records.equals(pinTouch.records)) return false;
+        if (anchor != pinTouch.anchor) return false;
+        return anchorPoint.equals(pinTouch.anchorPoint);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = records.hashCode();
+        result = 31 * result + anchor.hashCode();
+        result = 31 * result + anchorPoint.hashCode();
+        return result;
+    }
+
     public enum TouchAnchor {
-        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
+        TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT;
     }
 
     // time;[x.y.t,x.y.t]
@@ -375,6 +395,24 @@ public class PinTouch extends PinScreen {
             }
             return builder.substring(0, builder.length() - 1) + "]";
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            TouchRecord that = (TouchRecord) o;
+
+            if (time != that.time) return false;
+            return points.equals(that.points);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = time;
+            result = 31 * result + points.hashCode();
+            return result;
+        }
     }
 
 
@@ -425,6 +463,26 @@ public class PinTouch extends PinScreen {
             String s = x + "." + y + "." + ownerId;
             if (end) s += "." + 1;
             return s;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            PathPoint pathPoint = (PathPoint) o;
+
+            if (ownerId != pathPoint.ownerId) return false;
+            return end == pathPoint.end;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + ownerId;
+            result = 31 * result + (end ? 1 : 0);
+            return result;
         }
     }
 

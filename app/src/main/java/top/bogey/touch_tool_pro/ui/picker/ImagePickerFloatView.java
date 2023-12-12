@@ -212,8 +212,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         if (isMarked) {
             ViewGroup.LayoutParams params = binding.markBox.getLayoutParams();
-            params.width = (int) markArea.width() + 2 * offset;
-            params.height = (int) markArea.height() + 2 * offset;
+            params.width = markArea.width() + 2 * offset;
+            params.height = markArea.height() + 2 * offset;
             binding.markBox.setLayoutParams(params);
 
             binding.markBox.setX(markArea.left - offset);

@@ -286,8 +286,9 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
         if (selectedFunctions.size() == 0) return;
         for (Map.Entry<String, Function> entry : selectedFunctions.entrySet()) {
             Function function = entry.getValue();
-            if (function.getParentId() != null || !function.getParentId().isEmpty()) {
+            if (!(function.getParentId() == null || function.getParentId().isEmpty())) {
                 Toast.makeText(getContext(), R.string.export_function_error_tips, Toast.LENGTH_SHORT).show();
+                unSelectAll();
                 return;
             }
         }

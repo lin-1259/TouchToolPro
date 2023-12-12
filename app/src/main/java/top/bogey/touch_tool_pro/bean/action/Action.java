@@ -20,6 +20,7 @@ import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinListener;
+import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinAdd;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinSpinner;
@@ -116,6 +117,27 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
     }
 
     @Override
+    public Pin reAddPin(Pin def, PinType type) {
+        Pin pin = null;
+        if (tmpPins.size() > 0) {
+            Pin tmpPin = tmpPins.get(0);
+            if (tmpPin.isSameValueType(type.getPinObjectClass())) pin = tmpPins.remove(0);
+        }
+        if (pin == null) return addPin(def);
+
+        // 设置标题
+        pin.setTitleId(def.getTitleId());
+        if (pin.isSameValueType(PinAdd.class)) {
+            pin.getValue(PinAdd.class).getPin().setTitleId(def.getValue(PinAdd.class).getPin().getTitleId());
+        }
+
+        if (pin.isSameValueType(PinSpinner.class)) {
+            pin.getValue(PinSpinner.class).setArray(def.getValue(PinSpinner.class).getArray());
+        }
+        return addPin(pin);
+    }
+
+    @Override
     public ArrayList<Pin> reAddPin(Pin def, int remain) {
         ArrayList<Pin> pins = new ArrayList<>();
         int count = 0;
@@ -124,6 +146,21 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
             copy.newInfo();
             copy.setTitleId(def.getTitleId());
             pins.add(reAddPin(copy));
+            count++;
+        }
+        return pins;
+    }
+
+
+    @Override
+    public ArrayList<Pin> reAddPin(Pin def, int remain, PinType type) {
+        ArrayList<Pin> pins = new ArrayList<>();
+        int count = 0;
+        while (tmpPins.size() > remain && count <= 50) {
+            Pin copy = (Pin) def.copy();
+            copy.newInfo();
+            copy.setTitleId(def.getTitleId());
+            pins.add(reAddPin(copy, type));
             count++;
         }
         return pins;

@@ -21,9 +21,9 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
@@ -51,7 +51,7 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                     if (variableInfo.from == 1) {
                         cardLayoutView.addAction(variableInfo.out ? GetCommonVariableValue.class : SetCommonVariableValue.class, variableInfo.key, variableInfo.value);
                     } else {
-                        cardLayoutView.addAction(variableInfo.out ? GetVariableValue.class : SetVariableValue.class, variableInfo.key, variableInfo.value);
+                        cardLayoutView.addAction(variableInfo.out ? GetLocalVariableValue.class : SetLocalVariableValue.class, variableInfo.key, variableInfo.value);
                     }
                 } else if (node.getValue() instanceof ActionCard<?> card) {
                     cardLayoutView.tryLinkDragPin(card.getAction());

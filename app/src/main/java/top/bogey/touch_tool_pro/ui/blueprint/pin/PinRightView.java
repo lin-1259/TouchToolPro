@@ -7,10 +7,17 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinAdd;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.databinding.PinRightBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
+import top.bogey.touch_tool_pro.ui.blueprint.pin_widget.PinWidget;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
@@ -22,9 +29,20 @@ public class PinRightView extends PinView {
 
         binding = PinRightBinding.inflate(LayoutInflater.from(context), this, true);
         initRemoveButton(binding.removeButton);
+        refreshPinView();
+    }
 
-        if (pin.isSameValueType(PinAdd.class)) refreshPinView();
-        else refreshPinUI();
+    @Override
+    public void refreshPinView() {
+        if (pin.isSameValueType(PinAdd.class) || (pin.isSameValueType(PinValueArray.class) && pin.getValue(PinValueArray.class).isCanChange())) {
+            super.refreshPinView();
+        } else {
+            ViewGroup viewGroup = getPinViewBox();
+            if (viewGroup != null) {
+                viewGroup.removeAllViews();
+            }
+            refreshPinUI();
+        }
     }
 
     @Override

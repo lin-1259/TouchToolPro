@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class WhileLogicAction extends NormalAction {
     private transient Pin completePin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
-    private transient Pin breakPin = new Pin(new PinExecute(), R.string.action_condition_while_logic_subtitle_break);
+    private transient Pin breakPin = new Pin(new PinExecute(), R.string.action_logic_subtitle_break);
     private transient Pin conditionPin = new Pin(new PinBoolean(false), R.string.pin_boolean);
     private transient boolean needBreak;
 

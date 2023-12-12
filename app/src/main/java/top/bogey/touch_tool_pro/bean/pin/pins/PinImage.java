@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
@@ -93,5 +94,23 @@ public class PinImage extends PinScreen {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinImage pinImage = (PinImage) o;
+
+        if (!Objects.equals(image, pinImage.image)) return false;
+        return Objects.equals(bitmap, pinImage.bitmap);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = image != null ? image.hashCode() : 0;
+        result = 31 * result + (bitmap != null ? bitmap.hashCode() : 0);
+        return result;
     }
 }

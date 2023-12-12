@@ -23,19 +23,13 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.work.Data;
 import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.ExistingWorkPolicy;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-import androidx.work.WorkQuery;
-
-import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,17 +37,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import kotlin.Unit;
-import kotlin.coroutines.Continuation;
-import kotlin.coroutines.CoroutineContext;
-import kotlinx.coroutines.flow.Flow;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
@@ -85,6 +75,7 @@ public class MainAccessibilityService extends AccessibilityService {
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 30, TimeUnit.SECONDS, new TaskQueue<>(20));
+    public final ExecutorService takeCaptureService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final HashSet<EnterActivityListener> enterActivityListeners = new HashSet<>();
@@ -355,7 +346,7 @@ public class MainAccessibilityService extends AccessibilityService {
         }
 
         if (SettingSave.getInstance().isUseTakeCapture() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            takeScreenshot(0, Executors.newSingleThreadExecutor(), new TakeScreenshotCallback() {
+            takeScreenshot(0, takeCaptureService, new TakeScreenshotCallback() {
                 @Override
                 public void onSuccess(@NonNull ScreenshotResult screenshot) {
                     Bitmap bitmap = Bitmap.wrapHardwareBuffer(screenshot.getHardwareBuffer(), screenshot.getColorSpace());

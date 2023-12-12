@@ -5,15 +5,20 @@
         <item>自定义</item>
         <item>变量</item>
         <item>现有卡片</item>
+
         <item>开始动作</item>
         <item>逻辑动作</item>
-        <item>获取状态</item>
-        <item>状态检测</item>
-        <item>普通动作</item>
-        <item>条件相关</item>
+        <item>执行动作</item>
+
         <item>文本相关</item>
+        <item>图片相关</item>
+        <item>控件相关</item>
+        <item>颜色相关</item>
+        <item>条件相关</item>
         <item>数值相关</item>
         <item>位置相关</item>
+        <item>数组相关</item>
+        <item>其他</item>
     </string-array>
 
     <string-array name="restart_type">

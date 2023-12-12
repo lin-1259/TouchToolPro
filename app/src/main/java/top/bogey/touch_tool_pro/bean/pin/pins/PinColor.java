@@ -76,4 +76,23 @@ public class PinColor extends PinScreen {
         this.max = max;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinColor pinColor = (PinColor) o;
+
+        if (min != pinColor.min) return false;
+        if (max != pinColor.max) return false;
+        return Arrays.equals(color, pinColor.color);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Arrays.hashCode(color);
+        result = 31 * result + min;
+        result = 31 * result + max;
+        return result;
+    }
 }

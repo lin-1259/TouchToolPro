@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.JsonObject;
 
+import java.util.Objects;
+
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
@@ -73,5 +75,23 @@ public class PinTask extends PinValue {
         Task task = getTask();
         if (task == null) return null;
         return (StartAction) task.getActionById(startId);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinTask pinTask = (PinTask) o;
+
+        if (!Objects.equals(taskId, pinTask.taskId)) return false;
+        return Objects.equals(startId, pinTask.startId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = taskId != null ? taskId.hashCode() : 0;
+        result = 31 * result + (startId != null ? startId.hashCode() : 0);
+        return result;
     }
 }

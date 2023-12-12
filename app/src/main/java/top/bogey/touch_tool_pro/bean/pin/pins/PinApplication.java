@@ -136,4 +136,22 @@ public class PinApplication extends PinValue {
     public LinkedHashMap<String, ArrayList<String>> getApps() {
         return apps;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        PinApplication that = (PinApplication) o;
+
+        return apps.equals(that.apps);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + apps.hashCode();
+        return result;
+    }
 }

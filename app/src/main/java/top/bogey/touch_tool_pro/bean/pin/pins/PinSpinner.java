@@ -102,4 +102,24 @@ public class PinSpinner extends PinValue {
         if (builder.length() == 0) return "";
         return builder.substring(0, builder.length() - 1);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinSpinner that = (PinSpinner) o;
+
+        if (index != that.index) return false;
+        if (array != that.array) return false;
+        return arrays.equals(that.arrays);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = arrays.hashCode();
+        result = 31 * result + index;
+        result = 31 * result + array;
+        return result;
+    }
 }

@@ -13,11 +13,11 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class SetVariableValue extends NormalAction {
-    private final String varKey;
-    private final transient Pin valuePin;
+    protected final String varKey;
+    protected final transient Pin valuePin;
 
-    public SetVariableValue(String varKey, PinValue value) {
-        super(ActionType.VAR_SET);
+    public SetVariableValue(ActionType type, String varKey, PinValue value) {
+        super(type);
         this.varKey = varKey;
         valuePin = addPin(new Pin(value));
         valuePin.setTitle(varKey);
@@ -29,26 +29,15 @@ public class SetVariableValue extends NormalAction {
         valuePin = addPin(tmpPins.remove(0));
     }
 
-    @Override
-    public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        if (isError(context)) return;
-        PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
-        context.setVarOnParent(varKey, (PinValue) value.copy());
-        executeNext(runnable, context, outPin);
-    }
-
-    @Override
-    public ActionCheckResult check(FunctionContext context) {
-        PinValue value = context.findVar(varKey);
-        if (value == null) return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_variable_action_tips);
-        return super.check(context);
-    }
-
     public String getVarKey() {
         return varKey;
     }
 
     public void setValue(PinValue value) {
         valuePin.setValue(value);
+    }
+
+    public PinValue getValue() {
+        return valuePin.getValue(PinValue.class);
     }
 }

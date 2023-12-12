@@ -103,4 +103,22 @@ public class PinValueArea extends PinValue {
         high = (high - min) / step * step + min;
         this.high = high;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinValueArea that = (PinValueArea) o;
+
+        if (low != that.low) return false;
+        return high == that.high;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = low;
+        result = 31 * result + high;
+        return result;
+    }
 }

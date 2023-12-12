@@ -241,6 +241,10 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
         return null;
     }
 
+    public void refreshPinView() {
+        pinViews.forEach((id, view) -> view.refreshPinView());
+    }
+
     public FunctionContext getFunctionContext() {
         return functionContext;
     }

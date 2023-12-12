@@ -32,7 +32,7 @@ import java.util.Calendar;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
-import top.bogey.touch_tool_pro.bean.action.state.ScreenStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 

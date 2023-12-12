@@ -76,4 +76,19 @@ public class PinArea extends PinScreen {
         setScreen(context);
         this.area.set(area);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PinArea pinArea = (PinArea) o;
+
+        return area.equals(pinArea.area);
+    }
+
+    @Override
+    public int hashCode() {
+        return area.hashCode();
+    }
 }

@@ -36,7 +36,9 @@ import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
 import top.bogey.touch_tool_pro.bean.base.FunctionSaveChangedListener;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
@@ -763,6 +765,25 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         Toast.makeText(getContext(), getContext().getString(R.string.card_error_tips, count), Toast.LENGTH_SHORT).show();
     }
 
+
+    public void refreshVariableAction(String key, PinValue value) {
+        cardMap.forEach((id, card) -> {
+            if (card.getAction() instanceof GetVariableValue getValue) {
+                if (getValue.getVarKey().equals(key)) {
+                    getValue.setValue((PinValue) value.copy());
+                    refreshVariableActionPins(getValue);
+                }
+            }
+            if (card.getAction() instanceof SetVariableValue setValue) {
+                if (setValue.getVarKey().equals(key)) {
+                    setValue.setValue((PinValue) value.copy());
+                    refreshVariableActionPins(setValue);
+                }
+            }
+        });
+        postInvalidate();
+    }
+
     public void refreshVariableActionPins(Action action) {
         ActionCard<?> baseCard = cardMap.get(action.getId());
         if (baseCard == null) return;
@@ -771,7 +792,6 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
                 pin.cleanLinks(functionContext);
             }
         }
-        postInvalidate();
     }
 
     @Override
@@ -808,20 +828,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
 
     @Override
     public void onChanged(String key, PinValue value) {
-        cardMap.forEach((id, card) -> {
-            if (card.getAction() instanceof GetCommonVariableValue getValue) {
-                if (getValue.getVarKey().equals(key)) {
-                    getValue.setValue((PinValue) value.copy());
-                    refreshVariableActionPins(getValue);
-                }
-            }
-            if (card.getAction() instanceof SetCommonVariableValue setValue) {
-                if (setValue.getVarKey().equals(key)) {
-                    setValue.setValue((PinValue) value.copy());
-                    refreshVariableActionPins(setValue);
-                }
-            }
-        });
+        refreshVariableAction(key, value);
     }
 
     @Override

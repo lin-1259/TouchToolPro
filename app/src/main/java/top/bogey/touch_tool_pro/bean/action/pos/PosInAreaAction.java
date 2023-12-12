@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
-import top.bogey.touch_tool_pro.bean.action.check.CheckAction;
+import top.bogey.touch_tool_pro.bean.action.other.CheckAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
