@@ -18,6 +18,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.databinding.PinRightCustomBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -53,7 +54,9 @@ public class PinRightCustomView extends PinCustomView {
                 if (pinObjectClass == null) return;
 
                 try {
-                    functionPin.setValue(pinObjectClass.newInstance());
+                    PinObject pinObject = pinObjectClass.newInstance();
+                    if (pinObject instanceof PinValueArray array) array.setCanChange(false);
+                    functionPin.setValue(pinObject);
                 } catch (IllegalAccessException | InstantiationException e) {
                     e.printStackTrace();
                 }

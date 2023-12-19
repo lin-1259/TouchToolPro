@@ -33,6 +33,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
+import top.bogey.touch_tool_pro.bean.action.array.ArrayAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
@@ -47,6 +48,7 @@ import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.card.FunctionCard;
@@ -311,6 +313,9 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         if (dragPin != null) {
             Pin pin = action.getFirstPinByClass(dragPin.getPin().getPinClass(), dragOut);
             if (pin != null) {
+                if (action instanceof ArrayAction arrayAction && dragPin.getPin().getValue() instanceof PinValueArray array) {
+                    arrayAction.setValueType(functionContext, array.getPinType());
+                }
                 pin.addLinks(dragLinks, functionContext);
                 return true;
             }

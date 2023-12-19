@@ -28,7 +28,7 @@
         <item name="android:insetBottom">0dp</item>
     </style>
 
-    <style name="Theme.TouchTool.Button.TextButton" parent="Widget.Material3.Button.TextButton">
+    <style name="Theme.TouchTool.TextButton" parent="Widget.Material3.Button.TextButton">
         <item name="iconGravity">textTop</item>
         <item name="iconSize">24dp</item>
         <item name="iconPadding">8dp</item>
@@ -43,6 +43,12 @@
 
     <style name="Theme.TouchTool.ShapeAppearance.RightCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
         <item name="cornerSizeTopLeft">0%</item>
+        <item name="cornerSizeBottomLeft">0%</item>
+    </style>
+
+    <style name="Theme.TouchTool.ShapeAppearance.RightBottomCorner.Small" parent="ShapeAppearance.Material3.Corner.Small">
+        <item name="cornerSizeTopLeft">0%</item>
+        <item name="cornerSizeTopRight">0%</item>
         <item name="cornerSizeBottomLeft">0%</item>
     </style>
 

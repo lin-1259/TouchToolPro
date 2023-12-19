@@ -31,6 +31,16 @@
             android:insetBottom="0dp"
             app:icon="@drawable/icon_check" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/detailButton"
+            style="@style/Theme.TouchTool.IconButton.Filled"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginHorizontal="8dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            app:icon="@drawable/icon_more" />
+
     </LinearLayout>
 
 </FrameLayout>

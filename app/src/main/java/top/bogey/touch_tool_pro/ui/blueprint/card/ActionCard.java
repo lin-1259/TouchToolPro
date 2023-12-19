@@ -213,6 +213,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     public void onPinChanged(Pin pin) {
         PinView pinView = pinViews.get(pin.getId());
         if (pinView != null) pinView.refreshPinUI();
+        pinViews.forEach((id, view) -> view.setExpand(action.isExpand()));
         check();
     }
 
@@ -223,6 +224,8 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
     public PinView getPinViewByPos(float rawX, float rawY) {
         for (Map.Entry<String, PinView> entry : pinViews.entrySet()) {
             PinView pinView = entry.getValue();
+            // 跳过隐藏的针脚
+            if (pinView.getVisibility() != VISIBLE) continue;
             boolean vertical = pinView.getPin().isVertical();
             boolean out = pinView.getPin().isOut();
             int[] location = new int[2];

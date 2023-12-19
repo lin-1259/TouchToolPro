@@ -18,7 +18,9 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
 import top.bogey.touch_tool_pro.databinding.FloatPickerAreaBinding;
+import top.bogey.touch_tool_pro.ui.custom.ChangeAreaFloatView;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class AreaPickerFloatView extends BasePickerFloatView {
@@ -42,6 +44,14 @@ public class AreaPickerFloatView extends BasePickerFloatView {
         });
 
         binding.backButton.setOnClickListener(v -> dismiss());
+
+        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> {
+            area.left = Math.max(location[0], area.left);
+            area.top = Math.max(location[1], area.top);
+            area.right = Math.min(getWidth() + location[0], area.right);
+            area.bottom = Math.min(getHeight() + location[1], area.bottom);
+            refreshUI();
+        }).show());
 
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint.setStyle(Paint.Style.FILL);
@@ -156,6 +166,12 @@ public class AreaPickerFloatView extends BasePickerFloatView {
             initMatchArea();
             refreshUI();
         }
+    }
+
+    @Override
+    public void dismiss() {
+        EasyFloat.dismiss(ChangeAreaFloatView.class.getName());
+        super.dismiss();
     }
 
     private enum AdjustMode {NONE, DRAG, LEFT, RIGHT, TOP, BOTTOM}

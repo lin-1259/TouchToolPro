@@ -19,7 +19,7 @@ import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class PinValueArray extends PinValue {
     private PinType pinType = PinType.STRING;
-    private final boolean canChange;
+    private boolean canChange;
     private ArrayList<PinValue> values = new ArrayList<>();
 
     public PinValueArray() {
@@ -55,6 +55,10 @@ public class PinValueArray extends PinValue {
 
     public boolean isCanChange() {
         return canChange;
+    }
+
+    public void setCanChange(boolean canChange) {
+        this.canChange = canChange;
     }
 
     public ArrayList<PinValue> getValues() {

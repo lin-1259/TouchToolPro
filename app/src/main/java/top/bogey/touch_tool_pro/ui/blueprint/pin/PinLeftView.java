@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool_pro.bean.pin.Pin;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.databinding.PinLeftBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -22,6 +23,19 @@ public class PinLeftView extends PinView {
         binding = PinLeftBinding.inflate(LayoutInflater.from(context), this, true);
         initRemoveButton(binding.removeButton);
         refreshPinView();
+    }
+
+    @Override
+    public void refreshPinView() {
+        if (pin.isSameValueType(PinValueArray.class) && !pin.getValue(PinValueArray.class).isCanChange()) {
+            ViewGroup viewGroup = getPinViewBox();
+            if (viewGroup != null) {
+                viewGroup.removeAllViews();
+            }
+            refreshPinUI();
+        } else {
+            super.refreshPinView();
+        }
     }
 
     @Override

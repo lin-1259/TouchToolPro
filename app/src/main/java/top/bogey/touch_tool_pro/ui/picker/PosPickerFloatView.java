@@ -13,7 +13,9 @@ import androidx.annotation.NonNull;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.databinding.FloatPickerPosBinding;
+import top.bogey.touch_tool_pro.ui.custom.ChangeAreaFloatView;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
 @SuppressLint("ViewConstructor")
 public class PosPickerFloatView extends BasePickerFloatView {
@@ -41,6 +43,8 @@ public class PosPickerFloatView extends BasePickerFloatView {
         });
 
         binding.backButton.setOnClickListener(v -> dismiss());
+
+        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, point, point -> refreshUI()).show());
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(DisplayUtils.getAttrColor(getContext(), R.attr.colorPrimaryLight, 0));
@@ -82,11 +86,14 @@ public class PosPickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
+        Point screenSize = DisplayUtils.getScreenSize(getContext());
+        point.x = Math.min(screenSize.x, Math.max(location[0], point.x));
+        point.y = Math.min(screenSize.y, Math.max(location[1], point.y));
+
         binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         if (isMarked) {
-            Point size = DisplayUtils.getScreenSize(getContext());
             float x = point.x - binding.buttonBox.getWidth() / 2f - location[0];
-            x = Math.max(0, Math.min(size.x - binding.buttonBox.getWidth(), x));
+            x = Math.max(0, Math.min(screenSize.x - binding.buttonBox.getWidth(), x));
             binding.buttonBox.setX(x);
             if (point.y + padding * 2 + binding.buttonBox.getHeight() > binding.getRoot().getHeight()) {
                 binding.buttonBox.setY(point.y - padding * 2 - binding.buttonBox.getHeight() - location[1]);
@@ -98,5 +105,11 @@ public class PosPickerFloatView extends BasePickerFloatView {
         if (binding.buttonBox.getWidth() == 0) {
             post(this::refreshUI);
         }
+    }
+
+    @Override
+    public void dismiss() {
+        EasyFloat.dismiss(ChangeAreaFloatView.class.getName());
+        super.dismiss();
     }
 }

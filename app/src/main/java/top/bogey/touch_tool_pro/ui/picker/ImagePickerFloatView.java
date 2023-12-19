@@ -22,6 +22,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinImage;
 import top.bogey.touch_tool_pro.databinding.FloatPickerImageBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.ui.custom.ChangeAreaFloatView;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
@@ -59,6 +60,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
         binding.backButton.setOnClickListener(v -> dismiss());
 
+        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, markArea, area -> refreshUI()).show());
+
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint.setStyle(Paint.Style.FILL);
         markPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
@@ -88,7 +91,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                         showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
                         Rect rect = DisplayUtils.matchImage(showBitmap, pinImage.getImage(getContext()), 95, new Rect());
                         if (rect != null) {
-                            markArea = new Rect(rect);
+                            markArea.set(rect);
                             isMarked = true;
                         }
                         refreshUI();
@@ -239,6 +242,12 @@ public class ImagePickerFloatView extends BasePickerFloatView {
             getLocationOnScreen(location);
             refreshUI();
         }
+    }
+
+    @Override
+    public void dismiss() {
+        EasyFloat.dismiss(ChangeAreaFloatView.class.getName());
+        super.dismiss();
     }
 
     private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG}

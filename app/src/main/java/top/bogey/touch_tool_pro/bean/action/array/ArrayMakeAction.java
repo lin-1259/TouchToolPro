@@ -19,20 +19,17 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 public class ArrayMakeAction extends ArrayAction implements ActionMorePinInterface {
     private final transient Pin morePin = new Pin(new PinString(), R.string.action_array_subtitle_element);
     private transient Pin arrayPin = new Pin(new PinValueArray(PinType.STRING), R.string.pin_value_array, true);
-    private transient Pin firstPin = new Pin(new PinString(), R.string.action_array_subtitle_element);
     private transient Pin addPin = new Pin(new PinAdd(morePin), R.string.action_subtitle_add_pin);
 
     public ArrayMakeAction() {
         super(ActionType.ARRAY_MAKE);
         arrayPin = addPin(arrayPin);
-        firstPin = addPin(firstPin);
         addPin = addPin(addPin);
     }
 
     public ArrayMakeAction(JsonObject jsonObject) {
         super(jsonObject);
         arrayPin = reAddPin(arrayPin);
-        firstPin = reAddPin(firstPin, getPinType());
         reAddPin(morePin, 1, getPinType());
         addPin = reAddPin(addPin);
     }
@@ -63,9 +60,9 @@ public class ArrayMakeAction extends ArrayAction implements ActionMorePinInterfa
         ArrayList<Pin> pins = new ArrayList<>();
         boolean start = false;
         for (Pin pin : getPins()) {
-            if (pin == firstPin) start = true;
             if (pin == addPin) start = false;
             if (start) pins.add(pin);
+            if (pin == arrayPin) start = true;
         }
         return pins;
     }

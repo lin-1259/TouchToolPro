@@ -65,7 +65,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/selectAllButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -74,7 +74,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/deleteButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -83,7 +83,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/exportButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -92,7 +92,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/copyButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -101,7 +101,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/moveButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -110,7 +110,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cancelButton"
-                    style="@style/Theme.TouchTool.Button.TextButton"
+                    style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

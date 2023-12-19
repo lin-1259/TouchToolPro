@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.array.ArrayAction;
-import top.bogey.touch_tool_pro.bean.action.array.ArrayWithAction;
+import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
+import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
@@ -56,11 +57,13 @@ public class PinWidgetArray extends PinWidget<PinValueArray> {
                 if (action instanceof ArrayAction arrayAction) {
                     arrayAction.setValueType(card.getFunctionContext(), pinType);
                     card.refreshPinView();
-                } else {
-                    if (action instanceof GetVariableValue || action instanceof SetVariableValue) {
-                        pinObject.setPinType(pinType);
-                        ((CardLayoutView) card.getParent()).refreshVariableAction(pinView.getPin().getTitle(), pinObject);
-                    }
+                } else if (action instanceof GetVariableValue || action instanceof SetVariableValue) {
+                    pinObject.setPinType(pinType);
+                    ((CardLayoutView) card.getParent()).refreshVariableAction(pinView.getPin().getTitle(), pinObject);
+                } else if (action instanceof FunctionInnerAction) {
+                    pinObject.setPinType(pinType);
+                    pinView.getPin().cleanLinks(card.getFunctionContext());
+                    pinView.refreshPinView();
                 }
             }
         });
