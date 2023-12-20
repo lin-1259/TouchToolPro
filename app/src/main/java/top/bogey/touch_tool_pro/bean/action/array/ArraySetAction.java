@@ -43,7 +43,7 @@ public class ArraySetAction extends ArrayNormalAction {
         PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
         ArrayList<PinValue> values = array.getValues();
         if (index.getValue() > 0 && index.getValue() <= values.size()) {
-            values.set(index.getValue() - 1, value);
+            values.set(index.getValue() - 1, (PinValue) value.copy());
             executeNext(runnable, context, outPin);
         } else {
             executeNext(runnable, context, falsePin);

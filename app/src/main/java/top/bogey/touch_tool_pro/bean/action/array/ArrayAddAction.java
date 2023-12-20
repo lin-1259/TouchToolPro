@@ -33,7 +33,7 @@ public class ArrayAddAction extends ArrayNormalAction {
         PinValueArray array = (PinValueArray) getPinValue(runnable, context, arrayPin);
         PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
         ArrayList<PinValue> values = array.getValues();
-        values.add(value);
+        values.add((PinValue) value.copy());
         executeNext(runnable, context, outPin);
     }
 

@@ -40,7 +40,7 @@ public class ArrayMakeAction extends ArrayAction implements ActionMorePinInterfa
         values.clear();
         for (Pin valuePin : calculateMorePins()) {
             PinValue value = (PinValue) getPinValue(runnable, context, valuePin);
-            values.add(value);
+            values.add((PinValue) value.copy());
         }
     }
 

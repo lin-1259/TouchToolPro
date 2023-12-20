@@ -9,6 +9,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
@@ -32,7 +33,9 @@ public class ArrayAppendAction extends ArrayNormalAction {
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinValueArray array = (PinValueArray) getPinValue(runnable, context, arrayPin);
         PinValueArray other = (PinValueArray) getPinValue(runnable, context, otherPin);
-        array.getValues().addAll(other.getValues());
+        for (PinValue value : other.getValues()) {
+            array.getValues().add((PinValue) value.copy());
+        }
         resultPin.setValue(array);
         executeNext(runnable, context, outPin);
     }
