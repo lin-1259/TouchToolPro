@@ -42,7 +42,7 @@ public class PinValueArray extends PinValue {
         super(jsonObject);
         pinType = GsonUtils.getAsObject(jsonObject, "pinType", PinType.class, PinType.STRING);
         canChange = GsonUtils.getAsBoolean(jsonObject, "canChange", true);
-        values = GsonUtils.getAsObject(jsonObject, "values", TypeToken.getParameterized(ArrayList.class, PinValue.class).getType(), new ArrayList<>());
+        values = GsonUtils.getAsObject(jsonObject, "values", TypeToken.getParameterized(ArrayList.class, PinObject.class).getType(), new ArrayList<>());
     }
 
     public PinType getPinType() {
