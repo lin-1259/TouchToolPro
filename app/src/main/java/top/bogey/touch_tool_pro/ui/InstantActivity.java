@@ -8,6 +8,7 @@ import java.util.HashMap;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.OuterStartAction;
+import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
@@ -78,10 +79,10 @@ public class InstantActivity extends BaseActivity {
                 Task task = SaveRepository.getInstance().getTaskById(taskId);
                 if (task != null) {
                     Action action = task.getActionById(actionId);
-                    if (action instanceof OuterStartAction) {
+                    if (action instanceof StartAction) {
                         MainAccessibilityService service = MainApplication.getInstance().getService();
                         if (service != null && service.isServiceEnabled()) {
-                            service.runTask(task, (OuterStartAction) action);
+                            service.runTask(task, (StartAction) action);
                         }
                     }
                 }

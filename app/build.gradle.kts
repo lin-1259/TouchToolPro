@@ -94,7 +94,6 @@ dependencies {
 
     implementation(libs.nav.fragment)
     implementation(libs.nav.ui)
-    implementation(libs.work.runtime)
 
     implementation(libs.mmkv)
     implementation(libs.gson)

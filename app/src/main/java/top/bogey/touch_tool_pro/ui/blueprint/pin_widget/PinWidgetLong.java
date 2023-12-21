@@ -103,7 +103,7 @@ public class PinWidgetLong extends PinWidget<PinLong> {
                     MaterialTimePicker picker = new MaterialTimePicker.Builder()
                             .setInputMode(MaterialTimePicker.INPUT_MODE_CLOCK)
                             .setTimeFormat(TimeFormat.CLOCK_24H)
-                            .setHour((int) TimeUnit.MILLISECONDS.toHours(pinObject.getValue()))
+                            .setHour((int) TimeUnit.MILLISECONDS.toHours(pinObject.getValue()) % 24)
                             .setMinute((int) TimeUnit.MILLISECONDS.toMinutes(pinObject.getValue()))
                             .setTitleText(R.string.action_time_start_tips)
                             .build();
@@ -111,11 +111,12 @@ public class PinWidgetLong extends PinWidget<PinLong> {
                     picker.show(((AppCompatActivity) context).getSupportFragmentManager(), null);
 
                     picker.addOnPositiveButtonClickListener(view -> {
+                        long lastValue = pinObject.getValue();
                         pinObject.setValue(TimeUnit.HOURS.toMillis(picker.getHour()) + TimeUnit.MINUTES.toMillis(picker.getMinute()));
-                        if (picker.getHour() == 0 && picker.getMinute() == 0)
-                            pinObject.setValue(TimeUnit.HOURS.toMillis(24));
-                        long millis = TimeUnit.MINUTES.toMillis(15);
-                        if (pinObject.getValue() < millis) pinObject.setValue(0L);
+                        if (picker.getHour() == 0 && picker.getMinute() == 0){
+                            if (lastValue == 0) pinObject.setValue(TimeUnit.HOURS.toMillis(24));
+                            else pinObject.setValue(0L);
+                        }
                         binding.editText.setText(AppUtils.formatDateLocalDuration(context, pinObject.getValue()));
                     });
                 });

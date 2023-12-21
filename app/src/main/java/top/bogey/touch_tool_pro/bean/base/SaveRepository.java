@@ -151,7 +151,7 @@ public class SaveRepository {
     public void saveTask(Task task) {
         MainAccessibilityService service = MainApplication.getInstance().getService();
         if (service != null && service.isServiceEnabled()) {
-            service.replaceWork(task);
+            service.replaceAlarm(task);
         }
 
         TaskSaveReference reference = tasks.get(task.getId());

@@ -174,7 +174,7 @@
     <string name="action_time_start_subtitle_date">日期</string>
     <string name="action_time_start_subtitle_time">时间</string>
     <string name="action_time_start_subtitle_periodic">间隔</string>
-    <string name="action_time_start_tips">小于15分钟为取消间隔，00:00为间隔24小时</string>
+    <string name="action_time_start_tips">未设置间隔时设置00:00为间隔24小时，有间隔时设置00:00为移除间隔</string>
 
     <string name="action_battery_start_title">电池状态变更时执行</string>
     <string name="action_battery_start_subtitle_state">状态</string>
