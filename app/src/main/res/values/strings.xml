@@ -174,7 +174,7 @@
     <string name="action_time_start_subtitle_date">日期</string>
     <string name="action_time_start_subtitle_time">时间</string>
     <string name="action_time_start_subtitle_periodic">间隔</string>
-    <string name="action_time_start_tips">未设置间隔时设置00:00为间隔24小时，有间隔时设置00:00为移除间隔</string>
+    <string name="action_time_start_tips">未设置间隔时设置00:00为间隔24小时\n有间隔时设置00:00为移除间隔</string>
 
     <string name="action_battery_start_title">电池状态变更时执行</string>
     <string name="action_battery_start_subtitle_state">状态</string>
@@ -533,6 +533,8 @@
     <string name="profile_setting_first_look_blueprint_tips">打开蓝图时默认为查看模式，而不是编辑模式</string>
     <string name="profile_setting_first_use_take_capture">优先使用无障碍截屏</string>
     <string name="profile_setting_first_use_take_capture_tips">在支持的Android版本上优先使用无障碍截屏，可以不需要提前申请录屏权限</string>
+    <string name="profile_setting_first_use_exact_alarm">使用精确定时</string>
+    <string name="profile_setting_first_use_exact_alarm_tips">优先使用精确定时，但是可能会更耗电</string>
 
     <string name="theme_setting">界面外观</string>
     <string name="theme_setting_dynamic_color">动态颜色</string>

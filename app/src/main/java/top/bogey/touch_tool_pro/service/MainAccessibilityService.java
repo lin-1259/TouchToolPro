@@ -41,7 +41,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.RestartType;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
@@ -53,12 +52,10 @@ import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
-import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
 import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
-import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
@@ -135,7 +132,11 @@ public class MainAccessibilityService extends AccessibilityService {
         super.onCreate();
         MainApplication.getInstance().setService(this);
         systemEventReceiver = new SystemEventReceiver();
-        registerReceiver(systemEventReceiver, systemEventReceiver.getFilter());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(systemEventReceiver, systemEventReceiver.getFilter(), RECEIVER_EXPORTED);
+        } else {
+            registerReceiver(systemEventReceiver, systemEventReceiver.getFilter());
+        }
     }
 
     @Override
@@ -162,33 +163,9 @@ public class MainAccessibilityService extends AccessibilityService {
 
         if (isServiceEnabled()) {
             WorldState.getInstance().resetAppMap(this);
-            for (Task task : SaveRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
-                for (Action action : task.getActionsByClass(TimeStartAction.class)) {
-                    TimeStartAction startAction = (TimeStartAction) action;
-                    if (startAction.isEnable()) {
-                        addAlarm(task, startAction);
-                    }
-                }
-            }
+            resetAlarm();
         } else {
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            for (Task task : SaveRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
-                for (Action action : task.getActionsByClass(TimeStartAction.class)) {
-                    TimeStartAction startAction = (TimeStartAction) action;
-                    if (startAction.isEnable()) {
-
-                        Intent intent = new Intent(this, InstantActivity.class);
-                        intent.setAction(Intent.ACTION_VIEW);
-
-                        intent.putExtra(InstantActivity.INTENT_KEY_DO_ACTION, true);
-                        intent.putExtra(TASK_ID, task.getId());
-                        intent.putExtra(ACTION_ID, startAction.getId());
-
-                        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
-                        alarmManager.cancel(pendingIntent);
-                    }
-                }
-            }
+            cancelAllAlarm();
             stopAllTask();
         }
     }
@@ -383,6 +360,35 @@ public class MainAccessibilityService extends AccessibilityService {
 
     //-----------------------------------定时----------------------------------
 
+    public void resetAlarm() {
+        cancelAllAlarm();
+        for (Task task : SaveRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
+            for (Action action : task.getActionsByClass(TimeStartAction.class)) {
+                TimeStartAction startAction = (TimeStartAction) action;
+                if (startAction.isEnable()) {
+                    addAlarm(task, startAction);
+                }
+            }
+        }
+    }
+
+    public void cancelAllAlarm() {
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        for (Task task : SaveRepository.getInstance().getTasksByStart(TimeStartAction.class)) {
+            for (Action action : task.getActionsByClass(TimeStartAction.class)) {
+                TimeStartAction startAction = (TimeStartAction) action;
+                if (startAction.isEnable()) {
+                    Intent intent = new Intent(SystemEventReceiver.ALARM_TASK);
+                    intent.putExtra(TASK_ID, task.getId());
+                    intent.putExtra(ACTION_ID, startAction.getId());
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                    alarmManager.cancel(pendingIntent);
+                }
+            }
+        }
+    }
+
     public void addAlarm(Task task, TimeStartAction startAction) {
         if (task == null || startAction == null) return;
         if (!isServiceEnabled()) return;
@@ -393,45 +399,38 @@ public class MainAccessibilityService extends AccessibilityService {
         long startTime = startAction.getStartTime();
         long periodic = startAction.getPeriodic();
 
-        Intent intent = new Intent(this, InstantActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
-
-        intent.putExtra(InstantActivity.INTENT_KEY_DO_ACTION, true);
+        Intent intent = new Intent(SystemEventReceiver.ALARM_TASK);
         intent.putExtra(TASK_ID, task.getId());
         intent.putExtra(ACTION_ID, startAction.getId());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
+        long nextStartTime = startTime;
         if (periodic > 0) {
-            long nextStartTime;
             long l = timeMillis - startTime;
             // 当前时间没达到定时时间，下次执行时间就是开始时间
-            if (l < 0) nextStartTime = startTime;
-            else {
+            if (l > 0) {
                 // 当前时间大于开始时间，需要计算下次开始的时间，防止定时任务刚设定就执行了
-                int loop = (int) Math.floor(l * 1f / periodic);
+                int loop = (int) Math.ceil(l * 1f / periodic);
                 nextStartTime = startTime + loop * periodic;
+                // 如果算出的下个开始时间没有大于现在时间10s，应该是算错了，下个开始时间再加个间隔
+                if (nextStartTime - timeMillis < 10 * 1000) {
+                    nextStartTime += periodic;
+                }
             }
-
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, nextStartTime, periodic, pendingIntent);
-            SaveRepository.getInstance().addLog(task.getId(), startAction.getFullDescription() +
-                    getString(R.string.periodic_work_add,
-                            getString(R.string.date,
-                                    AppUtils.formatDateLocalDate(this, startTime),
-                                    AppUtils.formatDateLocalTime(this, startTime)),
-                            AppUtils.formatDateLocalDuration(this, periodic)
-                    )
-            );
+        }
+        if (nextStartTime < timeMillis) return;
+        if (SettingSave.getInstance().isUseExactAlarm()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (alarmManager.canScheduleExactAlarms()) {
+                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextStartTime, pendingIntent);
+                } else {
+                    alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextStartTime, pendingIntent);
+                }
+            } else {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextStartTime, pendingIntent);
+            }
         } else {
-            if (startTime < timeMillis) return;
-            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, startTime, pendingIntent);
-            SaveRepository.getInstance().addLog(task.getId(), startAction.getFullDescription() +
-                    getString(R.string.work_add,
-                            getString(R.string.date,
-                                    AppUtils.formatDateLocalDate(this, startTime),
-                                    AppUtils.formatDateLocalTime(this, startTime))
-                    )
-            );
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextStartTime, pendingIntent);
         }
     }
 
@@ -454,14 +453,10 @@ public class MainAccessibilityService extends AccessibilityService {
                     }
                 }
                 if (!exist) {
-                    Intent intent = new Intent(this, InstantActivity.class);
-                    intent.setAction(Intent.ACTION_VIEW);
-
-                    intent.putExtra(InstantActivity.INTENT_KEY_DO_ACTION, true);
+                    Intent intent = new Intent(SystemEventReceiver.ALARM_TASK);
                     intent.putExtra(TASK_ID, task.getId());
                     intent.putExtra(ACTION_ID, timeStartAction.getId());
-
-                    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_NO_CREATE | PendingIntent.FLAG_IMMUTABLE);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
                     alarmManager.cancel(pendingIntent);
                 }
@@ -474,14 +469,11 @@ public class MainAccessibilityService extends AccessibilityService {
                 // 添加新的定时任务，覆盖之前设置的
                 addAlarm(task, timeStartAction);
             } else {
-                Intent intent = new Intent(this, InstantActivity.class);
-                intent.setAction(Intent.ACTION_VIEW);
-
-                intent.putExtra(InstantActivity.INTENT_KEY_DO_ACTION, true);
+                Intent intent = new Intent(SystemEventReceiver.ALARM_TASK);
                 intent.putExtra(TASK_ID, task.getId());
                 intent.putExtra(ACTION_ID, timeStartAction.getId());
 
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
                 alarmManager.cancel(pendingIntent);
             }

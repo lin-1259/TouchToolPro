@@ -1,11 +1,16 @@
 package top.bogey.touch_tool_pro.ui.setting;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -147,6 +152,30 @@ public class SettingView extends Fragment {
 
         binding.useTakeCaptureSwitch.setOnClickListener(v -> SettingSave.getInstance().setUseTakeCapture(binding.useTakeCaptureSwitch.isChecked()));
         binding.useTakeCaptureSwitch.setChecked(SettingSave.getInstance().isUseTakeCapture());
+
+        binding.useExactAlarmSwitch.setOnClickListener(v -> {
+            if (binding.useExactAlarmSwitch.isChecked()) {
+                AlarmManager manager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (manager.canScheduleExactAlarms()) {
+                        SettingSave.getInstance().setUseExactAlarm(true);
+                    } else {
+                        Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                        startActivity(intent);
+                        binding.useExactAlarmSwitch.setChecked(false);
+                    }
+                } else {
+                    SettingSave.getInstance().setUseExactAlarm(true);
+                }
+            } else {
+                SettingSave.getInstance().setUseExactAlarm(false);
+            }
+            MainAccessibilityService service = MainApplication.getInstance().getService();
+            if (service != null && service.isServiceEnabled()) {
+                service.resetAlarm();
+            }
+        });
+        binding.useExactAlarmSwitch.setChecked(SettingSave.getInstance().isUseExactAlarm());
 
 
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {

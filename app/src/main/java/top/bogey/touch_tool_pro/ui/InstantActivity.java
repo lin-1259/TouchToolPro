@@ -79,9 +79,9 @@ public class InstantActivity extends BaseActivity {
                 Task task = SaveRepository.getInstance().getTaskById(taskId);
                 if (task != null) {
                     Action action = task.getActionById(actionId);
-                    if (action instanceof StartAction) {
-                        MainAccessibilityService service = MainApplication.getInstance().getService();
-                        if (service != null && service.isServiceEnabled()) {
+                    MainAccessibilityService service = MainApplication.getInstance().getService();
+                    if (service != null && service.isServiceEnabled()) {
+                        if (action instanceof StartAction) {
                             service.runTask(task, (StartAction) action);
                         }
                     }
