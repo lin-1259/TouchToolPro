@@ -383,7 +383,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     intent.putExtra(ACTION_ID, startAction.getId());
 
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-                    alarmManager.cancel(pendingIntent);
+                    if (pendingIntent != null) alarmManager.cancel(pendingIntent);
                 }
             }
         }
@@ -458,7 +458,7 @@ public class MainAccessibilityService extends AccessibilityService {
                     intent.putExtra(ACTION_ID, timeStartAction.getId());
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-                    alarmManager.cancel(pendingIntent);
+                    if (pendingIntent != null) alarmManager.cancel(pendingIntent);
                 }
             });
         }
@@ -475,7 +475,7 @@ public class MainAccessibilityService extends AccessibilityService {
 
                 PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-                alarmManager.cancel(pendingIntent);
+                if (pendingIntent != null) alarmManager.cancel(pendingIntent);
             }
         });
     }
