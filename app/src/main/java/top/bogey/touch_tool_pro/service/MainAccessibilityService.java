@@ -52,13 +52,14 @@ import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.super_user.SuperUser;
+import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
 import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
-import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
 import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -164,13 +165,16 @@ public class MainAccessibilityService extends AccessibilityService {
 
         if (isServiceEnabled()) {
             WorldState.getInstance().resetAppMap(this);
-            ShizukuUtils.destroyShizukuService();
-            ShizukuUtils.checkShizuku();
+            if (SettingSave.getInstance().isUseShizuku()) {
+                SuperUser.init(new ShizukuSuperUser());
+            }
             resetAlarm();
         } else {
             cancelAllAlarm();
             stopAllTask();
-            ShizukuUtils.destroyShizukuService();
+            if (SettingSave.getInstance().isUseShizuku()) {
+                SuperUser.exit();
+            }
         }
     }
 

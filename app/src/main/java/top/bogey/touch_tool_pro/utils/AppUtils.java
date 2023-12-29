@@ -37,7 +37,6 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
-import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
 
 public class AppUtils {
 
@@ -185,10 +184,6 @@ public class AppUtils {
             }
         }
         return false;
-    }
-
-    public static boolean isSuper() {
-        return ShizukuUtils.checkShizuku();
     }
 
     public static String formatDateLocalDate(Context context, long dateTime) {
@@ -416,9 +411,9 @@ public class AppUtils {
     public static String getFileSizeString(File file) {
         long fileSize = getFileSize(file);
         double kb = fileSize / 1024.0;
-        if (kb < 1024) return String.format("%.1fK",kb);
+        if (kb < 1024) return String.format("%.1fK", kb);
         double m = kb / 1024;
-        return String.format("%.1fM",m);
+        return String.format("%.1fM", m);
     }
 
     public static boolean deleteFile(File file) {

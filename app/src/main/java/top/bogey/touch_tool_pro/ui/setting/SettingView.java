@@ -29,6 +29,8 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.databinding.ViewSettingBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.super_user.SuperUser;
+import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
@@ -62,12 +64,31 @@ public class SettingView extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = ViewSettingBinding.inflate(inflater, container, false);
 
-        binding.playViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setPlayViewVisible(binding.playViewVisibleSwitch.isChecked()));
-        binding.resetPlayViewPos.setOnClickListener(v -> {
-            SettingSave.getInstance().setPlayViewPosition(new Point());
-            SettingSave.getInstance().setChoiceViewPosition(new Point());
-            Toast.makeText(getContext(), R.string.task_setting_play_view_visible_reset, Toast.LENGTH_SHORT).show();
+        // 应用设置
+        binding.hideBackgroundSwitch.setOnClickListener(v -> SettingSave.getInstance().setHideBackground(requireContext(), binding.hideBackgroundSwitch.isChecked()));
+        binding.hideBackgroundSwitch.setChecked(SettingSave.getInstance().isHideBackground());
+
+        binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
+        binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
+
+        binding.useShizukuSwitch.setOnClickListener(v -> {
+            if (SuperUser.init(new ShizukuSuperUser())) {
+                SettingSave.getInstance().setUseShizuku(binding.useShizukuSwitch.isChecked());
+                return;
+            }
+            binding.useShizukuSwitch.setChecked(false);
+            Toast.makeText(requireContext(), R.string.no_shizuku, Toast.LENGTH_SHORT).show();
         });
+        binding.useShizukuSwitch.setChecked(SettingSave.getInstance().isUseShizuku() && SuperUser.isSuperUser());
+
+        binding.cleanCache.setOnClickListener(v -> {
+            AppUtils.deleteFile(requireContext().getCacheDir());
+            binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
+        });
+        binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
+
+
+        // 工具
         binding.showPackageInfoSwitch.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service == null || !service.isServiceEnabled()) {
@@ -82,6 +103,7 @@ public class SettingView extends Fragment {
                 EasyFloat.dismiss(PackageInfoFloatView.class.getName());
             }
         });
+
         binding.logSwitch.setOnClickListener(v -> {
             MainAccessibilityService service = MainApplication.getInstance().getService();
             if (service == null || !service.isServiceEnabled()) {
@@ -98,19 +120,8 @@ public class SettingView extends Fragment {
         });
         refreshSwitchState();
 
-        binding.hideBackgroundSwitch.setOnClickListener(v -> SettingSave.getInstance().setHideBackground(requireContext(), binding.hideBackgroundSwitch.isChecked()));
-        binding.hideBackgroundSwitch.setChecked(SettingSave.getInstance().isHideBackground());
 
-        binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
-        binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
-
-        binding.cleanCache.setOnClickListener(v -> {
-            AppUtils.deleteFile(requireContext().getCacheDir());
-            binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
-        });
-        binding.cleanCacheTips.setText(getString(R.string.app_setting_clean_cache_tips, AppUtils.getFileSizeString(requireContext().getCacheDir())));
-
-
+        // 任务设置
         binding.taskBackupButton.setOnClickListener(v -> {
             HandleFunctionContextView view = new HandleFunctionContextView(requireContext());
             new MaterialAlertDialogBuilder(requireContext())
@@ -137,6 +148,14 @@ public class SettingView extends Fragment {
             });
         });
 
+        binding.playViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setPlayViewVisible(binding.playViewVisibleSwitch.isChecked()));
+
+        binding.resetPlayViewPos.setOnClickListener(v -> {
+            SettingSave.getInstance().setPlayViewPosition(new Point());
+            SettingSave.getInstance().setChoiceViewPosition(new Point());
+            Toast.makeText(getContext(), R.string.task_setting_play_view_visible_reset, Toast.LENGTH_SHORT).show();
+        });
+
         binding.showTouchSwitch.setOnClickListener(v -> SettingSave.getInstance().setShowTouch(binding.showTouchSwitch.isChecked()));
         binding.showTouchSwitch.setChecked(SettingSave.getInstance().isShowTouch());
 
@@ -144,6 +163,7 @@ public class SettingView extends Fragment {
         binding.showTaskSwitch.setChecked(SettingSave.getInstance().isFirstShowTask());
 
 
+        // 偏好设置
         binding.lookBlueprintSwitch.setOnClickListener(v -> SettingSave.getInstance().setFirstLookBlueprint(binding.lookBlueprintSwitch.isChecked()));
         binding.lookBlueprintSwitch.setChecked(SettingSave.getInstance().isFirstLookBlueprint());
 

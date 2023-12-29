@@ -16,34 +16,40 @@ import java.util.List;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.service.KeepAliveService;
+import top.bogey.touch_tool_pro.super_user.SuperUser;
+import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 
 public class SettingSave {
-    private static final String RUN_TIMES = "RUN_TIMES";
-    private final static String RUNNING_ERROR = "RUNNING_ERROR";
+    private static final String RUN_TIMES = "RUN_TIMES";                                        // 运行应用次数
+    private static final String RUNNING_ERROR = "RUNNING_ERROR";                                // 崩溃时的错误日志
 
-    private static final String SERVICE_ENABLED = "SERVICE_ENABLED";
-    private static final String SERVICE_ENABLED_TIP = "SERVICE_ENABLED_TIP";
-    private static final String CAPTURE_SERVICE_ENABLED_TIP = "CAPTURE_SERVICE_ENABLED_TIP";
+    private static final String SERVICE_ENABLED = "SERVICE_ENABLED";                            // 功能是否开启
+    private static final String SERVICE_ENABLED_TIP = "SERVICE_ENABLED_TIP";                    // 功能开启首次提示
+    private static final String CAPTURE_SERVICE_ENABLED_TIP = "CAPTURE_SERVICE_ENABLED_TIP";    // 录屏开启首次提示
 
-    private final static String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";
-    private final static String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";
-    private final static String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";
-    private final static String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";
-    private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";
-    private static final String KEEP_ALIVE = "KEEP_ALIVE";
+    private static final String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";                            // 手动执行悬浮窗收起展开状态
+    private static final String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";                      // 手动执行悬浮窗位置
+    private static final String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";                  // 选择执行弹窗位置
 
-    private static final String SHOW_TOUCH = "SHOW_TOUCH";
-    private static final String SHOW_START = "SHOW_START";
+    private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";                            // 隐藏后台
+    private static final String KEEP_ALIVE = "KEEP_ALIVE";                                      // 前台服务保活
+    private static final String USE_SHIZUKU = "USE_SHIZUKU";                                    // 使用Shizuku
 
-    private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";
-    private static final String FIRST_LOOK_BLUEPRINT = "FIRST_LOOK_BLUEPRINT";
-    private static final String USE_TAKE_CAPTURE = "USE_TAKE_CAPTURE";
-    private static final String USE_EXACT_ALARM = "USE_EXACT_ALARM";
+    private static final String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";                        // 显示手动执行悬浮窗
+    private static final String SHOW_TOUCH = "SHOW_TOUCH";                                      // 显示手势轨迹
+    private static final String SHOW_START = "SHOW_START";                                      // 显示任务开始提示
 
-    private static final String NIGHT_MODE = "NIGHT_MODE";
-    private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";
+    private static final String FIRST_SHOW_TASK = "FIRST_SHOW_TASK";                            // 主页改为任务标签页
+    private static final String FIRST_LOOK_BLUEPRINT = "FIRST_LOOK_BLUEPRINT";                  // 蓝图界面进去时默认查看蓝图
+    private static final String USE_TAKE_CAPTURE = "USE_TAKE_CAPTURE";                          // 使用无障碍的TakeCapture
+    private static final String USE_EXACT_ALARM = "USE_EXACT_ALARM";                            // 使用精确计时
+
+    private static final String NIGHT_MODE = "NIGHT_MODE";                                      // 夜间模式
+    private static final String DYNAMIC_COLOR = "DYNAMIC_COLOR";                                // 动态颜色
+
     private static final MMKV settingMMKV = MMKV.defaultMMKV();
     private static SettingSave settingSave;
+
     private boolean isAppliedDynamicColor = false;
     private boolean isDynamicColor = true;
     private final DynamicColorsOptions options = new DynamicColorsOptions.Builder().setPrecondition((activity, theme) -> isDynamicColor).build();
@@ -57,6 +63,7 @@ public class SettingSave {
         setHideBackground(context, isHideBackground());
         setNightMode(getNightMode());
         setKeepAlive(context, isKeepAlive());
+        setUseShizuku(isUseShizuku());
     }
 
     public int getRunTimes() {
@@ -109,14 +116,6 @@ public class SettingSave {
         settingMMKV.encode(PLAY_VIEW_STATE, expand);
     }
 
-    public boolean isPlayViewVisible() {
-        return settingMMKV.decodeBool(PLAY_VIEW_VISIBLE, true);
-    }
-
-    public void setPlayViewVisible(boolean visible) {
-        settingMMKV.encode(PLAY_VIEW_VISIBLE, visible);
-    }
-
     public Point getPlayViewPosition() {
         return settingMMKV.decodeParcelable(PLAY_VIEW_POSITION, Point.class, new Point());
     }
@@ -165,6 +164,28 @@ public class SettingSave {
         settingMMKV.encode(KEEP_ALIVE, keepAlive);
     }
 
+    public boolean isUseShizuku() {
+        return settingMMKV.decodeBool(USE_SHIZUKU, false);
+    }
+
+    public void setUseShizuku(boolean use) {
+        if (use) {
+            SuperUser.init(new ShizukuSuperUser());
+        } else {
+            SuperUser.exit();
+        }
+        settingMMKV.encode(USE_SHIZUKU, use);
+    }
+
+
+    public boolean isPlayViewVisible() {
+        return settingMMKV.decodeBool(PLAY_VIEW_VISIBLE, true);
+    }
+
+    public void setPlayViewVisible(boolean visible) {
+        settingMMKV.encode(PLAY_VIEW_VISIBLE, visible);
+    }
+
     public boolean isShowTouch() {
         return settingMMKV.decodeBool(SHOW_TOUCH, false);
     }
@@ -173,13 +194,45 @@ public class SettingSave {
         settingMMKV.encode(SHOW_TOUCH, showTouch);
     }
 
-
     public boolean isShowStart() {
         return settingMMKV.decodeBool(SHOW_START, true);
     }
 
     public void setShowStart(boolean showStart) {
         settingMMKV.encode(SHOW_START, showStart);
+    }
+
+
+    public boolean isFirstShowTask() {
+        return settingMMKV.decodeBool(FIRST_SHOW_TASK, false);
+    }
+
+    public void setFirstShowTask(boolean firstShowTask) {
+        settingMMKV.encode(FIRST_SHOW_TASK, firstShowTask);
+    }
+
+    public boolean isFirstLookBlueprint() {
+        return settingMMKV.decodeBool(FIRST_LOOK_BLUEPRINT, false);
+    }
+
+    public void setFirstLookBlueprint(boolean firstLookBlueprint) {
+        settingMMKV.encode(FIRST_LOOK_BLUEPRINT, firstLookBlueprint);
+    }
+
+    public boolean isUseTakeCapture() {
+        return settingMMKV.decodeBool(USE_TAKE_CAPTURE, true);
+    }
+
+    public void setUseTakeCapture(boolean useTakeCapture) {
+        settingMMKV.encode(USE_TAKE_CAPTURE, useTakeCapture);
+    }
+
+    public boolean isUseExactAlarm() {
+        return settingMMKV.decodeBool(USE_EXACT_ALARM, false);
+    }
+
+    public void setUseExactAlarm(boolean useExactAlarm) {
+        settingMMKV.encode(USE_EXACT_ALARM, useExactAlarm);
     }
 
 
@@ -209,40 +262,4 @@ public class SettingSave {
         }
         settingMMKV.encode(DYNAMIC_COLOR, enabled);
     }
-
-    public boolean isFirstShowTask() {
-        return settingMMKV.decodeBool(FIRST_SHOW_TASK, false);
-    }
-
-    public void setFirstShowTask(boolean firstShowTask) {
-        settingMMKV.encode(FIRST_SHOW_TASK, firstShowTask);
-    }
-
-
-    public boolean isFirstLookBlueprint() {
-        return settingMMKV.decodeBool(FIRST_LOOK_BLUEPRINT, false);
-    }
-
-    public void setFirstLookBlueprint(boolean firstLookBlueprint) {
-        settingMMKV.encode(FIRST_LOOK_BLUEPRINT, firstLookBlueprint);
-    }
-
-
-    public boolean isUseTakeCapture() {
-        return settingMMKV.decodeBool(USE_TAKE_CAPTURE, true);
-    }
-
-    public void setUseTakeCapture(boolean useTakeCapture) {
-        settingMMKV.encode(USE_TAKE_CAPTURE, useTakeCapture);
-    }
-
-
-    public boolean isUseExactAlarm() {
-        return settingMMKV.decodeBool(USE_EXACT_ALARM, false);
-    }
-
-    public void setUseExactAlarm(boolean useExactAlarm) {
-        settingMMKV.encode(USE_EXACT_ALARM, useExactAlarm);
-    }
-
 }

@@ -64,12 +64,6 @@
     <string name="report_running_error_copy">复制</string>
     <string name="report_running_error_copy_and_join">复制并加群</string>
 
-    <string name="shizuku">Shizuku</string>
-    <string name="shizuku_tips">开启Shizuku可以使用Shell命令及卡片</string>
-    <string name="open_shizuku">去开启Shizuku</string>
-    <string name="no_shizuku">未开启/安装Shizuku</string>
-    <string name="shizuku_done">已执行</string>
-
     <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
@@ -86,7 +80,8 @@
 
     <string name="shell_code">便捷的Shell命令</string>
     <string name="shell_code_copy">复制代码</string>
-    <string name="shell_code_exec">Shizuku执行</string>
+    <string name="shell_code_exec">执行</string>
+    <string name="shizuku_done">已执行</string>
     <string name="auto_restart_accessibility_service">自动重启无障碍服务</string>
     <string name="auto_restart_accessibility_service_tips">因一些不可描述的原因导致无障碍服务崩溃后，任务无法正常运行，手动重启无障碍服务又略显麻烦，所以可以授予应用“写入安全设置”的权限让应用能重启无障碍服务。</string>
     <string name="auto_allow_capture">自动授予录屏权限</string>
@@ -510,10 +505,17 @@
     <string name="app_setting_hide_background_tips">在最近任务列表里隐藏本应用</string>
     <string name="app_setting_keep_alive">前台服务</string>
     <string name="app_setting_keep_alive_tips">在通知栏显示一条前台服务通知加强应用后台存活能力</string>
-    <string name="app_setting_show_package_info">应用信息采集</string>
-    <string name="app_setting_show_package_info_tips">显示一个展示当前所在应用和当前活动信息的悬浮窗，可以在控制中心中快捷开启</string>
+    <string name="app_setting_use_shizuku">Shizuku扩展</string>
+    <string name="app_setting_use_shizuku_tips">开启Shizuku可以使用Shell命令及卡片</string>
+    <string name="no_shizuku">未开启/安装Shizuku</string>
     <string name="app_setting_clean_cache">清理缓存</string>
     <string name="app_setting_clean_cache_tips">点击清理缓存。当前: %s</string>
+
+    <string name="tool_setting_title">工具</string>
+    <string name="tool_setting_show_package_info">应用信息采集</string>
+    <string name="tool_setting_show_package_info_tips">显示一个展示当前所在应用和当前活动信息的悬浮窗，可以在控制中心中快捷开启</string>
+    <string name="tool_setting_log">实时任务日志</string>
+    <string name="tool_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
 
     <string name="task_setting_title">任务设置</string>
     <string name="task_setting_task">任务</string>
@@ -529,8 +531,6 @@
     <string name="task_setting_play_view_visible">显示手动执行</string>
     <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置(点击此处重置悬浮窗位置)</string>
     <string name="task_setting_play_view_visible_reset">重置完成</string>
-    <string name="task_setting_log">实时任务日志</string>
-    <string name="task_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
     <string name="task_setting_show_touch">显示手势轨迹</string>
     <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势轨迹动画</string>
 

@@ -28,7 +28,7 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.ViewHomeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
-import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
+import top.bogey.touch_tool_pro.super_user.SuperUser;
 import top.bogey.touch_tool_pro.ui.BaseActivity;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
@@ -145,9 +145,6 @@ public class HomeView extends Fragment {
             setCaptureChecked(aBoolean);
         });
 
-        binding.shizukuButton.setOnClickListener(v -> ShizukuUtils.requestShizukuPermission((code, intent) -> setShizukuShow()));
-        setShizukuShow();
-
         binding.ignoreBatteryBox.setVisibility(AppUtils.isIgnoredBattery(requireContext()) ? View.GONE : View.VISIBLE);
         binding.ignoreBatteryButton.setOnClickListener(v -> AppUtils.gotoBatterySetting(getContext()));
         binding.autoStartButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(getContext()));
@@ -169,7 +166,7 @@ public class HomeView extends Fragment {
         });
 
         binding.execRestartButton.setOnClickListener(v -> {
-            ShizukuUtils.runCommand(String.format("pm grant %s %s", requireActivity().getPackageName(), Manifest.permission.WRITE_SECURE_SETTINGS));
+            SuperUser.runCommand(String.format("pm grant %s %s", requireActivity().getPackageName(), Manifest.permission.WRITE_SECURE_SETTINGS));
             Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
         });
 
@@ -181,9 +178,11 @@ public class HomeView extends Fragment {
         });
 
         binding.execAutoAllowButton.setOnClickListener(v -> {
-            ShizukuUtils.runCommand(String.format("appops set %s PROJECT_MEDIA allow", requireActivity().getPackageName()));
+            SuperUser.runCommand(String.format("appops set %s PROJECT_MEDIA allow", requireActivity().getPackageName()));
             Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
         });
+
+        setSuperShow();
 
         return binding.getRoot();
     }
@@ -214,15 +213,13 @@ public class HomeView extends Fragment {
         }
     }
 
-    private void setShizukuShow() {
-        if (ShizukuUtils.checkShizuku()) {
+    private void setSuperShow() {
+        if (SuperUser.isSuperUser()) {
             binding.execRestartButton.setVisibility(View.VISIBLE);
             binding.execAutoAllowButton.setVisibility(View.VISIBLE);
-            binding.shizukuBox.setVisibility(View.GONE);
         } else {
             binding.execRestartButton.setVisibility(View.GONE);
             binding.execAutoAllowButton.setVisibility(View.GONE);
-            binding.shizukuBox.setVisibility(View.VISIBLE);
         }
     }
 }

@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.shizuku;
+package top.bogey.touch_tool_pro.super_user;
 
 import android.os.Parcel;
 import android.os.Parcelable;

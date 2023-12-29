@@ -11,9 +11,8 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.shizuku.CmdResult;
-import top.bogey.touch_tool_pro.utils.AppUtils;
-import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
+import top.bogey.touch_tool_pro.super_user.CmdResult;
+import top.bogey.touch_tool_pro.super_user.SuperUser;
 
 public class ShellAction extends NormalAction {
     private transient Pin cmdPin = new Pin(new PinString(PinSubType.MULTI_LINE), R.string.action_shell_action_subtitle_cmd);
@@ -36,9 +35,9 @@ public class ShellAction extends NormalAction {
 
     @Override
     public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
-        if (AppUtils.isSuper()) {
+        if (SuperUser.isSuperUser()) {
             PinString cmd = (PinString) getPinValue(runnable, context, cmdPin);
-            CmdResult cmdResult = ShizukuUtils.runCommand(cmd.getValue());
+            CmdResult cmdResult = SuperUser.runCommand(cmd.getValue());
             if (cmdResult != null) {
                 outValuePin.getValue(PinString.class).setValue(cmdResult.info);
                 if (cmdResult.result) {
@@ -52,7 +51,7 @@ public class ShellAction extends NormalAction {
 
     @Override
     public ActionCheckResult check(FunctionContext context) {
-        if (!AppUtils.isSuper()) {
+        if (!SuperUser.isSuperUser()) {
             return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_no_super_user_permission);
         }
         return super.check(context);

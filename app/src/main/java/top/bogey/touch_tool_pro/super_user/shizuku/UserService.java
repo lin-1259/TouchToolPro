@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.shizuku;
+package top.bogey.touch_tool_pro.super_user.shizuku;
 
 import android.content.Context;
 
@@ -6,6 +6,8 @@ import androidx.annotation.Keep;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+
+import top.bogey.touch_tool_pro.super_user.CmdResult;
 
 public class UserService extends IUserService.Stub {
 

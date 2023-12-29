@@ -175,7 +175,7 @@
             android:name=".service.LogTileService"
             android:exported="true"
             android:icon="@drawable/icon_log"
-            android:label="@string/task_setting_log"
+            android:label="@string/tool_setting_log"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
