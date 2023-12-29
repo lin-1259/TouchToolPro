@@ -5,6 +5,8 @@ public enum PinSubType {
 
     DATE, TIME, PERIODIC,
 
+    MULTI_LINE,
+
     URL, SHORTCUT,
 
     NODE_ID, RINGTONE,

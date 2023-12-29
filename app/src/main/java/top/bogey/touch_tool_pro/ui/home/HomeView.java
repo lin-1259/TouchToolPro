@@ -33,6 +33,7 @@ import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
+import top.bogey.touch_tool_pro.utils.ShizukuUtils;
 
 
 public class HomeView extends Fragment {
@@ -144,6 +145,9 @@ public class HomeView extends Fragment {
             setCaptureChecked(aBoolean);
         });
 
+        binding.shizukuButton.setOnClickListener(v -> ShizukuUtils.requestShizukuPermission((code, intent) -> setShizukuShow()));
+        setShizukuShow();
+
         binding.ignoreBatteryBox.setVisibility(AppUtils.isIgnoredBattery(requireContext()) ? View.GONE : View.VISIBLE);
         binding.ignoreBatteryButton.setOnClickListener(v -> AppUtils.gotoBatterySetting(getContext()));
         binding.autoStartButton.setOnClickListener(v -> AppUtils.gotoAppDetailSetting(getContext()));
@@ -155,7 +159,7 @@ public class HomeView extends Fragment {
                 Toast.makeText(getContext(), R.string.accessibility_service_off_tips, Toast.LENGTH_SHORT).show();
             }
         });
-        binding.tutorialButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), "https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0"));
+        binding.tutorialButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), getString(R.string.app_info_goto_doc_url)));
 
         binding.restartButton.setOnClickListener(v -> {
             ClipboardManager manager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -164,11 +168,21 @@ public class HomeView extends Fragment {
             Toast.makeText(requireContext(), R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
         });
 
+        binding.execRestartButton.setOnClickListener(v -> {
+            ShizukuUtils.runCommand(String.format("pm grant %s %s", requireActivity().getPackageName(), Manifest.permission.WRITE_SECURE_SETTINGS));
+            Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
+        });
+
         binding.autoAllowButton.setOnClickListener(v -> {
             ClipboardManager manager = (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clipData = ClipData.newPlainText(getString(R.string.app_name), String.format("appops set %s PROJECT_MEDIA allow", requireActivity().getPackageName()));
             manager.setPrimaryClip(clipData);
             Toast.makeText(requireContext(), R.string.report_running_error_copied, Toast.LENGTH_SHORT).show();
+        });
+
+        binding.execAutoAllowButton.setOnClickListener(v -> {
+            ShizukuUtils.runCommand(String.format("appops set %s PROJECT_MEDIA allow", requireActivity().getPackageName()));
+            Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
         });
 
         return binding.getRoot();
@@ -197,6 +211,18 @@ public class HomeView extends Fragment {
             binding.captureServiceButton.setCardBackgroundColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorSurfaceVariant, 0));
             binding.captureServiceIcon.setImageTintList(ColorStateList.valueOf(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0)));
             binding.captureServiceTitle.setTextColor(DisplayUtils.getAttrColor(requireContext(), com.google.android.material.R.attr.colorPrimary, 0));
+        }
+    }
+
+    private void setShizukuShow() {
+        if (ShizukuUtils.checkShizuku()) {
+            binding.execRestartButton.setVisibility(View.VISIBLE);
+            binding.execAutoAllowButton.setVisibility(View.VISIBLE);
+            binding.shizukuBox.setVisibility(View.GONE);
+        } else {
+            binding.execRestartButton.setVisibility(View.GONE);
+            binding.execAutoAllowButton.setVisibility(View.GONE);
+            binding.shizukuBox.setVisibility(View.VISIBLE);
         }
     }
 }

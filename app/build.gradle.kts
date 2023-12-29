@@ -20,7 +20,7 @@ android {
         applicationId = "top.bogey.touch_tool_pro"
         minSdk = 24
         targetSdk = 34
-        versionCode = 43
+        versionCode = 47
         versionName = now
 
         externalNativeBuild {
@@ -48,7 +48,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            resValue("string", "app_name", "@string/app_name_release")
+            resValue("string", "app_name", "点击助手Pro")
         }
 
         debug {
@@ -56,7 +56,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            resValue("string", "app_name", "@string/app_name_debug")
+            resValue("string", "app_name", "点击助手DEBUG")
         }
     }
 
@@ -82,7 +82,9 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
+        aidl = true
     }
 }
 
@@ -98,6 +100,8 @@ dependencies {
     implementation(libs.mmkv)
     implementation(libs.gson)
     implementation(libs.treeview)
+    implementation(libs.shizuku.api)
+    implementation(libs.shizuku.provider)
 
     implementation(platform(libs.kotlin.bom))
 }

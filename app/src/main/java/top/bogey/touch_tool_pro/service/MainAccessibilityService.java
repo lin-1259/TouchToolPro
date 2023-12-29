@@ -58,6 +58,7 @@ import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
 import top.bogey.touch_tool_pro.ui.custom.TouchPathFloatView;
 import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
+import top.bogey.touch_tool_pro.utils.ShizukuUtils;
 import top.bogey.touch_tool_pro.utils.TaskQueue;
 import top.bogey.touch_tool_pro.utils.TaskThreadPoolExecutor;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -163,10 +164,12 @@ public class MainAccessibilityService extends AccessibilityService {
 
         if (isServiceEnabled()) {
             WorldState.getInstance().resetAppMap(this);
+            ShizukuUtils.checkShizuku();
             resetAlarm();
         } else {
             cancelAllAlarm();
             stopAllTask();
+            ShizukuUtils.destroyShizukuService();
         }
     }
 

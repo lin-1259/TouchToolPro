@@ -72,6 +72,7 @@ public enum ActionMap {
                     ActionType.COPY,
                     ActionType.SHARE,
                     ActionType.RUN_TASK,
+                    ActionType.SHELL,
                     ActionType.BREAK_TASK
             ));
 

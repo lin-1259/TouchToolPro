@@ -19,6 +19,7 @@ import android.os.Build;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -133,6 +134,19 @@ public class PinWidgetString extends PinWidget<PinString> {
                     }));
                 });
             }
+            case MULTI_LINE -> {
+                binding.editText.setEnabled(true);
+                binding.editText.setText(pinObject.getValue());
+                binding.editText.setInputType(binding.editText.getInputType() | EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE);
+                binding.editText.setMaxLines(5);
+                binding.editText.addTextChangedListener(new TextChangedListener() {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        pinObject.setValue(s.toString());
+                    }
+                });
+                binding.pickButton.setVisibility(GONE);
+            }
         }
     }
 
@@ -148,6 +162,7 @@ public class PinWidgetString extends PinWidget<PinString> {
         binding.spinner.setVisibility(VISIBLE);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         adapter.add(context.getString(R.string.pin_string));
+        adapter.add(context.getString(R.string.pin_string_multi_line));
         adapter.add(context.getString(R.string.pin_string_node_id));
         binding.spinner.setAdapter(adapter);
         binding.spinner.setSelection(subTypeToIndex(pinObject.getSubType()));
@@ -168,14 +183,16 @@ public class PinWidgetString extends PinWidget<PinString> {
 
     private int subTypeToIndex(PinSubType subType) {
         return switch (subType) {
-            case NODE_ID -> 1;
+            case MULTI_LINE -> 1;
+            case NODE_ID -> 2;
             default -> 0;
         };
     }
 
     private PinSubType indexToSubType(int index) {
         return switch (index) {
-            case 1 -> PinSubType.NODE_ID;
+            case 1 -> PinSubType.MULTI_LINE;
+            case 2 -> PinSubType.NODE_ID;
             default -> PinSubType.NORMAL;
         };
     }

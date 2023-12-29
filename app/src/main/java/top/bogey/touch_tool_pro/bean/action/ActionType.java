@@ -19,32 +19,16 @@ import top.bogey.touch_tool_pro.bean.action.bool.BoolAndAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolNotAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolOrAction;
 import top.bogey.touch_tool_pro.bean.action.color.ColorEqualAction;
+import top.bogey.touch_tool_pro.bean.action.color.ColorStateAction;
 import top.bogey.touch_tool_pro.bean.action.color.ExistColorAction;
 import top.bogey.touch_tool_pro.bean.action.color.ExistColorsAction;
-import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
-import top.bogey.touch_tool_pro.bean.action.node.ExistNodeAction;
-import top.bogey.touch_tool_pro.bean.action.node.ExistNodesAction;
-import top.bogey.touch_tool_pro.bean.action.string.ExistTextAction;
-import top.bogey.touch_tool_pro.bean.action.string.ExistTextOcrAction;
-import top.bogey.touch_tool_pro.bean.action.string.ExistTextsAction;
-import top.bogey.touch_tool_pro.bean.action.image.ImageContainAction;
-import top.bogey.touch_tool_pro.bean.action.other.InAppCheckAction;
-import top.bogey.touch_tool_pro.bean.action.other.OnBatteryStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.OnScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionEndAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionPinsAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionStartAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntAddAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntDivAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntEqualAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntInAreaAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntLargeAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntModAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntMultiAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntRandomAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntReduceAction;
-import top.bogey.touch_tool_pro.bean.action.number.IntSmallAction;
+import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
+import top.bogey.touch_tool_pro.bean.action.image.ImageContainAction;
+import top.bogey.touch_tool_pro.bean.action.image.ImageStateAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ForLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.IfLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ManualChoiceAction;
@@ -53,7 +37,10 @@ import top.bogey.touch_tool_pro.bean.action.logic.RandomAction;
 import top.bogey.touch_tool_pro.bean.action.logic.SequenceAction;
 import top.bogey.touch_tool_pro.bean.action.logic.WaitIfLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.WhileLogicAction;
+import top.bogey.touch_tool_pro.bean.action.node.ExistNodeAction;
+import top.bogey.touch_tool_pro.bean.action.node.ExistNodesAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodeChildrenAction;
+import top.bogey.touch_tool_pro.bean.action.node.GetNodeInfoStateAction;
 import top.bogey.touch_tool_pro.bean.action.normal.BreakTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickKeyAction;
@@ -69,7 +56,27 @@ import top.bogey.touch_tool_pro.bean.action.normal.PlayRingtoneAction;
 import top.bogey.touch_tool_pro.bean.action.normal.RunTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ScreenSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ShareAction;
+import top.bogey.touch_tool_pro.bean.action.normal.ShellAction;
 import top.bogey.touch_tool_pro.bean.action.normal.TouchAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntAddAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntDivAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntEqualAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntInAreaAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntLargeAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntModAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntMultiAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntRandomAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntReduceAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntSmallAction;
+import top.bogey.touch_tool_pro.bean.action.other.AppStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.BatteryStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.CaptureStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.DateStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.InAppCheckAction;
+import top.bogey.touch_tool_pro.bean.action.other.OnBatteryStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.OnScreenStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
+import top.bogey.touch_tool_pro.bean.action.other.TimeStateAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosFromIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosOffsetAction;
@@ -83,16 +90,10 @@ import top.bogey.touch_tool_pro.bean.action.start.ManualStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.NotifyStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.OuterStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
-import top.bogey.touch_tool_pro.bean.action.other.AppStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.BatteryStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.CaptureStateAction;
-import top.bogey.touch_tool_pro.bean.action.color.ColorStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.DateStateAction;
-import top.bogey.touch_tool_pro.bean.action.node.GetNodeInfoStateAction;
-import top.bogey.touch_tool_pro.bean.action.image.ImageStateAction;
+import top.bogey.touch_tool_pro.bean.action.string.ExistTextAction;
+import top.bogey.touch_tool_pro.bean.action.string.ExistTextOcrAction;
+import top.bogey.touch_tool_pro.bean.action.string.ExistTextsAction;
 import top.bogey.touch_tool_pro.bean.action.string.OcrTextStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
-import top.bogey.touch_tool_pro.bean.action.other.TimeStateAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringAddAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringEqualAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringFromValueAction;
@@ -174,6 +175,7 @@ public enum ActionType {
     SHARE,
     RUN_TASK,
     BREAK_TASK,
+    SHELL,
 
     BOOL_OR,
     BOOL_AND,
@@ -286,6 +288,7 @@ public enum ActionType {
             case SHARE -> R.string.action_share_action_title;
             case RUN_TASK -> R.string.action_do_task_action_title;
             case BREAK_TASK -> R.string.action_break_task_action_title;
+            case SHELL -> R.string.action_shell_action_title;
 
             case BOOL_OR -> R.string.action_bool_convert_or_title;
             case BOOL_AND -> R.string.action_bool_convert_and_title;
@@ -370,6 +373,7 @@ public enum ActionType {
             case SHARE -> R.drawable.icon_export;
             case RUN_TASK -> R.drawable.icon_task;
             case BREAK_TASK -> R.drawable.icon_stop;
+            case SHELL -> R.drawable.icon_uri;
 
             case CHECK_EXIST_TEXT, CHECK_EXIST_TEXTS, CHECK_EXIST_TEXT_OCR, OCR_TEXT_STATE, STRING_FROM_VALUE, STRING_TO_INT, STRING_ADD, STRING_EQUAL, STRING_REGEX -> R.drawable.icon_text;
             case CHECK_EXIST_IMAGE, CHECK_IMAGE, IMAGE_STATE -> R.drawable.icon_image;
@@ -458,6 +462,7 @@ public enum ActionType {
             case SHARE -> ShareAction.class;
             case RUN_TASK -> RunTaskAction.class;
             case BREAK_TASK -> BreakTaskAction.class;
+            case SHELL -> ShellAction.class;
 
             case BOOL_OR -> BoolOrAction.class;
             case BOOL_AND -> BoolAndAction.class;
@@ -502,6 +507,13 @@ public enum ActionType {
             case ARRAY_INDEX_OF -> ArrayIndexOfAction.class;
             case ARRAY_FOR -> ArrayForLogicAction.class;
             default -> Action.class;
+        };
+    }
+
+    public boolean isSuperAction() {
+        return switch (this) {
+            case SHELL -> true;
+            default -> false;
         };
     }
 }

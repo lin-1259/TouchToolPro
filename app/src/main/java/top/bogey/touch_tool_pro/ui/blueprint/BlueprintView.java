@@ -29,6 +29,7 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.ViewBlueprintBinding;
 import top.bogey.touch_tool_pro.ui.MainActivity;
+import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class BlueprintView extends Fragment {
@@ -43,7 +44,9 @@ public class BlueprintView extends Fragment {
         BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
         if (currFragment == null) return;
         currFragment.pushActionContext(functionContext);
-    }    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+    }
+
+    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
         @Override
         public void handleOnBackPressed() {
             popActionContext();
@@ -56,7 +59,9 @@ public class BlueprintView extends Fragment {
         BlueprintView currFragment = activity.getCurrFragment(BlueprintView.class);
         if (currFragment == null) return;
         currFragment.binding.cardLayout.showCard(x, y, actionClass);
-    }    private final MenuProvider menuProvider = new MenuProvider() {
+    }
+
+    private final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
             menuInflater.inflate(R.menu.menu_task_detail, menu);
@@ -74,7 +79,11 @@ public class BlueprintView extends Fragment {
                         .setTitle(R.string.task_running_log)
                         .setMessage(SaveRepository.getInstance().getLog(task.getId()))
                         .setPositiveButton(R.string.close, (dialog, which) -> dialog.dismiss())
-                        .setNegativeButton(R.string.task_running_log_clear, (dialog, which) -> {
+                        .setNegativeButton(R.string.export_task, (dialog, which) -> {
+                            dialog.dismiss();
+                            AppUtils.exportLog(MainApplication.getInstance(), SaveRepository.getInstance().getLog(task.getId()));
+                        })
+                        .setNeutralButton(R.string.task_running_log_clear, (dialog, which) -> {
                             dialog.dismiss();
                             SaveRepository.getInstance().removeLog(task.getId());
                         })
@@ -174,9 +183,6 @@ public class BlueprintView extends Fragment {
         }
         super.onDestroy();
     }
-
-
-
 
 
 }

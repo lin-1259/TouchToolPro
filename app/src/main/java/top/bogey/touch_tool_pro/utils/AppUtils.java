@@ -1,5 +1,6 @@
 package top.bogey.touch_tool_pro.utils;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.KeyguardManager;
@@ -12,6 +13,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.accessibility.AccessibilityManager;
 
 import androidx.annotation.StringRes;
 import androidx.core.content.FileProvider;
@@ -174,6 +176,20 @@ public class AppUtils {
         wakeLock.release();
     }
 
+    public static boolean isAccessibilityServiceEnabled(Context context) {
+        AccessibilityManager manager = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
+        for (AccessibilityServiceInfo info : manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)) {
+            if (info.getId().contains(context.getPackageName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean isSuper() {
+        return ShizukuUtils.checkShizuku();
+    }
+
     public static String formatDateLocalDate(Context context, long dateTime) {
         Calendar timeCalendar = Calendar.getInstance();
         timeCalendar.setTimeInMillis(dateTime);
@@ -303,36 +319,20 @@ public class AppUtils {
         }
     }
 
-    public static void exportMultiFunctionContexts(Context context, ArrayList<ArrayList<FunctionContext>> functionContexts) {
-        if (functionContexts == null || functionContexts.isEmpty()) return;
-
-        ArrayList<Uri> files = new ArrayList<>();
-        for (ArrayList<FunctionContext> list : functionContexts) {
-            String fileName = getFunctionContextsFileName(context, list);
-            File file = new File(context.getCacheDir(), fileName);
-            if (!file.exists()) {
-                try {
-                    if (!file.createNewFile()) return;
+    public static void exportLog(Context context, String log) {
+        String fileName = "log_" + formatDateLocalDate(context, System.currentTimeMillis()) + formatDateLocalTime(context, System.currentTimeMillis()) + ".txt";
+        MainApplication.getInstance().getMainActivity().launcherCreateDocument(fileName, (code, intent) -> {
+            if (code == Activity.RESULT_OK) {
+                Uri uri = intent.getData();
+                if (uri == null) return;
+                try (OutputStream outputStream = context.getContentResolver().openOutputStream(uri)) {
+                    if (outputStream == null) return;
+                    outputStream.write(log.getBytes());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
-
-            try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-                String json = GsonUtils.gson.toJson(list);
-                fileOutputStream.write(json.getBytes());
-                Uri fileUri = FileProvider.getUriForFile(context, context.getPackageName() + ".file_provider", file);
-                files.add(fileUri);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, files);
-        intent.setType("text/*");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        context.startActivity(Intent.createChooser(intent, context.getString(R.string.export_task_tips)));
+        });
     }
 
     public static ArrayList<FunctionContext> importFunctionContexts(Context context, Uri uri) {

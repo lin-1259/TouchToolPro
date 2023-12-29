@@ -1,9 +1,5 @@
 <resources>
     <!-- 通用 -->
-    <!--    <string name="app_name">点击助手Pro</string>-->
-    <string name="app_name_release">点击助手Pro</string>
-    <string name="app_name_debug">点击助手Debug</string>
-
     <string name="common_name">通用</string>
     <string name="common_package_name" translatable="false">configs.common</string>
 
@@ -68,6 +64,12 @@
     <string name="report_running_error_copy">复制</string>
     <string name="report_running_error_copy_and_join">复制并加群</string>
 
+    <string name="shizuku">Shizuku</string>
+    <string name="shizuku_tips">开启Shizuku可以使用Shell命令及卡片</string>
+    <string name="open_shizuku">去开启Shizuku</string>
+    <string name="shizuku_done">已执行</string>
+    <string name="shizuku_uninstall">未安装Shizuku</string>
+
     <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
@@ -83,7 +85,8 @@
     <string name="tutorial_tips">当你不知道怎么使用本应用的时候，请点击这里查看教程。</string>
 
     <string name="shell_code">便捷的Shell命令</string>
-    <string name="shell_code_copy">复制代码去终端执行</string>
+    <string name="shell_code_copy">复制代码</string>
+    <string name="shell_code_exec">Shizuku执行</string>
     <string name="auto_restart_accessibility_service">自动重启无障碍服务</string>
     <string name="auto_restart_accessibility_service_tips">因一些不可描述的原因导致无障碍服务崩溃后，任务无法正常运行，手动重启无障碍服务又略显麻烦，所以可以授予应用“写入安全设置”的权限让应用能重启无障碍服务。</string>
     <string name="auto_allow_capture">自动授予录屏权限</string>
@@ -137,6 +140,7 @@
     <string name="error_exist_action_tips">结果针脚未被使用</string>
     <string name="error_function_reference_action_tips">未找到引用的自定义卡片</string>
     <string name="error_variable_action_tips">未找到引用的变量</string>
+    <string name="error_no_super_user_permission">没有权限执行</string>
 
     <string name="warning_wait_if_action_tips">检查间隔过短，可能引起卡顿</string>
 
@@ -304,6 +308,9 @@
     <string name="action_do_task_action_subtitle_action">动作</string>
     <string name="action_break_task_action_title">中断执行</string>
 
+    <string name="action_shell_action_title">执行Shell指令</string>
+    <string name="action_shell_action_subtitle_cmd">指令</string>
+
     <string name="action_set_value_action_title">设置变量值</string>
     <string name="action_get_value_action_title">获取变量值</string>
     <string name="action_set_common_value_action_title">设置全局变量值</string>
@@ -436,6 +443,7 @@
     <string name="pin_float">小数</string>
 
     <string name="pin_string">文本</string>
+    <string name="pin_string_multi_line">多行文本</string>
     <string name="pin_string_node_id">控件ID</string>
 
     <string name="pin_spinner">单选</string>
@@ -554,6 +562,7 @@
     <string name="app_info_setting_thank_text">墨汀 - 测试与反馈\n喝茶君 - 视频教程\n鸣得毛 - 各种自定义卡分享\nLumiaGG - 编程指导</string>
     <string name="app_info_join_qq_url">https://jq.qq.com/?_wv=1027&amp;k=c1HOe3Gk</string>
     <string name="app_info_join_github_url">https://github.com/mr-bogey/TouchToolPro</string>
+    <string name="app_info_goto_doc_url">https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0</string>
 
     <string name="work_add">设置定时任务，开始时间是：%1$s</string>
     <string name="periodic_work_add">设置间隔定时任务，开始时间是：%1$s，间隔%2$s</string>

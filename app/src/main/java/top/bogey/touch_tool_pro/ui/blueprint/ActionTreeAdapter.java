@@ -22,6 +22,7 @@ import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
+import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class ActionTreeAdapter extends TreeViewAdapter {
@@ -66,6 +67,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
             if (functionContext instanceof Function && actionMap == ActionMap.START) continue;
             TreeNode treeNode = new TreeNode(actionMap, R.layout.view_card_list_type_item);
             actionMap.getTypes().forEach(type -> {
+                if (!AppUtils.isSuper() && type.isSuperAction()) return;
                 TreeNode node = new TreeNode(type, R.layout.view_card_list_item);
                 treeNode.addChild(node);
             });

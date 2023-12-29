@@ -1,7 +1,6 @@
 package top.bogey.touch_tool_pro.ui;
 
 import android.Manifest;
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -15,7 +14,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.WindowManager;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -198,12 +196,7 @@ public class BaseActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) return;
 
         // 看一下服务有没有开启
-        AccessibilityManager manager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        for (AccessibilityServiceInfo info : manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)) {
-            if (info.getId().contains(getPackageName())) {
-                return;
-            }
-        }
+        if (AppUtils.isAccessibilityServiceEnabled(this)) return;
 
         // 没有开启去开启
         String enabledService = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
@@ -216,16 +209,12 @@ public class BaseActivity extends AppCompatActivity {
         if (checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) != PackageManager.PERMISSION_GRANTED) return false;
 
         // 看一下服务有没有开启
-        AccessibilityManager manager = (AccessibilityManager) getSystemService(Context.ACCESSIBILITY_SERVICE);
-        for (AccessibilityServiceInfo info : manager.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_GENERIC)) {
-            if (info.getId().contains(getPackageName())) {
-                // 开启去关闭
-                String enabledService = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-                String replace = enabledService.replaceFirst(String.format(":?%s/%s", getPackageName(), MainAccessibilityService.class.getName()), "");
-                Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, replace);
-                Settings.Secure.putInt(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 1);
-                return true;
-            }
+        if (AppUtils.isAccessibilityServiceEnabled(this)) {
+            // 开启去关闭
+            String enabledService = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+            String replace = enabledService.replaceFirst(String.format(":?%s/%s", getPackageName(), MainAccessibilityService.class.getName()), "");
+            Settings.Secure.putString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, replace);
+            Settings.Secure.putInt(getContentResolver(), Settings.Secure.ACCESSIBILITY_ENABLED, 1);
         }
         return true;
     }
