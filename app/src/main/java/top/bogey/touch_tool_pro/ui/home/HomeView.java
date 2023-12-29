@@ -28,12 +28,12 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.ViewHomeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
 import top.bogey.touch_tool_pro.ui.BaseActivity;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
-import top.bogey.touch_tool_pro.utils.ShizukuUtils;
 
 
 public class HomeView extends Fragment {

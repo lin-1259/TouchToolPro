@@ -37,6 +37,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
+import top.bogey.touch_tool_pro.shizuku.ShizukuUtils;
 
 public class AppUtils {
 

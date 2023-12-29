@@ -67,8 +67,8 @@
     <string name="shizuku">Shizuku</string>
     <string name="shizuku_tips">开启Shizuku可以使用Shell命令及卡片</string>
     <string name="open_shizuku">去开启Shizuku</string>
+    <string name="no_shizuku">未开启/安装Shizuku</string>
     <string name="shizuku_done">已执行</string>
-    <string name="shizuku_uninstall">未安装Shizuku</string>
 
     <string name="ignore_battery">电量限制</string>
     <string name="open_ignore_battery">去解除电量限制</string>

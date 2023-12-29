@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.utils;
+package top.bogey.touch_tool_pro.shizuku;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -12,10 +12,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import rikka.shizuku.Shizuku;
 import top.bogey.touch_tool_pro.BuildConfig;
-import top.bogey.touch_tool_pro.IUserService;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
-import top.bogey.touch_tool_pro.service.UserService;
+import top.bogey.touch_tool_pro.utils.ActivityResultCallback;
+import top.bogey.touch_tool_pro.utils.AppUtils;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class ShizukuUtils {
     private final static int SHIZUKU_CODE = 16777114;
@@ -73,7 +74,7 @@ public class ShizukuUtils {
         }
     }
 
-    public static String runCommand(String cmd) {
+    public static CmdResult runCommand(String cmd) {
         if (userService != null) {
             try {
                 return userService.runCommand(cmd);
@@ -85,7 +86,7 @@ public class ShizukuUtils {
     }
 
     public static void requestShizukuPermission(ActivityResultCallback callback) {
-        if (Shizuku.pingBinder()) {
+        if (existShizuku()) {
             if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
                 if (callback != null) callback.onResult(Activity.RESULT_OK, null);
             } else {
@@ -101,17 +102,21 @@ public class ShizukuUtils {
                 Shizuku.requestPermission(SHIZUKU_CODE);
             }
         } else {
-            Toast.makeText(MainApplication.getInstance(), R.string.shizuku_uninstall, Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainApplication.getInstance(), R.string.no_shizuku, Toast.LENGTH_SHORT).show();
         }
     }
 
     public static boolean checkShizuku() {
-        if (Shizuku.pingBinder()) {
+        if (existShizuku()) {
             if (Shizuku.checkSelfPermission() == PackageManager.PERMISSION_GRANTED) {
                 peekShizukuService();
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean existShizuku() {
+        return Shizuku.pingBinder();
     }
 }

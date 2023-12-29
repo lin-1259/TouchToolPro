@@ -1,15 +1,11 @@
-package top.bogey.touch_tool_pro.service;
+package top.bogey.touch_tool_pro.shizuku;
 
 import android.content.Context;
 
 import androidx.annotation.Keep;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-import top.bogey.touch_tool_pro.IUserService;
 
 public class UserService extends IUserService.Stub {
 
@@ -26,7 +22,7 @@ public class UserService extends IUserService.Stub {
     }
 
     @Override
-    public String runCommand(String cmd) {
+    public CmdResult runCommand(String cmd) {
         Process process = null;
         CmdResult result = new CmdResult();
 
@@ -51,11 +47,6 @@ public class UserService extends IUserService.Stub {
                 process.destroy();
             }
         }
-        return new Gson().toJson(result);
-    }
-
-    public static class CmdResult {
-        public boolean result = false;
-        public String info;
+        return result;
     }
 }
