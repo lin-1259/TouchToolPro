@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
+import top.bogey.touch_tool_pro.databinding.DialogThankBinding;
 import top.bogey.touch_tool_pro.databinding.ViewSettingBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
@@ -229,7 +230,10 @@ public class SettingView extends Fragment {
         binding.updateButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), getString(R.string.app_info_join_qq_url)));
         binding.sourceCodeButton.setOnClickListener(v -> AppUtils.gotoUrl(getContext(), getString(R.string.app_info_join_github_url)));
 
-        binding.thankButton.setOnClickListener(v -> AppUtils.showDialog(getContext(), R.string.app_info_setting_thank_text, null));
+        binding.thankButton.setOnClickListener(v -> new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.app_info_setting_thank_title)
+                .setView(R.layout.dialog_thank)
+                .show());
 
         return binding.getRoot();
     }

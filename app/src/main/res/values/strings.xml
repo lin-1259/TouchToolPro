@@ -559,7 +559,7 @@
     <string name="app_info_setting_version_format">%1$s(%2$d)</string>
     <string name="app_info_setting_version_update">在QQ群查看最新版本</string>
     <string name="app_info_setting_thank">贡献者</string>
-    <string name="app_info_setting_thank_text">墨汀 - 测试与反馈\n喝茶君 - 视频教程\n鸣得毛 - 各种自定义卡分享\nLumiaGG - 编程指导</string>
+    <string name="app_info_setting_thank_title">特别感谢</string>
     <string name="app_info_join_qq_url">https://jq.qq.com/?_wv=1027&amp;k=c1HOe3Gk</string>
     <string name="app_info_join_github_url">https://github.com/mr-bogey/TouchToolPro</string>
     <string name="app_info_goto_doc_url">https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0</string>
