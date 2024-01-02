@@ -16,8 +16,6 @@ import java.util.List;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.service.KeepAliveService;
-import top.bogey.touch_tool_pro.super_user.SuperUser;
-import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 
 public class SettingSave {
     private static final String RUN_TIMES = "RUN_TIMES";                                        // 运行应用次数
@@ -63,7 +61,6 @@ public class SettingSave {
         setHideBackground(context, isHideBackground());
         setNightMode(getNightMode());
         setKeepAlive(context, isKeepAlive());
-        setUseShizuku(isUseShizuku());
     }
 
     public int getRunTimes() {
@@ -169,11 +166,6 @@ public class SettingSave {
     }
 
     public void setUseShizuku(boolean use) {
-        if (use) {
-            SuperUser.init(new ShizukuSuperUser());
-        } else {
-            SuperUser.exit();
-        }
         settingMMKV.encode(USE_SHIZUKU, use);
     }
 

@@ -4,6 +4,8 @@ public interface ISuperUser {
 
     boolean init();
 
+    boolean tryInit();
+
     void exit();
 
     CmdResult runCommand(String cmd);

@@ -53,7 +53,6 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
-import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ToastFloatView;
@@ -166,7 +165,7 @@ public class MainAccessibilityService extends AccessibilityService {
         if (isServiceEnabled()) {
             WorldState.getInstance().resetAppMap(this);
             if (SettingSave.getInstance().isUseShizuku()) {
-                SuperUser.init(new ShizukuSuperUser());
+                SuperUser.tryInit();
             }
             resetAlarm();
         } else {

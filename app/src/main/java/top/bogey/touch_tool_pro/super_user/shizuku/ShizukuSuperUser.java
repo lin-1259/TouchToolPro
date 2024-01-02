@@ -17,6 +17,7 @@ public class ShizukuSuperUser implements ISuperUser {
     private final static int SHIZUKU_CODE = 16777114;
     private final static String SHIZUKU_SUFFIX = "UserService";
     private IUserService userService = null;
+    private static ShizukuSuperUser superUser;
 
     private final Shizuku.UserServiceArgs ARGS =
             new Shizuku.UserServiceArgs(new ComponentName(BuildConfig.APPLICATION_ID, UserService.class.getName()))
@@ -36,6 +37,13 @@ public class ShizukuSuperUser implements ISuperUser {
         }
     };
 
+    public static ShizukuSuperUser getInstance() {
+        if (superUser == null) {
+            superUser = new ShizukuSuperUser();
+        }
+        return superUser;
+    }
+
     @Override
     public boolean init() {
         if (existShizuku()) {
@@ -50,8 +58,20 @@ public class ShizukuSuperUser implements ISuperUser {
     }
 
     @Override
+    public boolean tryInit() {
+        exit();
+        if (existShizuku()) {
+            if (checkShizukuPermission()) {
+                bindShizukuService();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void exit() {
-        if (userService != null) {
+        if (existShizuku()) {
             Shizuku.unbindUserService(ARGS, USER_SERVICE_CONNECTION, true);
             userService = null;
         }

@@ -72,14 +72,20 @@ public class SettingView extends Fragment {
         binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
 
         binding.useShizukuSwitch.setOnClickListener(v -> {
-            if (SuperUser.init(new ShizukuSuperUser())) {
-                SettingSave.getInstance().setUseShizuku(binding.useShizukuSwitch.isChecked());
-                return;
+            if (binding.useShizukuSwitch.isChecked()) {
+                if (SuperUser.init()) {
+                    SettingSave.getInstance().setUseShizuku(true);
+                    return;
+                }
+                binding.useShizukuSwitch.setChecked(false);
+                Toast.makeText(requireContext(), R.string.no_shizuku, Toast.LENGTH_SHORT).show();
+            } else {
+                SuperUser.exit();
+                SettingSave.getInstance().setUseShizuku(false);
             }
-            binding.useShizukuSwitch.setChecked(false);
-            Toast.makeText(requireContext(), R.string.no_shizuku, Toast.LENGTH_SHORT).show();
         });
-        binding.useShizukuSwitch.setChecked(SettingSave.getInstance().isUseShizuku() && SuperUser.isSuperUser());
+        binding.useShizukuSwitch.setChecked(SettingSave.getInstance().isUseShizuku() && ShizukuSuperUser.existShizuku());
+        binding.useShizukuSwitch.setSaveEnabled(false);
 
         binding.cleanCache.setOnClickListener(v -> {
             AppUtils.deleteFile(requireContext().getCacheDir());
@@ -173,11 +179,11 @@ public class SettingView extends Fragment {
         binding.useTakeCaptureSwitch.setOnClickListener(v -> SettingSave.getInstance().setUseTakeCapture(binding.useTakeCaptureSwitch.isChecked()));
         binding.useTakeCaptureSwitch.setChecked(SettingSave.getInstance().isUseTakeCapture());
 
+        AlarmManager alarmManager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
         binding.useExactAlarmSwitch.setOnClickListener(v -> {
             if (binding.useExactAlarmSwitch.isChecked()) {
-                AlarmManager manager = (AlarmManager) requireContext().getSystemService(Context.ALARM_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    if (manager.canScheduleExactAlarms()) {
+                    if (alarmManager.canScheduleExactAlarms()) {
                         SettingSave.getInstance().setUseExactAlarm(true);
                     } else {
                         Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
@@ -195,7 +201,9 @@ public class SettingView extends Fragment {
                 service.resetAlarm();
             }
         });
-        binding.useExactAlarmSwitch.setChecked(SettingSave.getInstance().isUseExactAlarm());
+        boolean useExactAlarm = Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms();
+        binding.useExactAlarmSwitch.setChecked(SettingSave.getInstance().isUseExactAlarm() && useExactAlarm);
+        binding.useExactAlarmSwitch.setSaveEnabled(false);
 
 
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
@@ -210,9 +218,9 @@ public class SettingView extends Fragment {
         binding.dynamicColorSwitch.setChecked(SettingSave.getInstance().isDynamicColor());
 
 
-        PackageManager manager = requireContext().getPackageManager();
+        PackageManager packageManager = requireContext().getPackageManager();
         try {
-            PackageInfo packageInfo = manager.getPackageInfo(requireContext().getPackageName(), 0);
+            PackageInfo packageInfo = packageManager.getPackageInfo(requireContext().getPackageName(), 0);
             binding.versionText.setText(packageInfo.versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -225,4 +233,6 @@ public class SettingView extends Fragment {
 
         return binding.getRoot();
     }
+
+
 }
