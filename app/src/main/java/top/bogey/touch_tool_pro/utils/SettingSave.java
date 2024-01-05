@@ -31,7 +31,7 @@ public class SettingSave {
 
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";                            // 隐藏后台
     private static final String KEEP_ALIVE = "KEEP_ALIVE";                                      // 前台服务保活
-    private static final String USE_SHIZUKU = "USE_SHIZUKU";                                    // 使用Shizuku
+    private static final String SUPER_USER_TYPE = "SUPER_USER_TYPE";                            // 超级用户类型
 
     private static final String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";                        // 显示手动执行悬浮窗
     private static final String SHOW_TOUCH = "SHOW_TOUCH";                                      // 显示手势轨迹
@@ -161,12 +161,12 @@ public class SettingSave {
         settingMMKV.encode(KEEP_ALIVE, keepAlive);
     }
 
-    public boolean isUseShizuku() {
-        return settingMMKV.decodeBool(USE_SHIZUKU, false);
+    public int getSuperUserType() {
+        return settingMMKV.decodeInt(SUPER_USER_TYPE, 0);
     }
 
-    public void setUseShizuku(boolean use) {
-        settingMMKV.encode(USE_SHIZUKU, use);
+    public void setSuperUserType(int type) {
+        settingMMKV.encode(SUPER_USER_TYPE, type);
     }
 
 

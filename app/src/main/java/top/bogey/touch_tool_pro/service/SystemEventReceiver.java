@@ -1,24 +1,16 @@
 package top.bogey.touch_tool_pro.service;
 
-import static top.bogey.touch_tool_pro.ui.InstantActivity.ACTION_ID;
-import static top.bogey.touch_tool_pro.ui.InstantActivity.TASK_ID;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
+import android.util.Log;
 
-import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
-import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
-import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.WorldState;
 
 public class SystemEventReceiver extends BroadcastReceiver {
-    public final static String ALARM_TASK = "top.bogey.touch_tool_pro.alarm_task";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -42,28 +34,6 @@ public class SystemEventReceiver extends BroadcastReceiver {
                 if (packageName == null) return;
                 WorldState.getInstance().resetAppMap(context);
             }
-
-            // 执行定时任务
-            case ALARM_TASK -> {
-                String taskId = intent.getStringExtra(TASK_ID);
-                String actionId = intent.getStringExtra(ACTION_ID);
-
-                if (taskId != null && actionId != null) {
-                    Task task = SaveRepository.getInstance().getTaskById(taskId);
-                    if (task != null) {
-                        Action action = task.getActionById(actionId);
-                        MainAccessibilityService service = MainApplication.getInstance().getService();
-                        if (service != null && service.isServiceEnabled()) {
-                            if (action instanceof TimeStartAction timeStartAction) {
-                                service.runTask(task, timeStartAction);
-                                if (timeStartAction.getPeriodic() > 0) {
-                                    service.addAlarm(task, timeStartAction);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -79,8 +49,6 @@ public class SystemEventReceiver extends BroadcastReceiver {
         filter.addAction(Intent.ACTION_PACKAGE_ADDED);
         filter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         filter.addAction(Intent.ACTION_PACKAGE_CHANGED);
-        // 过滤定时执行
-        filter.addAction(ALARM_TASK);
         return filter;
     }
 }

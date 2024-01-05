@@ -43,11 +43,10 @@ public class UserService extends IUserService.Stub {
             process.waitFor();
             result.result = true;
         } catch (Exception e) {
+            e.printStackTrace();
             result.info = e.getMessage();
         } finally {
-            if (process != null) {
-                process.destroy();
-            }
+            if (process != null) process.destroy();
         }
         return result;
     }

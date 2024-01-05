@@ -505,9 +505,13 @@
     <string name="app_setting_hide_background_tips">在最近任务列表里隐藏本应用</string>
     <string name="app_setting_keep_alive">前台服务</string>
     <string name="app_setting_keep_alive_tips">在通知栏显示一条前台服务通知加强应用后台存活能力</string>
-    <string name="app_setting_use_shizuku">Shizuku扩展</string>
-    <string name="app_setting_use_shizuku_tips">开启Shizuku可以使用Shell命令及卡片</string>
-    <string name="no_shizuku">未开启/安装Shizuku</string>
+    <string name="app_setting_super_user">超级用户</string>
+    <string name="app_setting_super_user_tips">使用超级用户可以使用Shell命令及卡片</string>
+    <string name="app_setting_super_user_none">不使用</string>
+    <string name="app_setting_super_user_shizuku">Shizuku模式</string>
+    <string name="app_setting_super_user_no_shizuku">未开启/安装Shizuku</string>
+    <string name="app_setting_super_user_root">Root模式</string>
+    <string name="app_setting_super_user_no_root">没有Root权限</string>
     <string name="app_setting_clean_cache">清理缓存</string>
     <string name="app_setting_clean_cache_tips">点击清理缓存。当前: %s</string>
 
@@ -563,10 +567,4 @@
     <string name="app_info_join_qq_url">https://jq.qq.com/?_wv=1027&amp;k=c1HOe3Gk</string>
     <string name="app_info_join_github_url">https://github.com/mr-bogey/TouchToolPro</string>
     <string name="app_info_goto_doc_url">https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0</string>
-
-    <string name="work_add">设置定时任务，开始时间是：%1$s</string>
-    <string name="periodic_work_add">设置间隔定时任务，开始时间是：%1$s，间隔%2$s</string>
-    <string name="work_execute">执行定时任务：%1$s</string>
-    <string name="work_stop">定时任务被关闭：%1$s</string>
-
 </resources>

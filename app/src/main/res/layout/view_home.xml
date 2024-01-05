@@ -351,7 +351,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/shell_code_exec"
-                                app:icon="@drawable/icon_shizuku_all" />
+                                app:icon="@drawable/icon_adb" />
 
                         </LinearLayout>
 
@@ -381,7 +381,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/shell_code_exec"
-                                app:icon="@drawable/icon_shizuku_all" />
+                                app:icon="@drawable/icon_adb" />
 
                         </LinearLayout>
 

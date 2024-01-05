@@ -1,12 +1,15 @@
 package top.bogey.touch_tool_pro.super_user;
 
+import top.bogey.touch_tool_pro.super_user.root.RootSuperUser;
 import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class SuperUser {
     private static ISuperUser SUPER_USER = null;
 
     public static boolean init() {
         ISuperUser superUser = getSuperUser();
+        if (superUser == null) return false;
         if (superUser.init()) {
             SUPER_USER = superUser;
             return true;
@@ -15,7 +18,9 @@ public class SuperUser {
     }
 
     public static void tryInit() {
+        exit();
         ISuperUser superUser = getSuperUser();
+        if (superUser == null) return;
         if (superUser.tryInit()) {
             SUPER_USER = superUser;
         }
@@ -38,6 +43,11 @@ public class SuperUser {
     }
 
     private static ISuperUser getSuperUser() {
-        return ShizukuSuperUser.getInstance();
+        int type = SettingSave.getInstance().getSuperUserType();
+        return switch (type) {
+            case 1 -> ShizukuSuperUser.getInstance();
+            case 2 -> RootSuperUser.getInstance();
+            default -> null;
+        };
     }
 }

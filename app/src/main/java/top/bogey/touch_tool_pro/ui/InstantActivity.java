@@ -9,6 +9,7 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.OuterStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
+import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
 import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
@@ -81,8 +82,11 @@ public class InstantActivity extends BaseActivity {
                     Action action = task.getActionById(actionId);
                     MainAccessibilityService service = MainApplication.getInstance().getService();
                     if (service != null && service.isServiceEnabled()) {
-                        if (action instanceof StartAction) {
-                            service.runTask(task, (StartAction) action);
+                        if (action instanceof StartAction startAction) {
+                            service.runTask(task, startAction);
+                        }
+                        if (action instanceof TimeStartAction timeStartAction) {
+                            service.addAlarm(task, timeStartAction);
                         }
                     }
                 }

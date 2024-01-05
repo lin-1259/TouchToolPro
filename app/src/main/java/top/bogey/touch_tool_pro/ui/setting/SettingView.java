@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
-import top.bogey.touch_tool_pro.databinding.DialogThankBinding;
 import top.bogey.touch_tool_pro.databinding.ViewSettingBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
+import top.bogey.touch_tool_pro.super_user.root.RootSuperUser;
 import top.bogey.touch_tool_pro.super_user.shizuku.ShizukuSuperUser;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
@@ -72,21 +72,47 @@ public class SettingView extends Fragment {
         binding.keepAliveSwitch.setOnClickListener(v -> SettingSave.getInstance().setKeepAlive(requireContext(), binding.keepAliveSwitch.isChecked()));
         binding.keepAliveSwitch.setChecked(SettingSave.getInstance().isKeepAlive());
 
-        binding.useShizukuSwitch.setOnClickListener(v -> {
-            if (binding.useShizukuSwitch.isChecked()) {
-                if (SuperUser.init()) {
-                    SettingSave.getInstance().setUseShizuku(true);
-                    return;
+        binding.superUserGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                View view = group.findViewById(checkedId);
+                int type = group.indexOfChild(view);
+                switch (type) {
+                    case 1 -> {
+                        if (ShizukuSuperUser.existShizuku()) {
+                            SettingSave.getInstance().setSuperUserType(type);
+                            SuperUser.tryInit();
+                        } else {
+                            binding.superUserGroup.check(R.id.noSuperUserButton);
+                            Toast.makeText(requireContext(), R.string.app_setting_super_user_no_shizuku, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    case 2 -> {
+                        if (RootSuperUser.existRoot()) {
+                            SettingSave.getInstance().setSuperUserType(type);
+                            SuperUser.tryInit();
+                        } else {
+                            binding.superUserGroup.check(R.id.noSuperUserButton);
+                            Toast.makeText(requireContext(), R.string.app_setting_super_user_no_root, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    default -> {
+                        SuperUser.exit();
+                        SettingSave.getInstance().setSuperUserType(type);
+                    }
                 }
-                binding.useShizukuSwitch.setChecked(false);
-                Toast.makeText(requireContext(), R.string.no_shizuku, Toast.LENGTH_SHORT).show();
-            } else {
-                SuperUser.exit();
-                SettingSave.getInstance().setUseShizuku(false);
             }
         });
-        binding.useShizukuSwitch.setChecked(SettingSave.getInstance().isUseShizuku() && ShizukuSuperUser.existShizuku());
-        binding.useShizukuSwitch.setSaveEnabled(false);
+        int type = SettingSave.getInstance().getSuperUserType();
+        switch (type) {
+            case 1 -> {
+                if (!ShizukuSuperUser.existShizuku()) type = 0;
+            }
+            case 2 -> {
+                if (!RootSuperUser.existRoot()) type = 0;
+            }
+        }
+        binding.superUserGroup.check(binding.superUserGroup.getChildAt(type).getId());
+        binding.superUserGroup.setSaveEnabled(false);
 
         binding.cleanCache.setOnClickListener(v -> {
             AppUtils.deleteFile(requireContext().getCacheDir());
@@ -207,6 +233,7 @@ public class SettingView extends Fragment {
         binding.useExactAlarmSwitch.setSaveEnabled(false);
 
 
+        // 界面外观
         binding.nightModeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
                 View view = group.findViewById(checkedId);

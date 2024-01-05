@@ -96,8 +96,8 @@ public class MainActivity extends BaseActivity {
                     .setMessage(R.string.report_running_error_tips)
                     .setPositiveButton(R.string.report_running_error_copy_and_join, (dialog, which) -> {
                         dialog.dismiss();
-                        AppUtils.gotoUrl(this, getString(R.string.app_info_join_qq_url));
                         copyError(runningError);
+                        AppUtils.gotoUrl(this, getString(R.string.app_info_join_qq_url));
                     })
                     .setNegativeButton(R.string.report_running_error_copy, (dialog, which) -> {
                         dialog.dismiss();

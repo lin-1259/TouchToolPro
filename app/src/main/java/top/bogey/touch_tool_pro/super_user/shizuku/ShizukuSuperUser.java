@@ -73,8 +73,8 @@ public class ShizukuSuperUser implements ISuperUser {
     public void exit() {
         if (existShizuku()) {
             Shizuku.unbindUserService(ARGS, USER_SERVICE_CONNECTION, true);
-            userService = null;
         }
+        userService = null;
     }
 
     @Override
