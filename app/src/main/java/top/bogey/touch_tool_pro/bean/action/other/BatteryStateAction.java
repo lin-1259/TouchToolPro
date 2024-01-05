@@ -12,7 +12,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinSpinner;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 
 public class BatteryStateAction extends Action {
     private transient Pin statePin = new Pin(new PinSpinner(R.array.charging_state), R.string.action_battery_state_subtitle_state, true);

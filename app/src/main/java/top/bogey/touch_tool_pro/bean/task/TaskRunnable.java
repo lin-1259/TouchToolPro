@@ -2,6 +2,7 @@ package top.bogey.touch_tool_pro.bean.task;
 
 import android.graphics.Bitmap;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.concurrent.Future;
@@ -22,6 +23,7 @@ public class TaskRunnable implements Runnable {
     private Boolean paused = null;
 
     private Future<?> future;
+    private final HashMap<String, Object> runtimeEnv = new HashMap<>();
 
     public TaskRunnable(Task task, FunctionContext context, StartAction startAction) {
         this.task = task;
@@ -122,4 +124,11 @@ public class TaskRunnable implements Runnable {
         this.future = future;
     }
 
+    public void addRuntimeEnv(String key, Object value) {
+        runtimeEnv.put(key, value);
+    }
+
+    public Object getRuntimeEnv(String key) {
+        return runtimeEnv.get(key);
+    }
 }

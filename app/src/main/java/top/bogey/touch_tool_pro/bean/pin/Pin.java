@@ -18,7 +18,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import top.bogey.touch_tool_pro.MainApplication;
-import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionInterface;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;

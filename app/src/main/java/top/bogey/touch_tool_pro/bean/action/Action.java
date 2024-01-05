@@ -76,7 +76,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
 
     @Override
     public String getTitle() {
-        return type.getTitle();
+        return type.getConfig().getTitle();
     }
 
     @Override
@@ -313,7 +313,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         public Action deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
             ActionType type = GsonUtils.getAsObject(jsonObject, "type", ActionType.class, ActionType.BASE);
-            Class<? extends Action> actionClass = type.getActionClass();
+            Class<? extends Action> actionClass = type.getConfig().getActionClass();
             try {
                 Constructor<? extends Action> constructor = actionClass.getConstructor(JsonObject.class);
                 return constructor.newInstance(jsonObject);

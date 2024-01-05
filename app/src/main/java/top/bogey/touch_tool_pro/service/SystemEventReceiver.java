@@ -5,10 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
-import android.util.Log;
 
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
 
 public class SystemEventReceiver extends BroadcastReceiver {
 

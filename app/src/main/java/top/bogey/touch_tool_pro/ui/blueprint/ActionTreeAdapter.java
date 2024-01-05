@@ -16,6 +16,7 @@ import com.amrdeveloper.treeview.TreeViewHolder;
 import java.util.ArrayList;
 
 import top.bogey.touch_tool_pro.R;
+import top.bogey.touch_tool_pro.bean.action.ActionConfigInfo;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.function.Function;
@@ -38,7 +39,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
         setTreeNodeClickListener((treeNode, view) -> {
             if (treeNode.getLevel() == 1) {
                 ActionType type = (ActionType) treeNode.getValue();
-                cardLayoutView.addAction(type.getActionClass());
+                cardLayoutView.addAction(type.getConfig().getActionClass());
             }
         });
 
@@ -68,7 +69,7 @@ public class ActionTreeAdapter extends TreeViewAdapter {
             if (functionContext instanceof Function && actionMap == ActionMap.START) continue;
             TreeNode treeNode = new TreeNode(actionMap, R.layout.view_card_list_type_item);
             actionMap.getTypes().forEach(type -> {
-                if (!SuperUser.isSuperUser() && type.isSuperAction()) return;
+                if (!SuperUser.isSuperUser() && type.getConfig().isSuperAction()) return;
                 TreeNode node = new TreeNode(type, R.layout.view_card_list_item);
                 treeNode.addChild(node);
             });
@@ -104,8 +105,9 @@ public class ActionTreeAdapter extends TreeViewAdapter {
                 typeBinding.title.setText(actionMap.getTitle());
             } else if (level == 1) {
                 ActionType type = (ActionType) node.getValue();
-                itemBinding.title.setText(type.getTitle());
-                itemBinding.icon.setImageResource(type.getIcon());
+                ActionConfigInfo config = type.getConfig();
+                itemBinding.title.setText(config.getTitle());
+                itemBinding.icon.setImageResource(config.getIcon());
                 ViewGroup.LayoutParams params = itemBinding.space.getLayoutParams();
                 params.width = (int) (DisplayUtils.dp2px(context, 8) * level);
                 itemBinding.space.setLayoutParams(params);

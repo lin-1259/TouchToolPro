@@ -41,6 +41,7 @@ public enum ActionMap {
                     ActionType.ENTER_APP_START,
                     ActionType.TIME_START,
                     ActionType.NOTIFY_START,
+                    ActionType.NETWORK_START,
                     ActionType.BATTERY_START,
                     ActionType.OUTER_START
             ));
@@ -69,6 +70,7 @@ public enum ActionMap {
                     ActionType.OPEN_APP,
                     ActionType.OPEN_URI,
                     ActionType.PLAY_RINGTONE,
+                    ActionType.STOP_RINGTONE,
                     ActionType.COPY,
                     ActionType.SHARE,
                     ActionType.RUN_TASK,
@@ -155,10 +157,12 @@ public enum ActionMap {
                     ActionType.CHECK_IN_APP,
                     ActionType.CHECK_ON_BATTERY_STATE,
                     ActionType.CHECK_ON_SCREEN_STATE,
+                    ActionType.CHECK_NETWORK,
                     ActionType.APP_STATE,
                     ActionType.BATTERY_STATE,
                     ActionType.SCREEN_STATE,
                     ActionType.CAPTURE_STATE,
+                    ActionType.NETWORK_STATE,
                     ActionType.DATE_STATE,
                     ActionType.TIME_STATE
             ));

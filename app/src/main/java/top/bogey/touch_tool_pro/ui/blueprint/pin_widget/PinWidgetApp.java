@@ -22,7 +22,7 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.databinding.PinWidgetAppBinding;
 import top.bogey.touch_tool_pro.databinding.PinWidgetAppItemBinding;
 import top.bogey.touch_tool_pro.ui.app.AppView;

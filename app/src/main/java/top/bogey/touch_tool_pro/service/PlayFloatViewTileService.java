@@ -3,7 +3,6 @@ package top.bogey.touch_tool_pro.service;
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 
-import top.bogey.touch_tool_pro.bean.task.WorldState;
 import top.bogey.touch_tool_pro.ui.setting.SettingView;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 

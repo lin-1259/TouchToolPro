@@ -19,7 +19,7 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionListener;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
@@ -65,7 +65,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
 
         binding.title.setText(action.getTitle());
         binding.position.setText(action.getX() + ":" + action.getY());
-        binding.icon.setImageResource(action.getType().getIcon());
+        binding.icon.setImageResource(action.getType().getConfig().getIcon());
         binding.des.setText(action.getDescription());
         binding.desBox.setVisibility((action.getDescription() == null || action.getDescription().isEmpty()) ? GONE : VISIBLE);
         binding.expandButton.setIconResource(action.isExpand() ? R.drawable.icon_zoom_in : R.drawable.icon_zoom_out);

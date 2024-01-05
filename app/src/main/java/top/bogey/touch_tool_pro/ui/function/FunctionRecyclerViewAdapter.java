@@ -18,7 +18,7 @@ import java.util.Locale;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewFunctionListItemBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;

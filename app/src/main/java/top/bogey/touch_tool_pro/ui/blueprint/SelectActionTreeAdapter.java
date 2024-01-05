@@ -24,7 +24,7 @@ import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
@@ -42,7 +42,7 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
         setTreeNodeClickListener((node, view) -> {
             if (node.getLevel() == 1) {
                 if (node.getValue() instanceof ActionType type) {
-                    cardLayoutView.addAction(type.getActionClass());
+                    cardLayoutView.addAction(type.getConfig().getActionClass());
                 } else if (node.getValue() instanceof String functionId) {
                     cardLayoutView.addAction(functionId);
                 } else if (node.getValue() instanceof Function function) {
@@ -123,8 +123,8 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                 typeBinding.title.setText(actionMap.getTitle());
             } else if (level == 1) {
                 if (node.getValue() instanceof ActionType type) {
-                    itemBinding.title.setText(type.getTitle());
-                    itemBinding.icon.setImageResource(type.getIcon());
+                    itemBinding.title.setText(type.getConfig().getTitle());
+                    itemBinding.icon.setImageResource(type.getConfig().getIcon());
                 } else if (node.getValue() instanceof String functionId) {
                     Function function = SaveRepository.getInstance().getFunctionById(functionId);
                     if (function != null) {
@@ -142,7 +142,7 @@ public class SelectActionTreeAdapter extends TreeViewAdapter {
                 } else if (node.getValue() instanceof ActionCard<?> card) {
                     Action action = card.getAction();
                     itemBinding.title.setText(action.getTitle() + "(" + action.getX() + "," + action.getY() + ")");
-                    itemBinding.icon.setImageResource(action.getType().getIcon());
+                    itemBinding.icon.setImageResource(action.getType().getConfig().getIcon());
                 }
             }
         }

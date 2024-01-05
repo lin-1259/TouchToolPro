@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.base.LogInfo;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.databinding.FloatPackageInfoViewItemBinding;
 
 public class PackageInfoRecyclerViewAdapter extends RecyclerView.Adapter<PackageInfoRecyclerViewAdapter.ViewHolder> {

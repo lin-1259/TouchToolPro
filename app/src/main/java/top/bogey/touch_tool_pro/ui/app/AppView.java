@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.databinding.ViewAppBinding;
 import top.bogey.touch_tool_pro.utils.BooleanResultCallback;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;

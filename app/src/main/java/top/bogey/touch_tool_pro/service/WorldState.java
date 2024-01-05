@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.bean.task;
+package top.bogey.touch_tool_pro.service;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -23,11 +23,12 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.AppStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.BatteryStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.ManualStartAction;
+import top.bogey.touch_tool_pro.bean.action.start.NetworkStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.NormalStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.NotifyStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
-import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.bean.task.Task;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.play.PlayFloatView;
@@ -46,6 +47,7 @@ public class WorldState {
     private String notificationText;
     private int batteryPercent;
     private int batteryState;
+    private int networkType;
 
     public static WorldState getInstance() {
         if (helper == null) helper = new WorldState();
@@ -262,6 +264,16 @@ public class WorldState {
         this.batteryPercent = batteryPercent;
         this.batteryState = batteryState;
         checkAutoStartAction(BatteryStartAction.class);
+    }
+
+    public int getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(int networkType) {
+        if (networkType == this.networkType) return;
+        this.networkType = networkType;
+        checkAutoStartAction(NetworkStartAction.class);
     }
 
     public LinkedHashMap<ManualStartAction, Task> getManualStartActions() {

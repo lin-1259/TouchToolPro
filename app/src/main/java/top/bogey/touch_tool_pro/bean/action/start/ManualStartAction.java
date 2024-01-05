@@ -14,7 +14,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class ManualStartAction extends StartAction {

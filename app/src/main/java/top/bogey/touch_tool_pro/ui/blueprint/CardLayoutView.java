@@ -36,14 +36,12 @@ import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.array.ArrayAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
-import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
-import top.bogey.touch_tool_pro.bean.base.FunctionSaveChangedListener;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
-import top.bogey.touch_tool_pro.bean.base.TaskSaveChangedListener;
-import top.bogey.touch_tool_pro.bean.base.VariableSaveChangedListener;
+import top.bogey.touch_tool_pro.save.FunctionSaveChangedListener;
+import top.bogey.touch_tool_pro.save.SaveRepository;
+import top.bogey.touch_tool_pro.save.TaskSaveChangedListener;
+import top.bogey.touch_tool_pro.save.VariableSaveChangedListener;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
@@ -144,7 +142,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         for (ActionMap actionMap : ActionMap.values()) {
             if (actionMap == ActionMap.START) continue;
             for (ActionType actionType : actionMap.getTypes()) {
-                Class<? extends Action> actionClass = actionType.getActionClass();
+                Class<? extends Action> actionClass = actionType.getConfig().getActionClass();
                 try {
                     Constructor<? extends Action> constructor = actionClass.getConstructor();
                     Action action = constructor.newInstance();

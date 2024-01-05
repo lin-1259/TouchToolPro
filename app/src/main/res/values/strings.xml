@@ -183,6 +183,9 @@
     <string name="action_notification_start_subtitle_text">匹配文本</string>
     <string name="action_notification_start_subtitle_notice">通知文本</string>
 
+    <string name="action_network_start_title">网络变更时执行</string>
+    <string name="action_network_start_subtitle_network">网络</string>
+
 
     <!-- 任务 - 状态 -->
     <string name="action_app_state_title">当前界面</string>
@@ -214,6 +217,9 @@
     <string name="action_time_state_subtitle_minute">分</string>
     <string name="action_time_state_subtitle_second">秒</string>
     <string name="action_time_state_subtitle_timestamp">时间戳</string>
+
+    <string name="action_network_state_title">网络状态</string>
+    <string name="action_network_state_subtitle_network">网络</string>
 
 
     <!-- 任务 - 检测 -->
@@ -249,6 +255,10 @@
     <string name="action_exist_colors_check_title">界面内所有颜色</string>
     <string name="action_exist_color_check_title">界面内存在颜色</string>
     <string name="action_exist_color_check_subtitle_similar">偏移</string>
+
+    <string name="action_network_check_title">网络状态对比</string>
+    <string name="action_network_check_subtitle_network">状态</string>
+    <string name="action_network_check_subtitle_check_network">待测状态</string>
 
 
     <!-- 任务 - 动作 -->
@@ -290,6 +300,7 @@
     <string name="action_open_url_action_title">打开Uri</string>
     <string name="action_open_url_action_subtitle_url">Uri</string>
 
+    <string name="action_stop_ringtone_action_title">关闭铃声</string>
     <string name="action_play_ringtone_action_title">播放铃声</string>
     <string name="action_play_ringtone_action_subtitle_url">铃声</string>
 

@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class NotifyStartAction extends StartAction {
@@ -36,9 +36,10 @@ public class NotifyStartAction extends StartAction {
     }
 
     @Override
-    public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
+    public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         PinString notice = noticePin.getValue(PinString.class);
         notice.setValue(WorldState.getInstance().getNotificationText());
+        super.execute(runnable, context, pin);
     }
 
     @Override

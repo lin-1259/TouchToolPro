@@ -15,6 +15,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Path;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -46,13 +49,12 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.start.RestartType;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
-import top.bogey.touch_tool_pro.bean.base.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
 import top.bogey.touch_tool_pro.ui.InstantActivity;
 import top.bogey.touch_tool_pro.ui.PermissionActivity;
@@ -70,13 +72,17 @@ public class MainAccessibilityService extends AccessibilityService {
     public static final MutableLiveData<Boolean> serviceConnected = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> serviceEnabled = new MutableLiveData<>(false);
     public static final MutableLiveData<Boolean> captureEnabled = new MutableLiveData<>(false);
+
     public final ExecutorService taskService = new TaskThreadPoolExecutor(5, 30, 30, TimeUnit.SECONDS, new TaskQueue<>(20));
     public final ExecutorService takeCaptureService = new ThreadPoolExecutor(1, 2, 30, TimeUnit.SECONDS, new ArrayBlockingQueue<>(10));
+
     private final Set<TaskRunnable> runnableSet = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Set<TaskRunningListener> listeners = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final HashSet<EnterActivityListener> enterActivityListeners = new HashSet<>();
+
     public BooleanResultCallback captureResultCallback;
     private SystemEventReceiver systemEventReceiver;
+    private ConnectivityManager.NetworkCallback networkCallback;
     private MainCaptureService.CaptureServiceBinder binder = null;
     private ServiceConnection connection = null;
     private Bitmap lastBitmap = null;
@@ -140,12 +146,39 @@ public class MainAccessibilityService extends AccessibilityService {
         } else {
             registerReceiver(systemEventReceiver, systemEventReceiver.getFilter());
         }
+
+        // 网络状态变更
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            final WorldState worldState = WorldState.getInstance();
+
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+                super.onCapabilitiesChanged(network, networkCapabilities);
+                if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                    worldState.setNetworkType(NetworkCapabilities.TRANSPORT_WIFI);
+                } else if (networkCapabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                    worldState.setNetworkType(NetworkCapabilities.TRANSPORT_CELLULAR);
+                }
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                super.onLost(network);
+                worldState.setNetworkType(-1);
+            }
+        };
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (systemEventReceiver != null) unregisterReceiver(systemEventReceiver);
+        if (networkCallback != null) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            connectivityManager.unregisterNetworkCallback(networkCallback);
+        }
 
         serviceConnected.setValue(false);
         setServiceEnabled(false);

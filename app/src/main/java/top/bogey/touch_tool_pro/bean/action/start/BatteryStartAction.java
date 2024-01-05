@@ -10,7 +10,7 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinSpinner;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.bean.task.WorldState;
+import top.bogey.touch_tool_pro.service.WorldState;
 
 public class BatteryStartAction extends StartAction {
     private transient Pin statePin = new Pin(new PinSpinner(R.array.charging_state), R.string.action_battery_start_subtitle_state, true);
@@ -29,11 +29,12 @@ public class BatteryStartAction extends StartAction {
     }
 
     @Override
-    public void calculate(TaskRunnable runnable, FunctionContext context, Pin pin) {
+    public void execute(TaskRunnable runnable, FunctionContext context, Pin pin) {
         int state = WorldState.getInstance().getBatteryState();
         int percent = WorldState.getInstance().getBatteryPercent();
         statePin.getValue(PinSpinner.class).setIndex(BatteryStateAction.stateToIndex(state));
         valuePin.getValue(PinInteger.class).setValue(percent);
+        super.execute(runnable, context, pin);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package top.bogey.touch_tool_pro.bean.base;
+package top.bogey.touch_tool_pro.save;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +21,7 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionPinsAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
+import top.bogey.touch_tool_pro.bean.base.LogInfo;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.task.Task;

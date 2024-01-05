@@ -254,35 +254,28 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     @Nullable
     private NodePickerItemInfo getNodeIn(int x, int y) {
         if (rootNodes == null || rootNodes.size() == 0) return null;
-        HashMap<NodePickerItemInfo, Integer> infoMap = new HashMap<>();
-        for (int i = 0; i < rootNodes.size(); i++) {
+
+        NodePickerItemInfo node = null;
+        for (int i = rootNodes.size() - 1; i >= 0; i--) {
             NodePickerItemInfo rootNode = rootNodes.get(i);
-            findNodeIn(infoMap, (rootNodes.size() - i) * Short.MAX_VALUE, rootNode, x, y);
+            node = findNodeIn(rootNode, x, y);
+            if (node != null) break;
         }
 
-        int deep = 0;
-        NodePickerItemInfo node = null;
-        for (Map.Entry<NodePickerItemInfo, Integer> entry : infoMap.entrySet()) {
-            // 深度最深
-            if (deep < entry.getValue()) {
-                deep = entry.getValue();
-                node = entry.getKey();
-            }
-        }
         return node;
     }
 
-    private void findNodeIn(HashMap<NodePickerItemInfo, Integer> infoHashSet, int deep, @NonNull NodePickerItemInfo nodeInfo, int x, int y) {
-        if (nodeInfo.children.isEmpty()) return;
-        for (NodePickerItemInfo child : nodeInfo.children) {
-            if (child != null) {
-                Rect rect = new Rect(child.rect);
-                if (rect.contains(x, y) && child.visible) {
-                    infoHashSet.put(child, deep);
-                }
-                findNodeIn(infoHashSet, deep + 1, child, x, y);
+    private NodePickerItemInfo findNodeIn(@NonNull NodePickerItemInfo nodeInfo, int x, int y) {
+        if (nodeInfo.rect.contains(x, y)) {
+            ArrayList<NodePickerItemInfo> children = nodeInfo.children;
+            for (int i = children.size() - 1; i >= 0; i--) {
+                NodePickerItemInfo child = children.get(i);
+                NodePickerItemInfo nodeIn = findNodeIn(child, x, y);
+                if (nodeIn != null) return nodeIn;
             }
+            return nodeInfo;
         }
+        return null;
     }
 
     @Override
