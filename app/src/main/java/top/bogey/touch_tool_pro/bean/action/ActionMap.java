@@ -161,8 +161,8 @@ public enum ActionMap {
                     ActionType.APP_STATE,
                     ActionType.BATTERY_STATE,
                     ActionType.SCREEN_STATE,
-                    ActionType.CAPTURE_STATE,
                     ActionType.NETWORK_STATE,
+                    ActionType.CAPTURE_STATE,
                     ActionType.DATE_STATE,
                     ActionType.TIME_STATE
             ));

@@ -313,11 +313,14 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         public Action deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject jsonObject = json.getAsJsonObject();
             ActionType type = GsonUtils.getAsObject(jsonObject, "type", ActionType.class, ActionType.BASE);
-            Class<? extends Action> actionClass = type.getConfig().getActionClass();
+            ActionConfigInfo config = type.getConfig();
+            if (config == null) return null;
+            Class<? extends Action> actionClass = config.getActionClass();
             try {
                 Constructor<? extends Action> constructor = actionClass.getConstructor(JsonObject.class);
                 return constructor.newInstance(jsonObject);
-            } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+            } catch (Exception e) {
+                Log.d("TAG", "deserialize: " + type);
                 throw new RuntimeException(e);
             }
         }

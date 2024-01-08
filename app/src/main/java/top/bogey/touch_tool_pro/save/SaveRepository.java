@@ -88,7 +88,7 @@ public class SaveRepository {
             tasks.put(key, task);
         }
 
-        removeKeys.forEach(taskMMKV::remove);
+//        removeKeys.forEach(taskMMKV::remove);
     }
 
     public ArrayList<Task> getAllTasks() {
@@ -208,7 +208,7 @@ public class SaveRepository {
             functions.put(key, function);
         }
 
-        removeKeys.forEach(functionMMKV::remove);
+//        removeKeys.forEach(functionMMKV::remove);
     }
 
     public ArrayList<Function> getAllFunctions() {
@@ -308,7 +308,7 @@ public class SaveRepository {
             variables.put(key, var);
         }
 
-        removeKeys.forEach(functionMMKV::remove);
+//        removeKeys.forEach(functionMMKV::remove);
     }
 
     public HashMap<String, PinValue> getAllVariables() {

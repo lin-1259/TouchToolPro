@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import top.bogey.touch_tool_pro.MainApplication;
+import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+
 public class DisplayUtils {
     public static int getAttrColor(Context context, int id, int defValue) {
         int[] attrs = {id};
@@ -26,11 +29,17 @@ public class DisplayUtils {
     }
 
     public static boolean isPortrait(Context context) {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) context = service;
+
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         return manager.getDefaultDisplay().getRotation() % 2 == Surface.ROTATION_0;
     }
 
     public static Point getScreenSize(Context context) {
+        MainAccessibilityService service = MainApplication.getInstance().getService();
+        if (service != null) context = service;
+
         WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Point point = new Point();
         manager.getDefaultDisplay().getRealSize(point);

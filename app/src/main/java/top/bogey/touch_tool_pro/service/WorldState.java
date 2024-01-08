@@ -1,6 +1,5 @@
 package top.bogey.touch_tool_pro.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -15,6 +14,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -39,7 +39,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 public class WorldState {
     private static WorldState helper;
 
-    private final LinkedHashMap<String, PackageInfo> appMap = new LinkedHashMap<>();
+    private final ConcurrentHashMap<String, PackageInfo> appMap = new ConcurrentHashMap<>();
     private final LinkedHashMap<ManualStartAction, Task> manualStartActions = new LinkedHashMap<>();
     private String packageName;
     private String activityName;
@@ -54,14 +54,15 @@ public class WorldState {
         return helper;
     }
 
-    @SuppressLint("QueryPermissionsNeeded")
     public void resetAppMap(Context context) {
         LinkedHashMap<String, PackageInfo> map = new LinkedHashMap<>();
         PackageManager manager = context.getPackageManager();
-        List<PackageInfo> packages = manager.getInstalledPackages(PackageManager.GET_ACTIVITIES | PackageManager.MATCH_UNINSTALLED_PACKAGES | PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
-        for (PackageInfo packageInfo : packages) {
-            if (packageInfo.activities != null && packageInfo.activities.length > 0) {
+        List<ApplicationInfo> applications = manager.getInstalledApplications(PackageManager.MATCH_UNINSTALLED_PACKAGES);
+        for (ApplicationInfo info : applications) {
+            try {
+                PackageInfo packageInfo = manager.getPackageInfo(info.packageName, PackageManager.GET_ACTIVITIES);
                 map.put(packageInfo.packageName, packageInfo);
+            } catch (Exception ignored) {
             }
         }
         appMap.clear();
@@ -71,7 +72,7 @@ public class WorldState {
     public boolean isActivityClass(String packageName, String className) {
         if (packageName == null) return false;
         PackageInfo packageInfo = appMap.get(packageName);
-        if (packageInfo == null) return false;
+        if (packageInfo == null || packageInfo.activities == null) return false;
         for (ActivityInfo activityInfo : packageInfo.activities) {
             if (TextUtils.equals(className, activityInfo.name)) return true;
         }
@@ -102,7 +103,7 @@ public class WorldState {
             if (system || (value.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
                 CharSequence title = value.applicationInfo.loadLabel(manager);
                 // 包名和应用名一致的基本上都是无效应用，跳过
-                if (value.packageName.equalsIgnoreCase(title.toString())) continue;
+//                if (value.packageName.equalsIgnoreCase(title.toString())) continue;
                 if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(value.packageName.toLowerCase()).find()) {
                     packages.add(value);
                 }
@@ -130,9 +131,9 @@ public class WorldState {
         intent.setType("*/*");
         List<ResolveInfo> infoList = manager.queryIntentActivities(intent, PackageManager.MATCH_ALL);
         for (ResolveInfo info : infoList) {
+            if (info.activityInfo.packageName.equals(context.getPackageName())) continue;
             PackageInfo packageInfo = appMap.get(info.activityInfo.packageName);
             if (packageInfo == null) continue;
-            if (packageInfo.packageName.equals(context.getPackageName())) continue;
             if (system || (packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) {
                 CharSequence title = packageInfo.applicationInfo.loadLabel(manager);
                 if (pattern == null || pattern.matcher(title.toString().toLowerCase()).find() || pattern.matcher(packageInfo.packageName.toLowerCase()).find()) {

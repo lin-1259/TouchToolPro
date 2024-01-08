@@ -20,6 +20,7 @@ import top.bogey.touch_tool_pro.bean.action.color.ColorStateAction;
 import top.bogey.touch_tool_pro.bean.action.color.ExistColorAction;
 import top.bogey.touch_tool_pro.bean.action.color.ExistColorsAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionEndAction;
+import top.bogey.touch_tool_pro.bean.action.function.FunctionPinsAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionStartAction;
 import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
@@ -99,8 +100,10 @@ import top.bogey.touch_tool_pro.bean.action.string.StringFromValueAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringRegexAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringToIntAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
+import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
 
 public enum ActionType {
@@ -229,10 +232,12 @@ public enum ActionType {
     public ActionConfigInfo getConfig() {
         return switch (this) {
             case CUSTOM -> new ActionConfigInfo(0, 0, FunctionReferenceAction.class);
+            case CUSTOM_PIN -> new ActionConfigInfo(0, 0, FunctionPinsAction.class);
             case CUSTOM_START -> new ActionConfigInfo(R.string.function_start, 0, FunctionStartAction.class);
             case CUSTOM_END -> new ActionConfigInfo(R.string.function_end, 0, FunctionEndAction.class);
-            case VAR_GET -> new ActionConfigInfo(R.string.action_get_value_action_title, R.drawable.icon_get_value, GetVariableValue.class);
-            case VAR_SET -> new ActionConfigInfo(R.string.action_set_value_action_title, R.drawable.icon_set_value, SetVariableValue.class);
+
+            case VAR_GET -> new ActionConfigInfo(R.string.action_get_value_action_title, R.drawable.icon_get_value, GetLocalVariableValue.class);
+            case VAR_SET -> new ActionConfigInfo(R.string.action_set_value_action_title, R.drawable.icon_set_value, SetLocalVariableValue.class);
             case COMMON_VAR_GET -> new ActionConfigInfo(R.string.action_get_common_value_action_title, R.drawable.icon_get_value, GetCommonVariableValue.class);
             case COMMON_VAR_SET -> new ActionConfigInfo(R.string.action_set_common_value_action_title, R.drawable.icon_set_value, SetCommonVariableValue.class);
 
@@ -296,7 +301,7 @@ public enum ActionType {
             case SHARE -> new ActionConfigInfo(R.string.action_share_action_title, R.drawable.icon_export, ShareAction.class);
             case RUN_TASK -> new ActionConfigInfo(R.string.action_do_task_action_title, R.drawable.icon_task, RunTaskAction.class);
             case BREAK_TASK -> new ActionConfigInfo(R.string.action_break_task_action_title, R.drawable.icon_stop, BreakTaskAction.class);
-            case SHELL -> new ActionConfigInfo(R.string.action_shell_action_title, R.drawable.icon_adb, ShellAction.class);
+            case SHELL -> new ActionConfigInfo(R.string.action_shell_action_title, R.drawable.icon_adb, ShellAction.class, true);
 
             case BOOL_OR -> new ActionConfigInfo(R.string.action_bool_convert_or_title, R.drawable.icon_condition, BoolOrAction.class);
             case BOOL_AND -> new ActionConfigInfo(R.string.action_bool_convert_and_title, R.drawable.icon_condition, BoolAndAction.class);

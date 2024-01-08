@@ -1,5 +1,7 @@
 package top.bogey.touch_tool_pro.bean.function;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -175,6 +177,7 @@ public abstract class FunctionContext extends IdentityInfo {
                 Constructor<? extends FunctionContext> constructor = functionClass.getConstructor(JsonObject.class);
                 return constructor.newInstance(jsonObject);
             } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+                Log.d("TAG", "deserialize: " + functionClass);
                 throw new RuntimeException(e);
             }
         }

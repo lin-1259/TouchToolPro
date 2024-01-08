@@ -478,6 +478,8 @@
 
     <!-- 采集器 - 应用 -->
     <string name="picker_app_title_search">搜索应用</string>
+    <string name="picker_app_title_third">第三方应用：%d</string>
+    <string name="picker_app_title_all">所有应用：%d</string>
     <string name="picker_app_title_search_activity">搜索活动</string>
     <string name="picker_app_title_select_activity">选择活动</string>
     <string name="picker_app_subtitle_include">关联</string>

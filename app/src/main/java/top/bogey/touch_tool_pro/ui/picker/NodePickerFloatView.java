@@ -21,8 +21,6 @@ import com.amrdeveloper.treeview.TreeNodeManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -256,8 +254,9 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         if (rootNodes == null || rootNodes.size() == 0) return null;
 
         NodePickerItemInfo node = null;
-        for (int i = rootNodes.size() - 1; i >= 0; i--) {
+        for (int i = 0; i < rootNodes.size(); i++) {
             NodePickerItemInfo rootNode = rootNodes.get(i);
+            if (rootNode == null) continue;
             node = findNodeIn(rootNode, x, y);
             if (node != null) break;
         }
@@ -266,7 +265,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     }
 
     private NodePickerItemInfo findNodeIn(@NonNull NodePickerItemInfo nodeInfo, int x, int y) {
-        if (nodeInfo.rect.contains(x, y)) {
+        if (nodeInfo.visible && nodeInfo.rect != null && nodeInfo.rect.contains(x, y)) {
             ArrayList<NodePickerItemInfo> children = nodeInfo.children;
             for (int i = children.size() - 1; i >= 0; i--) {
                 NodePickerItemInfo child = children.get(i);
