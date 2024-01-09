@@ -269,6 +269,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             ArrayList<NodePickerItemInfo> children = nodeInfo.children;
             for (int i = children.size() - 1; i >= 0; i--) {
                 NodePickerItemInfo child = children.get(i);
+                if (child == null) continue;
                 NodePickerItemInfo nodeIn = findNodeIn(child, x, y);
                 if (nodeIn != null) return nodeIn;
             }

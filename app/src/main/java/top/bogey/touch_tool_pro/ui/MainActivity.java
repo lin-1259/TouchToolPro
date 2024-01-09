@@ -185,11 +185,18 @@ public class MainActivity extends BaseActivity {
         if (uri != null) {
             String path = uri.getPath();
             if (path != null) {
-                Pattern pattern = Pattern.compile("apk\\.\\d$");
-                if (pattern.matcher(path).find()) {
-                    AppUtils.installApk(this, uri);
-                } else if (path.endsWith("ttp")) {
-                    saveTasks(uri);
+                String pathLowerCase = path.toLowerCase();
+                String[] strings = {"\\.apk.*", "\\.ttp.*"};
+                for (int i = 0; i < strings.length; i++) {
+                    String s = strings[i];
+                    Pattern pattern = Pattern.compile(s);
+                    if (pattern.matcher(pathLowerCase).find()) {
+                        switch (i) {
+                            case 0 -> AppUtils.installApk(this, uri);
+                            case 1 -> saveTasks(uri);
+                        }
+                        break;
+                    }
                 }
             }
         }

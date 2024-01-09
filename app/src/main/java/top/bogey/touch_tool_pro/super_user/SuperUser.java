@@ -35,6 +35,13 @@ public class SuperUser {
         return SUPER_USER != null;
     }
 
+    public static int getSuperUserType() {
+        if (SUPER_USER == null) return 0;
+        if (SUPER_USER instanceof ShizukuSuperUser) return 1;
+        if (SUPER_USER instanceof RootSuperUser) return 2;
+        return -1;
+    }
+
     public static CmdResult runCommand(String cmd) {
         if (SUPER_USER != null) {
             return SUPER_USER.runCommand(cmd);

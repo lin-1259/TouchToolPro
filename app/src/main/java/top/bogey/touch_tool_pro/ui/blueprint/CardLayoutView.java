@@ -25,7 +25,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -38,16 +40,16 @@ import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
-import top.bogey.touch_tool_pro.save.FunctionSaveChangedListener;
-import top.bogey.touch_tool_pro.save.SaveRepository;
-import top.bogey.touch_tool_pro.save.TaskSaveChangedListener;
-import top.bogey.touch_tool_pro.save.VariableSaveChangedListener;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.bean.task.Task;
+import top.bogey.touch_tool_pro.save.FunctionSaveChangedListener;
+import top.bogey.touch_tool_pro.save.SaveRepository;
+import top.bogey.touch_tool_pro.save.TaskSaveChangedListener;
+import top.bogey.touch_tool_pro.save.VariableSaveChangedListener;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.card.FunctionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
@@ -245,7 +247,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         card.setScaleY(scale);
         float x = action.getX() * getScaleGridSize() + offsetX;
         float y = action.getY() * getScaleGridSize() + offsetY;
-        card.setPosition(x, y);
+        card.setPosition(x - 1, y - 1);
         float width = card.getWidth() * scale;
         float height = card.getHeight() * scale;
         RectF cardArea = new RectF(x, y, x + width, y + height);
@@ -695,6 +697,45 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         }
         postInvalidate();
         return true;
+    }
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+
+        if (cardMap == null) return;
+        HashSet<ActionCard<?>> checkedCards = new HashSet<>();
+        cardMap.forEach((id, card) -> {
+            if (card.getVisibility() != VISIBLE) return;
+            if (checkedCards.contains(card)) return;
+
+            // 搜索重叠的卡片
+            HashSet<ActionCard<?>> cards = new HashSet<>();
+            cards.add(card);
+            searchOverrideCards(checkedCards, cards, card);
+
+            checkedCards.addAll(cards);
+            ArrayList<ActionCard<?>> cardList = new ArrayList<>(cards);
+            cardList.sort((o1, o2) -> indexOfChild(o1) - indexOfChild(o2));
+            for (int i = 0; i < cardList.size(); i++) {
+                cardList.get(i).setElevation(10 + i);
+            }
+        });
+    }
+
+    private void searchOverrideCards(HashSet<ActionCard<?>> checkedCards, HashSet<ActionCard<?>> cards, ActionCard<?> checkCard) {
+        RectF checkCardRect = new RectF(checkCard.getX(), checkCard.getY(), checkCard.getX() + checkCard.getWidth() * scale, checkCard.getY() + checkCard.getHeight() * scale);
+        for (Map.Entry<String, ActionCard<?>> entry : cardMap.entrySet()) {
+            ActionCard<?> card = entry.getValue();
+            if (card.getVisibility() != VISIBLE) continue;
+            if (cards.contains(card)) continue;
+            if (checkedCards.contains(card)) continue;
+            RectF cardRect = new RectF(card.getX(), card.getY(), card.getX() + card.getWidth() * scale, card.getY() + card.getHeight() * scale);
+            if (RectF.intersects(cardRect, checkCardRect)) {
+                cards.add(card);
+                searchOverrideCards(checkedCards, cards, card);
+            }
+        }
     }
 
     @Override

@@ -80,7 +80,13 @@ public class SettingView extends Fragment {
                     case 1 -> {
                         if (ShizukuSuperUser.existShizuku()) {
                             SettingSave.getInstance().setSuperUserType(type);
-                            SuperUser.tryInit();
+                            if (SuperUser.getSuperUserType() != type) {
+                                SuperUser.exit();
+                                if (!SuperUser.init()) {
+                                    SettingSave.getInstance().setSuperUserType(0);
+                                    binding.superUserGroup.check(R.id.noSuperUserButton);
+                                }
+                            }
                         } else {
                             binding.superUserGroup.check(R.id.noSuperUserButton);
                             Toast.makeText(requireContext(), R.string.app_setting_super_user_no_shizuku, Toast.LENGTH_SHORT).show();
@@ -89,7 +95,7 @@ public class SettingView extends Fragment {
                     case 2 -> {
                         if (RootSuperUser.existRoot()) {
                             SettingSave.getInstance().setSuperUserType(type);
-                            SuperUser.tryInit();
+                            if (SuperUser.getSuperUserType() != type) SuperUser.tryInit();
                         } else {
                             binding.superUserGroup.check(R.id.noSuperUserButton);
                             Toast.makeText(requireContext(), R.string.app_setting_super_user_no_root, Toast.LENGTH_SHORT).show();

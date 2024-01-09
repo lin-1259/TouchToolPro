@@ -1,6 +1,7 @@
 package top.bogey.touch_tool_pro.super_user.root;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -21,17 +22,16 @@ public class RootSuperUser implements ISuperUser {
 
     @Override
     public boolean init() {
-        return existRoot;
+        return true;
     }
 
     @Override
     public boolean tryInit() {
-        return existRoot;
+        return true;
     }
 
     @Override
     public void exit() {
-        existRoot = false;
     }
 
     @Override

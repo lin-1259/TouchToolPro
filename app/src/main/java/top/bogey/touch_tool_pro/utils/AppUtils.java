@@ -340,7 +340,7 @@ public class AppUtils {
                     return GsonUtils.getAsObject(new String(bytes), TypeToken.getParameterized(ArrayList.class, FunctionContext.class).getType(), new ArrayList<>());
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return new ArrayList<>();

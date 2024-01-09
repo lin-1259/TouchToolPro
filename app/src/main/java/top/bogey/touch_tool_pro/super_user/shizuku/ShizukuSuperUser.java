@@ -59,7 +59,6 @@ public class ShizukuSuperUser implements ISuperUser {
 
     @Override
     public boolean tryInit() {
-        exit();
         if (existShizuku()) {
             if (checkShizukuPermission()) {
                 bindShizukuService();
@@ -72,7 +71,10 @@ public class ShizukuSuperUser implements ISuperUser {
     @Override
     public void exit() {
         if (existShizuku()) {
-            Shizuku.unbindUserService(ARGS, USER_SERVICE_CONNECTION, true);
+            try {
+                Shizuku.unbindUserService(ARGS, USER_SERVICE_CONNECTION, true);
+            } catch (Exception ignored) {
+            }
         }
         userService = null;
     }

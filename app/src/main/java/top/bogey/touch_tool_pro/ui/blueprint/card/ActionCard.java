@@ -19,12 +19,13 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionCheckResult;
 import top.bogey.touch_tool_pro.bean.action.ActionListener;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinAdd;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.databinding.CardBaseBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.ui.blueprint.BlueprintView;
 import top.bogey.touch_tool_pro.ui.blueprint.CardLayoutView;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinBottomView;
@@ -51,9 +52,7 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
         this.action = action;
 
         setCardBackgroundColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceVariant, 0));
-        setStrokeColor(DisplayUtils.getAttrColor(context, com.google.android.material.R.attr.colorSurfaceContainerHigh, 0));
-        setStrokeWidth(1);
-        setElevation(10);
+        setStrokeWidth(0);
         setPivotX(0);
         setPivotY(0);
         ViewGroup.LayoutParams params = getLayoutParams();
@@ -64,7 +63,6 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
         binding = CardBaseBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.title.setText(action.getTitle());
-        binding.position.setText(action.getX() + ":" + action.getY());
         binding.icon.setImageResource(action.getType().getConfig().getIcon());
         binding.des.setText(action.getDescription());
         binding.desBox.setVisibility((action.getDescription() == null || action.getDescription().isEmpty()) ? GONE : VISIBLE);
@@ -226,6 +224,8 @@ public class ActionCard<A extends Action> extends MaterialCardView implements Ac
             PinView pinView = entry.getValue();
             // 跳过隐藏的针脚
             if (pinView.getVisibility() != VISIBLE) continue;
+            // 跳过添加针脚
+            if (pinView.getPin().isSameValueType(PinAdd.class)) continue;
             boolean vertical = pinView.getPin().isVertical();
             boolean out = pinView.getPin().isOut();
             int[] location = new int[2];
