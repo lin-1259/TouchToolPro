@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinNode;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 
@@ -18,6 +19,7 @@ public class GsonUtils {
             .registerTypeAdapter(Pin.class, new Pin.PinDeserialize())
             .registerTypeAdapter(PinObject.class, new PinObject.PinObjectDeserializer())
             .registerTypeAdapter(PinTouch.class, new PinTouch.PinTouchSerializer())
+            .registerTypeAdapter(PinNode.class, new PinNode.PinNodeSerializer())
             .registerTypeAdapter(Action.class, new Action.ActionDeserializer())
             .registerTypeAdapter(FunctionContext.class, new FunctionContext.FunctionContextDeserializer())
             .create();
