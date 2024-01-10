@@ -92,6 +92,15 @@
                     app:icon="@drawable/icon_copy" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/exchangeButton"
+                    style="@style/Theme.TouchTool.TextButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/exchange_task"
+                    app:icon="@drawable/icon_refresh" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/moveButton"
                     style="@style/Theme.TouchTool.TextButton"
                     android:layout_width="0dp"
@@ -99,15 +108,6 @@
                     android:layout_weight="1"
                     android:text="@string/move_task"
                     app:icon="@drawable/icon_tag" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cancelButton"
-                    style="@style/Theme.TouchTool.TextButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/cancel"
-                    app:icon="@drawable/icon_close" />
 
             </LinearLayout>
 

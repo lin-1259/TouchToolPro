@@ -110,11 +110,6 @@ public class FunctionView extends Fragment implements TaskSaveChangedListener, F
 
         binding.copyButton.setOnClickListener(v -> copySelectTasks());
 
-        binding.cancelButton.setOnClickListener(v -> {
-            unSelectAll();
-            hideBottomBar();
-        });
-
         binding.folderButton.setOnClickListener(v -> showTagView());
 
         binding.addButton.setOnClickListener(v -> {

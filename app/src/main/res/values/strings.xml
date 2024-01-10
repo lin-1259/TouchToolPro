@@ -103,6 +103,8 @@
     <string name="export_task_tips">导出任务配置并发送</string>
     <string name="move_task">标签</string>
     <string name="copy_task">复制</string>
+    <string name="exchange_task">转换</string>
+    <string name="exchange_task_tips">任务转换为自定义卡之后无法恢复，确定要转换选中的任务吗？</string>
     <string name="copy_to">复制到</string>
     <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
 
@@ -405,10 +407,16 @@
     <string name="action_position_to_area_title">位置组合为区域</string>
     <string name="action_position_to_touch_title">位置组合为手势</string>
     <string name="action_position_to_touch_subtitle_time">手势时长(ms)</string>
+    <string name="action_area_to_int_title">区域拆分为数值</string>
 
     <!-- 任务 - 控件 -->
     <string name="action_get_node_info_title">获取控件信息</string>
+    <string name="action_get_node_info_subtitle_type">类型</string>
+    <string name="action_is_node_valid_title">控件是否有效</string>
     <string name="action_get_node_children_title">获取控件子节点</string>
+    <string name="action_get_node_parent_title">获取控件父节点</string>
+    <string name="action_get_nodes_in_pos_title">获取…位置的所有控件</string>
+    <string name="action_get_nodes_in_pos_subtitle_exclude">排除容器控件</string>
 
     <!-- 任务 - array -->
     <string name="action_array_subtitle_element">成员</string>

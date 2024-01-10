@@ -24,6 +24,7 @@ public class GetNodeInfoStateAction extends Action {
     private transient Pin pathPin = new Pin(new PinNodePath(), R.string.pin_node_path, true);
     private transient Pin areaPin = new Pin(new PinArea(), R.string.pin_area, true);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.pin_point, true);
+    private transient Pin typePin = new Pin(new PinString(), R.string.action_get_node_info_subtitle_type, true);
     private transient Pin nodePin = new Pin(new PinNode(), R.string.pin_node);
 
     public GetNodeInfoStateAction() {
@@ -33,6 +34,7 @@ public class GetNodeInfoStateAction extends Action {
         pathPin = addPin(pathPin);
         areaPin = addPin(areaPin);
         posPin = addPin(posPin);
+        typePin = addPin(typePin);
         nodePin = addPin(nodePin);
     }
 
@@ -43,6 +45,7 @@ public class GetNodeInfoStateAction extends Action {
         pathPin = reAddPin(pathPin);
         areaPin = reAddPin(areaPin);
         posPin = reAddPin(posPin);
+        typePin = reAddPin(typePin);
         nodePin = reAddPin(nodePin);
     }
 
@@ -58,5 +61,11 @@ public class GetNodeInfoStateAction extends Action {
         nodeInfo.getBoundsInScreen(rect);
         areaPin.getValue(PinArea.class).setArea(MainApplication.getInstance(), rect);
         posPin.getValue(PinPoint.class).setPoint(MainApplication.getInstance(), rect.centerX(), rect.centerY());
+        CharSequence className = nodeInfo.getClassName();
+        if (className == null) {
+            typePin.getValue(PinString.class).setValue("");
+        } else {
+            typePin.getValue(PinString.class).setValue(className.toString());
+        }
     }
 }

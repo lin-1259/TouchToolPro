@@ -60,7 +60,7 @@ public class FunctionReferenceAction extends Action {
         Log.d("TAG", "execute: " + context);
         if (!synced) sync(context);
         if (function == null) return;
-        if (executeFunction == null) executeFunction = function.newContext(this, context);
+        if (executeFunction == null) executeFunction = new Function(function, this, context);
         function.execute(runnable, executeFunction, pin);
     }
 
@@ -74,7 +74,7 @@ public class FunctionReferenceAction extends Action {
     public PinObject getPinValue(TaskRunnable runnable, FunctionContext context, Pin pin) {
         if (!synced) sync(context);
         if (pin.isOut() && !isError(context)) {
-            if (executeFunction == null) executeFunction = function.newContext(this, context);
+            if (executeFunction == null) executeFunction = new Function(function, this, context);
             function.calculate(runnable, executeFunction, pin);
 
             FunctionEndAction endAction = executeFunction.getEndAction();

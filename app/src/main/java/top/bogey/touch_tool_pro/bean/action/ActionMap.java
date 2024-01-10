@@ -101,7 +101,10 @@ public enum ActionMap {
                     ActionType.CHECK_EXIST_NODE,
                     ActionType.CHECK_EXIST_NODES,
                     ActionType.NODE_INFO_STATE,
-                    ActionType.NODE_CHILDREN
+                    ActionType.NODE_IS_VALID,
+                    ActionType.NODE_CHILDREN,
+                    ActionType.NODE_PARENT,
+                    ActionType.NODES_IN_POS
             ));
 
             case COLOR -> new ArrayList<>(Arrays.asList(
@@ -136,7 +139,8 @@ public enum ActionMap {
                     ActionType.POS_OFFSET,
                     ActionType.POS_IN_AREA,
                     ActionType.POS_TO_AREA,
-                    ActionType.POS_TO_TOUCH
+                    ActionType.POS_TO_TOUCH,
+                    ActionType.AREA_TO_INT
             ));
 
             case ARRAY -> new ArrayList<>(Arrays.asList(

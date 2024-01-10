@@ -29,12 +29,13 @@ import java.util.HashMap;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
-import top.bogey.touch_tool_pro.save.SaveRepository;
-import top.bogey.touch_tool_pro.save.TaskSaveChangedListener;
+import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.bean.task.TaskRunningListener;
 import top.bogey.touch_tool_pro.databinding.ViewTaskBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
+import top.bogey.touch_tool_pro.save.TaskSaveChangedListener;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.ui.custom.CreateFunctionContextDialogBuilder;
@@ -68,7 +69,8 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
     };
     boolean isSelect = false;
     private ViewTaskBinding binding;
-    private TaskListRecyclerViewAdapter adapter;    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
+    private TaskListRecyclerViewAdapter adapter;
+    private final OnBackPressedCallback callback = new OnBackPressedCallback(false) {
         @Override
         public void handleOnBackPressed() {
             unSelectAll();
@@ -132,10 +134,16 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
             hideBottomBar();
         });
 
-        binding.cancelButton.setOnClickListener(v -> {
-            unSelectAll();
-            hideBottomBar();
-        });
+        binding.exchangeButton.setOnClickListener(v -> AppUtils.showDialog(requireContext(), R.string.exchange_task_tips, result -> {
+            if (result) {
+                SaveRepository repository = SaveRepository.getInstance();
+                selectedTasks.forEach((id, task) -> {
+                    repository.saveFunction(new Function(task));
+                    repository.removeTask(id);
+                });
+                hideBottomBar();
+            }
+        }));
 
         binding.folderButton.setOnClickListener(v -> showTagView());
 

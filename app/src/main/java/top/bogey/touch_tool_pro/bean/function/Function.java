@@ -13,7 +13,9 @@ import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionPinsAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionStartAction;
+import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
+import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
@@ -55,6 +57,24 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
         }
     }
 
+    public Function(Task task) {
+        this();
+        setTitle(task.getTitle());
+        Task copy = (Task) task.copy();
+        for (Action startAction : copy.getActionsByClass(StartAction.class)) {
+            for (Pin pin : startAction.getPins()) {
+                pin.cleanLinks(copy);
+            }
+        }
+
+        for (Action taskAction : copy.getActions()) {
+            if (!(taskAction instanceof StartAction)) {
+                addAction(taskAction);
+            }
+        }
+        getVars().putAll(task.getVars());
+    }
+
     public Function(Function function, FunctionReferenceAction executeAction, FunctionContext outContext) {
         super(FunctionType.FUNCTION);
         action = null;
@@ -68,21 +88,6 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
 
         this.executeAction = executeAction;
         this.outContext = outContext;
-    }
-
-    public Function newContext(FunctionReferenceAction executeAction, FunctionContext outContext) {
-        Function copy = new Function();
-        copy.parentId = parentId;
-        copy.justCall = justCall;
-        copy.fastEnd = fastEnd;
-        copy.executeAction = executeAction;
-        copy.outContext = outContext;
-        copy.getActions().clear();
-        for (Action action : getActions()) {
-            copy.addAction((Action) action.copy());
-        }
-        copy.getVars().putAll(getVars());
-        return copy;
     }
 
     @Override

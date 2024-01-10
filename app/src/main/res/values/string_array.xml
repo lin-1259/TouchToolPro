@@ -16,7 +16,7 @@
         <item>颜色相关</item>
         <item>条件相关</item>
         <item>数值相关</item>
-        <item>位置相关</item>
+        <item>位置区域</item>
         <item>数组相关</item>
         <item>其他</item>
     </string-array>

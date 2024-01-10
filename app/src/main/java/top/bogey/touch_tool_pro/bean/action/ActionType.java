@@ -38,6 +38,9 @@ import top.bogey.touch_tool_pro.bean.action.node.ExistNodeAction;
 import top.bogey.touch_tool_pro.bean.action.node.ExistNodesAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodeChildrenAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodeInfoStateAction;
+import top.bogey.touch_tool_pro.bean.action.node.GetNodeParentAction;
+import top.bogey.touch_tool_pro.bean.action.node.GetNodesInPosAction;
+import top.bogey.touch_tool_pro.bean.action.node.IsNodeValidAction;
 import top.bogey.touch_tool_pro.bean.action.normal.BreakTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickKeyAction;
@@ -77,6 +80,7 @@ import top.bogey.touch_tool_pro.bean.action.other.OnBatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.OnScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.TimeStateAction;
+import top.bogey.touch_tool_pro.bean.action.pos.AreaToIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosFromIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosOffsetAction;
@@ -101,10 +105,8 @@ import top.bogey.touch_tool_pro.bean.action.string.StringRegexAction;
 import top.bogey.touch_tool_pro.bean.action.string.StringToIntAction;
 import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.GetVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
-import top.bogey.touch_tool_pro.bean.action.var.SetVariableValue;
 
 public enum ActionType {
     BASE,
@@ -210,9 +212,13 @@ public enum ActionType {
     POS_IN_AREA,
     POS_TO_AREA,
     POS_TO_TOUCH,
+    AREA_TO_INT,
 
     NODE_INFO_STATE,
+    NODE_IS_VALID,
     NODE_CHILDREN,
+    NODE_PARENT,
+    NODES_IN_POS,
 
     ARRAY_GET,
     ARRAY_SET,
@@ -331,8 +337,13 @@ public enum ActionType {
             case POS_TO_AREA -> new ActionConfigInfo(R.string.action_position_to_area_title, R.drawable.icon_position, PosToAreaAction.class);
             case POS_TO_TOUCH -> new ActionConfigInfo(R.string.action_position_to_touch_title, R.drawable.icon_position, PosToTouchAction.class);
 
+            case AREA_TO_INT -> new ActionConfigInfo(R.string.action_area_to_int_title, R.drawable.icon_position, AreaToIntAction.class);
+
             case NODE_INFO_STATE -> new ActionConfigInfo(R.string.action_get_node_info_title, R.drawable.icon_widget, GetNodeInfoStateAction.class);
+            case NODE_IS_VALID -> new ActionConfigInfo(R.string.action_is_node_valid_title, R.drawable.icon_widget, IsNodeValidAction.class);
             case NODE_CHILDREN -> new ActionConfigInfo(R.string.action_get_node_children_title, R.drawable.icon_widget, GetNodeChildrenAction.class);
+            case NODE_PARENT -> new ActionConfigInfo(R.string.action_get_node_parent_title, R.drawable.icon_widget, GetNodeParentAction.class);
+            case NODES_IN_POS -> new ActionConfigInfo(R.string.action_get_nodes_in_pos_title, R.drawable.icon_widget, GetNodesInPosAction.class);
 
             case ARRAY_GET -> new ActionConfigInfo(R.string.action_array_get_title, R.drawable.icon_array, ArrayGetAction.class);
             case ARRAY_SET -> new ActionConfigInfo(R.string.action_array_set_title, R.drawable.icon_array, ArraySetAction.class);
