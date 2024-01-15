@@ -153,6 +153,7 @@ public enum ActionMap {
                     ActionType.ARRAY_SET,
                     ActionType.ARRAY_CLEAR,
                     ActionType.ARRAY_SIZE,
+                    ActionType.ARRAY_VALID_INDEX,
                     ActionType.ARRAY_APPEND,
                     ActionType.ARRAY_INDEX_OF
             ));

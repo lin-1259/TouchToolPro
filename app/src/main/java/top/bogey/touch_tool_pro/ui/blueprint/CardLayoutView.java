@@ -179,6 +179,7 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         ActionCard<?> card = newCard(functionContext, action);
         setCardPosition(card);
         addView(card);
+        card.bringToFront();
         cardMap.put(action.getId(), card);
     }
 

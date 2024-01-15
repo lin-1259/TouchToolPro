@@ -415,7 +415,7 @@
     <string name="action_is_node_valid_title">控件是否有效</string>
     <string name="action_get_node_children_title">获取控件子节点</string>
     <string name="action_get_node_parent_title">获取控件父节点</string>
-    <string name="action_get_nodes_in_pos_title">获取…位置的所有控件</string>
+    <string name="action_get_nodes_in_pos_title">获取指定位置的所有控件</string>
     <string name="action_get_nodes_in_pos_subtitle_exclude">排除容器控件</string>
 
     <!-- 任务 - array -->
@@ -428,6 +428,7 @@
     <string name="action_array_remove_title">移除数组成员</string>
     <string name="action_array_clear_title">清理数组</string>
     <string name="action_array_size_title">获取数组大小</string>
+    <string name="action_array_valid_index_title">数组序号检测</string>
     <string name="action_array_append_title">合并数组</string>
     <string name="action_array_index_of_title">成员位置</string>
     <string name="action_array_for_title">遍历数组成员</string>

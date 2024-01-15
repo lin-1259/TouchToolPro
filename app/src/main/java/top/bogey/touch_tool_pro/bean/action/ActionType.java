@@ -12,6 +12,7 @@ import top.bogey.touch_tool_pro.bean.action.array.ArrayMakeAction;
 import top.bogey.touch_tool_pro.bean.action.array.ArrayRemoveAction;
 import top.bogey.touch_tool_pro.bean.action.array.ArraySetAction;
 import top.bogey.touch_tool_pro.bean.action.array.ArraySizeAction;
+import top.bogey.touch_tool_pro.bean.action.array.ArrayValidIndexAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolAndAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolNotAction;
 import top.bogey.touch_tool_pro.bean.action.bool.BoolOrAction;
@@ -228,6 +229,7 @@ public enum ActionType {
     ARRAY_REMOVE,
     ARRAY_CLEAR,
     ARRAY_SIZE,
+    ARRAY_VALID_INDEX,
     ARRAY_APPEND,
     ARRAY_INDEX_OF,
     ARRAY_FOR,
@@ -353,6 +355,7 @@ public enum ActionType {
             case ARRAY_REMOVE -> new ActionConfigInfo(R.string.action_array_remove_title, R.drawable.icon_array, ArrayRemoveAction.class);
             case ARRAY_CLEAR -> new ActionConfigInfo(R.string.action_array_clear_title, R.drawable.icon_array, ArrayClearAction.class);
             case ARRAY_SIZE -> new ActionConfigInfo(R.string.action_array_size_title, R.drawable.icon_array, ArraySizeAction.class);
+            case ARRAY_VALID_INDEX -> new ActionConfigInfo(R.string.action_array_valid_index_title, R.drawable.icon_array, ArrayValidIndexAction.class);
             case ARRAY_APPEND -> new ActionConfigInfo(R.string.action_array_append_title, R.drawable.icon_array, ArrayAppendAction.class);
             case ARRAY_INDEX_OF -> new ActionConfigInfo(R.string.action_array_index_of_title, R.drawable.icon_array, ArrayIndexOfAction.class);
             case ARRAY_FOR -> new ActionConfigInfo(R.string.action_array_for_title, R.drawable.icon_array, ArrayForLogicAction.class);

@@ -77,12 +77,12 @@ public class Function extends FunctionContext implements ActionExecuteInterface 
 
     public Function(Function function, FunctionReferenceAction executeAction, FunctionContext outContext) {
         super(FunctionType.FUNCTION);
-        action = null;
+        action = new FunctionPinsAction();
         parentId = function.getParentId();
         justCall = function.isJustCall();
         fastEnd = function.isFastEnd();
         for (Action act : function.getActions()) {
-            addAction(act);
+            addAction((Action) act.copy());
         }
         getVars().putAll(function.getVars());
 

@@ -9,25 +9,25 @@ import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
+import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArray;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
-public class ArrayGetAction extends ArrayWithAction {
-    private transient Pin valuePin = new Pin(new PinString(), R.string.action_array_subtitle_element, true);
+public class ArrayValidIndexAction extends ArrayWithAction {
+    private transient Pin resultPin = new Pin(new PinBoolean(), R.string.action_check_subtitle_result, true);
     private transient Pin indexPin = new Pin(new PinInteger(1), R.string.pin_index);
 
-    public ArrayGetAction() {
-        super(ActionType.ARRAY_GET);
-        valuePin = addPin(valuePin);
+    public ArrayValidIndexAction() {
+        super(ActionType.ARRAY_VALID_INDEX);
+        resultPin = addPin(resultPin);
         indexPin = addPin(indexPin);
     }
 
-    public ArrayGetAction(JsonObject jsonObject) {
+    public ArrayValidIndexAction(JsonObject jsonObject) {
         super(jsonObject);
-        valuePin = reAddPin(valuePin, getPinType());
+        resultPin = reAddPin(resultPin);
         indexPin = reAddPin(indexPin);
     }
 
@@ -36,18 +36,6 @@ public class ArrayGetAction extends ArrayWithAction {
         PinValueArray array = (PinValueArray) getPinValue(runnable, context, arrayPin);
         PinInteger index = (PinInteger) getPinValue(runnable, context, indexPin);
         ArrayList<PinValue> values = array.getValues();
-        if (index.getValue() > 0 && index.getValue() <= values.size()) {
-            PinValue value = values.get(index.getValue() - 1);
-            valuePin.setValue(value);
-        } else {
-            valuePin.setValue(createPinValue(array.getPinType()));
-        }
-    }
-
-    @Override
-    public void setValueType(FunctionContext context, PinType type) {
-        super.setValueType(context, type);
-        valuePin.setValue(createPinValue(type));
-        valuePin.cleanLinks(context);
+        resultPin.getValue(PinBoolean.class).setBool(index.getValue() > 0 && index.getValue() <= values.size());
     }
 }

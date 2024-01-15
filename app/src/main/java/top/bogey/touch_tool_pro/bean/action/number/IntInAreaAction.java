@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinValueArea;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class IntInAreaAction extends CheckAction {
-    protected transient Pin areaPin = new Pin(new PinValueArea(1, 100, 1), R.string.pin_value_area);
+    protected transient Pin areaPin = new Pin(new PinValueArea(Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 1, 100), R.string.pin_value_area);
     protected transient Pin valuePin = new Pin(new PinInteger(), R.string.pin_int);
 
     public IntInAreaAction() {

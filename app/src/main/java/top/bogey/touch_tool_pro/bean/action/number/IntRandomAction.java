@@ -13,7 +13,7 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class IntRandomAction extends Action {
     protected transient Pin valuePin = new Pin(new PinInteger(), R.string.pin_int, true);
-    protected transient Pin areaPin = new Pin(new PinValueArea(1, Integer.MAX_VALUE, 1, 1, 100), R.string.pin_value_area);
+    protected transient Pin areaPin = new Pin(new PinValueArea(0, Integer.MAX_VALUE, 1, 1, 100), R.string.pin_value_area);
 
     public IntRandomAction() {
         super(ActionType.INT_RANDOM);
