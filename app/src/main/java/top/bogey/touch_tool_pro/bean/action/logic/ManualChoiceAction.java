@@ -14,9 +14,9 @@ import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMorePinInterface;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
-import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
+import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinAdd;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinExecute;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
@@ -24,15 +24,19 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.ui.custom.KeepAliveFloatView;
 import top.bogey.touch_tool_pro.ui.custom.ManualChoiceFloatView;
 
-public class ManualChoiceAction extends NormalAction implements ActionMorePinInterface {
-    private final transient Pin morePin = new Pin(new PinExecute(), R.string.pin_execute, true);
+public class ManualChoiceAction extends Action implements ActionMorePinInterface {
+    protected transient Pin inPin = new Pin(new PinExecute(), R.string.pin_execute);
+    protected transient Pin outPin = new Pin(new PinExecute(PinSubType.ICON), R.string.pin_execute, true);
+    private final transient Pin morePin = new Pin(new PinExecute(PinSubType.ICON), R.string.pin_execute, true);
     private transient Pin outTimePin = new Pin(new PinInteger(60000), R.string.action_wait_condition_logic_subtitle_timeout);
-    private transient Pin secondPin = new Pin(new PinExecute(), R.string.pin_execute, true);
+    private transient Pin secondPin = new Pin(new PinExecute(PinSubType.ICON), R.string.pin_execute, true);
     private transient Pin addPin = new Pin(new PinAdd(morePin, 2), R.string.action_subtitle_add_execute);
     private transient Pin endPin = new Pin(new PinExecute(), R.string.action_logic_subtitle_complete, true);
 
     public ManualChoiceAction() {
         super(ActionType.LOGIC_MANUAL_CHOICE);
+        inPin = addPin(inPin);
+        outPin = addPin(outPin);
         outTimePin = addPin(outTimePin);
         secondPin = addPin(secondPin);
         addPin = addPin(addPin);
@@ -41,6 +45,8 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
 
     public ManualChoiceAction(JsonObject jsonObject) {
         super(jsonObject);
+        inPin = reAddPin(inPin);
+        outPin = reAddPin(outPin);
         outTimePin = reAddPin(outTimePin);
         secondPin = reAddPin(secondPin);
         reAddPin(morePin, 2);
@@ -59,11 +65,11 @@ public class ManualChoiceAction extends NormalAction implements ActionMorePinInt
         PinInteger timeout = (PinInteger) getPinValue(runnable, context, outTimePin);
 
         ArrayList<Pin> pins = calculateMorePins();
-        ArrayList<String> items = new ArrayList<>();
+        ArrayList<ManualChoiceFloatView.ChoiceInfo> items = new ArrayList<>();
         for (Pin executePin : pins) {
             Action nextAction = getNextAction(context, executePin);
             if (nextAction != null) {
-                items.add(nextAction.getValidDescription());
+                items.add(new ManualChoiceFloatView.ChoiceInfo(nextAction.getValidDescription(), executePin.getValue(PinExecute.class).getImage()));
             }
         }
 

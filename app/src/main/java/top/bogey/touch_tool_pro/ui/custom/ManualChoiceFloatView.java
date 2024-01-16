@@ -2,6 +2,7 @@ package top.bogey.touch_tool_pro.ui.custom;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.databinding.FloatManualChoiceExecuteBinding;
+import top.bogey.touch_tool_pro.databinding.FloatManualChoiceExecuteItemBinding;
 import top.bogey.touch_tool_pro.ui.picker.FloatBaseCallback;
 import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -23,13 +25,17 @@ import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 public class ManualChoiceFloatView extends FrameLayout implements FloatViewInterface {
     private final ItemSelectCallback callback;
 
-    public ManualChoiceFloatView(@NonNull Context context, ArrayList<String> items, ItemSelectCallback callback) {
+    public ManualChoiceFloatView(@NonNull Context context, ArrayList<ChoiceInfo> items, ItemSelectCallback callback) {
         super(context);
         this.callback = callback;
 
         FloatManualChoiceExecuteBinding binding = FloatManualChoiceExecuteBinding.inflate(LayoutInflater.from(context), this, true);
-        ManualChoiceRecyclerViewAdapter adapter = new ManualChoiceRecyclerViewAdapter(this, items);
-        binding.recyclerView.setAdapter(adapter);
+        for (ChoiceInfo item : items) {
+            FloatManualChoiceExecuteItemBinding itemBinding = FloatManualChoiceExecuteItemBinding.inflate(LayoutInflater.from(context), binding.flexBox, true);
+            itemBinding.icon.setImageBitmap(item.image);
+            itemBinding.titleText.setText(item.title);
+            itemBinding.getRoot().setOnClickListener(v -> callback.onSelected(binding.flexBox.indexOfChild(v)));
+        }
 
         binding.closeButton.setOnClickListener(v -> {
             selectItem(-1);
@@ -81,6 +87,16 @@ public class ManualChoiceFloatView extends FrameLayout implements FloatViewInter
         @Override
         public void onDismiss() {
 
+        }
+    }
+
+    public static class ChoiceInfo{
+        public String title;
+        public Bitmap image;
+
+        public ChoiceInfo(String title, Bitmap image) {
+            this.title = title;
+            this.image = image;
         }
     }
 }

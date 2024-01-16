@@ -134,16 +134,26 @@ public class TaskView extends Fragment implements TaskSaveChangedListener, TaskR
             hideBottomBar();
         });
 
-        binding.exchangeButton.setOnClickListener(v -> AppUtils.showDialog(requireContext(), R.string.exchange_task_tips, result -> {
-            if (result) {
-                SaveRepository repository = SaveRepository.getInstance();
-                selectedTasks.forEach((id, task) -> {
-                    repository.saveFunction(new Function(task));
-                    repository.removeTask(id);
-                });
-                hideBottomBar();
-            }
-        }));
+        binding.exchangeButton.setOnClickListener(v -> new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.dialog_title)
+                .setMessage(R.string.exchange_task_tips)
+                .setPositiveButton(R.string.exchange_task_1, (dialog, which) -> {
+                    dialog.dismiss();
+                    SaveRepository repository = SaveRepository.getInstance();
+                    selectedTasks.forEach((id, task) -> {
+                        repository.saveFunction(new Function(task));
+                        repository.removeTask(id);
+                    });
+                    hideBottomBar();
+                })
+                .setNeutralButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .setNegativeButton(R.string.exchange_task_2, (dialog, which) -> {
+                    SaveRepository repository = SaveRepository.getInstance();
+                    selectedTasks.forEach((id, task) -> repository.saveFunction(new Function(task)));
+                    unSelectAll();
+                    hideBottomBar();
+                })
+                .show());
 
         binding.folderButton.setOnClickListener(v -> showTagView());
 

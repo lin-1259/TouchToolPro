@@ -26,7 +26,7 @@ public abstract class ArrayAction extends Action {
 
     protected PinValue createPinValue(PinType pinType) {
         try {
-            Class<? extends PinObject> objectClass = pinType.getPinObjectClass();
+            Class<? extends PinObject> objectClass = pinType.getConfig().getPinClass();
             if (objectClass == null) return null;
             Constructor<? extends PinObject> constructor = objectClass.getConstructor();
             return (PinValue) constructor.newInstance();

@@ -26,6 +26,12 @@
         android:textSize="6sp"
         tools:ignore="SmallSp" />
 
+    <FrameLayout
+        android:id="@+id/pinBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/removeButton"
         style="@style/Theme.TouchTool.IconButton.Outlined"

@@ -249,7 +249,7 @@ public class Pin extends IdentityInfo {
         if (title != null && !title.isEmpty()) return title;
         if (titleId == 0) return "";
         if (value instanceof PinValueArray array) {
-            return array.getPinType().getTitle() + MainApplication.getInstance().getString(titleId);
+            return array.getPinType().getConfig().getTitle() + MainApplication.getInstance().getString(titleId);
         }
         return MainApplication.getInstance().getString(titleId);
     }

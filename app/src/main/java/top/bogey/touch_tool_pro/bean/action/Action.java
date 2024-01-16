@@ -121,7 +121,7 @@ public class Action extends IdentityInfo implements ActionInterface, ActionExecu
         Pin pin = null;
         if (tmpPins.size() > 0) {
             Pin tmpPin = tmpPins.get(0);
-            if (tmpPin.isSameValueType(type.getPinObjectClass())) pin = tmpPins.remove(0);
+            if (tmpPin.isSameValueType(type.getConfig().getPinClass())) pin = tmpPins.remove(0);
         }
         if (pin == null) return addPin(def);
 

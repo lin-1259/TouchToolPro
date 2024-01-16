@@ -82,7 +82,7 @@ public abstract class PinObject {
             String type = jsonObject.get("type").getAsString();
             try {
                 PinType pinType = PinType.valueOf(type);
-                Class<? extends PinObject> objectClass = pinType.getPinObjectClass();
+                Class<? extends PinObject> objectClass = pinType.getConfig().getPinClass();
                 if (objectClass == null) return null;
                 Constructor<? extends PinObject> constructor = objectClass.getConstructor(JsonObject.class);
                 return constructor.newInstance(jsonObject);

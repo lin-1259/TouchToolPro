@@ -14,6 +14,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -178,9 +179,8 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
         functionContext.addAction(action);
         ActionCard<?> card = newCard(functionContext, action);
         setCardPosition(card);
-        addView(card);
-        card.bringToFront();
         cardMap.put(action.getId(), card);
+        addView(card);
     }
 
     public void addAction(Class<? extends Action> actionClass) {
@@ -701,9 +701,24 @@ public class CardLayoutView extends FrameLayout implements TaskSaveChangedListen
     }
 
     @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
+        refreshElevation();
+    }
+
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        refreshElevation();
+    }
+
+    @Override
     public void requestLayout() {
         super.requestLayout();
+        refreshElevation();
+    }
 
+    private void refreshElevation() {
         if (cardMap == null) return;
         HashSet<ActionCard<?>> checkedCards = new HashSet<>();
         cardMap.forEach((id, card) -> {

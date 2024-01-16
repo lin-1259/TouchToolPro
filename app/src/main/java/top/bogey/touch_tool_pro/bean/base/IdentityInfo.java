@@ -61,12 +61,12 @@ public abstract class IdentityInfo {
     }
 
     public String getFullDescription() {
-        if (getDescription() == null) return getTitle();
+        if (getDescription() == null || getDescription().isEmpty()) return getTitle();
         return getTitle() + " - " + getDescription();
     }
 
     public String getValidDescription() {
-        if (getDescription() == null) return getTitle();
+        if (getDescription() == null|| getDescription().isEmpty()) return getTitle();
         return getDescription();
     }
 }

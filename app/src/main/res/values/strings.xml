@@ -104,7 +104,9 @@
     <string name="move_task">标签</string>
     <string name="copy_task">复制</string>
     <string name="exchange_task">转换</string>
-    <string name="exchange_task_tips">任务转换为自定义卡之后无法恢复，确定要转换选中的任务吗？</string>
+    <string name="exchange_task_1">不保留转换</string>
+    <string name="exchange_task_2">保留转换</string>
+    <string name="exchange_task_tips">任务转换为自定义卡之后无法恢复，任务内自定义卡无法跟随任务转换，确定要转换选中的任务吗？</string>
     <string name="copy_to">复制到</string>
     <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
 

@@ -58,7 +58,7 @@ public class WorldState {
         LinkedHashMap<String, PackageInfo> map = new LinkedHashMap<>();
         PackageManager manager = context.getPackageManager();
 
-        List<ApplicationInfo> applications = manager.getInstalledApplications(PackageManager.MATCH_UNINSTALLED_PACKAGES | PackageManager.MATCH_DISABLED_COMPONENTS | PackageManager.GET_UNINSTALLED_PACKAGES);
+        List<ApplicationInfo> applications = manager.getInstalledApplications(PackageManager.MATCH_UNINSTALLED_PACKAGES | PackageManager.MATCH_DISABLED_COMPONENTS);
         for (ApplicationInfo info : applications) {
             try {
                 PackageInfo packageInfo = manager.getPackageInfo(info.packageName, PackageManager.GET_ACTIVITIES);

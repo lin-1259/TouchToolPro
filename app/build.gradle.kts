@@ -97,9 +97,11 @@ dependencies {
     implementation(libs.nav.fragment)
     implementation(libs.nav.ui)
 
+    implementation(libs.treeview)
+    implementation(libs.flexbox)
+
     implementation(libs.mmkv)
     implementation(libs.gson)
-    implementation(libs.treeview)
     implementation(libs.shizuku.api)
     implementation(libs.shizuku.provider)
 

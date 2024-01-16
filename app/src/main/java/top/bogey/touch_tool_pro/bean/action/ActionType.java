@@ -141,32 +141,6 @@ public enum ActionType {
     LOGIC_PARALLEL,
     LOGIC_MANUAL_CHOICE,
 
-    APP_STATE,
-    BATTERY_STATE,
-    SCREEN_STATE,
-    CAPTURE_STATE,
-    NETWORK_STATE,
-    COLOR_STATE,
-    IMAGE_STATE,
-    OCR_TEXT_STATE,
-    DATE_STATE,
-    TIME_STATE,
-
-    CHECK_IN_APP,
-    CHECK_ON_BATTERY_STATE,
-    CHECK_ON_SCREEN_STATE,
-    CHECK_EXIST_TEXT,
-    CHECK_EXIST_TEXTS,
-    CHECK_EXIST_TEXT_OCR,
-    CHECK_EXIST_NODE,
-    CHECK_EXIST_NODES,
-    CHECK_EXIST_IMAGE,
-    CHECK_IMAGE,
-    CHECK_EXIST_COLOR,
-    CHECK_EXIST_COLORS,
-    CHECK_COLOR,
-    CHECK_NETWORK,
-
     DELAY,
     LOG,
     CLICK_POSITION,
@@ -183,18 +157,40 @@ public enum ActionType {
     COPY,
     SHARE,
     RUN_TASK,
-    BREAK_TASK,
     SHELL,
+    BREAK_TASK,
 
-    BOOL_OR,
-    BOOL_AND,
-    BOOL_NOT,
+    CHECK_EXIST_TEXT,
+    CHECK_EXIST_TEXTS,
+    CHECK_EXIST_TEXT_OCR,
+    OCR_TEXT_STATE,
 
     STRING_FROM_VALUE,
     STRING_TO_INT,
     STRING_ADD,
     STRING_EQUAL,
     STRING_REGEX,
+
+    CHECK_EXIST_IMAGE,
+    CHECK_IMAGE,
+    IMAGE_STATE,
+
+    CHECK_EXIST_NODE,
+    CHECK_EXIST_NODES,
+    NODE_INFO_STATE,
+    NODE_IS_VALID,
+    NODE_CHILDREN,
+    NODE_PARENT,
+    NODES_IN_POS,
+
+    CHECK_EXIST_COLOR,
+    CHECK_EXIST_COLORS,
+    CHECK_COLOR,
+    COLOR_STATE,
+
+    BOOL_OR,
+    BOOL_AND,
+    BOOL_NOT,
 
     INT_ADD,
     INT_REDUCE,
@@ -213,13 +209,8 @@ public enum ActionType {
     POS_IN_AREA,
     POS_TO_AREA,
     POS_TO_TOUCH,
-    AREA_TO_INT,
 
-    NODE_INFO_STATE,
-    NODE_IS_VALID,
-    NODE_CHILDREN,
-    NODE_PARENT,
-    NODES_IN_POS,
+    AREA_TO_INT,
 
     ARRAY_GET,
     ARRAY_SET,
@@ -234,7 +225,17 @@ public enum ActionType {
     ARRAY_INDEX_OF,
     ARRAY_FOR,
 
-
+    CHECK_IN_APP,
+    CHECK_ON_BATTERY_STATE,
+    CHECK_ON_SCREEN_STATE,
+    CHECK_NETWORK,
+    APP_STATE,
+    BATTERY_STATE,
+    SCREEN_STATE,
+    NETWORK_STATE,
+    CAPTURE_STATE,
+    DATE_STATE,
+    TIME_STATE,
     ;
 
     public ActionConfigInfo getConfig() {
@@ -266,32 +267,6 @@ public enum ActionType {
             case LOGIC_PARALLEL -> new ActionConfigInfo(R.string.action_parallel_logic_title, R.drawable.icon_parallel, ParallelAction.class);
             case LOGIC_MANUAL_CHOICE -> new ActionConfigInfo(R.string.action_manual_choice_logic_title, R.drawable.icon_condition, ManualChoiceAction.class);
 
-            case APP_STATE -> new ActionConfigInfo(R.string.action_app_state_title, R.drawable.icon_package_info, AppStateAction.class);
-            case BATTERY_STATE -> new ActionConfigInfo(R.string.action_battery_state_title, R.drawable.icon_battery, BatteryStateAction.class);
-            case SCREEN_STATE -> new ActionConfigInfo(R.string.action_screen_state_title, R.drawable.icon_screen, ScreenStateAction.class);
-            case CAPTURE_STATE -> new ActionConfigInfo(R.string.action_capture_state_title, R.drawable.icon_capture, CaptureStateAction.class);
-            case COLOR_STATE -> new ActionConfigInfo(R.string.action_color_state_title, R.drawable.icon_color, ColorStateAction.class);
-            case IMAGE_STATE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
-            case OCR_TEXT_STATE -> new ActionConfigInfo(R.string.action_ocr_text_state_title, R.drawable.icon_text, OcrTextStateAction.class);
-            case DATE_STATE -> new ActionConfigInfo(R.string.action_date_state_title, R.drawable.icon_date, DateStateAction.class);
-            case TIME_STATE -> new ActionConfigInfo(R.string.action_time_state_title, R.drawable.icon_time, TimeStateAction.class);
-            case NETWORK_STATE -> new ActionConfigInfo(R.string.action_network_state_title, R.drawable.icon_network, NetworkStateAction.class);
-
-            case CHECK_IN_APP -> new ActionConfigInfo(R.string.action_in_app_check_title, R.drawable.icon_package_info, InAppCheckAction.class);
-            case CHECK_ON_BATTERY_STATE -> new ActionConfigInfo(R.string.action_battery_state_check_title, R.drawable.icon_battery, OnBatteryStateAction.class);
-            case CHECK_ON_SCREEN_STATE -> new ActionConfigInfo(R.string.action_screen_state_check_title, R.drawable.icon_screen, OnScreenStateAction.class);
-            case CHECK_EXIST_TEXT -> new ActionConfigInfo(R.string.action_exist_text_check_title, R.drawable.icon_text, ExistTextAction.class);
-            case CHECK_EXIST_TEXTS -> new ActionConfigInfo(R.string.action_exist_texts_check_title, R.drawable.icon_text, ExistTextsAction.class);
-            case CHECK_EXIST_TEXT_OCR -> new ActionConfigInfo(R.string.action_exist_text_ocr_check_title, R.drawable.icon_text, ExistTextOcrAction.class);
-            case CHECK_EXIST_NODE -> new ActionConfigInfo(R.string.action_exist_node_check_title, R.drawable.icon_widget, ExistNodeAction.class);
-            case CHECK_EXIST_NODES -> new ActionConfigInfo(R.string.action_exist_nodes_check_title, R.drawable.icon_widget, ExistNodesAction.class);
-            case CHECK_EXIST_IMAGE -> new ActionConfigInfo(R.string.action_exist_image_check_title, R.drawable.icon_image, ExistImageAction.class);
-            case CHECK_IMAGE -> new ActionConfigInfo(R.string.action_image_check_title, R.drawable.icon_image, ImageContainAction.class);
-            case CHECK_EXIST_COLOR -> new ActionConfigInfo(R.string.action_exist_color_check_title, R.drawable.icon_color, ExistColorAction.class);
-            case CHECK_EXIST_COLORS -> new ActionConfigInfo(R.string.action_exist_colors_check_title, R.drawable.icon_color, ExistColorsAction.class);
-            case CHECK_COLOR -> new ActionConfigInfo(R.string.action_color_check_title, R.drawable.icon_color, ColorEqualAction.class);
-            case CHECK_NETWORK -> new ActionConfigInfo(R.string.action_network_check_title, R.drawable.icon_network, NetworkCheckAction.class);
-
             case DELAY -> new ActionConfigInfo(R.string.action_delay_action_title, R.drawable.icon_delay, DelayAction.class);
             case LOG -> new ActionConfigInfo(R.string.action_log_action_title, R.drawable.icon_log, LogAction.class);
             case CLICK_POSITION -> new ActionConfigInfo(R.string.action_touch_pos_action_title, R.drawable.icon_position, ClickPositionAction.class);
@@ -308,18 +283,40 @@ public enum ActionType {
             case COPY -> new ActionConfigInfo(R.string.action_copy_action_title, R.drawable.icon_copy, CopyToClipboardAction.class);
             case SHARE -> new ActionConfigInfo(R.string.action_share_action_title, R.drawable.icon_export, ShareAction.class);
             case RUN_TASK -> new ActionConfigInfo(R.string.action_do_task_action_title, R.drawable.icon_task, RunTaskAction.class);
-            case BREAK_TASK -> new ActionConfigInfo(R.string.action_break_task_action_title, R.drawable.icon_stop, BreakTaskAction.class);
             case SHELL -> new ActionConfigInfo(R.string.action_shell_action_title, R.drawable.icon_adb, ShellAction.class, true);
+            case BREAK_TASK -> new ActionConfigInfo(R.string.action_break_task_action_title, R.drawable.icon_stop, BreakTaskAction.class);
 
-            case BOOL_OR -> new ActionConfigInfo(R.string.action_bool_convert_or_title, R.drawable.icon_condition, BoolOrAction.class);
-            case BOOL_AND -> new ActionConfigInfo(R.string.action_bool_convert_and_title, R.drawable.icon_condition, BoolAndAction.class);
-            case BOOL_NOT -> new ActionConfigInfo(R.string.action_bool_convert_not_title, R.drawable.icon_condition, BoolNotAction.class);
+            case CHECK_EXIST_TEXT -> new ActionConfigInfo(R.string.action_exist_text_check_title, R.drawable.icon_text, ExistTextAction.class);
+            case CHECK_EXIST_TEXTS -> new ActionConfigInfo(R.string.action_exist_texts_check_title, R.drawable.icon_text, ExistTextsAction.class);
+            case CHECK_EXIST_TEXT_OCR -> new ActionConfigInfo(R.string.action_exist_text_ocr_check_title, R.drawable.icon_text, ExistTextOcrAction.class);
+            case OCR_TEXT_STATE -> new ActionConfigInfo(R.string.action_ocr_text_state_title, R.drawable.icon_text, OcrTextStateAction.class);
 
             case STRING_FROM_VALUE -> new ActionConfigInfo(R.string.action_string_from_value_title, R.drawable.icon_text, StringFromValueAction.class);
             case STRING_TO_INT -> new ActionConfigInfo(R.string.action_string_to_int_title, R.drawable.icon_text, StringToIntAction.class);
             case STRING_ADD -> new ActionConfigInfo(R.string.action_string_add_title, R.drawable.icon_text, StringAddAction.class);
             case STRING_EQUAL -> new ActionConfigInfo(R.string.action_string_equal_title, R.drawable.icon_text, StringEqualAction.class);
             case STRING_REGEX -> new ActionConfigInfo(R.string.action_string_regex_title, R.drawable.icon_text, StringRegexAction.class);
+
+            case CHECK_EXIST_IMAGE -> new ActionConfigInfo(R.string.action_exist_image_check_title, R.drawable.icon_image, ExistImageAction.class);
+            case CHECK_IMAGE -> new ActionConfigInfo(R.string.action_image_check_title, R.drawable.icon_image, ImageContainAction.class);
+            case IMAGE_STATE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
+
+            case CHECK_EXIST_NODE -> new ActionConfigInfo(R.string.action_exist_node_check_title, R.drawable.icon_widget, ExistNodeAction.class);
+            case CHECK_EXIST_NODES -> new ActionConfigInfo(R.string.action_exist_nodes_check_title, R.drawable.icon_widget, ExistNodesAction.class);
+            case NODE_INFO_STATE -> new ActionConfigInfo(R.string.action_get_node_info_title, R.drawable.icon_widget, GetNodeInfoStateAction.class);
+            case NODE_IS_VALID -> new ActionConfigInfo(R.string.action_is_node_valid_title, R.drawable.icon_widget, IsNodeValidAction.class);
+            case NODE_CHILDREN -> new ActionConfigInfo(R.string.action_get_node_children_title, R.drawable.icon_widget, GetNodeChildrenAction.class);
+            case NODE_PARENT -> new ActionConfigInfo(R.string.action_get_node_parent_title, R.drawable.icon_widget, GetNodeParentAction.class);
+            case NODES_IN_POS -> new ActionConfigInfo(R.string.action_get_nodes_in_pos_title, R.drawable.icon_widget, GetNodesInPosAction.class);
+
+            case CHECK_EXIST_COLOR -> new ActionConfigInfo(R.string.action_exist_color_check_title, R.drawable.icon_color, ExistColorAction.class);
+            case CHECK_EXIST_COLORS -> new ActionConfigInfo(R.string.action_exist_colors_check_title, R.drawable.icon_color, ExistColorsAction.class);
+            case CHECK_COLOR -> new ActionConfigInfo(R.string.action_color_check_title, R.drawable.icon_color, ColorEqualAction.class);
+            case COLOR_STATE -> new ActionConfigInfo(R.string.action_color_state_title, R.drawable.icon_color, ColorStateAction.class);
+
+            case BOOL_OR -> new ActionConfigInfo(R.string.action_bool_convert_or_title, R.drawable.icon_condition, BoolOrAction.class);
+            case BOOL_AND -> new ActionConfigInfo(R.string.action_bool_convert_and_title, R.drawable.icon_condition, BoolAndAction.class);
+            case BOOL_NOT -> new ActionConfigInfo(R.string.action_bool_convert_not_title, R.drawable.icon_condition, BoolNotAction.class);
 
             case INT_ADD -> new ActionConfigInfo(R.string.action_int_add_title, R.drawable.icon_number, IntAddAction.class);
             case INT_REDUCE -> new ActionConfigInfo(R.string.action_int_reduce_title, R.drawable.icon_number, IntReduceAction.class);
@@ -338,14 +335,7 @@ public enum ActionType {
             case POS_IN_AREA -> new ActionConfigInfo(R.string.action_position_in_area_title, R.drawable.icon_position, PosInAreaAction.class);
             case POS_TO_AREA -> new ActionConfigInfo(R.string.action_position_to_area_title, R.drawable.icon_position, PosToAreaAction.class);
             case POS_TO_TOUCH -> new ActionConfigInfo(R.string.action_position_to_touch_title, R.drawable.icon_position, PosToTouchAction.class);
-
             case AREA_TO_INT -> new ActionConfigInfo(R.string.action_area_to_int_title, R.drawable.icon_position, AreaToIntAction.class);
-
-            case NODE_INFO_STATE -> new ActionConfigInfo(R.string.action_get_node_info_title, R.drawable.icon_widget, GetNodeInfoStateAction.class);
-            case NODE_IS_VALID -> new ActionConfigInfo(R.string.action_is_node_valid_title, R.drawable.icon_widget, IsNodeValidAction.class);
-            case NODE_CHILDREN -> new ActionConfigInfo(R.string.action_get_node_children_title, R.drawable.icon_widget, GetNodeChildrenAction.class);
-            case NODE_PARENT -> new ActionConfigInfo(R.string.action_get_node_parent_title, R.drawable.icon_widget, GetNodeParentAction.class);
-            case NODES_IN_POS -> new ActionConfigInfo(R.string.action_get_nodes_in_pos_title, R.drawable.icon_widget, GetNodesInPosAction.class);
 
             case ARRAY_GET -> new ActionConfigInfo(R.string.action_array_get_title, R.drawable.icon_array, ArrayGetAction.class);
             case ARRAY_SET -> new ActionConfigInfo(R.string.action_array_set_title, R.drawable.icon_array, ArraySetAction.class);
@@ -359,6 +349,18 @@ public enum ActionType {
             case ARRAY_APPEND -> new ActionConfigInfo(R.string.action_array_append_title, R.drawable.icon_array, ArrayAppendAction.class);
             case ARRAY_INDEX_OF -> new ActionConfigInfo(R.string.action_array_index_of_title, R.drawable.icon_array, ArrayIndexOfAction.class);
             case ARRAY_FOR -> new ActionConfigInfo(R.string.action_array_for_title, R.drawable.icon_array, ArrayForLogicAction.class);
+
+            case CHECK_IN_APP -> new ActionConfigInfo(R.string.action_in_app_check_title, R.drawable.icon_package_info, InAppCheckAction.class);
+            case CHECK_ON_BATTERY_STATE -> new ActionConfigInfo(R.string.action_battery_state_check_title, R.drawable.icon_battery, OnBatteryStateAction.class);
+            case CHECK_ON_SCREEN_STATE -> new ActionConfigInfo(R.string.action_screen_state_check_title, R.drawable.icon_screen, OnScreenStateAction.class);
+            case CHECK_NETWORK -> new ActionConfigInfo(R.string.action_network_check_title, R.drawable.icon_network, NetworkCheckAction.class);
+            case APP_STATE -> new ActionConfigInfo(R.string.action_app_state_title, R.drawable.icon_package_info, AppStateAction.class);
+            case BATTERY_STATE -> new ActionConfigInfo(R.string.action_battery_state_title, R.drawable.icon_battery, BatteryStateAction.class);
+            case SCREEN_STATE -> new ActionConfigInfo(R.string.action_screen_state_title, R.drawable.icon_screen, ScreenStateAction.class);
+            case NETWORK_STATE -> new ActionConfigInfo(R.string.action_network_state_title, R.drawable.icon_network, NetworkStateAction.class);
+            case CAPTURE_STATE -> new ActionConfigInfo(R.string.action_capture_state_title, R.drawable.icon_capture, CaptureStateAction.class);
+            case DATE_STATE -> new ActionConfigInfo(R.string.action_date_state_title, R.drawable.icon_date, DateStateAction.class);
+            case TIME_STATE -> new ActionConfigInfo(R.string.action_time_state_title, R.drawable.icon_time, TimeStateAction.class);
             default -> new ActionConfigInfo();
         };
     }

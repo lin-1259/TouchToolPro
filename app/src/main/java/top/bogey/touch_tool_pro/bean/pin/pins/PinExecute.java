@@ -1,21 +1,77 @@
 package top.bogey.touch_tool_pro.bean.pin.pins;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.util.Base64;
 
 import com.google.android.material.shape.CornerFamily;
 import com.google.android.material.shape.ShapeAppearanceModel;
 import com.google.gson.JsonObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class PinExecute extends PinObject {
+    private String image;
+    private transient Bitmap bitmap;
+
     public PinExecute() {
         super(PinType.EXECUTE);
     }
 
+    public PinExecute(PinSubType subType) {
+        super(PinType.EXECUTE, subType);
+    }
+
     public PinExecute(JsonObject jsonObject) {
         super(jsonObject);
+        image = GsonUtils.getAsString(jsonObject, "image", null);
+    }
+
+    public void setImage(Bitmap image) {
+        bitmap = image;
+        if (image == null) {
+            this.image = null;
+            return;
+        }
+
+        try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
+            image.compress(Bitmap.CompressFormat.WEBP, 50, stream);
+            byte[] bytes = stream.toByteArray();
+            this.image = Base64.encodeToString(bytes, Base64.NO_WRAP);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setImage(Drawable drawable) {
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.draw(canvas);
+        setImage(bitmap);
+    }
+
+    public Bitmap getImage() {
+        if (bitmap == null || bitmap.isRecycled()) {
+            if (image != null && !image.isEmpty()) {
+                try {
+                    byte[] bytes = Base64.decode(image, Base64.NO_WRAP);
+                    this.bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                    return this.bitmap;
+                } catch (Exception | Error ignored) {
+                }
+            }
+            return null;
+        }
+        return bitmap;
     }
 
     @Override

@@ -66,7 +66,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
         this.cardLayoutView = cardLayoutView;
 
         for (PinType pinType : PinType.values()) {
-            if (pinType.canCustom()) pinTypes.add(pinType);
+            if (pinType.getConfig().isCanCustom()) pinTypes.add(pinType);
         }
 
         setTreeNodeClickListener((treeNode, view) -> {
@@ -536,7 +536,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
             });
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
-            pinTypes.forEach(pinType -> adapter.add(pinType.getTitle()));
+            pinTypes.forEach(pinType -> adapter.add(pinType.getConfig().getTitle()));
             binding.spinner.setAdapter(adapter);
             binding.spinner.setOnItemSelectedListener(new SpinnerSelectedListener() {
                 @Override
@@ -548,7 +548,7 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                     if (pinType == info.value.getType()) return;
 
                     try {
-                        Class<? extends PinObject> aClass = pinType.getPinObjectClass();
+                        Class<? extends PinObject> aClass = pinType.getConfig().getPinClass();
                         PinValue pinValue = (PinValue) aClass.newInstance();
                         info.value = pinValue;
 

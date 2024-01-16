@@ -65,7 +65,7 @@ public abstract class PinView extends FrameLayout implements PinListener {
         if (viewGroup != null) {
             viewGroup.removeAllViews();
             Context context = getContext();
-            Class<? extends PinWidget<? extends PinObject>> widgetClass = pin.getValue().getType().getPinWidgetClass();
+            Class<? extends PinWidget<? extends PinObject>> widgetClass = pin.getValue().getType().getConfig().getPinWidgetClass();
             if (widgetClass != null) {
                 try {
                     Constructor<? extends PinWidget<? extends PinObject>> constructor = widgetClass.getConstructor(Context.class, ActionCard.class, PinView.class, pin.getPinClass(), boolean.class);

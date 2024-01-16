@@ -69,6 +69,7 @@ public class MainActivity extends BaseActivity {
     protected void onStart() {
         super.onStart();
         WorldState.getInstance().enterActivity(getPackageName(), getClass().getName());
+        WorldState.getInstance().resetAppMap(this);
 
         NavController controller = Navigation.findNavController(this, R.id.conView);
         NavigationUI.setupWithNavController(binding.menuView, controller);

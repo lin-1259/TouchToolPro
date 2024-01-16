@@ -42,9 +42,9 @@ public class PinWidgetArray extends PinWidget<PinValueArray> {
     public void initBase() {
         adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         for (PinType pinType : PinType.values()) {
-            if (pinType.canCustom() && pinType != PinType.VALUE_ARRAY && pinType != PinType.VALUE) {
+            if (pinType.getConfig().isCanCustom() && pinType != PinType.VALUE_ARRAY && pinType != PinType.VALUE) {
                 pinTypes.add(pinType);
-                adapter.add(pinType.getTitle());
+                adapter.add(pinType.getConfig().getTitle());
             }
         }
         binding.spinner.setAdapter(adapter);

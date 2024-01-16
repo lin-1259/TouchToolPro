@@ -21,7 +21,7 @@ public class PinTopView extends PinView {
 
         binding = PinTopBinding.inflate(LayoutInflater.from(context), this, true);
         initRemoveButton(binding.removeButton);
-        refreshPinUI();
+        refreshPinView();
     }
 
     @Override
@@ -44,7 +44,7 @@ public class PinTopView extends PinView {
 
     @Override
     public ViewGroup getPinViewBox() {
-        return null;
+        return binding.pinBox;
     }
 
 }

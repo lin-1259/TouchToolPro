@@ -36,9 +36,9 @@ public class PinRightCustomView extends PinCustomView {
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(context, R.layout.pin_widget_spinner_item);
         for (PinType pinType : PinType.values()) {
-            if (pinType.canCustom()) {
+            if (pinType.getConfig().isCanCustom()) {
                 pinTypes.add(pinType);
-                adapter.add(pinType.getTitle());
+                adapter.add(pinType.getConfig().getTitle());
             }
         }
 
@@ -50,7 +50,7 @@ public class PinRightCustomView extends PinCustomView {
                 PinValue pinValue = functionPin.getValue(PinValue.class);
                 if (pinValue != null && pinType == pinValue.getType()) return;
 
-                Class<? extends PinObject> pinObjectClass = pinType.getPinObjectClass();
+                Class<? extends PinObject> pinObjectClass = pinType.getConfig().getPinClass();
                 if (pinObjectClass == null) return;
 
                 try {

@@ -99,7 +99,7 @@ public class PinValueArray extends PinValue {
     @Override
     public int getPinColor(Context context) {
         try {
-            Class<? extends PinObject> objectClass = pinType.getPinObjectClass();
+            Class<? extends PinObject> objectClass = pinType.getConfig().getPinClass();
             if (objectClass == null || objectClass.equals(PinValue.class)) return context.getColor(R.color.ArrayPinColor);
             Constructor<? extends PinObject> constructor = objectClass.getConstructor();
             PinObject pinObject = constructor.newInstance();
