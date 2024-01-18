@@ -19,7 +19,7 @@ public class TextPickerFloatPreview extends BasePickerFloatView {
     private final PinString newPinString;
 
     @SuppressLint("DefaultLocale")
-    public TextPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinString pinString) {
+    public TextPickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinString pinString) {
         super(context, callback);
         newPinString = (PinString) pinString.copy();
 

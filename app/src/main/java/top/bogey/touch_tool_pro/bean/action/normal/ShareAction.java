@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -28,7 +30,8 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 
 public class ShareAction extends NormalAction {
-    private transient Pin appPin = new Pin(new PinApplication(PinSubType.SHARE_ACTIVITY), R.string.pin_app);
+    private final transient LinkedHashMap<String, ArrayList<String>> apps = new LinkedHashMap<>(Collections.singletonMap(MainApplication.getInstance().getString(R.string.common_package_name), new ArrayList<>()));
+    private transient Pin appPin = new Pin(new PinApplication(PinSubType.SHARE_ACTIVITY, apps), R.string.pin_app);
     private transient Pin valuePin = new Pin(new PinValue(), R.string.pin_value);
     private transient Pin typePin = new Pin(new PinSpinner(R.array.share_type), R.string.action_share_action_subtitle_as);
 

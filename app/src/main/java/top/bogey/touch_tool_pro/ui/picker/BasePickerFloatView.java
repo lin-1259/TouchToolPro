@@ -12,11 +12,11 @@ import top.bogey.touch_tool_pro.utils.easy_float.FloatViewInterface;
 
 @SuppressLint("ViewConstructor")
 public class BasePickerFloatView extends FrameLayout implements FloatViewInterface {
-    protected final PickerCallback pickerCallback;
+    protected final IPickerCallback pickerCallback;
     protected String tag;
     protected FloatBaseCallback floatCallback = new FloatBaseCallback();
 
-    public BasePickerFloatView(@NonNull Context context, PickerCallback pickerCallback) {
+    public BasePickerFloatView(@NonNull Context context, IPickerCallback pickerCallback) {
         super(context);
         this.pickerCallback = pickerCallback;
         tag = this.getClass().getName();

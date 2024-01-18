@@ -1,5 +1,14 @@
 package top.bogey.touch_tool_pro.ui.picker;
 
-public interface PickerCallback {
-    void onComplete();
+public class PickerCallback implements IPickerCallback{
+
+    @Override
+    public void onComplete() {
+
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
 }

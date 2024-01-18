@@ -20,7 +20,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 @SuppressLint("ViewConstructor")
 public class NodePickerFloatPreview extends BasePickerFloatView {
 
-    public NodePickerFloatPreview(@NonNull Context context, PickerCallback callback, PinString pinString) {
+    public NodePickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinString pinString) {
         super(context, callback);
 
         PinString pinNode = (PinString) pinString.copy();
@@ -29,7 +29,12 @@ public class NodePickerFloatPreview extends BasePickerFloatView {
 
         binding.idTitle.setText(pinNode.getValue());
 
-        binding.pickerButton.setOnClickListener(v -> new NodePickerFloatView(context, () -> binding.idTitle.setText(pinNode.getValue()), pinNode).show());
+        binding.pickerButton.setOnClickListener(v -> new NodePickerFloatView(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.idTitle.setText(pinNode.getValue());
+            }
+        }, pinNode).show());
 
         binding.saveButton.setOnClickListener(v -> {
             if (callback != null) {

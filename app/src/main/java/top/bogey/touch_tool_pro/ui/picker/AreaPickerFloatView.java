@@ -31,7 +31,7 @@ public class AreaPickerFloatView extends BasePickerFloatView {
     private AdjustMode adjustMode = AdjustMode.NONE;
     private int lastX = 0;
     private int lastY = 0;
-    public AreaPickerFloatView(Context context, PickerCallback callback, PinArea pinArea) {
+    public AreaPickerFloatView(Context context, IPickerCallback callback, PinArea pinArea) {
         super(context, callback);
         area = pinArea.getArea(context);
 
@@ -43,7 +43,10 @@ public class AreaPickerFloatView extends BasePickerFloatView {
             dismiss();
         });
 
-        binding.backButton.setOnClickListener(v -> dismiss());
+        binding.backButton.setOnClickListener(v -> {
+            if (callback != null) callback.onCancel();
+            dismiss();
+        });
 
         binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> {
             area.left = Math.max(location[0], area.left);

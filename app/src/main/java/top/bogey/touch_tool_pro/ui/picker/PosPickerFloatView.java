@@ -28,7 +28,7 @@ public class PosPickerFloatView extends BasePickerFloatView {
     private boolean isMarked;
     private boolean isInit = true;
 
-    public PosPickerFloatView(@NonNull Context context, PickerCallback callback, PinPoint pinPoint) {
+    public PosPickerFloatView(@NonNull Context context, IPickerCallback callback, PinPoint pinPoint) {
         super(context, callback);
 
         binding = FloatPickerPosBinding.inflate(LayoutInflater.from(context), this, true);

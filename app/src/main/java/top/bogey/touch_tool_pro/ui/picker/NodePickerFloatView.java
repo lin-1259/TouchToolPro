@@ -49,7 +49,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     private NodePickerItemInfo selectNode;
     private String selectId;
 
-    public NodePickerFloatView(@NonNull Context context, PickerCallback callback, PinString pinNode) {
+    public NodePickerFloatView(@NonNull Context context, IPickerCallback callback, PinString pinNode) {
         super(context, callback);
 
         gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);

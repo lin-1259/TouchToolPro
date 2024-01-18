@@ -27,6 +27,7 @@ import top.bogey.touch_tool_pro.bean.action.function.FunctionStartAction;
 import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.image.ImageContainAction;
 import top.bogey.touch_tool_pro.bean.action.image.ImageStateAction;
+import top.bogey.touch_tool_pro.bean.action.image.SubImageAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ForLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.IfLogicAction;
 import top.bogey.touch_tool_pro.bean.action.logic.ManualChoiceAction;
@@ -81,6 +82,7 @@ import top.bogey.touch_tool_pro.bean.action.other.OnBatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.OnScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.TimeStateAction;
+import top.bogey.touch_tool_pro.bean.action.pos.AreaPickAction;
 import top.bogey.touch_tool_pro.bean.action.pos.AreaToIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosFromIntAction;
 import top.bogey.touch_tool_pro.bean.action.pos.PosInAreaAction;
@@ -92,6 +94,7 @@ import top.bogey.touch_tool_pro.bean.action.start.AppStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.BatteryStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.ManualStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.NetworkStartAction;
+import top.bogey.touch_tool_pro.bean.action.start.NormalStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.NotifyStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.OuterStartAction;
 import top.bogey.touch_tool_pro.bean.action.start.TimeStartAction;
@@ -259,6 +262,7 @@ public enum ActionType {
             case NETWORK_START -> new ActionConfigInfo(R.string.action_network_start_title, R.drawable.icon_network, NetworkStartAction.class);
             case BATTERY_START -> new ActionConfigInfo(R.string.action_battery_start_title, R.drawable.icon_battery, BatteryStartAction.class);
             case OUTER_START -> new ActionConfigInfo(R.string.action_outer_start_title, R.drawable.icon_auto_start, OuterStartAction.class);
+            case NORMAL_START -> new ActionConfigInfo(R.string.action_normal_start_title, 0, NormalStartAction.class);
 
             case LOGIC_IF -> new ActionConfigInfo(R.string.action_condition_logic_title, R.drawable.icon_condition, IfLogicAction.class);
             case LOGIC_WAIT_IF -> new ActionConfigInfo(R.string.action_wait_condition_logic_title, R.drawable.icon_wait_condition, WaitIfLogicAction.class);
@@ -302,7 +306,7 @@ public enum ActionType {
             case CHECK_EXIST_IMAGE -> new ActionConfigInfo(R.string.action_exist_image_check_title, R.drawable.icon_image, ExistImageAction.class);
             case CHECK_IMAGE -> new ActionConfigInfo(R.string.action_image_check_title, R.drawable.icon_image, ImageContainAction.class);
             case IMAGE_STATE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
-            case IMAGE_SUB_IMAGE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
+            case IMAGE_SUB_IMAGE -> new ActionConfigInfo(R.string.action_image_sub_image_title, R.drawable.icon_image, SubImageAction.class);
 
             case CHECK_EXIST_NODE -> new ActionConfigInfo(R.string.action_exist_node_check_title, R.drawable.icon_widget, ExistNodeAction.class);
             case CHECK_EXIST_NODES -> new ActionConfigInfo(R.string.action_exist_nodes_check_title, R.drawable.icon_widget, ExistNodesAction.class);
@@ -338,7 +342,9 @@ public enum ActionType {
             case POS_IN_AREA -> new ActionConfigInfo(R.string.action_position_in_area_title, R.drawable.icon_position, PosInAreaAction.class);
             case POS_TO_AREA -> new ActionConfigInfo(R.string.action_position_to_area_title, R.drawable.icon_position, PosToAreaAction.class);
             case POS_TO_TOUCH -> new ActionConfigInfo(R.string.action_position_to_touch_title, R.drawable.icon_position, PosToTouchAction.class);
+
             case AREA_TO_INT -> new ActionConfigInfo(R.string.action_area_to_int_title, R.drawable.icon_position, AreaToIntAction.class);
+            case AREA_PICK -> new ActionConfigInfo(R.string.action_area_pick_title, R.drawable.icon_position, AreaPickAction.class);
 
             case ARRAY_GET -> new ActionConfigInfo(R.string.action_array_get_title, R.drawable.icon_array, ArrayGetAction.class);
             case ARRAY_SET -> new ActionConfigInfo(R.string.action_array_set_title, R.drawable.icon_array, ArraySetAction.class);

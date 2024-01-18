@@ -10,6 +10,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinTouch;
 import top.bogey.touch_tool_pro.databinding.PinWidgetTouchBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.ui.picker.TouchPickerFloatPreview;
 
 @SuppressLint("ViewConstructor")
@@ -25,7 +26,12 @@ public class PinWidgetTouch extends PinWidget<PinTouch> {
     @Override
     public void initBase() {
         binding.pathView.setPaths(pinObject.getPaths(getContext()));
-        binding.pickButton.setOnClickListener(v -> new TouchPickerFloatPreview(context, () -> binding.pathView.setPaths(pinObject.getPaths(getContext())), pinObject).show());
+        binding.pickButton.setOnClickListener(v -> new TouchPickerFloatPreview(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.pathView.setPaths(pinObject.getPaths(getContext()));
+            }
+        }, pinObject).show());
     }
 
     @Override

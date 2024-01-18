@@ -15,13 +15,12 @@ import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.color.ExistColorAction;
-import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
-import top.bogey.touch_tool_pro.bean.action.node.ExistNodeAction;
-import top.bogey.touch_tool_pro.bean.action.string.ExistTextAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionEndAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionInnerAction;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionStartAction;
+import top.bogey.touch_tool_pro.bean.action.image.ExistImageAction;
 import top.bogey.touch_tool_pro.bean.action.logic.WaitIfLogicAction;
+import top.bogey.touch_tool_pro.bean.action.node.ExistNodeAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickKeyAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickNodeAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ClickPositionAction;
@@ -30,6 +29,7 @@ import top.bogey.touch_tool_pro.bean.action.normal.LogAction;
 import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.action.normal.TouchAction;
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
+import top.bogey.touch_tool_pro.bean.action.string.ExistTextAction;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinColor;
@@ -46,6 +46,7 @@ import top.bogey.touch_tool_pro.databinding.FloatRecorderBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.picker.BasePickerFloatView;
 import top.bogey.touch_tool_pro.ui.picker.FloatBaseCallback;
+import top.bogey.touch_tool_pro.ui.picker.IPickerCallback;
 import top.bogey.touch_tool_pro.ui.picker.ImagePickerFloatPreview;
 import top.bogey.touch_tool_pro.ui.picker.NodePickerFloatPreview;
 import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
@@ -70,7 +71,7 @@ public class RecorderFloatView extends BasePickerFloatView {
     private long pauseStartTime;
     private boolean recording = false;
 
-    public RecorderFloatView(@NonNull Context context, PickerCallback pickerCallback, Function function) {
+    public RecorderFloatView(@NonNull Context context, IPickerCallback pickerCallback, Function function) {
         super(context, pickerCallback);
         quickRecordFloatView = new QuickRecordFloatView(context, this);
         binding = FloatRecorderBinding.inflate(LayoutInflater.from(context), this, true);
@@ -107,50 +108,65 @@ public class RecorderFloatView extends BasePickerFloatView {
         binding.widgetButton.setOnClickListener(v -> {
             if (isStopRecord()) return;
             PinNodePath nodePath = new PinNodePath();
-            new NodePickerFloatPreview(context, () -> {
-                RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchNodeAction(getDelay(), nodePath);
-                addStep(recorderStep);
+            new NodePickerFloatPreview(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    RecorderStep recorderStep = new RecorderStep();
+                    recorderStep.addTouchNodeAction(getDelay(), nodePath);
+                    addStep(recorderStep);
+                }
             }, nodePath).show();
         });
 
         binding.imageButton.setOnClickListener(v -> {
             if (isStopRecord()) return;
             PinImage pinImage = new PinImage();
-            new ImagePickerFloatPreview(context, () -> {
-                RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchPosAction(getDelay(), pinImage);
-                addStep(recorderStep);
+            new ImagePickerFloatPreview(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    RecorderStep recorderStep = new RecorderStep();
+                    recorderStep.addTouchPosAction(getDelay(), pinImage);
+                    addStep(recorderStep);
+                }
             }, pinImage).show();
         });
 
         binding.colorButton.setOnClickListener(v -> {
             if (isStopRecord()) return;
             PinColor pinColor = new PinColor();
-            new ImagePickerFloatPreview(context, () -> {
-                RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchPosAction(getDelay(), pinColor);
-                addStep(recorderStep);
+            new ImagePickerFloatPreview(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    RecorderStep recorderStep = new RecorderStep();
+                    recorderStep.addTouchPosAction(getDelay(), pinColor);
+                    addStep(recorderStep);
+                }
             }, pinColor).show();
         });
 
         binding.textButton.setOnClickListener(v -> {
             if (isStopRecord()) return;
             PinString pinString = new PinString();
-            new TextPickerFloatPreview(context, () -> {
-                RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addTouchNodeAction(getDelay(), pinString.getValue());
-                addStep(recorderStep);
+            new TextPickerFloatPreview(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    RecorderStep recorderStep = new RecorderStep();
+                    recorderStep.addTouchNodeAction(getDelay(), pinString.getValue());
+                    addStep(recorderStep);
+                }
             }, pinString).show();
         });
 
         binding.logButton.setOnClickListener(v -> {
             if (isStopRecord()) return;
             PinString pinString = new PinString();
-            new TextPickerFloatPreview(context, () -> {
-                RecorderStep recorderStep = new RecorderStep();
-                recorderStep.addLogAction(pinString.getValue());
-                addStep(recorderStep);
+            new TextPickerFloatPreview(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    RecorderStep recorderStep = new RecorderStep();
+                    recorderStep.addLogAction(pinString.getValue());
+                    addStep(recorderStep);
+                }
             }, pinString).show();
         });
 

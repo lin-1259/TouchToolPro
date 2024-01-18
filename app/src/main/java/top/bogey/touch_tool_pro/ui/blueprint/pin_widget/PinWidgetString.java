@@ -38,6 +38,7 @@ import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinCustomView;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
 import top.bogey.touch_tool_pro.ui.picker.NodePickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.utils.SpinnerSelectedListener;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
@@ -113,7 +114,12 @@ public class PinWidgetString extends PinWidget<PinString> {
                     }
                 });
                 binding.pickButton.setIconResource(R.drawable.icon_widget);
-                binding.pickButton.setOnClickListener(v -> new NodePickerFloatPreview(context, () -> binding.editText.setText(pinObject.getValue()), pinObject).show());
+                binding.pickButton.setOnClickListener(v -> new NodePickerFloatPreview(context, new PickerCallback() {
+                    @Override
+                    public void onComplete() {
+                        binding.editText.setText(pinObject.getValue());
+                    }
+                }, pinObject).show());
             }
             case RINGTONE -> {
                 String path = pinObject.getValue();

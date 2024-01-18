@@ -42,7 +42,7 @@ public class TouchPickerFloatView extends BasePickerFloatView {
 
     private boolean isClick = false;
 
-    public TouchPickerFloatView(@NonNull Context context, PickerCallback callback, PinTouch pinTouch) {
+    public TouchPickerFloatView(@NonNull Context context, IPickerCallback callback, PinTouch pinTouch) {
         super(context, callback);
 
         binding = FloatPickerTouchBinding.inflate(LayoutInflater.from(context), this, true);

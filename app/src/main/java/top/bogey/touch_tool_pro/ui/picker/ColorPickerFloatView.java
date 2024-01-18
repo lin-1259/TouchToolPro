@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -41,7 +40,7 @@ public class ColorPickerFloatView extends BasePickerFloatView {
 
     private boolean isMarked = false;
 
-    public ColorPickerFloatView(Context context, PickerCallback callback, PinColor pinColor) {
+    public ColorPickerFloatView(Context context, IPickerCallback callback, PinColor pinColor) {
         super(context, callback);
         this.pinColor = pinColor;
 

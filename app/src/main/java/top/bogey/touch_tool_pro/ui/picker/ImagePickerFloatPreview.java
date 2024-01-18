@@ -30,7 +30,7 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
     private boolean isChanged = false;
 
     @SuppressLint("DefaultLocale")
-    public ImagePickerFloatPreview(@NonNull Context context, PickerCallback callback, PinValue pinValue) {
+    public ImagePickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinValue pinValue) {
         super(context, callback);
         boolean isImage = pinValue instanceof PinImage;
 
@@ -41,9 +41,12 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             binding.current.setImageBitmap(pinImage.getImage(context));
             binding.title.setText(R.string.picker_image_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_image);
-            binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, () -> {
-                binding.current.setImageBitmap(pinImage.getImage(context));
-                isChanged = true;
+            binding.pickerButton.setOnClickListener(v -> new ImagePickerFloatView(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    binding.current.setImageBitmap(pinImage.getImage(context));
+                    isChanged = true;
+                }
             }, pinImage).show());
             binding.playButton.setVisibility(GONE);
         } else {
@@ -51,7 +54,12 @@ public class ImagePickerFloatPreview extends BasePickerFloatView {
             binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor()));
             binding.title.setText(R.string.picker_color_preview_title);
             binding.pickerButton.setIconResource(R.drawable.icon_color);
-            binding.pickerButton.setOnClickListener(v -> new ColorPickerFloatView(context, () -> binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor())), pinColor).show());
+            binding.pickerButton.setOnClickListener(v -> new ColorPickerFloatView(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    binding.current.setBackgroundColor(DisplayUtils.getColorFromHsv(pinColor.getColor()));
+                }
+            }, pinColor).show());
             binding.playBox.setVisibility(GONE);
         }
 

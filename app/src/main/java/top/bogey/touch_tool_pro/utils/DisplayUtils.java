@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.TypedValue;
@@ -134,6 +135,26 @@ public class DisplayUtils {
 
     public static Bitmap safeCreateBitmap(Bitmap bitmap, Rect rect) {
         return safeCreateBitmap(bitmap, rect.left, rect.top, rect.width(), rect.height());
+    }
+
+    public static Bitmap scaleBitmap(Bitmap bitmap, int width, int height) {
+        float scaleX = width / (float) bitmap.getWidth();
+        float scaleY = height / (float) bitmap.getHeight();
+        float pivotX = 0.0f;
+        float pivotY = 0.0f;
+
+        // 如果原始图片的宽高比例与目标宽高比例不同，则使用宽或高较小的一侧作为中心点进行缩放
+        if (scaleX != scaleY) {
+            if (bitmap.getWidth() * scaleY > width) {
+                pivotX = (width - bitmap.getWidth() * scaleY) / 2f;
+            } else {
+                pivotY = (height - bitmap.getHeight() * scaleX) / 2f;
+            }
+        }
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleX, scaleY, pivotX, pivotY);
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
     public static native MatchResult nativeMatchTemplate(Bitmap bitmap, Bitmap temp);

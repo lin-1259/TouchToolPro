@@ -14,6 +14,7 @@ import com.google.gson.JsonObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -37,14 +38,18 @@ public class PinExecute extends PinObject {
     }
 
     public void setImage(Bitmap image) {
-        bitmap = image;
         if (image == null) {
             this.image = null;
+            bitmap = null;
             return;
         }
 
+        int size = (int) DisplayUtils.dp2px(MainApplication.getInstance(), 28);
+        Bitmap scaledBitmap = DisplayUtils.scaleBitmap(image, size, size);
+        bitmap = scaledBitmap;
+
         try (ByteArrayOutputStream stream = new ByteArrayOutputStream()) {
-            image.compress(Bitmap.CompressFormat.WEBP, 50, stream);
+            scaledBitmap.compress(Bitmap.CompressFormat.WEBP, 50, stream);
             byte[] bytes = stream.toByteArray();
             this.image = Base64.encodeToString(bytes, Base64.NO_WRAP);
         } catch (IOException e) {

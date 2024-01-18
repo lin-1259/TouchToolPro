@@ -19,7 +19,7 @@ public class AreaPickerFloatPreview extends BasePickerFloatView {
     private final PinArea newPinArea;
 
     @SuppressLint("DefaultLocale")
-    public AreaPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinArea pinArea) {
+    public AreaPickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinArea pinArea) {
         super(context, callback);
         newPinArea = (PinArea) pinArea.copy();
 
@@ -32,21 +32,22 @@ public class AreaPickerFloatPreview extends BasePickerFloatView {
 
         binding.pickerButton.setOnClickListener(v -> {
             setNewPinArea();
-            new AreaPickerFloatView(context, () -> {
-                Rect rect = newPinArea.getArea(context);
-                binding.leftEdit.setText(String.valueOf(rect.left));
-                binding.topEdit.setText(String.valueOf(rect.top));
-                binding.rightEdit.setText(String.valueOf(rect.right));
-                binding.bottomEdit.setText(String.valueOf(rect.bottom));
+            new AreaPickerFloatView(context, new PickerCallback() {
+                @Override
+                public void onComplete() {
+                    Rect rect = newPinArea.getArea(context);
+                    binding.leftEdit.setText(String.valueOf(rect.left));
+                    binding.topEdit.setText(String.valueOf(rect.top));
+                    binding.rightEdit.setText(String.valueOf(rect.right));
+                    binding.bottomEdit.setText(String.valueOf(rect.bottom));
+                }
             }, newPinArea).show();
         });
 
         binding.saveButton.setOnClickListener(v -> {
             setNewPinArea();
-            if (callback != null) {
-                pinArea.setArea(context, newPinArea.getArea(context));
-                callback.onComplete();
-            }
+            pinArea.setArea(context, newPinArea.getArea(context));
+            if (callback != null) callback.onComplete();
             dismiss();
         });
 

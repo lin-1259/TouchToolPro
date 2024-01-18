@@ -20,7 +20,7 @@ public class PosPickerFloatPreview extends BasePickerFloatView {
     private final PinPoint newPinPoint;
 
     @SuppressLint("DefaultLocale")
-    public PosPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinPoint pinPoint) {
+    public PosPickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinPoint pinPoint) {
         super(context, callback);
         newPinPoint = (PinPoint) pinPoint.copy();
 
@@ -42,9 +42,12 @@ public class PosPickerFloatPreview extends BasePickerFloatView {
             }
         });
 
-        binding.pickerButton.setOnClickListener(v -> new PosPickerFloatView(context, () -> {
-            binding.xEdit.setText(String.valueOf(newPinPoint.getX(context)));
-            binding.yEdit.setText(String.valueOf(newPinPoint.getY(context)));
+        binding.pickerButton.setOnClickListener(v -> new PosPickerFloatView(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.xEdit.setText(String.valueOf(newPinPoint.getX(context)));
+                binding.yEdit.setText(String.valueOf(newPinPoint.getY(context)));
+            }
         }, newPinPoint).show());
 
         binding.saveButton.setOnClickListener(v -> {

@@ -11,6 +11,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
 import top.bogey.touch_tool_pro.databinding.PinWidgetPointBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.ui.picker.PosPickerFloatPreview;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
@@ -57,9 +58,12 @@ public class PinWidgetPoint extends PinWidget<PinPoint> {
             }
         });
 
-        binding.pickButton.setOnClickListener(v -> new PosPickerFloatPreview(context, () -> {
-            binding.xEdit.setText(String.valueOf(pinObject.getX(context)));
-            binding.yEdit.setText(String.valueOf(pinObject.getY(context)));
+        binding.pickButton.setOnClickListener(v -> new PosPickerFloatPreview(context, new PickerCallback(){
+            @Override
+            public void onComplete() {
+                binding.xEdit.setText(String.valueOf(pinObject.getX(context)));
+                binding.yEdit.setText(String.valueOf(pinObject.getY(context)));
+            }
         }, pinObject).show());
     }
 

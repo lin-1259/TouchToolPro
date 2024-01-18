@@ -14,12 +14,11 @@ import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.service.WorldState;
 
 public class ManualStartAction extends StartAction {
-    private final transient LinkedHashMap<String, ArrayList<String>> apps =
-            new LinkedHashMap<>(Collections.singletonMap(MainApplication.getInstance().getString(R.string.common_package_name), new ArrayList<>()));
+    private final transient LinkedHashMap<String, ArrayList<String>> apps = new LinkedHashMap<>(Collections.singletonMap(MainApplication.getInstance().getString(R.string.common_package_name), new ArrayList<>()));
     private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY, apps), R.string.pin_app);
 
     public ManualStartAction() {

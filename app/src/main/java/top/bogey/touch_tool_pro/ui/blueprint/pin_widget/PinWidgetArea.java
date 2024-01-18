@@ -13,6 +13,7 @@ import top.bogey.touch_tool_pro.databinding.PinWidgetAreaBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
 import top.bogey.touch_tool_pro.ui.picker.AreaPickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
 @SuppressLint("ViewConstructor")
@@ -97,12 +98,15 @@ public class PinWidgetArea extends PinWidget<PinArea> {
             }
         });
 
-        binding.pickButton.setOnClickListener(v -> new AreaPickerFloatPreview(context, () -> {
-            Rect rect = pinObject.getArea(context);
-            binding.leftEdit.setText(String.valueOf(rect.left));
-            binding.topEdit.setText(String.valueOf(rect.top));
-            binding.rightEdit.setText(String.valueOf(rect.right));
-            binding.bottomEdit.setText(String.valueOf(rect.bottom));
+        binding.pickButton.setOnClickListener(v -> new AreaPickerFloatPreview(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                Rect rect = pinObject.getArea(context);
+                binding.leftEdit.setText(String.valueOf(rect.left));
+                binding.topEdit.setText(String.valueOf(rect.top));
+                binding.rightEdit.setText(String.valueOf(rect.right));
+                binding.bottomEdit.setText(String.valueOf(rect.bottom));
+            }
         }, pinObject).show());
     }
 

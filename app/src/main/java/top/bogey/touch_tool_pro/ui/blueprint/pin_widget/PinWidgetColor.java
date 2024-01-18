@@ -15,6 +15,7 @@ import top.bogey.touch_tool_pro.databinding.PinWidgetImageBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
 import top.bogey.touch_tool_pro.ui.picker.ImagePickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 @SuppressLint("ViewConstructor")
@@ -39,7 +40,12 @@ public class PinWidgetColor extends PinWidget<PinColor> {
                 .setBottomRightCorner(CornerFamily.ROUNDED, cornerSize)
                 .build());
         binding.image.setBackgroundColor(DisplayUtils.getColorFromHsv(pinObject.getColor()));
-        binding.pickButton.setOnClickListener(v -> new ImagePickerFloatPreview(context, () -> binding.image.setBackgroundColor(DisplayUtils.getColorFromHsv(pinObject.getColor())), pinObject).show());
+        binding.pickButton.setOnClickListener(v -> new ImagePickerFloatPreview(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.image.setBackgroundColor(DisplayUtils.getColorFromHsv(pinObject.getColor()));
+            }
+        }, pinObject).show());
     }
 
     @Override

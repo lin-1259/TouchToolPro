@@ -19,6 +19,7 @@ import top.bogey.touch_tool_pro.databinding.PinWidgetNodePathBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
 import top.bogey.touch_tool_pro.ui.picker.NodePickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 
 @SuppressLint("ViewConstructor")
@@ -45,7 +46,12 @@ public class PinWidgetNodePath extends PinWidget<PinNodePath> {
             }
         });
 
-        binding.pickButton.setOnClickListener(v -> new NodePickerFloatPreview(context, () -> binding.editText.setText(pinObject.getValue()), pinObject).show());
+        binding.pickButton.setOnClickListener(v -> new NodePickerFloatPreview(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.editText.setText(pinObject.getValue());
+            }
+        }, pinObject).show());
     }
 
     private void refreshDynamicPin(String path) {

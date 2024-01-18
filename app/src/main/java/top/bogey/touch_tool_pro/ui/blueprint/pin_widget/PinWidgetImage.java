@@ -11,6 +11,7 @@ import top.bogey.touch_tool_pro.databinding.PinWidgetImageBinding;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 import top.bogey.touch_tool_pro.ui.blueprint.pin.PinView;
 import top.bogey.touch_tool_pro.ui.picker.ImagePickerFloatPreview;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 
 @SuppressLint("ViewConstructor")
 public class PinWidgetImage extends PinWidget<PinImage> {
@@ -26,7 +27,12 @@ public class PinWidgetImage extends PinWidget<PinImage> {
     @Override
     public void initBase() {
         binding.image.setImageBitmap(pinObject.getImage(context));
-        binding.pickButton.setOnClickListener(v -> new ImagePickerFloatPreview(context, () -> binding.image.setImageBitmap(pinObject.getImage(context)), pinObject).show());
+        binding.pickButton.setOnClickListener(v -> new ImagePickerFloatPreview(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.image.setImageBitmap(pinObject.getImage(context));
+            }
+        }, pinObject).show());
     }
 
     @Override

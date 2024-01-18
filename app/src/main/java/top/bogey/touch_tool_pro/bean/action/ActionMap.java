@@ -94,7 +94,8 @@ public enum ActionMap {
             case IMAGE -> new ArrayList<>(Arrays.asList(
                     ActionType.CHECK_EXIST_IMAGE,
                     ActionType.CHECK_IMAGE,
-                    ActionType.IMAGE_STATE
+                    ActionType.IMAGE_STATE,
+                    ActionType.IMAGE_SUB_IMAGE
             ));
 
             case NODE -> new ArrayList<>(Arrays.asList(
@@ -140,7 +141,9 @@ public enum ActionMap {
                     ActionType.POS_IN_AREA,
                     ActionType.POS_TO_AREA,
                     ActionType.POS_TO_TOUCH,
-                    ActionType.AREA_TO_INT
+
+                    ActionType.AREA_TO_INT,
+                    ActionType.AREA_PICK
             ));
 
             case ARRAY -> new ArrayList<>(Arrays.asList(

@@ -88,7 +88,8 @@ public class ManualChoiceAction extends Action implements ActionMorePinInterface
             });
 
             runnable.pause(timeout.getValue());
-            floatView.get().dismiss();
+            ManualChoiceFloatView view = floatView.get();
+            if (view != null) view.dismiss();
         }
 
         if (nextIndex.get() == -1) {

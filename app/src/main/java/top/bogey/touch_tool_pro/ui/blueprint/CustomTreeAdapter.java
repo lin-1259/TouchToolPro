@@ -29,7 +29,6 @@ import top.bogey.touch_tool_pro.bean.action.var.GetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.GetLocalVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetCommonVariableValue;
 import top.bogey.touch_tool_pro.bean.action.var.SetLocalVariableValue;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
@@ -41,6 +40,8 @@ import top.bogey.touch_tool_pro.databinding.ViewCardListAttrItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListSubtypeItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
+import top.bogey.touch_tool_pro.ui.picker.PickerCallback;
 import top.bogey.touch_tool_pro.ui.recorder.RecorderFloatView;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -297,16 +298,19 @@ public class CustomTreeAdapter extends TreeViewAdapter {
                             if (result != null && result.length() > 0) {
                                 Function function = new Function();
                                 function.setTitle(result.toString());
-                                new RecorderFloatView(context, () -> {
-                                    task.addFunction(function);
-                                    task.save();
+                                new RecorderFloatView(context, new PickerCallback() {
+                                    @Override
+                                    public void onComplete() {
+                                        task.addFunction(function);
+                                        task.save();
 
-                                    TreeNodeInfo nodeInfo = new TreeNodeInfo(TreeNodeType.NODE, subType, function.getId(), function.getTitle());
-                                    TreeNode node = new TreeNode(nodeInfo, R.layout.view_card_list_item);
-                                    functionTreeNode.addChild(node);
-                                    if (functionTreeNode.isExpanded()) manager.collapseNode(functionTreeNode);
-                                    manager.expandNode(functionTreeNode);
-                                    notifyDataSetChanged();
+                                        TreeNodeInfo nodeInfo = new TreeNodeInfo(TreeNodeType.NODE, subType, function.getId(), function.getTitle());
+                                        TreeNode node = new TreeNode(nodeInfo, R.layout.view_card_list_item);
+                                        functionTreeNode.addChild(node);
+                                        if (functionTreeNode.isExpanded()) manager.collapseNode(functionTreeNode);
+                                        manager.expandNode(functionTreeNode);
+                                        notifyDataSetChanged();
+                                    }
                                 }, function).show();
                             }
                         });

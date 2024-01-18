@@ -63,11 +63,9 @@
     <string name="report_running_error_copy">复制</string>
     <string name="report_running_error_copy_and_join">复制并加群</string>
 
-    <string name="ignore_battery">电量限制</string>
+    <string name="lock_background">稳定后台</string>
     <string name="open_ignore_battery">去解除电量限制</string>
     <string name="ignore_battery_tips">应用未获取到电量“无限制”的权限，后台运行时可能会被系统关闭。</string>
-
-    <string name="lock_background">稳定后台</string>
     <string name="open_auto_start">去开启自启动</string>
     <string name="auto_start_tips">本应用需要长时间在后台驻留，而一些系统会很激进的杀死在后台运行的任务，如果应用被授予自启动权限，相当于加入的系统白名单，就不会那么容易被系统杀死了。</string>
     <string name="goto_lock_background">去锁定后台</string>
@@ -81,9 +79,7 @@
     <string name="shell_code_copy">复制代码</string>
     <string name="shell_code_exec">执行</string>
     <string name="shell_code_executed">已执行</string>
-    <string name="auto_restart_accessibility_service">自动重启无障碍服务</string>
     <string name="auto_restart_accessibility_service_tips">因一些不可描述的原因导致无障碍服务崩溃后，任务无法正常运行，手动重启无障碍服务又略显麻烦，所以可以授予应用“写入安全设置”的权限让应用能重启无障碍服务。</string>
-    <string name="auto_allow_capture">自动授予录屏权限</string>
     <string name="auto_allow_capture_tips">软件请求录屏权限会弹窗让用户手动授予录屏权限，执行任务时需要主动去处理授予操作，所以可以授予应用“自动允许录屏”的权限来免去麻烦。但是，这可能会带来一些安全隐患。如果你不信任本软件，请不要授予！！！</string>
 
     <string name="restart_accessibility_service">重启无障碍服务</string>
@@ -171,8 +167,6 @@
     <string name="action_start_subtitle_restart">任务重入</string>
     <string name="action_start_subtitle_break">中断条件</string>
     <string name="action_start_subtitle_enable">启用</string>
-    <string name="action_start_subtitle_enable_true">已启用</string>
-    <string name="action_start_subtitle_enable_false">未启用</string>
 
     <string name="action_manual_start_title">手动执行</string>
 
@@ -206,8 +200,6 @@
     <string name="action_normal_start_title">自定义条件执行</string>
     <string name="action_normal_start_subtitle_condition">开始条件</string>
 
-    <string name="action_inner_start_title">并行内部执行</string>
-
     <!-- 任务 - 逻辑 -->
     <string name="action_logic_subtitle_false">未达成</string>
     <string name="action_logic_subtitle_complete">结束</string>
@@ -228,8 +220,6 @@
     <string name="action_condition_while_logic_title">条件循环执行</string>
 
     <string name="action_sequence_logic_title">顺序执行</string>
-    <string name="action_sequence_condition_logic_title">顺序条件执行</string>
-    <string name="action_sequence_condition_logic_subtitle_condition">条件</string>
 
     <string name="action_random_logic_title">随机执行</string>
     <string name="action_random_logic_subtitle_times">执行次数</string>
@@ -333,6 +323,8 @@
 
     <string name="action_image_state_title">获取图片</string>
 
+    <string name="action_image_sub_image_title">截取图片</string>
+
 
     <!-- 任务 - 控件 -->
     <string name="action_exist_node_check_title">界面内存在控件</string>
@@ -396,6 +388,7 @@
 
     <!-- 任务 - 区域 -->
     <string name="action_area_to_int_title">区域拆分为数值</string>
+    <string name="action_area_pick_title">选择区域</string>
 
     <!-- 任务 - 数组 -->
     <string name="action_array_subtitle_element">成员</string>
@@ -630,7 +623,6 @@
     <string name="app_info_setting_source_code">在GitHub查看源码</string>
 
     <string name="app_info_setting_version">版本</string>
-    <string name="app_info_setting_version_format">%1$s(%2$d)</string>
     <string name="app_info_setting_version_update">在QQ群查看最新版本</string>
 
     <string name="app_info_setting_thank">贡献者</string>

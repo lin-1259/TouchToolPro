@@ -44,7 +44,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     private int lastX = 0;
     private int lastY = 0;
 
-    public ImagePickerFloatView(Context context, PickerCallback callback, PinImage pinImage) {
+    public ImagePickerFloatView(Context context, IPickerCallback callback, PinImage pinImage) {
         super(context, callback);
         this.pinImage = pinImage;
 

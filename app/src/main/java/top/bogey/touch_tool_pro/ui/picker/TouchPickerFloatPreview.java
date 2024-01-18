@@ -19,14 +19,19 @@ public class TouchPickerFloatPreview extends BasePickerFloatView {
     private final PinTouch newPinTouch;
 
     @SuppressLint("DefaultLocale")
-    public TouchPickerFloatPreview(@NonNull Context context, PickerCallback callback, PinTouch pinTouch) {
+    public TouchPickerFloatPreview(@NonNull Context context, IPickerCallback callback, PinTouch pinTouch) {
         super(context, callback);
         newPinTouch = (PinTouch) pinTouch.copy();
 
         FloatPickerTouchPreviewBinding binding = FloatPickerTouchPreviewBinding.inflate(LayoutInflater.from(context), this, true);
         binding.pathView.setPaths(pinTouch.getPaths(context));
 
-        binding.pickerButton.setOnClickListener(v -> new TouchPickerFloatView(context, () -> binding.pathView.setPaths(newPinTouch.getPaths(context)), newPinTouch).show());
+        binding.pickerButton.setOnClickListener(v -> new TouchPickerFloatView(context, new PickerCallback() {
+            @Override
+            public void onComplete() {
+                binding.pathView.setPaths(newPinTouch.getPaths(context));
+            }
+        }, newPinTouch).show());
 
         binding.saveButton.setOnClickListener(v -> {
             if (callback != null) {
