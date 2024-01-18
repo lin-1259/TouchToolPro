@@ -35,7 +35,7 @@ public class GetLocalVariableValue extends GetVariableValue {
     @Override
     public ActionCheckResult check(FunctionContext context) {
         PinValue value = context.findVar(varKey);
-        if (value == null) return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_variable_action_tips);
+        if (value == null) return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_variable_no_find);
         return super.check(context);
     }
 

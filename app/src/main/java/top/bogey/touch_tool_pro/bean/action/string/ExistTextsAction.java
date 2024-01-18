@@ -102,7 +102,7 @@ public class ExistTextsAction extends CheckAction {
     public ActionCheckResult check(FunctionContext context) {
         if (resultPin.getLinks().isEmpty()) {
             if (!nodesPin.getLinks().isEmpty()) {
-                return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_exist_action_tips);
+                return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_result_pin_no_use);
             }
         }
         return super.check(context);

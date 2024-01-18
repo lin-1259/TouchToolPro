@@ -174,6 +174,7 @@ public enum ActionType {
     CHECK_EXIST_IMAGE,
     CHECK_IMAGE,
     IMAGE_STATE,
+    IMAGE_SUB_IMAGE,
 
     CHECK_EXIST_NODE,
     CHECK_EXIST_NODES,
@@ -211,6 +212,7 @@ public enum ActionType {
     POS_TO_TOUCH,
 
     AREA_TO_INT,
+    AREA_PICK,
 
     ARRAY_GET,
     ARRAY_SET,
@@ -300,6 +302,7 @@ public enum ActionType {
             case CHECK_EXIST_IMAGE -> new ActionConfigInfo(R.string.action_exist_image_check_title, R.drawable.icon_image, ExistImageAction.class);
             case CHECK_IMAGE -> new ActionConfigInfo(R.string.action_image_check_title, R.drawable.icon_image, ImageContainAction.class);
             case IMAGE_STATE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
+            case IMAGE_SUB_IMAGE -> new ActionConfigInfo(R.string.action_image_state_title, R.drawable.icon_image, ImageStateAction.class);
 
             case CHECK_EXIST_NODE -> new ActionConfigInfo(R.string.action_exist_node_check_title, R.drawable.icon_widget, ExistNodeAction.class);
             case CHECK_EXIST_NODES -> new ActionConfigInfo(R.string.action_exist_nodes_check_title, R.drawable.icon_widget, ExistNodesAction.class);

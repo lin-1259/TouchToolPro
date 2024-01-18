@@ -60,7 +60,7 @@ public class WaitIfLogicAction extends NormalAction {
     public ActionCheckResult check(FunctionContext context) {
         PinInteger periodic = periodicPin.getValue(PinInteger.class);
         if (periodic.getValue() < 50) {
-            return new ActionCheckResult(ActionCheckResult.ActionResultType.WARNING, R.string.warning_wait_if_action_tips);
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.WARNING, R.string.warning_check_time_too_short);
         }
         return super.check(context);
     }

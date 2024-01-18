@@ -9,6 +9,7 @@
     <string name="save">保存</string>
     <string name="close">关闭</string>
 
+    <!-- 时间 -->
     <string name="date" translatable="false">%1$s %2$s</string>
     <string name="year">%d年</string>
     <string name="month">%d月</string>
@@ -31,8 +32,7 @@
     <string name="capture_service_notification_title">录屏服务 正在运行</string>
     <string name="capture_service_notification_text">点按即可关闭服务和通知</string>
 
-    <string name="location_on_tips">地理围栏需要精确的地理位置，请授予应用获取地理位置的权限</string>
-
+    <!-- 标题 -->
     <string name="home">主页</string>
     <string name="task">任务</string>
     <string name="function">自定义</string>
@@ -57,7 +57,6 @@
 
     <string name="play_tile_service_title">手动悬浮窗</string>
     <string name="package_tile_service_title">当前活动</string>
-    <string name="package_tile_service_tips">应用包名为：%1$s\n活动名为：%2$s</string>
 
     <string name="report_running_error_tips">检测到应用出现崩溃，是否加入QQ群去上报错误？</string>
     <string name="report_running_error_copied">已复制</string>
@@ -81,7 +80,7 @@
     <string name="shell_code">便捷的Shell命令</string>
     <string name="shell_code_copy">复制代码</string>
     <string name="shell_code_exec">执行</string>
-    <string name="shizuku_done">已执行</string>
+    <string name="shell_code_executed">已执行</string>
     <string name="auto_restart_accessibility_service">自动重启无障碍服务</string>
     <string name="auto_restart_accessibility_service_tips">因一些不可描述的原因导致无障碍服务崩溃后，任务无法正常运行，手动重启无障碍服务又略显麻烦，所以可以授予应用“写入安全设置”的权限让应用能重启无障碍服务。</string>
     <string name="auto_allow_capture">自动授予录屏权限</string>
@@ -92,15 +91,21 @@
     <string name="restart_accessibility_service_complete">重启完毕</string>
 
 
+    <!-- 标签 -->
     <string name="tag_no">未分类</string>
     <string name="tag_shortcut">快捷方式</string>
     <string name="tag_add">添加新的标签</string>
     <string name="tag_delete">确认要删除这个标签吗？</string>
 
+
+    <!-- 底部菜单 -->
     <string name="select_all">全选</string>
     <string name="delete_task">删除</string>
+    <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
+    <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
     <string name="export_task">导出</string>
     <string name="export_task_tips">导出任务配置并发送</string>
+    <string name="export_function_error_tips">无法导出非通用自定义卡片</string>
     <string name="move_task">标签</string>
     <string name="copy_task">复制</string>
     <string name="exchange_task">转换</string>
@@ -108,40 +113,40 @@
     <string name="exchange_task_2">保留转换</string>
     <string name="exchange_task_tips">任务转换为自定义卡之后无法恢复，任务内自定义卡无法跟随任务转换，确定要转换选中的任务吗？</string>
     <string name="copy_to">复制到</string>
-    <string name="delete_task_tips">任务删除之后无法恢复，确定要删除选中的任务吗？</string>
 
-    <string name="task_title">任务</string>
+
+    <!-- 任务界面相关 -->
     <string name="task_add">添加任务</string>
     <string name="task_change_title">修改标题</string>
     <string name="task_copy_title">%s_复制</string>
 
+
+    <!-- 自定义界面相关 -->
     <string name="function_title_common">通用自定义卡片</string>
     <string name="function_title">任务内自定义卡片</string>
     <string name="function_add">添加自定义卡片</string>
     <string name="function_record">录制自定义卡片</string>
     <string name="function_record_tips">请先点击开始录制按钮</string>
-    <string name="function_start">自定义开始</string>
-    <string name="function_end">自定义结束</string>
-    <string name="function_pin_hint">针脚名</string>
-    <string name="function_just_call">仅获取状态</string>
-    <string name="function_fast_end">结束时中止内部执行</string>
-    <string name="export_function_error_tips">无法导出非通用自定义卡片</string>
-    <string name="delete_function_tips">自定义卡片删除之后无法恢复，确定要删除吗？</string>
 
+
+    <!-- 变量界面相关 -->
     <string name="attribute_title">任务内变量</string>
     <string name="attribute_title_common">全局变量</string>
     <string name="attribute_title_function">卡片内变量</string>
-    <string name="attribute_hint">变量名</string>
     <string name="attribute_add">添加变量</string>
     <string name="attribute_add_error">变量名已存在，无法再次添加同名变量</string>
 
-    <string name="card_error_tips">存在%d个问题卡片</string>
-    <string name="error_exist_action_tips">结果针脚未被使用</string>
-    <string name="error_function_reference_action_tips">未找到引用的自定义卡片</string>
-    <string name="error_variable_action_tips">未找到引用的变量</string>
-    <string name="error_no_super_user_permission">没有权限执行</string>
 
-    <string name="warning_wait_if_action_tips">检查间隔过短，可能引起卡顿</string>
+    <!-- 错误 -->
+    <string name="card_error_tips">存在%d个问题卡片</string>
+    <string name="error_result_pin_no_use">结果针脚未被使用</string>
+    <string name="error_function_no_find">未找到引用的自定义卡片</string>
+    <string name="error_variable_no_find">未找到引用的变量</string>
+    <string name="error_super_user_no_permission">需要超级用户权限</string>
+
+    <!-- 警告 -->
+    <string name="warning_check_time_too_short">检查间隔过短，可能引起卡顿</string>
+
 
     <!-- 任务 -->
     <string name="action_subtitle_add_pin">添加针脚</string>
@@ -149,6 +154,18 @@
     <string name="action_subtitle_add_des">修改备注</string>
     <string name="action_subtitle_execute">执行</string>
 
+    <!-- 自定义 -->
+    <string name="function_start">自定义开始</string>
+    <string name="function_end">自定义结束</string>
+    <string name="function_pin_hint">针脚名</string>
+    <string name="function_just_call">仅获取状态</string>
+    <string name="function_fast_end">结束时中止内部执行</string>
+
+    <!-- 变量 -->
+    <string name="action_set_value_action_title">设置变量值</string>
+    <string name="action_get_value_action_title">获取变量值</string>
+    <string name="action_set_common_value_action_title">设置全局变量值</string>
+    <string name="action_get_common_value_action_title">获取全局变量值</string>
 
     <!-- 任务 - 开始 -->
     <string name="action_start_subtitle_restart">任务重入</string>
@@ -157,17 +174,7 @@
     <string name="action_start_subtitle_enable_true">已启用</string>
     <string name="action_start_subtitle_enable_false">未启用</string>
 
-    <string name="action_normal_start_title">自定义条件执行</string>
-    <string name="action_normal_start_subtitle_condition">开始条件</string>
-
-    <string name="action_outer_start_title">应用外调用</string>
-    <string name="action_outer_start_subtitle_url">链接</string>
-    <string name="action_outer_start_subtitle_copy">复制链接</string>
-    <string name="action_outer_start_subtitle_shortcut">快捷方式</string>
-    <string name="action_outer_start_subtitle_shortcut_create">创建</string>
-
     <string name="action_manual_start_title">手动执行</string>
-    <string name="action_inner_start_title">并行内部执行</string>
 
     <string name="action_app_start_title">进应用或界面时执行</string>
     <string name="action_app_start_subtitle_break">自动中断</string>
@@ -179,10 +186,6 @@
     <string name="action_time_start_subtitle_periodic">间隔</string>
     <string name="action_time_start_tips">未设置间隔时设置00:00为间隔24小时\n有间隔时设置00:00为移除间隔</string>
 
-    <string name="action_battery_start_title">电池状态变更时执行</string>
-    <string name="action_battery_start_subtitle_state">状态</string>
-    <string name="action_battery_start_subtitle_battery">电量</string>
-
     <string name="action_notification_start_title">收到新通知时执行</string>
     <string name="action_notification_start_subtitle_text">匹配文本</string>
     <string name="action_notification_start_subtitle_notice">通知文本</string>
@@ -190,79 +193,53 @@
     <string name="action_network_start_title">网络变更时执行</string>
     <string name="action_network_start_subtitle_network">网络</string>
 
+    <string name="action_battery_start_title">电池状态变更时执行</string>
+    <string name="action_battery_start_subtitle_state">状态</string>
+    <string name="action_battery_start_subtitle_battery">电量</string>
 
-    <!-- 任务 - 状态 -->
-    <string name="action_app_state_title">当前界面</string>
-    <string name="action_app_state_subtitle_where">界面</string>
+    <string name="action_outer_start_title">应用外调用</string>
+    <string name="action_outer_start_subtitle_url">链接</string>
+    <string name="action_outer_start_subtitle_copy">复制链接</string>
+    <string name="action_outer_start_subtitle_shortcut">快捷方式</string>
+    <string name="action_outer_start_subtitle_shortcut_create">创建</string>
 
-    <string name="action_battery_state_title">电池状态</string>
-    <string name="action_battery_state_subtitle_state">状态</string>
-    <string name="action_battery_state_subtitle_battery">电量</string>
+    <string name="action_normal_start_title">自定义条件执行</string>
+    <string name="action_normal_start_subtitle_condition">开始条件</string>
 
-    <string name="action_screen_state_title">屏幕状态</string>
-    <string name="action_screen_state_subtitle_state">状态</string>
+    <string name="action_inner_start_title">并行内部执行</string>
 
-    <string name="action_capture_state_title">录屏状态</string>
-    <string name="action_capture_state_subtitle_state">开启</string>
+    <!-- 任务 - 逻辑 -->
+    <string name="action_logic_subtitle_false">未达成</string>
+    <string name="action_logic_subtitle_complete">结束</string>
+    <string name="action_logic_subtitle_break">提前终止</string>
 
-    <string name="action_image_state_title">获取图片</string>
-    <string name="action_color_state_title">获取颜色</string>
-    <string name="action_ocr_text_state_title">获取文本(OCR)</string>
-    <string name="action_ocr_text_state_subtitle_similar">可信度</string>
+    <string name="action_condition_logic_title">如果…就…</string>
 
-    <string name="action_date_state_title">日期</string>
-    <string name="action_date_state_subtitle_year">年</string>
-    <string name="action_date_state_subtitle_month">月</string>
-    <string name="action_date_state_subtitle_day">日</string>
-    <string name="action_date_state_subtitle_weekday">周几</string>
+    <string name="action_wait_condition_logic_title">等待条件成立</string>
+    <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>
+    <string name="action_wait_condition_logic_subtitle_periodic">检查间隔(ms)</string>
 
-    <string name="action_time_state_title">时间</string>
-    <string name="action_time_state_subtitle_hour">时</string>
-    <string name="action_time_state_subtitle_minute">分</string>
-    <string name="action_time_state_subtitle_second">秒</string>
-    <string name="action_time_state_subtitle_timestamp">时间戳</string>
+    <string name="action_for_loop_logic_title">循环执行…次</string>
+    <string name="action_for_loop_logic_subtitle_curr">当前值</string>
+    <string name="action_for_loop_logic_subtitle_break">提前终止</string>
+    <string name="action_for_loop_logic_subtitle_start">开始值</string>
+    <string name="action_for_loop_logic_subtitle_end">结束值</string>
 
-    <string name="action_network_state_title">网络状态</string>
-    <string name="action_network_state_subtitle_network">网络</string>
+    <string name="action_condition_while_logic_title">条件循环执行</string>
 
+    <string name="action_sequence_logic_title">顺序执行</string>
+    <string name="action_sequence_condition_logic_title">顺序条件执行</string>
+    <string name="action_sequence_condition_logic_subtitle_condition">条件</string>
 
-    <!-- 任务 - 检测 -->
-    <string name="action_check_subtitle_result">结果</string>
+    <string name="action_random_logic_title">随机执行</string>
+    <string name="action_random_logic_subtitle_times">执行次数</string>
+    <string name="action_random_logic_subtitle_repeat">允许重复</string>
 
-    <string name="action_in_app_check_title">在应用或界面内</string>
-    <string name="action_in_app_check_subtitle_who">待测界面</string>
+    <string name="action_parallel_logic_title">并行执行到完成…条</string>
+    <string name="action_parallel_logic_subtitle_condition">完成条数</string>
+    <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
 
-    <string name="action_battery_state_check_title">电池状态对比</string>
-    <string name="action_battery_state_check_subtitle_state">状态</string>
-    <string name="action_battery_state_check_subtitle_check_state">待测状态</string>
-
-    <string name="action_screen_state_check_title">屏幕状态对比</string>
-    <string name="action_screen_state_check_subtitle_state">状态</string>
-    <string name="action_screen_state_check_subtitle_check_state">待测状态</string>
-
-    <string name="action_exist_texts_check_title">界面内所有文本</string>
-    <string name="action_exist_text_check_title">界面内存在文本</string>
-    <string name="action_exist_text_check_subtitle_just">屏幕内</string>
-
-    <string name="action_exist_text_ocr_check_title">界面内存在文本(OCR)</string>
-
-    <string name="action_exist_nodes_check_title">界面内所有控件</string>
-    <string name="action_exist_node_check_title">界面内存在控件</string>
-
-    <string name="action_image_check_title">图片内存在图片</string>
-    <string name="action_image_check_subtitle_other">匹配图片</string>
-    <string name="action_exist_image_check_title">界面内存在图片</string>
-    <string name="action_exist_image_check_subtitle_similar">相似度</string>
-
-    <string name="action_color_check_title">颜色对比</string>
-    <string name="action_color_check_subtitle_other">匹配颜色</string>
-    <string name="action_exist_colors_check_title">界面内所有颜色</string>
-    <string name="action_exist_color_check_title">界面内存在颜色</string>
-    <string name="action_exist_color_check_subtitle_similar">偏移</string>
-
-    <string name="action_network_check_title">网络状态对比</string>
-    <string name="action_network_check_subtitle_network">状态</string>
-    <string name="action_network_check_subtitle_check_network">待测状态</string>
+    <string name="action_manual_choice_logic_title">选择执行</string>
 
 
     <!-- 任务 - 动作 -->
@@ -304,9 +281,10 @@
     <string name="action_open_url_action_title">打开Uri</string>
     <string name="action_open_url_action_subtitle_url">Uri</string>
 
-    <string name="action_stop_ringtone_action_title">关闭铃声</string>
     <string name="action_play_ringtone_action_title">播放铃声</string>
     <string name="action_play_ringtone_action_subtitle_url">铃声</string>
+
+    <string name="action_stop_ringtone_action_title">关闭铃声</string>
 
     <string name="action_copy_action_title">写入剪切板</string>
 
@@ -316,59 +294,22 @@
     <string name="action_do_task_action_title">执行任务</string>
     <string name="action_do_task_action_subtitle_task">任务</string>
     <string name="action_do_task_action_subtitle_action">动作</string>
-    <string name="action_break_task_action_title">中断执行</string>
 
     <string name="action_shell_action_title">执行Shell指令</string>
     <string name="action_shell_action_subtitle_cmd">指令</string>
 
-    <string name="action_set_value_action_title">设置变量值</string>
-    <string name="action_get_value_action_title">获取变量值</string>
-    <string name="action_set_common_value_action_title">设置全局变量值</string>
-    <string name="action_get_common_value_action_title">获取全局变量值</string>
+    <string name="action_break_task_action_title">中断执行</string>
 
+    <!-- 任务 - 文本 -->
+    <string name="action_exist_text_check_title">界面内存在文本</string>
+    <string name="action_exist_text_check_subtitle_just">屏幕内</string>
 
-    <!-- 任务 - 逻辑 -->
-    <string name="action_logic_subtitle_false">未达成</string>
-    <string name="action_logic_subtitle_complete">结束</string>
-    <string name="action_logic_subtitle_break">提前终止</string>
+    <string name="action_exist_texts_check_title">界面内所有文本</string>
 
-    <string name="action_condition_logic_title">如果…就…</string>
+    <string name="action_exist_text_ocr_check_title">界面内存在文本(OCR)</string>
 
-    <string name="action_wait_condition_logic_title">等待条件成立</string>
-    <string name="action_wait_condition_logic_subtitle_timeout">超时(ms)</string>
-    <string name="action_wait_condition_logic_subtitle_periodic">检查间隔(ms)</string>
-
-    <string name="action_for_loop_logic_title">循环执行…次</string>
-    <string name="action_for_loop_logic_subtitle_curr">当前值</string>
-    <string name="action_for_loop_logic_subtitle_break">提前终止</string>
-    <string name="action_for_loop_logic_subtitle_start">开始值</string>
-    <string name="action_for_loop_logic_subtitle_end">结束值</string>
-
-    <string name="action_condition_while_logic_title">条件循环执行</string>
-
-    <string name="action_sequence_logic_title">顺序执行</string>
-    <string name="action_sequence_condition_logic_title">顺序条件执行</string>
-    <string name="action_sequence_condition_logic_subtitle_condition">条件</string>
-
-    <string name="action_random_logic_title">随机执行</string>
-    <string name="action_random_logic_subtitle_times">执行次数</string>
-    <string name="action_random_logic_subtitle_repeat">允许重复</string>
-
-    <string name="action_parallel_logic_title">并行执行到完成…条</string>
-    <string name="action_parallel_logic_subtitle_condition">完成条数</string>
-    <string name="action_parallel_logic_subtitle_timeout">超时(ms)</string>
-
-    <string name="action_manual_choice_logic_title">选择执行</string>
-    <string name="action_manual_choice_logic_subtitle_tips">选择一条执行以继续</string>
-
-
-    <!-- 任务 - boolean -->
-    <string name="action_bool_convert_or_title">任何条件达成</string>
-
-    <string name="action_bool_convert_and_title">所有条件达成</string>
-
-    <string name="action_bool_convert_not_title">反转条件</string>
-
+    <string name="action_ocr_text_state_title">获取文本(OCR)</string>
+    <string name="action_ocr_text_state_subtitle_similar">可信度</string>
 
     <!-- 任务 - string -->
     <string name="action_string_from_value_title">对象转换为文本</string>
@@ -383,6 +324,48 @@
     <string name="action_string_regex_subtitle_match">正则表达式</string>
     <string name="action_string_regex_subtitle_match_result">匹配结果</string>
 
+    <!-- 任务 - 图片 -->
+    <string name="action_exist_image_check_title">界面内存在图片</string>
+    <string name="action_exist_image_check_subtitle_similar">相似度</string>
+
+    <string name="action_image_check_title">图片内存在图片</string>
+    <string name="action_image_check_subtitle_other">匹配图片</string>
+
+    <string name="action_image_state_title">获取图片</string>
+
+
+    <!-- 任务 - 控件 -->
+    <string name="action_exist_node_check_title">界面内存在控件</string>
+
+    <string name="action_exist_nodes_check_title">界面内所有控件</string>
+
+    <string name="action_get_node_info_title">获取控件信息</string>
+    <string name="action_get_node_info_subtitle_type">类型</string>
+
+    <string name="action_is_node_valid_title">控件是否有效</string>
+
+    <string name="action_get_node_children_title">获取控件子节点</string>
+
+    <string name="action_get_node_parent_title">获取控件父节点</string>
+
+    <string name="action_get_nodes_in_pos_title">获取指定位置的所有控件</string>
+    <string name="action_get_nodes_in_pos_subtitle_exclude">排除容器控件</string>
+
+    <!-- 任务 - 颜色 -->
+    <string name="action_exist_color_check_title">界面内存在颜色</string>
+    <string name="action_exist_color_check_subtitle_similar">偏移</string>
+
+    <string name="action_exist_colors_check_title">界面内所有颜色</string>
+
+    <string name="action_color_check_title">颜色对比</string>
+    <string name="action_color_check_subtitle_other">匹配颜色</string>
+
+    <string name="action_color_state_title">获取颜色</string>
+
+    <!-- 任务 - boolean -->
+    <string name="action_bool_convert_or_title">任何条件达成</string>
+    <string name="action_bool_convert_and_title">所有条件达成</string>
+    <string name="action_bool_convert_not_title">反转条件</string>
 
     <!-- 任务 - int -->
     <string name="action_int_add_title">数值相加 ＋</string>
@@ -397,7 +380,7 @@
     <string name="action_int_random_title">随机数值</string>
 
 
-    <!-- 任务 - position -->
+    <!-- 任务 - 位置 -->
     <string name="action_position_to_int_title">位置拆分为数值</string>
 
     <string name="action_position_from_int_title">数值组合为位置</string>
@@ -409,18 +392,12 @@
     <string name="action_position_to_area_title">位置组合为区域</string>
     <string name="action_position_to_touch_title">位置组合为手势</string>
     <string name="action_position_to_touch_subtitle_time">手势时长(ms)</string>
+
+
+    <!-- 任务 - 区域 -->
     <string name="action_area_to_int_title">区域拆分为数值</string>
 
-    <!-- 任务 - 控件 -->
-    <string name="action_get_node_info_title">获取控件信息</string>
-    <string name="action_get_node_info_subtitle_type">类型</string>
-    <string name="action_is_node_valid_title">控件是否有效</string>
-    <string name="action_get_node_children_title">获取控件子节点</string>
-    <string name="action_get_node_parent_title">获取控件父节点</string>
-    <string name="action_get_nodes_in_pos_title">获取指定位置的所有控件</string>
-    <string name="action_get_nodes_in_pos_subtitle_exclude">排除容器控件</string>
-
-    <!-- 任务 - array -->
+    <!-- 任务 - 数组 -->
     <string name="action_array_subtitle_element">成员</string>
     <string name="action_array_get_title">获取数组成员</string>
     <string name="action_array_set_title">设置数组成员</string>
@@ -434,6 +411,52 @@
     <string name="action_array_append_title">合并数组</string>
     <string name="action_array_index_of_title">成员位置</string>
     <string name="action_array_for_title">遍历数组成员</string>
+
+    <!-- 任务 - 其他 -->
+    <string name="action_check_subtitle_result">结果</string>
+
+    <string name="action_in_app_check_title">在应用或界面内</string>
+    <string name="action_in_app_check_subtitle_who">待测界面</string>
+
+    <string name="action_battery_state_check_title">电池状态对比</string>
+    <string name="action_battery_state_check_subtitle_state">状态</string>
+    <string name="action_battery_state_check_subtitle_check_state">待测状态</string>
+
+    <string name="action_screen_state_check_title">屏幕状态对比</string>
+    <string name="action_screen_state_check_subtitle_state">状态</string>
+    <string name="action_screen_state_check_subtitle_check_state">待测状态</string>
+
+    <string name="action_network_check_title">网络状态对比</string>
+    <string name="action_network_check_subtitle_network">状态</string>
+    <string name="action_network_check_subtitle_check_network">待测状态</string>
+
+    <string name="action_app_state_title">当前界面</string>
+    <string name="action_app_state_subtitle_where">界面</string>
+
+    <string name="action_battery_state_title">电池状态</string>
+    <string name="action_battery_state_subtitle_state">状态</string>
+    <string name="action_battery_state_subtitle_battery">电量</string>
+
+    <string name="action_screen_state_title">屏幕状态</string>
+    <string name="action_screen_state_subtitle_state">状态</string>
+
+    <string name="action_network_state_title">网络状态</string>
+    <string name="action_network_state_subtitle_network">网络</string>
+
+    <string name="action_capture_state_title">录屏状态</string>
+    <string name="action_capture_state_subtitle_state">开启</string>
+
+    <string name="action_date_state_title">日期</string>
+    <string name="action_date_state_subtitle_year">年</string>
+    <string name="action_date_state_subtitle_month">月</string>
+    <string name="action_date_state_subtitle_day">日</string>
+    <string name="action_date_state_subtitle_weekday">周几</string>
+
+    <string name="action_time_state_title">时间</string>
+    <string name="action_time_state_subtitle_hour">时</string>
+    <string name="action_time_state_subtitle_minute">分</string>
+    <string name="action_time_state_subtitle_second">秒</string>
+    <string name="action_time_state_subtitle_timestamp">时间戳</string>
 
     <!-- 针脚 -->
     <string name="pin_execute">执行</string>
@@ -483,8 +506,6 @@
     <string name="picker_pos_preview_title">选择位置</string>
 
     <string name="picker_widget_preview_title">选择控件</string>
-    <string name="picker_widget_preview_subtitle_id">ID：%1$s</string>
-    <string name="picker_widget_preview_subtitle_path">路径：%1$s</string>
     <string name="picker_widget_preview_subtitle_search">搜索控件</string>
     <string name="picker_widget_preview_subtitle_top">顶部优先</string>
     <string name="picker_widget_preview_subtitle_level">深度优先</string>
@@ -495,14 +516,6 @@
     <string name="picker_app_title_all">所有应用：%d</string>
     <string name="picker_app_title_search_activity">搜索活动</string>
     <string name="picker_app_title_select_activity">选择活动</string>
-    <string name="picker_app_subtitle_include">关联</string>
-    <string name="picker_app_subtitle_exclude">排除</string>
-
-    <!-- 采集器 - 包和活动 -->
-    <string name="picker_package_title">获取当前活动信息</string>
-    <string name="picker_package_subtitle_name">应用名：</string>
-    <string name="picker_package_subtitle_package">包名：</string>
-    <string name="picker_package_subtitle_activity">活动名：</string>
 
     <!-- 位置 -->
     <string name="point_x">X</string>
@@ -523,14 +536,25 @@
     <string name="task_running_log">任务日志</string>
     <string name="task_running_log_clear">清除日志</string>
 
-    <!-- 设置 -->
+    <!-- 导入导出 -->
+    <string name="task_setting_export">导出任务</string>
+    <string name="task_setting_task">任务</string>
+    <string name="task_setting_function">自定义卡片</string>
+    <string name="task_setting_include_tag">导入任务标签</string>
+    <string name="task_setting_include_common_attr">导入全局变量</string>
+
+    <!-- 设置 - 应用设置 -->
     <string name="app_setting_title">应用设置</string>
+
     <string name="app_setting_show_task_start">显示任务运行提示</string>
     <string name="app_setting_show_task_start_tips">任务开始运行时，在屏幕顶部中间位置显示一个小圆点提示</string>
+
     <string name="app_setting_hide_background">隐藏后台</string>
     <string name="app_setting_hide_background_tips">在最近任务列表里隐藏本应用</string>
+
     <string name="app_setting_keep_alive">前台服务</string>
     <string name="app_setting_keep_alive_tips">在通知栏显示一条前台服务通知加强应用后台存活能力</string>
+
     <string name="app_setting_super_user">超级用户</string>
     <string name="app_setting_super_user_tips">使用超级用户可以使用Shell命令及卡片</string>
     <string name="app_setting_super_user_none">不使用</string>
@@ -538,58 +562,80 @@
     <string name="app_setting_super_user_no_shizuku">未开启/安装Shizuku</string>
     <string name="app_setting_super_user_root">Root模式</string>
     <string name="app_setting_super_user_no_root">没有Root权限</string>
+
     <string name="app_setting_clean_cache">清理缓存</string>
     <string name="app_setting_clean_cache_tips">点击清理缓存。当前: %s</string>
 
+
+    <!-- 设置 - 工具 -->
     <string name="tool_setting_title">工具</string>
+
     <string name="tool_setting_show_package_info">应用信息采集</string>
     <string name="tool_setting_show_package_info_tips">显示一个展示当前所在应用和当前活动信息的悬浮窗，可以在控制中心中快捷开启</string>
+
     <string name="tool_setting_log">实时任务日志</string>
     <string name="tool_setting_log_tips">显示一个实时日志悬浮窗，任务中的每张执行卡片的执行都会被记录下来</string>
 
+
+    <!-- 设置 - 任务设置 -->
     <string name="task_setting_title">任务设置</string>
-    <string name="task_setting_task">任务</string>
-    <string name="task_setting_function">自定义卡片</string>
-    <string name="task_setting_include_tag">导入任务标签</string>
-    <string name="task_setting_include_common_attr">导入全局变量</string>
+
     <string name="task_setting_backup">备份任务</string>
     <string name="task_setting_backup_tips">选择需要备份的任务配置和通用自定义卡片到你选择的文件夹中</string>
     <string name="task_setting_backup_error">备份任务失败，没有可用来保存文件的应用</string>
+
     <string name="task_setting_import">导入任务</string>
-    <string name="task_setting_export">导出任务</string>
     <string name="task_setting_import_tips">从你选择的文件中选择需要导入的任务配置和通用自定义卡片</string>
+
     <string name="task_setting_play_view_visible">显示手动执行</string>
     <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置(点击此处重置悬浮窗位置)</string>
     <string name="task_setting_play_view_visible_reset">重置完成</string>
+
     <string name="task_setting_show_touch">显示手势轨迹</string>
     <string name="task_setting_show_touch_tips">执行手势的时候，在界面上显示手势轨迹动画</string>
 
+
+    <!-- 设置 - 偏好设置 -->
     <string name="profile_setting">偏好设置</string>
+
     <string name="profile_setting_first_show_task">任务主页</string>
     <string name="profile_setting_first_show_task_tips">打开应用时首页展示任务页而不是主页</string>
+
     <string name="profile_setting_first_look_blueprint">默认查看蓝图</string>
     <string name="profile_setting_first_look_blueprint_tips">打开蓝图时默认为查看模式，而不是编辑模式</string>
+
     <string name="profile_setting_first_use_take_capture">优先使用无障碍截屏</string>
     <string name="profile_setting_first_use_take_capture_tips">在支持的Android版本上优先使用无障碍截屏，可以不需要提前申请录屏权限</string>
+
     <string name="profile_setting_first_use_exact_alarm">使用精确定时</string>
     <string name="profile_setting_first_use_exact_alarm_tips">优先使用精确定时，但是可能会更耗电</string>
 
+
+    <!-- 设置 - 界面外观 -->
     <string name="theme_setting">界面外观</string>
+
     <string name="theme_setting_dynamic_color">动态颜色</string>
     <string name="theme_setting_dynamic_color_tips">在支持的Android版本上，开启后应用将使用壁纸颜色作为主色调</string>
+
+    <string name="theme_setting_night_mode">深色模式</string>
     <string name="theme_setting_night_auto">跟随系统</string>
     <string name="theme_setting_night_close">总是关闭</string>
-    <string name="theme_setting_night_mode">深色模式</string>
-    <string name="theme_setting_night_open">总是开启</string>/
+    <string name="theme_setting_night_open">总是开启</string>
     <string name="theme_setting_night_time">跟随时间</string>
 
+
+    <!-- 设置 - 应用信息 -->
     <string name="app_info_setting">应用信息</string>
+
     <string name="app_info_setting_source_code">在GitHub查看源码</string>
+
     <string name="app_info_setting_version">版本</string>
     <string name="app_info_setting_version_format">%1$s(%2$d)</string>
     <string name="app_info_setting_version_update">在QQ群查看最新版本</string>
+
     <string name="app_info_setting_thank">贡献者</string>
     <string name="app_info_setting_thank_title">特别感谢</string>
+
     <string name="app_info_join_qq_url">https://jq.qq.com/?_wv=1027&amp;k=c1HOe3Gk</string>
     <string name="app_info_join_github_url">https://github.com/mr-bogey/TouchToolPro</string>
     <string name="app_info_goto_doc_url">https://docs.qq.com/doc/p/24efb1da5ef37c58c3687606bd8c169fe73c52d0</string>

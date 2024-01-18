@@ -51,7 +51,7 @@ public class FunctionReferenceAction extends Action {
     public ActionCheckResult check(FunctionContext context) {
         function = SaveRepository.getInstance().getFunction(parentId, functionId);
         if (function == null) {
-            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_function_reference_action_tips);
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_function_no_find);
         }
         return super.check(context);
     }

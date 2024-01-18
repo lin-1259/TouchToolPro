@@ -167,7 +167,7 @@ public class HomeView extends Fragment {
 
         binding.execRestartButton.setOnClickListener(v -> {
             SuperUser.runCommand(String.format("pm grant %s %s", requireActivity().getPackageName(), Manifest.permission.WRITE_SECURE_SETTINGS));
-            Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.shell_code_executed, Toast.LENGTH_SHORT).show();
         });
 
         binding.autoAllowButton.setOnClickListener(v -> {
@@ -179,7 +179,7 @@ public class HomeView extends Fragment {
 
         binding.execAutoAllowButton.setOnClickListener(v -> {
             SuperUser.runCommand(String.format("appops set %s PROJECT_MEDIA allow", requireActivity().getPackageName()));
-            Toast.makeText(requireContext(), R.string.shizuku_done, Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), R.string.shell_code_executed, Toast.LENGTH_SHORT).show();
         });
 
         setSuperShow();

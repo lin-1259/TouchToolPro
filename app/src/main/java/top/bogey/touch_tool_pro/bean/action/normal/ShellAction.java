@@ -52,7 +52,7 @@ public class ShellAction extends NormalAction {
     @Override
     public ActionCheckResult check(FunctionContext context) {
         if (!SuperUser.isSuperUser()) {
-            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_no_super_user_permission);
+            return new ActionCheckResult(ActionCheckResult.ActionResultType.ERROR, R.string.error_super_user_no_permission);
         }
         return super.check(context);
     }
