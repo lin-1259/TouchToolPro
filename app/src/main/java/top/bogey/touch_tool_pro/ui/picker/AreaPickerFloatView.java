@@ -17,7 +17,7 @@ import androidx.annotation.NonNull;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
-import top.bogey.touch_tool_pro.databinding.FloatPickerImageBinding;
+import top.bogey.touch_tool_pro.databinding.FloatPickerAreaBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.custom.ChangeAreaFloatView;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
@@ -26,7 +26,7 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 @SuppressLint("ViewConstructor")
 public class AreaPickerFloatView extends BasePickerFloatView {
     private final Rect area;
-    private final FloatPickerImageBinding binding;
+    private final FloatPickerAreaBinding binding;
     private final Paint bitmapPaint;
     private final int[] location = new int[2];
     private final Paint markPaint;
@@ -44,10 +44,11 @@ public class AreaPickerFloatView extends BasePickerFloatView {
     public AreaPickerFloatView(Context context, IPickerCallback callback, PinArea pinArea) {
         super(context, callback);
         area = pinArea.getArea(context);
+        if (pinArea.getArea().isEmpty()) area.set(0, 0, 0, 0);
 
         floatCallback = new AreaPickerCallback(this);
 
-        binding = FloatPickerImageBinding.inflate(LayoutInflater.from(context), this, true);
+        binding = FloatPickerAreaBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.saveButton.setOnClickListener(v -> {
             markArea.offset(location[0], location[1]);
@@ -59,6 +60,12 @@ public class AreaPickerFloatView extends BasePickerFloatView {
         binding.backButton.setOnClickListener(v -> {
             if (callback != null) callback.onCancel();
             dismiss();
+        });
+
+        binding.fullButton.setOnClickListener(v -> {
+            markArea.set(0, 0, getWidth(), getHeight());
+            isMarked = true;
+            refreshUI();
         });
 
         binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> refreshUI()).show());
@@ -90,6 +97,11 @@ public class AreaPickerFloatView extends BasePickerFloatView {
                     }
                 }));
             } else {
+                if (!area.isEmpty()) {
+                    markArea.set(area);
+                    markArea.offset(-location[0], -location[1]);
+                    isMarked = true;
+                }
                 refreshUI();
             }
         }, delay);

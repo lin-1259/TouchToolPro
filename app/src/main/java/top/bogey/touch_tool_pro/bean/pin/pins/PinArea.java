@@ -72,6 +72,10 @@ public class PinArea extends PinScreen {
         return new Rect((int) (area.left * scale), (int) (area.top * scale), (int) (area.right * scale), (int) (area.bottom * scale));
     }
 
+    public Rect getArea() {
+        return new Rect(area);
+    }
+
     public void setArea(Context context, Rect area) {
         setScreen(context);
         this.area.set(area);
