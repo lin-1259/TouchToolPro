@@ -18,14 +18,14 @@
             android:layout_height="wrap_content"
             android:indeterminate="false"
             app:indicatorInset="0dp"
-            app:indicatorSize="30dp"
+            app:indicatorSize="28dp"
             app:trackCornerRadius="2dp"
-            app:trackThickness="4dp"/>
+            app:trackThickness="4dp" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/percent"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:gravity="center"
             android:textColor="?attr/colorPrimary"
             android:textSize="13sp" />

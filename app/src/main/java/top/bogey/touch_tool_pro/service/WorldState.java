@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -96,7 +97,10 @@ public class WorldState {
         PackageManager manager = context.getPackageManager();
         Pattern pattern = null;
         if (!(find == null || find.length() == 0)) {
-            pattern = Pattern.compile(find.toString().toLowerCase());
+            try {
+                pattern = Pattern.compile(find.toString().toLowerCase());
+            } catch (PatternSyntaxException ignored) {
+            }
         }
 
         for (PackageInfo value : appMap.values()) {
@@ -125,7 +129,10 @@ public class WorldState {
         PackageManager manager = context.getPackageManager();
         Pattern pattern = null;
         if (!(find == null || find.length() == 0)) {
-            pattern = Pattern.compile(find.toString().toLowerCase());
+            try {
+                pattern = Pattern.compile(find.toString().toLowerCase());
+            } catch (PatternSyntaxException ignored) {
+            }
         }
 
         Intent intent = new Intent(Intent.ACTION_SEND);

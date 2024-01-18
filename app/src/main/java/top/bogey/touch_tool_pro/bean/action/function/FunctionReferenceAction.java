@@ -42,6 +42,7 @@ public class FunctionReferenceAction extends Action {
 
     @Override
     public String getTitle() {
+        function = SaveRepository.getInstance().getFunction(parentId, functionId);
         if (function == null) return super.getTitle();
         return function.getTitle();
     }

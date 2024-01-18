@@ -486,6 +486,8 @@
     <string name="picker_widget_preview_subtitle_id">ID：%1$s</string>
     <string name="picker_widget_preview_subtitle_path">路径：%1$s</string>
     <string name="picker_widget_preview_subtitle_search">搜索控件</string>
+    <string name="picker_widget_preview_subtitle_top">顶部优先</string>
+    <string name="picker_widget_preview_subtitle_level">深度优先</string>
 
     <!-- 采集器 - 应用 -->
     <string name="picker_app_title_search">搜索应用</string>

@@ -28,6 +28,7 @@ public class SettingSave {
     private static final String PLAY_VIEW_STATE = "PLAY_VIEW_STATE";                            // 手动执行悬浮窗收起展开状态
     private static final String PLAY_VIEW_POSITION = "PLAY_VIEW_POSITION";                      // 手动执行悬浮窗位置
     private static final String CHOICE_VIEW_POSITION = "CHOICE_VIEW_POSITION";                  // 选择执行弹窗位置
+    private static final String SELECT_NODE_TYPE = "SELECT_NODE_TYPE";                          // 选择控件优先方式
 
     private static final String HIDE_BACKGROUND = "HIDE_BACKGROUND";                            // 隐藏后台
     private static final String KEEP_ALIVE = "KEEP_ALIVE";                                      // 前台服务保活
@@ -127,6 +128,14 @@ public class SettingSave {
 
     public void setChoiceViewPosition(Point position) {
         settingMMKV.encode(CHOICE_VIEW_POSITION, position);
+    }
+
+    public int getSelectNodeType() {
+        return settingMMKV.decodeInt(SELECT_NODE_TYPE, 0);
+    }
+
+    public void setSelectNodeType(int type) {
+        settingMMKV.encode(SELECT_NODE_TYPE, type);
     }
 
 

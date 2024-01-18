@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import top.bogey.touch_tool_pro.databinding.DialogSelectActivityBinding;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
@@ -35,7 +36,13 @@ public class SelectActivityDialog extends FrameLayout {
                     if (searchText.isEmpty()) {
                         adapter.refreshActivityNames(new ArrayList<>(activityNameMap.keySet()));
                     } else {
-                        Pattern pattern = Pattern.compile(searchText.toLowerCase());
+                        Pattern pattern;
+                        try {
+                            pattern = Pattern.compile(searchText.toLowerCase());
+                        } catch (PatternSyntaxException ignored){
+                            return;
+                        }
+
                         ArrayList<String> list = new ArrayList<>();
 
                         activityNameMap.forEach((k, v) -> {

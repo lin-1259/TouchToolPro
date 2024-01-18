@@ -4,7 +4,7 @@
     style="?attr/materialCardViewFilledStyle"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="2dp"
     app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full">
 
     <LinearLayout
@@ -13,9 +13,10 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_margin="4dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_margin="2dp"
+            android:src="@mipmap/he_cha_jun"
             app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Full" />
 
         <com.google.android.material.textview.MaterialTextView

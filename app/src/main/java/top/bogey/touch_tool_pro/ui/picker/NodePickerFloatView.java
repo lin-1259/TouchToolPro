@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.FrameLayout;
@@ -21,6 +22,8 @@ import com.amrdeveloper.treeview.TreeNodeManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
@@ -29,6 +32,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinString;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeBinding;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 import top.bogey.touch_tool_pro.utils.TextChangedListener;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 
@@ -83,6 +87,10 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         });
 
+        binding.backButton.setOnClickListener(v -> dismiss());
+
+        binding.markBox.setOnClickListener(v -> showNodeView((NodePickerItemInfo) null));
+
         binding.searchEdit.addTextChangedListener(new TextChangedListener() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -94,9 +102,14 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             }
         });
 
-        binding.backButton.setOnClickListener(v -> dismiss());
-
-        binding.markBox.setOnClickListener(v -> showNodeView((NodePickerItemInfo) null));
+        binding.typeGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                View view = group.findViewById(checkedId);
+                int type = group.indexOfChild(view);
+                SettingSave.getInstance().setSelectNodeType(type);
+            }
+        });
+        binding.typeGroup.check(binding.typeGroup.getChildAt(SettingSave.getInstance().getSelectNodeType()).getId());
 
         if (pinNode instanceof PinNodePath pinNodePath) {
             AccessibilityNodeInfo node = pinNodePath.getNode(windowsRoot);
@@ -241,7 +254,13 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         float y = event.getRawY();
 
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            NodePickerItemInfo node = getNodeIn((int) x, (int) y);
+            int type = SettingSave.getInstance().getSelectNodeType();
+            NodePickerItemInfo node;
+            if (type == 0) {
+                node = getNodeInByTop((int) x, (int) y);
+            } else {
+                node = getNodeInByLevel((int) x, (int) y);
+            }
             if (node != null) {
                 showNodeView(node);
             }
@@ -250,7 +269,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
     }
 
     @Nullable
-    private NodePickerItemInfo getNodeIn(int x, int y) {
+    private NodePickerItemInfo getNodeInByTop(int x, int y) {
         if (rootNodes == null || rootNodes.size() == 0) return null;
 
         NodePickerItemInfo node = null;
@@ -276,6 +295,41 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
             return nodeInfo;
         }
         return null;
+    }
+
+
+    @Nullable
+    private NodePickerItemInfo getNodeInByLevel(int x, int y) {
+        if (rootNodes == null || rootNodes.size() == 0) return null;
+        HashMap<NodePickerItemInfo, Integer> infoMap = new HashMap<>();
+        for (int i = 0; i < rootNodes.size(); i++) {
+            NodePickerItemInfo rootNode = rootNodes.get(i);
+            findNodeIn(infoMap, (rootNodes.size() - i) * Short.MAX_VALUE, rootNode, x, y);
+        }
+
+        int deep = 0;
+        NodePickerItemInfo node = null;
+        for (Map.Entry<NodePickerItemInfo, Integer> entry : infoMap.entrySet()) {
+            // 深度最深
+            if (deep < entry.getValue()) {
+                deep = entry.getValue();
+                node = entry.getKey();
+            }
+        }
+        return node;
+    }
+
+    private void findNodeIn(HashMap<NodePickerItemInfo, Integer> infoHashSet, int deep, @NonNull NodePickerItemInfo nodeInfo, int x, int y) {
+        if (nodeInfo.children.isEmpty()) return;
+        for (NodePickerItemInfo child : nodeInfo.children) {
+            if (child != null) {
+                Rect rect = new Rect(child.rect);
+                if (rect.contains(x, y) && child.visible) {
+                    infoHashSet.put(child, deep);
+                }
+                findNodeIn(infoHashSet, deep + 1, child, x, y);
+            }
+        }
     }
 
     @Override

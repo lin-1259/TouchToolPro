@@ -16,6 +16,7 @@ import com.amrdeveloper.treeview.TreeViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.databinding.FloatPickerNodeItemBinding;
@@ -57,7 +58,10 @@ public class NodePickerTreeAdapter extends TreeViewAdapter {
         treeNodes.clear();
         Pattern pattern = null;
         if (search != null && !search.isEmpty()) {
-            pattern = Pattern.compile(search);
+            try {
+                pattern = Pattern.compile(search);
+            } catch (PatternSyntaxException ignored){
+            }
         }
         for (NodePickerItemInfo root : roots) {
             if (pattern == null) {
