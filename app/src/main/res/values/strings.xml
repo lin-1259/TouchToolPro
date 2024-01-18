@@ -582,6 +582,9 @@
 
     <string name="task_setting_play_view_visible">显示手动执行</string>
     <string name="task_setting_play_view_visible_tips">设置手动执行悬浮窗是否显示，可以在控制中心中快捷设置(点击此处重置悬浮窗位置)</string>
+    <string name="task_setting_play_view_visible_none">不显示</string>
+    <string name="task_setting_play_view_visible_after_unlock">解锁后</string>
+    <string name="task_setting_play_view_visible_all_time">全时段</string>
     <string name="task_setting_play_view_visible_reset">重置完成</string>
 
     <string name="task_setting_show_touch">显示手势轨迹</string>

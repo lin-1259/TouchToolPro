@@ -53,6 +53,7 @@ public class AreaPickAction extends NormalAction {
                     }
                 }, area);
                 floatView.set(view);
+                view.setPickerCallback(new AreaPickerFloatView.AreaPickerInTaskCallback(view));
                 view.show();
             });
 

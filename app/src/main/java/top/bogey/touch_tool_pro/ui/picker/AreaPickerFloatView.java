@@ -2,9 +2,9 @@ package top.bogey.touch_tool_pro.ui.picker;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -12,12 +12,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinArea;
-import top.bogey.touch_tool_pro.databinding.FloatPickerAreaBinding;
+import top.bogey.touch_tool_pro.databinding.FloatPickerImageBinding;
+import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 import top.bogey.touch_tool_pro.ui.custom.ChangeAreaFloatView;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
@@ -25,20 +26,32 @@ import top.bogey.touch_tool_pro.utils.easy_float.EasyFloat;
 @SuppressLint("ViewConstructor")
 public class AreaPickerFloatView extends BasePickerFloatView {
     private final Rect area;
-    private final FloatPickerAreaBinding binding;
-    private final Paint markPaint;
+    private final FloatPickerImageBinding binding;
+    private final Paint bitmapPaint;
     private final int[] location = new int[2];
+    private final Paint markPaint;
+    private final int offset;
+    private MainAccessibilityService service;
+    private Bitmap showBitmap;
+    private final Rect markArea = new Rect();
+
     private AdjustMode adjustMode = AdjustMode.NONE;
+    private boolean isMarked = false;
+
     private int lastX = 0;
     private int lastY = 0;
+
     public AreaPickerFloatView(Context context, IPickerCallback callback, PinArea pinArea) {
         super(context, callback);
         area = pinArea.getArea(context);
 
-        binding = FloatPickerAreaBinding.inflate(LayoutInflater.from(context), this, true);
+        floatCallback = new AreaPickerCallback(this);
+
+        binding = FloatPickerImageBinding.inflate(LayoutInflater.from(context), this, true);
 
         binding.saveButton.setOnClickListener(v -> {
-            pinArea.setArea(context, area);
+            markArea.offset(location[0], location[1]);
+            pinArea.setArea(context, markArea);
             if (callback != null) callback.onComplete();
             dismiss();
         });
@@ -48,27 +61,55 @@ public class AreaPickerFloatView extends BasePickerFloatView {
             dismiss();
         });
 
-        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> {
-            area.left = Math.max(location[0], area.left);
-            area.top = Math.max(location[1], area.top);
-            area.right = Math.min(getWidth() + location[0], area.right);
-            area.bottom = Math.min(getHeight() + location[1], area.bottom);
-            refreshUI();
-        }).show());
+        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> refreshUI()).show());
 
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint.setStyle(Paint.Style.FILL);
         markPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
-        refreshUI();
+
+        bitmapPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        bitmapPaint.setFilterBitmap(true);
+        bitmapPaint.setDither(true);
+
+        offset = Math.round(DisplayUtils.dp2px(context, 4));
+    }
+
+    public void realShow(int delay) {
+        postDelayed(() -> {
+            EasyFloat.show(tag);
+            if (service != null && service.isCaptureEnabled()) {
+                service.getCurrImage(bitmap -> post(() -> {
+                    if (bitmap != null) {
+                        showBitmap = DisplayUtils.safeCreateBitmap(bitmap, location[0], location[1], getWidth(), getHeight());
+                        if (!area.isEmpty()) {
+                            markArea.set(area);
+                            markArea.offset(-location[0], -location[1]);
+                            isMarked = true;
+                        }
+                        refreshUI();
+                    }
+                }));
+            } else {
+                refreshUI();
+            }
+        }, delay);
+    }
+
+    public void onShow() {
+        service = MainApplication.getInstance().getService();
+        realShow(100);
     }
 
     @Override
     public void dispatchDraw(@NonNull Canvas canvas) {
+        if (showBitmap != null && !showBitmap.isRecycled()) {
+            canvas.drawBitmap(showBitmap, 0, 0, bitmapPaint);
+        }
+        canvas.saveLayer(getLeft(), getTop(), getRight(), getBottom(), bitmapPaint);
         super.dispatchDraw(canvas);
-        Rect rect = new Rect(area);
-        rect.offset(-location[0], -location[1]);
-        canvas.drawRect(rect, markPaint);
-        drawChild(canvas, binding.areaBox, getDrawingTime());
+        canvas.drawRect(markArea, markPaint);
+        canvas.restore();
+
         drawChild(canvas, binding.buttonBox, getDrawingTime());
     }
 
@@ -78,54 +119,69 @@ public class AreaPickerFloatView extends BasePickerFloatView {
         int x = (int) event.getRawX();
         int y = (int) event.getRawY();
 
+        int localX = (int) event.getX();
+        int localY = (int) event.getY();
+
         int action = event.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
             adjustMode = AdjustMode.NONE;
             lastX = x;
             lastY = y;
 
-            View[] views = new View[]{binding.areaLeft, binding.areaRight, binding.areaTop, binding.areaBottom};
+            View[] views = new View[]{binding.moveRight, binding.moveLeft, binding.markBox};
             int[] location = new int[2];
             for (int i = 0; i < views.length; i++) {
                 View view = views[i];
                 view.getLocationOnScreen(location);
                 Rect rect = new Rect(location[0], location[1], location[0] + view.getWidth(), location[1] + view.getHeight());
                 if (rect.contains(x, y)) {
-                    adjustMode = AdjustMode.values()[i + AdjustMode.LEFT.ordinal()];
+                    adjustMode = AdjustMode.values()[i + AdjustMode.BOTTOM_RIGHT.ordinal()];
+                    // 对可能隐藏的控件做剔除
+                    if (adjustMode.ordinal() <= AdjustMode.DRAG.ordinal() && !isMarked) {
+                        continue;
+                    }
                     break;
                 }
             }
 
-            // 没点到控制按钮
+            // 没点到控制按钮且不是拖动
             if (adjustMode == AdjustMode.NONE) {
-                // 判断是否点到区域内
-                if (area.contains(x, y)) {
-                    adjustMode = AdjustMode.DRAG;
-                }
+                adjustMode = AdjustMode.MARK;
+                markArea.left = localX;
+                markArea.top = localY;
+                markArea.right = localX;
+                markArea.bottom = localY;
             }
         } else if (action == MotionEvent.ACTION_MOVE) {
             int dx = x - lastX;
             int dy = y - lastY;
             switch (adjustMode) {
-                case DRAG -> {
-                    area.left = Math.max(location[0], area.left + dx);
-                    area.top = Math.max(location[1], area.top + dy);
-                    area.right = Math.min(getWidth() + location[0], area.right + dx);
-                    area.bottom = Math.min(getHeight() + location[1], area.bottom + dy);
+                case MARK -> {
+                    markArea.right = localX;
+                    markArea.bottom = localY;
                 }
-                case LEFT -> area.left = Math.max(location[0], area.left + dx);
-                case RIGHT -> area.right = Math.min(getWidth() + location[0], area.right + dx);
-                case TOP -> area.top = Math.max(location[1], area.top + dy);
-                case BOTTOM -> area.bottom = Math.min(getHeight() + location[1], area.bottom + dy);
+                case DRAG -> {
+                    markArea.left += dx;
+                    markArea.top += dy;
+                    markArea.right += dx;
+                    markArea.bottom += dy;
+                }
+                case TOP_LEFT -> {
+                    markArea.left += dx;
+                    markArea.top += dy;
+                }
+                case BOTTOM_RIGHT -> {
+                    markArea.right += dx;
+                    markArea.bottom += dy;
+                }
             }
-            area.sort();
+            markArea.sort();
             lastX = x;
             lastY = y;
         } else if (action == MotionEvent.ACTION_UP) {
-            if (adjustMode != AdjustMode.NONE) {
-                int px = Math.round(DisplayUtils.dp2px(getContext(), 24 * 2));
-                if (area.width() < px || area.height() < px) {
-                    initMatchArea();
+            if (adjustMode == AdjustMode.MARK) {
+                if (!markArea.isEmpty()) {
+                    isMarked = true;
                 }
             }
         }
@@ -134,30 +190,24 @@ public class AreaPickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
-        binding.areaBox.setX(area.left - location[0]);
-        binding.areaBox.setY(area.top - location[1]);
-        ViewGroup.LayoutParams params = binding.areaBox.getLayoutParams();
-        params.width = area.width();
-        params.height = area.height();
-        binding.areaBox.setLayoutParams(params);
+        markArea.sort();
+        markArea.left = Math.max(0, markArea.left);
+        markArea.top = Math.max(0, markArea.top);
+        markArea.right = Math.min(getWidth(), markArea.right);
+        markArea.bottom = Math.min(getHeight(), markArea.bottom);
 
-        ImageView[] images = new ImageView[]{binding.areaLeft, binding.areaTop, binding.areaRight, binding.areaBottom};
-        int px = Math.round(DisplayUtils.dp2px(getContext(), 24));
-        Point size = DisplayUtils.getScreenSize(getContext());
-        px = (int) (px * area.width() * area.height() * 1f / size.x / size.y);
-        for (ImageView image : images) {
-            MarginLayoutParams layoutParams = (MarginLayoutParams) image.getLayoutParams();
-            layoutParams.setMargins(px, px, px, px);
+        binding.markBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
+        if (isMarked) {
+            ViewGroup.LayoutParams params = binding.markBox.getLayoutParams();
+            params.width = markArea.width() + 2 * offset;
+            params.height = markArea.height() + 2 * offset;
+            binding.markBox.setLayoutParams(params);
+
+            binding.markBox.setX(markArea.left - offset);
+            binding.markBox.setY(markArea.top - offset);
         }
 
         postInvalidate();
-    }
-
-    private void initMatchArea() {
-        area.left = Math.max(area.left, location[0]);
-        area.top = Math.max(area.top, location[1]);
-        area.right = Math.min(area.right, location[0] + getWidth());
-        area.bottom = Math.min(area.bottom, location[1] + getHeight());
     }
 
     @Override
@@ -166,7 +216,6 @@ public class AreaPickerFloatView extends BasePickerFloatView {
 
         if (changed) {
             getLocationOnScreen(location);
-            initMatchArea();
             refreshUI();
         }
     }
@@ -177,5 +226,33 @@ public class AreaPickerFloatView extends BasePickerFloatView {
         super.dismiss();
     }
 
-    private enum AdjustMode {NONE, DRAG, LEFT, RIGHT, TOP, BOTTOM}
+    private enum AdjustMode {NONE, MARK, BOTTOM_RIGHT, TOP_LEFT, DRAG}
+
+    protected static class AreaPickerCallback extends FloatBaseCallback {
+        private boolean first = true;
+        private final AreaPickerFloatView floatView;
+
+        public AreaPickerCallback(AreaPickerFloatView floatView) {
+            this.floatView = floatView;
+        }
+
+        @Override
+        public void onShow(String tag) {
+            if (first) {
+                super.onShow("");
+                first = false;
+                floatView.onShow();
+            }
+        }
+    }
+
+    public static class AreaPickerInTaskCallback extends AreaPickerCallback {
+        public AreaPickerInTaskCallback(AreaPickerFloatView floatView) {
+            super(floatView);
+        }
+
+        @Override
+        public void onDismiss() {
+        }
+    }
 }

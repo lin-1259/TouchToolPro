@@ -22,6 +22,10 @@ public class BasePickerFloatView extends FrameLayout implements FloatViewInterfa
         tag = this.getClass().getName();
     }
 
+    public void setPickerCallback(FloatBaseCallback floatCallback) {
+        this.floatCallback = floatCallback;
+    }
+
     @Override
     public void show() {
         EasyFloat.with(MainApplication.getInstance().getService())

@@ -498,13 +498,50 @@
                                 android:layout_height="wrap_content"
                                 android:text="@string/task_setting_play_view_visible_tips"
                                 android:textAppearance="@style/TextAppearance.Material3.LabelLarge" />
+
+                            <com.google.android.material.button.MaterialButtonToggleGroup
+                                android:id="@+id/playViewVisibleGroup"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:selectionRequired="true"
+                                app:singleSelection="true">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/noShowPlayViewButton"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="0dp"
+                                    android:text="@string/task_setting_play_view_visible_none"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/afterUnlockShowPlayViewButton"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="0dp"
+                                    android:text="@string/task_setting_play_view_visible_after_unlock"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/allTimeShowPlayViewButton"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="0dp"
+                                    android:text="@string/task_setting_play_view_visible_all_time"
+                                    android:textColor="@color/button_container_check"
+                                    app:backgroundTint="@color/fill_button_background_check" />
+
+                            </com.google.android.material.button.MaterialButtonToggleGroup>
                         </LinearLayout>
 
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/playViewVisibleSwitch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical" />
                     </LinearLayout>
 
                     <LinearLayout

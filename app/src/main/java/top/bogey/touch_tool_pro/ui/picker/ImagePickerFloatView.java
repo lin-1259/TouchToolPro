@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -36,7 +35,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     private final int offset;
     private MainAccessibilityService service;
     private Bitmap showBitmap;
-    private Rect markArea = new Rect();
+    private final Rect markArea = new Rect();
 
     private AdjustMode adjustMode = AdjustMode.NONE;
     private boolean isMarked = false;
@@ -74,7 +73,7 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     }
 
     public Bitmap getBitmap() {
-        if (showBitmap != null) {
+        if (showBitmap != null && !markArea.isEmpty()) {
             Bitmap bitmap = DisplayUtils.safeCreateBitmap(showBitmap, markArea);
             showBitmap.recycle();
             return bitmap;
@@ -131,6 +130,8 @@ public class ImagePickerFloatView extends BasePickerFloatView {
         super.dispatchDraw(canvas);
         canvas.drawRect(markArea, markPaint);
         canvas.restore();
+
+        drawChild(canvas, binding.buttonBox, getDrawingTime());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -181,21 +182,20 @@ public class ImagePickerFloatView extends BasePickerFloatView {
                     markArea.bottom = localY;
                 }
                 case DRAG -> {
-                    markArea.left = Math.max(location[0], markArea.left + dx);
-                    markArea.top = Math.max(location[1], markArea.top + dy);
-                    markArea.right = Math.min(getWidth() + location[0], markArea.right + dx);
-                    markArea.bottom = Math.min(getHeight() + location[1], markArea.bottom + dy);
+                    markArea.left += dx;
+                    markArea.top += dy;
+                    markArea.right += dx;
+                    markArea.bottom += dy;
                 }
                 case TOP_LEFT -> {
-                    markArea.left = Math.max(location[0], markArea.left + dx);
-                    markArea.top = Math.max(location[1], markArea.top + dy);
+                    markArea.left += dx;
+                    markArea.top += dy;
                 }
                 case BOTTOM_RIGHT -> {
-                    markArea.right = Math.min(getWidth() + location[0], markArea.right + dx);
-                    markArea.bottom = Math.min(getHeight() + location[1], markArea.bottom + dy);
+                    markArea.right += dx;
+                    markArea.bottom += dy;
                 }
             }
-            markArea.sort();
             lastX = x;
             lastY = y;
         } else if (action == MotionEvent.ACTION_UP) {
@@ -210,9 +210,13 @@ public class ImagePickerFloatView extends BasePickerFloatView {
     }
 
     private void refreshUI() {
-        Point size = DisplayUtils.getScreenSize(getContext());
+        markArea.sort();
+        markArea.left = Math.max(0, markArea.left);
+        markArea.top = Math.max(0, markArea.top);
+        markArea.right = Math.min(getWidth(), markArea.right);
+        markArea.bottom = Math.min(getHeight(), markArea.bottom);
+
         binding.markBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
-        binding.buttonBox.setVisibility(isMarked ? VISIBLE : INVISIBLE);
         if (isMarked) {
             ViewGroup.LayoutParams params = binding.markBox.getLayoutParams();
             params.width = markArea.width() + 2 * offset;
@@ -221,15 +225,6 @@ public class ImagePickerFloatView extends BasePickerFloatView {
 
             binding.markBox.setX(markArea.left - offset);
             binding.markBox.setY(markArea.top - offset);
-
-            float x = markArea.left + (markArea.width() - binding.buttonBox.getWidth()) / 2f;
-            x = Math.max(Math.min(x, size.x - binding.buttonBox.getWidth()), 0);
-            binding.buttonBox.setX(x);
-            if (markArea.bottom + offset * 2 + binding.buttonBox.getHeight() > getHeight()) {
-                binding.buttonBox.setY(markArea.top - offset * 2 - binding.buttonBox.getHeight());
-            } else {
-                binding.buttonBox.setY(markArea.bottom + offset * 2);
-            }
         }
         postInvalidate();
     }

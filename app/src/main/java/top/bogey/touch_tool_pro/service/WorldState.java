@@ -198,7 +198,7 @@ public class WorldState {
             new Handler(Looper.getMainLooper()).post(() -> {
                 if (manualStartActions.size() > 0 || existView) {
                     PlayFloatView view = (PlayFloatView) EasyFloat.getView(PlayFloatView.class.getName());
-                    if (manualStartActions.size() == 0 || !SettingSave.getInstance().isPlayViewVisible()) {
+                    if (manualStartActions.size() == 0 || !SettingSave.getInstance().isPlayViewVisible(keepView.getContext())) {
                         if (view != null) view.setNeedRemove(true);
                     } else {
                         if (view == null) {

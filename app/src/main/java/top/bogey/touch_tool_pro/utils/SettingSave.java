@@ -15,6 +15,7 @@ import com.tencent.mmkv.MMKV;
 import java.util.List;
 
 import top.bogey.touch_tool_pro.MainApplication;
+import top.bogey.touch_tool_pro.bean.action.other.ScreenStateAction;
 import top.bogey.touch_tool_pro.service.KeepAliveService;
 
 public class SettingSave {
@@ -34,7 +35,7 @@ public class SettingSave {
     private static final String KEEP_ALIVE = "KEEP_ALIVE";                                      // 前台服务保活
     private static final String SUPER_USER_TYPE = "SUPER_USER_TYPE";                            // 超级用户类型
 
-    private static final String PLAY_VIEW_VISIBLE = "PLAY_VIEW_VISIBLE";                        // 显示手动执行悬浮窗
+    private static final String PLAY_VIEW_VISIBLE_TYPE = "PLAY_VIEW_VISIBLE_TYPE";              // 显示手动执行悬浮窗
     private static final String SHOW_TOUCH = "SHOW_TOUCH";                                      // 显示手势轨迹
     private static final String SHOW_START = "SHOW_START";                                      // 显示任务开始提示
 
@@ -179,12 +180,28 @@ public class SettingSave {
     }
 
 
-    public boolean isPlayViewVisible() {
-        return settingMMKV.decodeBool(PLAY_VIEW_VISIBLE, true);
+    public int getPlayViewVisibleType() {
+        return settingMMKV.decodeInt(PLAY_VIEW_VISIBLE_TYPE, 2);
     }
 
-    public void setPlayViewVisible(boolean visible) {
-        settingMMKV.encode(PLAY_VIEW_VISIBLE, visible);
+    public void setPlayViewVisibleType(int type) {
+        settingMMKV.encode(PLAY_VIEW_VISIBLE_TYPE, type);
+    }
+
+    public boolean isPlayViewVisible(Context context) {
+        int type = getPlayViewVisibleType();
+        switch (type) {
+            case 1 -> {
+                ScreenStateAction.ScreenState state = AppUtils.getScreenState(context);
+                return state == ScreenStateAction.ScreenState.ON;
+            }
+            case 2 -> {
+                return true;
+            }
+            default -> {
+                return false;
+            }
+        }
     }
 
     public boolean isShowTouch() {

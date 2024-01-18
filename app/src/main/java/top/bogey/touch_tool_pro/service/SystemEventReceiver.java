@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.BatteryManager;
 
 import top.bogey.touch_tool_pro.bean.action.start.InnerStartAction;
+import top.bogey.touch_tool_pro.utils.SettingSave;
 
 public class SystemEventReceiver extends BroadcastReceiver {
 
@@ -24,7 +25,12 @@ public class SystemEventReceiver extends BroadcastReceiver {
             }
 
             // 这个是为了停止任务做的
-            case Intent.ACTION_SCREEN_OFF, Intent.ACTION_SCREEN_ON, Intent.ACTION_USER_PRESENT, Intent.ACTION_TIME_TICK -> WorldState.getInstance().checkAutoStartAction(InnerStartAction.class);
+            case Intent.ACTION_TIME_TICK -> WorldState.getInstance().checkAutoStartAction(InnerStartAction.class);
+
+            case Intent.ACTION_SCREEN_ON, Intent.ACTION_SCREEN_OFF, Intent.ACTION_USER_PRESENT -> {
+                WorldState.getInstance().checkAutoStartAction(InnerStartAction.class);
+                WorldState.getInstance().showManualActionDialog(SettingSave.getInstance().isPlayViewVisible(context));
+            }
 
             // 更新应用列表
             case Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_CHANGED -> {

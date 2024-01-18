@@ -55,7 +55,7 @@ public class SettingView extends Fragment {
     }
 
     public void refreshSwitchState() {
-        binding.playViewVisibleSwitch.setChecked(SettingSave.getInstance().isPlayViewVisible());
+        binding.playViewVisibleGroup.check(binding.playViewVisibleGroup.getChildAt(SettingSave.getInstance().getPlayViewVisibleType()).getId());
         binding.showPackageInfoSwitch.setChecked(EasyFloat.getView(PackageInfoFloatView.class.getName()) != null);
         binding.logSwitch.setChecked(EasyFloat.getView(LogFloatView.class.getName()) != null);
     }
@@ -108,16 +108,16 @@ public class SettingView extends Fragment {
                 }
             }
         });
-        int type = SettingSave.getInstance().getSuperUserType();
-        switch (type) {
+        int superUserType = SettingSave.getInstance().getSuperUserType();
+        switch (superUserType) {
             case 1 -> {
-                if (!ShizukuSuperUser.existShizuku()) type = 0;
+                if (!ShizukuSuperUser.existShizuku()) superUserType = 0;
             }
             case 2 -> {
-                if (!RootSuperUser.existRoot()) type = 0;
+                if (!RootSuperUser.existRoot()) superUserType = 0;
             }
         }
-        binding.superUserGroup.check(binding.superUserGroup.getChildAt(type).getId());
+        binding.superUserGroup.check(binding.superUserGroup.getChildAt(superUserType).getId());
         binding.superUserGroup.setSaveEnabled(false);
 
         binding.cleanCache.setOnClickListener(v -> {
@@ -187,7 +187,13 @@ public class SettingView extends Fragment {
             });
         });
 
-        binding.playViewVisibleSwitch.setOnClickListener(v -> SettingSave.getInstance().setPlayViewVisible(binding.playViewVisibleSwitch.isChecked()));
+        binding.playViewVisibleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                View view = group.findViewById(checkedId);
+                int type = group.indexOfChild(view);
+                SettingSave.getInstance().setPlayViewVisibleType(type);
+            }
+        });
 
         binding.resetPlayViewPos.setOnClickListener(v -> {
             SettingSave.getInstance().setPlayViewPosition(new Point());
