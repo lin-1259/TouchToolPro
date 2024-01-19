@@ -112,9 +112,7 @@ public class NodePickerFloatView extends BasePickerFloatView implements NodePick
         binding.typeGroup.check(binding.typeGroup.getChildAt(SettingSave.getInstance().getSelectNodeType()).getId());
 
         if (pinNode instanceof PinNodePath pinNodePath) {
-            AccessibilityNodeInfo node = pinNodePath.getNode(windowsRoot);
-            if (node == null) selectNode = null;
-            else selectNode = new NodePickerItemInfo(node);
+            selectNode = pinNodePath.getNodeItemInfo(rootNodes);
             showNodeView(selectNode);
         } else {
             selectId = pinNode.getValue();

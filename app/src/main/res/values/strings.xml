@@ -278,6 +278,8 @@
 
     <string name="action_copy_action_title">写入剪切板</string>
 
+    <string name="action_sni_paste_action_title">贴在屏幕上</string>
+
     <string name="action_share_action_title">分享到…</string>
     <string name="action_share_action_subtitle_as">作为</string>
 
@@ -343,6 +345,8 @@
     <string name="action_get_nodes_in_pos_title">获取指定位置的所有控件</string>
     <string name="action_get_nodes_in_pos_subtitle_exclude">排除容器控件</string>
 
+    <string name="action_get_nodes_in_window_title">获取所有根控件</string>
+
     <!-- 任务 - 颜色 -->
     <string name="action_exist_color_check_title">界面内存在颜色</string>
     <string name="action_exist_color_check_subtitle_similar">偏移</string>
@@ -370,6 +374,7 @@
     <string name="action_int_small_title">数值比较 &lt;</string>
     <string name="action_int_in_area_title">数值在区域内</string>
     <string name="action_int_random_title">随机数值</string>
+    <string name="action_int_to_value_area_title">数值组合为数值区域</string>
 
 
     <!-- 任务 - 位置 -->

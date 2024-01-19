@@ -52,7 +52,7 @@ public class NodePickerFloatPreview extends BasePickerFloatView {
                 ArrayList<AccessibilityNodeInfo> roots = service.getNeedWindowsRoot();
 
                 if (pinNode instanceof PinNodePath pinNodePath) {
-                    AccessibilityNodeInfo node = pinNodePath.getNode(roots, null);
+                    AccessibilityNodeInfo node = pinNodePath.getNode(roots);
                     node = getClickAbleParent(node);
                     if (node != null) node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
 

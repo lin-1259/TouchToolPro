@@ -19,5 +19,5 @@
     <color name="ArrayPinColor">#00BBFF</color>
 
     <color name="LauncherBackgroundColor">#FAFAFA</color>
-    <color name="HalfAlpha">#88000000</color>
+    <color name="HalfAlpha">#88333333</color>
 </resources>

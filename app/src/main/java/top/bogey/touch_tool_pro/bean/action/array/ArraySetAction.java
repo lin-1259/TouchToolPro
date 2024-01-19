@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
-import top.bogey.touch_tool_pro.bean.action.normal.NormalAction;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinType;

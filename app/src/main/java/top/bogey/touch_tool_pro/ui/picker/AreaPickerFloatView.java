@@ -68,7 +68,7 @@ public class AreaPickerFloatView extends BasePickerFloatView {
             refreshUI();
         });
 
-        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, area, area -> refreshUI()).show());
+        binding.detailButton.setOnClickListener(v -> new ChangeAreaFloatView(context, markArea, area -> refreshUI()).show());
 
         markPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         markPaint.setStyle(Paint.Style.FILL);

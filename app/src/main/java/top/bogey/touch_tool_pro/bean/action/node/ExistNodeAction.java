@@ -6,7 +6,6 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import top.bogey.touch_tool_pro.MainApplication;
@@ -18,7 +17,6 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
 import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
-import top.bogey.touch_tool_pro.bean.pin.pins.PinInteger;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinNode;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinNodePath;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinPoint;
@@ -27,7 +25,6 @@ import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
 
 public class ExistNodeAction extends CheckAction {
-    private final transient ArrayList<Pin> paramPins = new ArrayList<>();
     private transient Pin pathPin = new Pin(new PinNodePath(), R.string.pin_node_path);
     private transient Pin idPin = new Pin(new PinString(PinSubType.NODE_ID), R.string.pin_string_node_id);
     private transient Pin posPin = new Pin(new PinPoint(), R.string.pin_point, true);
@@ -48,7 +45,6 @@ public class ExistNodeAction extends CheckAction {
         idPin = reAddPin(idPin);
         posPin = reAddPin(posPin);
         nodePin = reAddPin(nodePin);
-        paramPins.addAll(reAddPin(new Pin(new PinInteger()), 0));
     }
 
     @Override
@@ -76,13 +72,7 @@ public class ExistNodeAction extends CheckAction {
                 }
             }
         } else {
-            HashMap<String, Integer> params = new HashMap<>();
-            for (Pin paramPin : paramPins) {
-                PinInteger param = (PinInteger) getPinValue(runnable, context, paramPin);
-                params.put(paramPin.getTitle(), param.getValue());
-            }
-
-            AccessibilityNodeInfo node = nodePath.getNode(roots, params);
+            AccessibilityNodeInfo node = nodePath.getNode(roots);
             if (node != null) {
                 Rect rect = new Rect();
                 node.getBoundsInScreen(rect);

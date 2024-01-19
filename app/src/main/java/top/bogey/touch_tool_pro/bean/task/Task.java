@@ -13,10 +13,10 @@ import top.bogey.touch_tool_pro.bean.action.function.FunctionReferenceAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
 import top.bogey.touch_tool_pro.bean.base.IdentityInfo;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.function.FunctionType;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class Task extends FunctionContext {

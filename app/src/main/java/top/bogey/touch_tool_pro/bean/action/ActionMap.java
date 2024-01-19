@@ -72,6 +72,7 @@ public enum ActionMap {
                     ActionType.PLAY_RINGTONE,
                     ActionType.STOP_RINGTONE,
                     ActionType.COPY,
+                    ActionType.SNI_PASTE,
                     ActionType.SHARE,
                     ActionType.RUN_TASK,
                     ActionType.SHELL,
@@ -105,7 +106,8 @@ public enum ActionMap {
                     ActionType.NODE_IS_VALID,
                     ActionType.NODE_CHILDREN,
                     ActionType.NODE_PARENT,
-                    ActionType.NODES_IN_POS
+                    ActionType.NODES_IN_POS,
+                    ActionType.NODES_IN_WINDOW
             ));
 
             case COLOR -> new ArrayList<>(Arrays.asList(
@@ -131,7 +133,9 @@ public enum ActionMap {
                     ActionType.INT_LARGE,
                     ActionType.INT_SMALL,
                     ActionType.INT_IN_AREA,
-                    ActionType.INT_RANDOM
+                    ActionType.INT_RANDOM,
+
+                    ActionType.INT_TO_VALUE_AREA
             ));
 
             case POINT -> new ArrayList<>(Arrays.asList(

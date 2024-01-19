@@ -10,9 +10,9 @@ import java.util.Objects;
 
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.start.StartAction;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.pin.PinType;
 import top.bogey.touch_tool_pro.bean.task.Task;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.utils.GsonUtils;
 
 public class PinTask extends PinValue {

@@ -1,7 +1,6 @@
 package top.bogey.touch_tool_pro.bean.pin.pins;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.gson.JsonObject;
 

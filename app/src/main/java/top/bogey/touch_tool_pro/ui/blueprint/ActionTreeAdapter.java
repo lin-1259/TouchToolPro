@@ -24,7 +24,6 @@ import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.databinding.ViewCardListItemBinding;
 import top.bogey.touch_tool_pro.databinding.ViewCardListTypeItemBinding;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
-import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.DisplayUtils;
 
 public class ActionTreeAdapter extends TreeViewAdapter {

@@ -19,7 +19,6 @@ import top.bogey.touch_tool_pro.bean.action.Action;
 import top.bogey.touch_tool_pro.bean.action.ActionMap;
 import top.bogey.touch_tool_pro.bean.action.ActionType;
 import top.bogey.touch_tool_pro.bean.action.function.FunctionPinsAction;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.pin.Pin;
@@ -27,6 +26,7 @@ import top.bogey.touch_tool_pro.bean.pin.pins.PinObject;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinValue;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.DialogSelectActionBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.super_user.SuperUser;
 import top.bogey.touch_tool_pro.ui.blueprint.card.ActionCard;
 

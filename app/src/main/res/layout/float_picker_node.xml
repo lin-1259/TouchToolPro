@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#88000000">
+    android:background="@color/HalfAlpha">
 
     <FrameLayout
         android:id="@+id/markBox"
@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="600dp"
         android:alpha="0.85"
-        app:behavior_peekHeight="600dp"
+        app:behavior_peekHeight="0dp"
         app:layout_behavior="@string/bottom_sheet_behavior">
 
         <LinearLayout

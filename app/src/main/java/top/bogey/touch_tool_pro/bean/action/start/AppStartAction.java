@@ -14,8 +14,8 @@ import top.bogey.touch_tool_pro.bean.pin.PinSubType;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinApplication;
 import top.bogey.touch_tool_pro.bean.pin.pins.PinBoolean;
 import top.bogey.touch_tool_pro.bean.task.TaskRunnable;
-import top.bogey.touch_tool_pro.service.WorldState;
 import top.bogey.touch_tool_pro.service.MainAccessibilityService;
+import top.bogey.touch_tool_pro.service.WorldState;
 
 public class AppStartAction extends StartAction {
     private transient Pin appPin = new Pin(new PinApplication(PinSubType.MULTI_ALL_ACTIVITY), R.string.pin_app);

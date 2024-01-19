@@ -24,10 +24,10 @@ import java.util.Stack;
 import top.bogey.touch_tool_pro.MainApplication;
 import top.bogey.touch_tool_pro.R;
 import top.bogey.touch_tool_pro.bean.action.Action;
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.FunctionContext;
 import top.bogey.touch_tool_pro.bean.task.Task;
 import top.bogey.touch_tool_pro.databinding.ViewBlueprintBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.ui.MainActivity;
 import top.bogey.touch_tool_pro.utils.AppUtils;
 import top.bogey.touch_tool_pro.utils.SettingSave;
@@ -79,11 +79,11 @@ public class BlueprintView extends Fragment {
                         .setTitle(R.string.task_running_log)
                         .setMessage(SaveRepository.getInstance().getLog(task.getId()))
                         .setPositiveButton(R.string.close, (dialog, which) -> dialog.dismiss())
-                        .setNegativeButton(R.string.export_task, (dialog, which) -> {
+                        .setNeutralButton(R.string.export_task, (dialog, which) -> {
                             dialog.dismiss();
                             AppUtils.exportLog(MainApplication.getInstance(), SaveRepository.getInstance().getLog(task.getId()));
                         })
-                        .setNeutralButton(R.string.task_running_log_clear, (dialog, which) -> {
+                        .setNegativeButton(R.string.task_running_log_clear, (dialog, which) -> {
                             dialog.dismiss();
                             SaveRepository.getInstance().removeLog(task.getId());
                         })

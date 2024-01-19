@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
 
-import top.bogey.touch_tool_pro.save.SaveRepository;
 import top.bogey.touch_tool_pro.bean.function.Function;
 import top.bogey.touch_tool_pro.databinding.DialogHandleActionContextItemBinding;
+import top.bogey.touch_tool_pro.save.SaveRepository;
 
 public class HandleFunctionAdapter extends RecyclerView.Adapter<HandleFunctionAdapter.ViewHolder> {
     private final HandleFunctionContextView handleView;

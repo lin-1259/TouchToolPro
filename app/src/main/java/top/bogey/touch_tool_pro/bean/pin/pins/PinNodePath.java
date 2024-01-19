@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -35,10 +34,6 @@ public class PinNodePath extends PinString {
     }
 
     public AccessibilityNodeInfo getNode(ArrayList<AccessibilityNodeInfo> roots) {
-        return getNode(roots, null);
-    }
-
-    public AccessibilityNodeInfo getNode(ArrayList<AccessibilityNodeInfo> roots, HashMap<String, Integer> params) {
         if (value == null) return null;
 
         String[] paths = value.split("\n");
@@ -48,7 +43,29 @@ public class PinNodePath extends PinString {
                 if (path.isEmpty()) continue;
                 if (child == null) child = root;
                 else {
-                    NodePath nodePath = new NodePath(path.trim(), params);
+                    NodePath nodePath = new NodePath(path.trim());
+                    child = nodePath.getChildNode(child);
+                    if (child == null) break;
+                }
+            }
+            if (root.equals(child)) return null;
+            if (child != null) return child;
+        }
+
+        return null;
+    }
+
+    public NodePickerItemInfo getNodeItemInfo(ArrayList<NodePickerItemInfo> roots) {
+        if (value == null) return null;
+
+        String[] paths = value.split("\n");
+        for (NodePickerItemInfo root : roots) {
+            NodePickerItemInfo child = null;
+            for (String path : paths) {
+                if (path.isEmpty()) continue;
+                if (child == null) child = root;
+                else {
+                    NodePath nodePath = new NodePath(path.trim());
                     child = nodePath.getChildNode(child);
                     if (child == null) break;
                 }
@@ -152,7 +169,7 @@ public class PinNodePath extends PinString {
             }
         }
 
-        public NodePath(String path, HashMap<String, Integer> params) {
+        public NodePath(String path) {
             Pattern pattern = Pattern.compile("^([a-zA-Z0-9.]+)$");
             // 代表没有任何额外信息的节点
             if (pattern.matcher(path).find()) {
@@ -168,7 +185,7 @@ public class PinNodePath extends PinString {
                     String[] strings = detail.split("\\[");
                     for (String string : strings) {
                         if (string.isEmpty()) continue;
-                        List<String> regexes = Arrays.asList("id=(.+)]", "(\\d+)]", "\\{(\\S*)\\}]");
+                        List<String> regexes = Arrays.asList("id=(.+)]", "(\\d+)]");
                         for (int i = 0; i < regexes.size(); i++) {
                             String regex = regexes.get(i);
                             pattern = Pattern.compile(regex);
@@ -177,10 +194,6 @@ public class PinNodePath extends PinString {
                                 switch (i) {
                                     case 0 -> id = matcher.group(1);
                                     case 1 -> index = Integer.parseInt(Objects.requireNonNull(matcher.group(1)));
-                                    case 2 -> {
-                                        Integer integer = params.get(matcher.group(1));
-                                        index = integer == null ? 1 : integer;
-                                    }
                                 }
                                 break;
                             }
@@ -198,9 +211,22 @@ public class PinNodePath extends PinString {
             return Objects.equals(id, resourceName);
         }
 
+        private boolean checkId(NodePickerItemInfo node) {
+            String resourceName = node.id;
+            if ((id == null || id.isEmpty()) && (resourceName == null || resourceName.isEmpty())) {
+                return true;
+            }
+            return Objects.equals(id, resourceName);
+        }
+
         private boolean checkClass(AccessibilityNodeInfo node) {
             if (cls == null) return false;
             return cls.contentEquals(node.getClassName());
+        }
+
+        private boolean checkClass(NodePickerItemInfo node) {
+            if (cls == null) return false;
+            return cls.contentEquals(node.cls);
         }
 
         public AccessibilityNodeInfo getChildNode(AccessibilityNodeInfo root) {
@@ -240,6 +266,54 @@ public class PinNodePath extends PinString {
             if (child == null) {
                 for (int i = 0; i < root.getChildCount(); i++) {
                     AccessibilityNodeInfo node = root.getChild(i);
+                    if (node == null) continue;
+                    if (checkClass(node)) {
+                        child = node;
+                        break;
+                    }
+                }
+            }
+
+            return child;
+        }
+
+        public NodePickerItemInfo getChildNode(NodePickerItemInfo root) {
+            NodePickerItemInfo child = null;
+            // 类型一定得匹配上
+            // 先根据层级，id，类型获取
+            if (index > 0 && index <= root.children.size()) {
+                NodePickerItemInfo node = root.children.get(index - 1);
+                if (node != null) {
+                    if (checkId(node) && checkClass(node)) child = node;
+                }
+            }
+
+            // 获取失败了，就根据id和类型去获取
+            if (child == null) {
+                for (int i = 0; i < root.children.size(); i++) {
+                    NodePickerItemInfo node = root.children.get(i);
+                    if (node == null) continue;
+                    if (checkId(node) && checkClass(node)) {
+                        child = node;
+                        break;
+                    }
+                }
+            }
+
+            // 再不行就根据层级和类型去获取
+            if (child == null) {
+                if (index > 0 && index <= root.children.size()) {
+                    NodePickerItemInfo node = root.children.get(index - 1);
+                    if (node != null) {
+                        if (checkClass(node)) child = node;
+                    }
+                }
+            }
+
+            // 实在不行就随便获取一个吧
+            if (child == null) {
+                for (int i = 0; i < root.children.size(); i++) {
+                    NodePickerItemInfo node = root.children.get(i);
                     if (node == null) continue;
                     if (checkClass(node)) {
                         child = node;

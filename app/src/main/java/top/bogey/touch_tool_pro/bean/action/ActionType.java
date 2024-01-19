@@ -42,6 +42,7 @@ import top.bogey.touch_tool_pro.bean.action.node.GetNodeChildrenAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodeInfoStateAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodeParentAction;
 import top.bogey.touch_tool_pro.bean.action.node.GetNodesInPosAction;
+import top.bogey.touch_tool_pro.bean.action.node.GetNodesInWindowAction;
 import top.bogey.touch_tool_pro.bean.action.node.IsNodeValidAction;
 import top.bogey.touch_tool_pro.bean.action.normal.BreakTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.CaptureSwitchAction;
@@ -59,6 +60,7 @@ import top.bogey.touch_tool_pro.bean.action.normal.RunTaskAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ScreenSwitchAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ShareAction;
 import top.bogey.touch_tool_pro.bean.action.normal.ShellAction;
+import top.bogey.touch_tool_pro.bean.action.normal.SniPasteAction;
 import top.bogey.touch_tool_pro.bean.action.normal.StopRingtoneAction;
 import top.bogey.touch_tool_pro.bean.action.normal.TouchAction;
 import top.bogey.touch_tool_pro.bean.action.number.IntAddAction;
@@ -71,6 +73,7 @@ import top.bogey.touch_tool_pro.bean.action.number.IntMultiAction;
 import top.bogey.touch_tool_pro.bean.action.number.IntRandomAction;
 import top.bogey.touch_tool_pro.bean.action.number.IntReduceAction;
 import top.bogey.touch_tool_pro.bean.action.number.IntSmallAction;
+import top.bogey.touch_tool_pro.bean.action.number.IntToValueAreaAction;
 import top.bogey.touch_tool_pro.bean.action.other.AppStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.BatteryStateAction;
 import top.bogey.touch_tool_pro.bean.action.other.CaptureStateAction;
@@ -158,6 +161,7 @@ public enum ActionType {
     PLAY_RINGTONE,
     STOP_RINGTONE,
     COPY,
+    SNI_PASTE,
     SHARE,
     RUN_TASK,
     SHELL,
@@ -186,6 +190,7 @@ public enum ActionType {
     NODE_CHILDREN,
     NODE_PARENT,
     NODES_IN_POS,
+    NODES_IN_WINDOW,
 
     CHECK_EXIST_COLOR,
     CHECK_EXIST_COLORS,
@@ -206,6 +211,7 @@ public enum ActionType {
     INT_SMALL,
     INT_IN_AREA,
     INT_RANDOM,
+    INT_TO_VALUE_AREA,
 
     POS_FROM_INT,
     POS_TO_INT,
@@ -287,6 +293,7 @@ public enum ActionType {
             case PLAY_RINGTONE -> new ActionConfigInfo(R.string.action_play_ringtone_action_title, R.drawable.icon_notification, PlayRingtoneAction.class);
             case STOP_RINGTONE -> new ActionConfigInfo(R.string.action_stop_ringtone_action_title, R.drawable.icon_notification, StopRingtoneAction.class);
             case COPY -> new ActionConfigInfo(R.string.action_copy_action_title, R.drawable.icon_copy, CopyToClipboardAction.class);
+            case SNI_PASTE -> new ActionConfigInfo(R.string.action_sni_paste_action_title, R.drawable.icon_home, SniPasteAction.class);
             case SHARE -> new ActionConfigInfo(R.string.action_share_action_title, R.drawable.icon_export, ShareAction.class);
             case RUN_TASK -> new ActionConfigInfo(R.string.action_do_task_action_title, R.drawable.icon_task, RunTaskAction.class);
             case SHELL -> new ActionConfigInfo(R.string.action_shell_action_title, R.drawable.icon_adb, ShellAction.class, true);
@@ -315,6 +322,7 @@ public enum ActionType {
             case NODE_CHILDREN -> new ActionConfigInfo(R.string.action_get_node_children_title, R.drawable.icon_widget, GetNodeChildrenAction.class);
             case NODE_PARENT -> new ActionConfigInfo(R.string.action_get_node_parent_title, R.drawable.icon_widget, GetNodeParentAction.class);
             case NODES_IN_POS -> new ActionConfigInfo(R.string.action_get_nodes_in_pos_title, R.drawable.icon_widget, GetNodesInPosAction.class);
+            case NODES_IN_WINDOW -> new ActionConfigInfo(R.string.action_get_nodes_in_window_title, R.drawable.icon_widget, GetNodesInWindowAction.class);
 
             case CHECK_EXIST_COLOR -> new ActionConfigInfo(R.string.action_exist_color_check_title, R.drawable.icon_color, ExistColorAction.class);
             case CHECK_EXIST_COLORS -> new ActionConfigInfo(R.string.action_exist_colors_check_title, R.drawable.icon_color, ExistColorsAction.class);
@@ -335,6 +343,7 @@ public enum ActionType {
             case INT_SMALL -> new ActionConfigInfo(R.string.action_int_small_title, R.drawable.icon_number, IntSmallAction.class);
             case INT_IN_AREA -> new ActionConfigInfo(R.string.action_int_in_area_title, R.drawable.icon_number, IntInAreaAction.class);
             case INT_RANDOM -> new ActionConfigInfo(R.string.action_int_random_title, R.drawable.icon_number, IntRandomAction.class);
+            case INT_TO_VALUE_AREA -> new ActionConfigInfo(R.string.action_int_to_value_area_title, R.drawable.icon_number, IntToValueAreaAction.class);
 
             case POS_FROM_INT -> new ActionConfigInfo(R.string.action_position_from_int_title, R.drawable.icon_position, PosFromIntAction.class);
             case POS_TO_INT -> new ActionConfigInfo(R.string.action_position_to_int_title, R.drawable.icon_position, PosToIntAction.class);
